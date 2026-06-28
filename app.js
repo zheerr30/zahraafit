@@ -757,7 +757,7 @@ function screenPlan(){
               <div><b>${L.sets}</b><small>مجموعات</small></div>
               <div><b>${L.reps}</b><small>عدّة</small></div>
             </div>
-            <div class="vid">${e.video?`<a href="${e.video}" target="_blank">▶</a>`:`<span class="off" title="أضيفي رابط يوتيوب">▶</span>`}</div>
+            <div class="vid">${(videoLinks[e.id]||e.video)?`<a href="${videoLinks[e.id]||e.video}" target="_blank" rel="noopener">▶</a>`:`<span class="off" title="أضيفي رابط يوتيوب">▶</span>`}</div>
           </div>`).join("")}
       </div>`).join("")}
 
@@ -1108,10 +1108,10 @@ function buildPdfHTML(){
     <div style="color:#aebbd6;font-size:11px;font-weight:600">${s}</div></td>`;
 
   // ===== الغلاف =====
-  let cover=`<div style="position:relative;width:100%;min-height:90vh;background:linear-gradient(160deg,${navy} 0%,${navy2} 60%,${navy3} 100%);overflow:hidden;page-break-after:always;page-break-inside:avoid">
+  let cover=`<div style="position:relative;width:100%;height:297mm;background:linear-gradient(160deg,${navy} 0%,${navy2} 60%,${navy3} 100%);overflow:hidden;page-break-after:always;page-break-inside:avoid">
     <div style="position:absolute;right:-9%;top:-7%;width:42%;padding-bottom:42%;border-radius:50%;background:radial-gradient(circle,rgba(232,98,44,.4),transparent 70%)"></div>
     <div style="position:absolute;left:-8%;bottom:-9%;width:36%;padding-bottom:36%;border-radius:50%;background:radial-gradient(circle,rgba(255,122,61,.22),transparent 70%)"></div>
-    <div style="position:relative;z-index:2;padding:7% 6%;color:#fff">
+    <div style="position:relative;z-index:2;padding:14% 9%;color:#fff">
       <div style="margin-bottom:34px">${logoSVG("#ffffff",1.15)}
         <div style="color:#aebbd6;font-size:12px;font-weight:600;margin-top:8px;letter-spacing:3px">SPORT & NUTRITION</div></div>
       <div style="width:100%;height:330px;border-radius:20px;overflow:hidden;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.14);margin-bottom:34px;display:flex;align-items:center;justify-content:center;color:#8294b8;font-size:38px">
@@ -1143,8 +1143,9 @@ function buildPdfHTML(){
       const pic = S.images[e.muscle]
         ? `<div style="width:92px;height:92px;border-radius:12px;background:#fff;border:1px solid #e3e7ee;padding:4px;display:flex;align-items:center;justify-content:center"><img src="${S.images[e.muscle]}" style="max-width:100%;max-height:100%;object-fit:contain"></div>`
         : `<div style="width:92px;height:92px;border-radius:12px;background:#f4f6f9;border:1px solid #e3e7ee;color:${navy};font-size:10px;font-weight:700;text-align:center;display:flex;align-items:center;justify-content:center;padding:4px">${MUSCLES[e.muscle]||""}</div>`;
-      const vidBtn = e.video
-        ? `<a href="${e.video}" style="text-decoration:none;display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:#ff0000;color:#fff;font-size:15px">▶</a>`
+      const vlink = videoLinks[e.id]||e.video;
+      const vidBtn = vlink
+        ? `<a href="${vlink}" style="text-decoration:none;display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:#ff0000;color:#fff;font-size:15px">▶</a>`
         : `<span style="display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:#eef0f4;color:#aab3c2;font-size:13px">▶</span>`;
       rows+=`<tr style="page-break-inside:avoid">
         <td style="width:100px;padding:12px 10px;vertical-align:middle">${pic}</td>
@@ -1206,7 +1207,7 @@ function buildPdfHTML(){
     </div>`;
   let warmup="";
   if(S.includeEdu){
-  warmup=`<div style="page-break-before:always;page-break-inside:avoid;padding:34px 40px;background:linear-gradient(180deg,#fbfbfc,#fff)">
+  warmup=`<div style="page-break-before:always;page-break-inside:avoid;padding:48px 52px;background:linear-gradient(180deg,#fbfbfc,#fff)">
     <div style="text-align:center;margin-bottom:8px">
       <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · قبل التمرين</span>
     </div>
@@ -1232,7 +1233,7 @@ function buildPdfHTML(){
           <div><div style="font-family:Cairo;font-weight:700;font-size:15px;color:${navy};margin-bottom:2px">${it[0]}</div>
           <div style="font-size:13px;color:#56627a;font-weight:600;line-height:1.7">${it[1]}</div></div>
         </div>`).join("");
-      support+=`<div style="page-break-before:always;page-break-inside:avoid;padding:34px 40px;background:linear-gradient(180deg,#fef6f2,#fff)">
+      support+=`<div style="page-break-before:always;page-break-inside:avoid;padding:48px 52px;background:linear-gradient(180deg,#fef6f2,#fff)">
         <div style="text-align:center;margin-bottom:8px">
           <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · دعم وتأهيل</span>
         </div>
@@ -1257,7 +1258,7 @@ function buildPdfHTML(){
           <div style="font-family:Cairo;font-weight:800;font-size:16px;color:${navy};margin-bottom:5px">${b.h}</div>
           <div style="font-size:14px;line-height:1.85;color:#445">${b.p}</div>
         </div>`).join("");
-      edu+=`<div style="page-break-before:always;page-break-inside:avoid;padding:34px 40px;background:linear-gradient(180deg,#fbfbfc,#fff)">
+      edu+=`<div style="page-break-before:always;page-break-inside:avoid;padding:48px 52px;background:linear-gradient(180deg,#fbfbfc,#fff)">
         <div style="text-align:center;margin-bottom:8px">
           <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · دليل تثقيفي</span>
         </div>
@@ -1316,7 +1317,7 @@ function buildPdfHTML(){
     });
 
     if(cards){
-      library=`<div style="page-break-before:always;padding:34px 40px;background:linear-gradient(180deg,#fbfbfc,#fff)">
+      library=`<div style="page-break-before:always;padding:48px 52px;background:linear-gradient(180deg,#fbfbfc,#fff)">
         <div style="text-align:center;margin-bottom:8px">
           <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · بدائل التمارين</span>
         </div>
@@ -1338,7 +1339,7 @@ function buildPdfHTML(){
         <span style="font-family:Cairo;font-weight:800;font-size:13px;color:${orange2};min-width:70px">${label}</span>
         <span style="font-weight:700;font-size:14px;color:#fff;direction:ltr">${handle}</span>
       </div>`;
-    rights=`<div style="page-break-before:always;page-break-inside:avoid;position:relative;width:100%;min-height:90vh;background:linear-gradient(160deg,${navy} 0%,${navy2} 60%,${navy3} 100%);overflow:hidden">
+    rights=`<div style="page-break-before:always;page-break-inside:avoid;position:relative;width:100%;height:297mm;background:linear-gradient(160deg,${navy} 0%,${navy2} 60%,${navy3} 100%);overflow:hidden">
       <div style="position:absolute;right:-9%;top:-7%;width:42%;padding-bottom:42%;border-radius:50%;background:radial-gradient(circle,rgba(232,98,44,.35),transparent 70%)"></div>
       <div style="position:absolute;left:-8%;bottom:-9%;width:36%;padding-bottom:36%;border-radius:50%;background:radial-gradient(circle,rgba(255,122,61,.2),transparent 70%)"></div>
       <div style="position:relative;z-index:2;padding:8% 7%;color:#fff;text-align:center">
@@ -1388,7 +1389,7 @@ function buildPdfHTML(){
         <div><div style="font-family:Cairo;font-weight:800;font-size:15px;color:${navy};margin-bottom:2px">${n[1]}</div>
         <div style="font-size:13px;color:#56627a;font-weight:600;line-height:1.7">${n[2].replace('${S.days}',S.days).replace('${L2.rest}',L2.rest)}</div></div>
       </div>`).join("");
-    intro=`<div style="page-break-before:always;padding:34px 40px;background:linear-gradient(180deg,#fbfbfc,#fff)">
+    intro=`<div style="page-break-before:always;padding:48px 52px;background:linear-gradient(180deg,#fbfbfc,#fff)">
       <div style="text-align:center;margin-bottom:8px">
         <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · قبل أن تبدئي</span>
       </div>
@@ -1405,7 +1406,7 @@ function buildPdfHTML(){
       <span style="font-size:20px;flex:none">▸</span>
       <div><div style="font-family:Cairo;font-weight:700;font-size:15px;color:${navy};margin-bottom:2px">${t}</div>
       <div style="font-size:13px;color:#56627a;font-weight:600;line-height:1.7">${d}</div></div></div>`;
-    cardio=`<div style="page-break-before:always;page-break-inside:avoid;padding:34px 40px;background:linear-gradient(180deg,#fbfbfc,#fff)">
+    cardio=`<div style="page-break-before:always;page-break-inside:avoid;padding:48px 52px;background:linear-gradient(180deg,#fbfbfc,#fff)">
       <div style="text-align:center;margin-bottom:8px">
         <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · بعد التمرين</span>
       </div>
@@ -1420,11 +1421,11 @@ function buildPdfHTML(){
     </div>`;
   }
 
-  return `<div dir="rtl" style="font-family:Tajawal,sans-serif;width:100%;max-width:794px;margin:0 auto;background:#fff">
+  return `<div dir="rtl" style="font-family:Tajawal,sans-serif;width:100%;margin:0 auto;background:#fff">
     ${cover}
     ${intro}
     ${warmup}
-    <div style="padding:30px 36px">
+    <div style="padding:44px 50px">
       ${body}
       ${disc}
     </div>
@@ -1439,7 +1440,7 @@ function buildPdfHTML(){
 /* تصدير عبر نافذة طباعة نظيفة — مضمون بأي متصفح، بدون مكتبات */
 function exportViaPrintWindow(){
   const css=`
-    @page{ size:A4; margin:8mm; }
+    @page{ size:A4; margin:0; }
     *{ -webkit-print-color-adjust:exact!important; print-color-adjust:exact!important; box-sizing:border-box; margin:0; }
     html,body{ font-family:'Tajawal',sans-serif; background:#fff; width:100%; }
     .pbar{ position:fixed; top:0; left:0; right:0; background:#0f1f3d; color:#fff; padding:14px;

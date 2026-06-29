@@ -56,165 +56,165 @@ const MGROUPS = [
    ============================================================ */
 const EX = [
   /* ---------------- الصدر ---------------- */
-  {id:"bench",name:"بنش بريس بالبار",group:"chest",muscle:"chest",env:["gym"],level:1,risk:["shoulder"],tip:"حافظ على لوح كتفك مشدوداً للخلف ولا تباعد مرفقيك كثيراً."},
-  {id:"inclinedb",name:"بنش مائل بالدمبل",group:"chest",muscle:"chest",env:["gym","home"],level:1,risk:["shoulder"],tip:"انزل بتحكم حتى تشعر بتمدد بسيط دون ألم في الكتف."},
-  {id:"chestpress",name:"جهاز ضغط الصدر",group:"chest",muscle:"chest",env:["gym"],level:1,risk:[],tip:"اضبط ارتفاع المقعد بحيث يكون المقبض بمستوى منتصف صدرك."},
-  {id:"pushup",name:"تمرين الضغط (بوش أب)",group:"chest",muscle:"chest",env:["home","bodyweight"],level:1,risk:["wrist"],tip:"حافظ على جسمك بخط مستقيم من الرأس للكعب."},
-  {id:"bandfly",name:"تفتيح بالشريط المطاطي",group:"chest",muscle:"chest",env:["home"],level:1,risk:[],tip:"اعصر صدرك في نهاية الحركة ولا تفرد ذراعيك بالكامل."},
-  {id:"dips",name:"غطس الصدر (ديبس)",group:"chest",muscle:"chest",env:["gym","bodyweight"],level:2,risk:["shoulder"],tip:"مِل بجذعك للأمام قليلاً لاستهداف الصدر وتجنّب إجهاد الكتف."},
-  {id:"cablecross",name:"تقاطع الكيبل للصدر",group:"chest",muscle:"chest",env:["gym"],level:2,risk:[],tip:"اعصري صدرك في منتصف الحركة وتحكّمي في الرجوع ببطء."},
-  {id:"declinepush",name:"ضغط مائل لأسفل",group:"chest",muscle:"chest",env:["home","bodyweight"],level:2,risk:["wrist"],tip:"ارفعي قدميك على سطح مرتفع لاستهداف أسفل الصدر."},
-  {id:"flatdb",name:"بنش مستوٍ بالدمبل",group:"chest",muscle:"chest",env:["gym","home"],level:1,risk:["shoulder"],tip:"أنزلي الدمبل لمستوى الصدر وادفعي للأعلى بثبات."},
+  {id:"bench",name:"بنش بريس بالبار",group:"chest",muscle:"chest",env:["gym"],level:1,risk:["shoulder"],tip:"حافظ على لوح كتفك مشدوداً للخلف ولا تباعد مرفقيك كثيراً.",type:"compound",pattern:"push"},
+  {id:"inclinedb",name:"بنش مائل بالدمبل",group:"chest",muscle:"chest",env:["gym","home"],level:1,risk:["shoulder"],tip:"انزل بتحكم حتى تشعر بتمدد بسيط دون ألم في الكتف.",type:"compound",pattern:"push"},
+  {id:"chestpress",name:"جهاز ضغط الصدر",group:"chest",muscle:"chest",env:["gym"],level:1,risk:[],tip:"اضبط ارتفاع المقعد بحيث يكون المقبض بمستوى منتصف صدرك.",type:"compound",pattern:"push"},
+  {id:"pushup",name:"تمرين الضغط (بوش أب)",group:"chest",muscle:"chest",env:["home","bodyweight"],level:1,risk:["wrist"],tip:"حافظ على جسمك بخط مستقيم من الرأس للكعب.",type:"compound",pattern:"push"},
+  {id:"bandfly",name:"تفتيح بالشريط المطاطي",group:"chest",muscle:"chest",env:["home"],level:1,risk:[],tip:"اعصر صدرك في نهاية الحركة ولا تفرد ذراعيك بالكامل.",type:"isolation",pattern:"push"},
+  {id:"dips",name:"غطس الصدر (ديبس)",group:"chest",muscle:"chest",env:["gym","bodyweight"],level:2,risk:["shoulder"],tip:"مِل بجذعك للأمام قليلاً لاستهداف الصدر وتجنّب إجهاد الكتف.",type:"compound",pattern:"push"},
+  {id:"cablecross",name:"تقاطع الكيبل للصدر",group:"chest",muscle:"chest",env:["gym"],level:2,risk:[],tip:"اعصري صدرك في منتصف الحركة وتحكّمي في الرجوع ببطء.",type:"isolation",pattern:"push"},
+  {id:"declinepush",name:"ضغط مائل لأسفل",group:"chest",muscle:"chest",env:["home","bodyweight"],level:2,risk:["wrist"],tip:"ارفعي قدميك على سطح مرتفع لاستهداف أسفل الصدر.",type:"compound",pattern:"push"},
+  {id:"flatdb",name:"بنش مستوٍ بالدمبل",group:"chest",muscle:"chest",env:["gym","home"],level:1,risk:["shoulder"],tip:"أنزلي الدمبل لمستوى الصدر وادفعي للأعلى بثبات.",type:"compound",pattern:"push"},
 
   /* ---------------- الظهر ---------------- */
-  {id:"latpull",name:"سحب أمامي (لات بول داون)",group:"back",muscle:"upperback",env:["gym"],level:1,risk:[],tip:"اسحب البار لأعلى صدرك واخفض كتفيك بعيداً عن أذنيك."},
-  {id:"seatedrow",name:"تجديف جالس بالكيبل",group:"back",muscle:"midback",env:["gym"],level:1,risk:["lowerback"],tip:"حافظ على ظهرك مستقيماً ولا تتأرجح بجذعك."},
-  {id:"bentrow",name:"تجديف بالبار منحنياً",group:"back",muscle:"midback",env:["gym","home"],level:2,risk:["lowerback"],tip:"ثبّت ظهرك مستقيماً والانحناء يكون من الورك لا من الظهر."},
-  {id:"dbrow",name:"تجديف بالدمبل",group:"back",muscle:"midback",env:["gym","home"],level:1,risk:["lowerback"],tip:"استند بيدك على مقعد وحافظ على ظهر مستوٍ طوال الحركة."},
-  {id:"bandrow",name:"تجديف بالشريط المطاطي",group:"back",muscle:"midback",env:["home"],level:1,risk:[],tip:"اسحب الشريط نحو بطنك واعصر لوحي كتفك معاً."},
-  {id:"pullup",name:"العقلة (بول أب)",group:"back",muscle:"upperback",env:["gym","bodyweight"],level:3,risk:["shoulder"],tip:"ابدأ بذراعين ممدودتين واسحب حتى يتجاوز ذقنك البار."},
-  {id:"superman",name:"سوبرمان (تقوية أسفل الظهر)",group:"back",muscle:"midback",env:["home","bodyweight"],level:1,risk:[],tip:"ارفعي ذراعيك وساقيك برفق دون فرط تقويس للظهر."},
-  {id:"facepull",name:"سحب للوجه بالكيبل",group:"back",muscle:"upperback",env:["gym"],level:1,risk:[],tip:"اسحبي الحبل نحو وجهك مع فتح المرفقين لتنشيط أعلى الظهر."},
-  {id:"closegrippull",name:"سحب أمامي قبضة ضيقة",group:"back",muscle:"lats",env:["gym"],level:1,risk:[],tip:"اسحبي لأسفل الصدر واعصري عضلات الظهر في النهاية."},
-  {id:"invertedrow",name:"تجديف معكوس (بار منخفض)",group:"back",muscle:"midback",env:["home","bodyweight"],level:2,risk:[],tip:"حافظي على جسمك مستقيماً واسحبي صدرك نحو البار."},
-  {id:"bandlatpull",name:"سحب علوي بالشريط",group:"back",muscle:"upperback",env:["home"],level:1,risk:[],tip:"اسحبي الشريط لأسفل خلف رقبتك مع خفض الكتفين."},
-  {id:"towelrow",name:"تجديف بالمنشفة/الباب",group:"back",muscle:"midback",env:["bodyweight","home"],level:1,risk:[],tip:"أمسكي منشفة حول عمود ثابت واسحبي جسمك للخلف بظهر مستقيم."},
-  {id:"reverssnow",name:"ملاك الثلج المعكوس",group:"back",muscle:"upperback",env:["bodyweight","home"],level:1,risk:[],tip:"استلقي على بطنك وحرّكي ذراعيك كأنك ترسمين قوساً مع عصر الظهر."},
-  {id:"birddog",name:"تمرين الكلب-الطائر",group:"back",muscle:"midback",env:["bodyweight","home"],level:1,risk:[],tip:"مدّي ذراعاً وساقاً معاكسة مع شدّ البطن وثبات الظهر."},
+  {id:"latpull",name:"سحب أمامي (لات بول داون)",group:"back",muscle:"upperback",env:["gym"],level:1,risk:[],tip:"اسحب البار لأعلى صدرك واخفض كتفيك بعيداً عن أذنيك.",type:"compound",pattern:"pull"},
+  {id:"seatedrow",name:"تجديف جالس بالكيبل",group:"back",muscle:"midback",env:["gym"],level:1,risk:["lowerback"],tip:"حافظ على ظهرك مستقيماً ولا تتأرجح بجذعك.",type:"compound",pattern:"pull"},
+  {id:"bentrow",name:"تجديف بالبار منحنياً",group:"back",muscle:"midback",env:["gym","home"],level:2,risk:["lowerback"],tip:"ثبّت ظهرك مستقيماً والانحناء يكون من الورك لا من الظهر.",type:"compound",pattern:"pull"},
+  {id:"dbrow",name:"تجديف بالدمبل",group:"back",muscle:"midback",env:["gym","home"],level:1,risk:["lowerback"],tip:"استند بيدك على مقعد وحافظ على ظهر مستوٍ طوال الحركة.",type:"compound",pattern:"pull"},
+  {id:"bandrow",name:"تجديف بالشريط المطاطي",group:"back",muscle:"midback",env:["home"],level:1,risk:[],tip:"اسحب الشريط نحو بطنك واعصر لوحي كتفك معاً.",type:"compound",pattern:"pull"},
+  {id:"pullup",name:"العقلة (بول أب)",group:"back",muscle:"upperback",env:["gym","bodyweight"],level:3,risk:["shoulder"],tip:"ابدأ بذراعين ممدودتين واسحب حتى يتجاوز ذقنك البار.",type:"compound",pattern:"pull"},
+  {id:"superman",name:"سوبرمان (تقوية أسفل الظهر)",group:"back",muscle:"midback",env:["home","bodyweight"],level:1,risk:[],tip:"ارفعي ذراعيك وساقيك برفق دون فرط تقويس للظهر.",type:"isolation",pattern:"pull"},
+  {id:"facepull",name:"سحب للوجه بالكيبل",group:"back",muscle:"upperback",env:["gym"],level:1,risk:[],tip:"اسحبي الحبل نحو وجهك مع فتح المرفقين لتنشيط أعلى الظهر.",type:"isolation",pattern:"pull"},
+  {id:"closegrippull",name:"سحب أمامي قبضة ضيقة",group:"back",muscle:"lats",env:["gym"],level:1,risk:[],tip:"اسحبي لأسفل الصدر واعصري عضلات الظهر في النهاية.",type:"compound",pattern:"pull"},
+  {id:"invertedrow",name:"تجديف معكوس (بار منخفض)",group:"back",muscle:"midback",env:["home","bodyweight"],level:2,risk:[],tip:"حافظي على جسمك مستقيماً واسحبي صدرك نحو البار.",type:"compound",pattern:"pull"},
+  {id:"bandlatpull",name:"سحب علوي بالشريط",group:"back",muscle:"upperback",env:["home"],level:1,risk:[],tip:"اسحبي الشريط لأسفل خلف رقبتك مع خفض الكتفين.",type:"isolation",pattern:"pull"},
+  {id:"towelrow",name:"تجديف بالمنشفة/الباب",group:"back",muscle:"midback",env:["bodyweight","home"],level:1,risk:[],tip:"أمسكي منشفة حول عمود ثابت واسحبي جسمك للخلف بظهر مستقيم.",type:"isolation",pattern:"pull"},
+  {id:"reverssnow",name:"ملاك الثلج المعكوس",group:"back",muscle:"upperback",env:["bodyweight","home"],level:1,risk:[],tip:"استلقي على بطنك وحرّكي ذراعيك كأنك ترسمين قوساً مع عصر الظهر.",type:"isolation",pattern:"pull"},
+  {id:"birddog",name:"تمرين الكلب-الطائر",group:"back",muscle:"midback",env:["bodyweight","home"],level:1,risk:[],tip:"مدّي ذراعاً وساقاً معاكسة مع شدّ البطن وثبات الظهر.",type:"isolation",pattern:"pull"},
 
   /* ---------------- الأكتاف ---------------- */
-  {id:"ohp",name:"ضغط الكتف بالبار",group:"shoulders",muscle:"frontdelt",env:["gym"],level:2,risk:["shoulder","lowerback"],tip:"شدّ بطنك ولا تقوّس أسفل ظهرك أثناء الدفع لأعلى."},
-  {id:"dbshoulder",name:"ضغط الكتف بالدمبل",group:"shoulders",muscle:"frontdelt",env:["gym","home"],level:1,risk:["shoulder"],tip:"ادفع لأعلى دون قفل المرفقين بالكامل."},
-  {id:"lateral",name:"رفرفة جانبية",group:"shoulders",muscle:"sidedelt",env:["gym","home"],level:1,risk:["shoulder"],tip:"ارفع حتى مستوى الكتف فقط وقُد الحركة بمرفقك."},
-  {id:"reardelt",name:"رفرفة خلفية",group:"shoulders",muscle:"reardelt",env:["gym","home"],level:1,risk:[],tip:"انحنِ قليلاً للأمام واعصر مؤخرة كتفك في الأعلى."},
-  {id:"bandlateral",name:"رفرفة جانبية بالشريط",group:"shoulders",muscle:"sidedelt",env:["home"],level:1,risk:[],tip:"تحكّم في النزول ولا تدع الشريط يسحب ذراعك بسرعة."},
-  {id:"pike",name:"ضغط بايك (للكتف بوزن الجسم)",group:"shoulders",muscle:"frontdelt",env:["bodyweight"],level:2,risk:["shoulder","wrist"],tip:"ارفع وركك عالياً واخفض رأسك برفق نحو الأرض."},
-  {id:"wallpush",name:"ضغط الكتف على الحائط",group:"shoulders",muscle:"frontdelt",env:["bodyweight","home"],level:1,risk:["shoulder"],tip:"قف مائلاً نحو الحائط وادفع بثبات دون قفل المرفقين."},
-  {id:"armcircle",name:"تدوير الذراعين (تنشيط الكتف)",group:"shoulders",muscle:"sidedelt",env:["bodyweight","home"],level:1,risk:[],tip:"ابدأ بدوائر صغيرة وكبّرها تدريجياً مع تحكم كامل."},
+  {id:"ohp",name:"ضغط الكتف بالبار",group:"shoulders",muscle:"frontdelt",env:["gym"],level:2,risk:["shoulder","lowerback"],tip:"شدّ بطنك ولا تقوّس أسفل ظهرك أثناء الدفع لأعلى.",type:"compound",pattern:"push"},
+  {id:"dbshoulder",name:"ضغط الكتف بالدمبل",group:"shoulders",muscle:"frontdelt",env:["gym","home"],level:1,risk:["shoulder"],tip:"ادفع لأعلى دون قفل المرفقين بالكامل.",type:"compound",pattern:"push"},
+  {id:"lateral",name:"رفرفة جانبية",group:"shoulders",muscle:"sidedelt",env:["gym","home"],level:1,risk:["shoulder"],tip:"ارفع حتى مستوى الكتف فقط وقُد الحركة بمرفقك.",type:"isolation",pattern:"push"},
+  {id:"reardelt",name:"رفرفة خلفية",group:"shoulders",muscle:"reardelt",env:["gym","home"],level:1,risk:[],tip:"انحنِ قليلاً للأمام واعصر مؤخرة كتفك في الأعلى.",type:"isolation",pattern:"push"},
+  {id:"bandlateral",name:"رفرفة جانبية بالشريط",group:"shoulders",muscle:"sidedelt",env:["home"],level:1,risk:[],tip:"تحكّم في النزول ولا تدع الشريط يسحب ذراعك بسرعة.",type:"isolation",pattern:"push"},
+  {id:"pike",name:"ضغط بايك (للكتف بوزن الجسم)",group:"shoulders",muscle:"frontdelt",env:["bodyweight"],level:2,risk:["shoulder","wrist"],tip:"ارفع وركك عالياً واخفض رأسك برفق نحو الأرض.",type:"compound",pattern:"push"},
+  {id:"wallpush",name:"ضغط الكتف على الحائط",group:"shoulders",muscle:"frontdelt",env:["bodyweight","home"],level:1,risk:["shoulder"],tip:"قف مائلاً نحو الحائط وادفع بثبات دون قفل المرفقين.",type:"isolation",pattern:"push"},
+  {id:"armcircle",name:"تدوير الذراعين (تنشيط الكتف)",group:"shoulders",muscle:"sidedelt",env:["bodyweight","home"],level:1,risk:[],tip:"ابدأ بدوائر صغيرة وكبّرها تدريجياً مع تحكم كامل.",type:"isolation",pattern:"push"},
 
   /* ---------------- البايسبس ---------------- */
-  {id:"barbellcurl",name:"مرجحة بايسبس بالبار",group:"biceps",muscle:"biceps",env:["gym","home"],level:1,risk:[],tip:"ثبّت مرفقيك بجانبك ولا تتأرجح بجسمك."},
-  {id:"dbcurl",name:"مرجحة بايسبس بالدمبل",group:"biceps",muscle:"biceps",env:["gym","home"],level:1,risk:[],tip:"اعصر العضلة في الأعلى وانزل ببطء."},
-  {id:"hammer",name:"مرجحة مطرقية",group:"biceps",muscle:"biceps",env:["gym","home"],level:1,risk:[],tip:"حافظ على راحتي يدك متقابلتين طوال الحركة."},
-  {id:"bandcurl",name:"مرجحة بايسبس بالشريط",group:"biceps",muscle:"biceps",env:["home"],level:1,risk:[],tip:"حافظ على شدّ ثابت في الشريط ولا ترخِه فجأة."},
-  {id:"chinup",name:"عقلة قبضة عكسية",group:"biceps",muscle:"biceps",env:["bodyweight"],level:3,risk:["shoulder"],tip:"اسحب بقبضة ضيقة مع التركيز على شدّ البايسبس."},
-  {id:"bwcurl",name:"مرجحة بايسبس بالمنشفة",group:"biceps",muscle:"biceps",env:["bodyweight","home"],level:1,risk:[],tip:"شدّي المنشفة بمقاومة ذاتية أثناء ثنيها نحو كتفك."},
-  {id:"isocurl",name:"انقباض ثابت للبايسبس",group:"biceps",muscle:"biceps",env:["bodyweight","home"],level:1,risk:[],tip:"اضغطي راحتك ضد بعضها وثبّتي الانقباض على شكل زاوية 90°."},
+  {id:"barbellcurl",name:"مرجحة بايسبس بالبار",group:"biceps",muscle:"biceps",env:["gym","home"],level:1,risk:[],tip:"ثبّت مرفقيك بجانبك ولا تتأرجح بجسمك.",type:"isolation",pattern:"pull"},
+  {id:"dbcurl",name:"مرجحة بايسبس بالدمبل",group:"biceps",muscle:"biceps",env:["gym","home"],level:1,risk:[],tip:"اعصر العضلة في الأعلى وانزل ببطء.",type:"isolation",pattern:"pull"},
+  {id:"hammer",name:"مرجحة مطرقية",group:"biceps",muscle:"biceps",env:["gym","home"],level:1,risk:[],tip:"حافظ على راحتي يدك متقابلتين طوال الحركة.",type:"isolation",pattern:"pull"},
+  {id:"bandcurl",name:"مرجحة بايسبس بالشريط",group:"biceps",muscle:"biceps",env:["home"],level:1,risk:[],tip:"حافظ على شدّ ثابت في الشريط ولا ترخِه فجأة.",type:"isolation",pattern:"pull"},
+  {id:"chinup",name:"عقلة قبضة عكسية",group:"biceps",muscle:"biceps",env:["bodyweight"],level:3,risk:["shoulder"],tip:"اسحب بقبضة ضيقة مع التركيز على شدّ البايسبس.",type:"compound",pattern:"pull"},
+  {id:"bwcurl",name:"مرجحة بايسبس بالمنشفة",group:"biceps",muscle:"biceps",env:["bodyweight","home"],level:1,risk:[],tip:"شدّي المنشفة بمقاومة ذاتية أثناء ثنيها نحو كتفك.",type:"isolation",pattern:"pull"},
+  {id:"isocurl",name:"انقباض ثابت للبايسبس",group:"biceps",muscle:"biceps",env:["bodyweight","home"],level:1,risk:[],tip:"اضغطي راحتك ضد بعضها وثبّتي الانقباض على شكل زاوية 90°.",type:"isolation",pattern:"pull"},
 
   /* ---------------- الترايسبس ---------------- */
-  {id:"pushdown",name:"دفع الترايسبس بالكيبل",group:"triceps",muscle:"triceps",env:["gym"],level:1,risk:[],tip:"ثبّت مرفقيك بجانبك وافرد ذراعيك بالكامل في الأسفل."},
-  {id:"skull",name:"تمرين الجمجمة بالدمبل",group:"triceps",muscle:"triceps",env:["gym","home"],level:2,risk:["elbow"],tip:"حرّك من المرفق فقط وثبّت عضدك عمودياً."},
-  {id:"overheadtri",name:"تمديد علوي للترايسبس",group:"triceps",muscle:"triceps",env:["gym","home"],level:1,risk:["shoulder"],tip:"أبقِ مرفقيك قريبين من رأسك أثناء التمديد."},
-  {id:"bandpush",name:"دفع الترايسبس بالشريط",group:"triceps",muscle:"triceps",env:["home"],level:1,risk:[],tip:"افرد ذراعيك بالكامل واعصر الترايسبس في النهاية."},
-  {id:"benchdip",name:"غطس على المقعد",group:"triceps",muscle:"triceps",env:["home","bodyweight"],level:1,risk:["shoulder"],tip:"أبقِ جسمك قريباً من المقعد ولا تنزل لأبعد من زاوية مريحة للكتف."},
-  {id:"diamondpush",name:"ضغط ماسي للترايسبس",group:"triceps",muscle:"triceps",env:["bodyweight"],level:2,risk:["wrist"],tip:"ضمّ يديك على شكل ماسة تحت صدرك وحافظ على مرفقيك قريبين."},
+  {id:"pushdown",name:"دفع الترايسبس بالكيبل",group:"triceps",muscle:"triceps",env:["gym"],level:1,risk:[],tip:"ثبّت مرفقيك بجانبك وافرد ذراعيك بالكامل في الأسفل.",type:"isolation",pattern:"push"},
+  {id:"skull",name:"تمرين الجمجمة بالدمبل",group:"triceps",muscle:"triceps",env:["gym","home"],level:2,risk:["elbow"],tip:"حرّك من المرفق فقط وثبّت عضدك عمودياً.",type:"isolation",pattern:"push"},
+  {id:"overheadtri",name:"تمديد علوي للترايسبس",group:"triceps",muscle:"triceps",env:["gym","home"],level:1,risk:["shoulder"],tip:"أبقِ مرفقيك قريبين من رأسك أثناء التمديد.",type:"isolation",pattern:"push"},
+  {id:"bandpush",name:"دفع الترايسبس بالشريط",group:"triceps",muscle:"triceps",env:["home"],level:1,risk:[],tip:"افرد ذراعيك بالكامل واعصر الترايسبس في النهاية.",type:"isolation",pattern:"push"},
+  {id:"benchdip",name:"غطس على المقعد",group:"triceps",muscle:"triceps",env:["home","bodyweight"],level:1,risk:["shoulder"],tip:"أبقِ جسمك قريباً من المقعد ولا تنزل لأبعد من زاوية مريحة للكتف.",type:"compound",pattern:"push"},
+  {id:"diamondpush",name:"ضغط ماسي للترايسبس",group:"triceps",muscle:"triceps",env:["bodyweight"],level:2,risk:["wrist"],tip:"ضمّ يديك على شكل ماسة تحت صدرك وحافظ على مرفقيك قريبين.",type:"compound",pattern:"push"},
 
   /* ---------------- الأرجل ---------------- */
-  {id:"squat",name:"سكوات بالبار",group:"quads",muscle:"quads",env:["gym"],level:2,risk:["knee","lowerback"],tip:"انزل والركبتان باتجاه أصابع القدم وظهرك مستقيم."},
-  {id:"legpress",name:"جهاز دفع الأرجل",group:"quads",muscle:"quads",env:["gym"],level:1,risk:["knee"],tip:"لا تقفل ركبتيك في الأعلى وحافظ على ظهرك ملاصقاً للمقعد."},
-  {id:"legext",name:"جهاز تمديد الأرجل",group:"quads",muscle:"quads",env:["gym"],level:1,risk:["knee"],tip:"ارفع بتحكم واعصر الفخذ في الأعلى دون اندفاع."},
-  {id:"legcurl",name:"جهاز ثني الأرجل (خلفي)",group:"hams",muscle:"hamstrings",env:["gym"],level:1,risk:["knee"],tip:"حرّك ببطء واعصر الفخذ الخلفي في النهاية."},
-  {id:"rdl",name:"رفعة رومانية بالدمبل",group:"hams",muscle:"hamstrings",env:["gym","home"],level:2,risk:["lowerback","knee"],tip:"ادفع وركك للخلف وحافظ على ظهرك مستقيماً تماماً."},
-  {id:"gobletsquat",name:"سكوات كأسي بالدمبل",group:"quads",muscle:"quads",env:["gym","home"],level:1,risk:["knee"],tip:"أبقِ صدرك مرفوعاً وكعبيك ملاصقين للأرض."},
-  {id:"lunge",name:"طعنات (لانجز)",group:"quads",muscle:"quads",env:["home","bodyweight","gym"],level:1,risk:["knee"],tip:"اخطُ خطوة ثابتة ولا تدع ركبتك الأمامية تتجاوز أصابع قدمك كثيراً."},
-  {id:"bandsquat",name:"سكوات بالشريط",group:"quads",muscle:"quads",env:["home"],level:1,risk:["knee"],tip:"ادفع ركبتيك للخارج ضد مقاومة الشريط."},
-  {id:"wallsit",name:"الجلوس على الحائط",group:"quads",muscle:"quads",env:["bodyweight","home"],level:1,risk:["knee"],tip:"حافظ على زاوية 90° للركبة وظهرك ملاصق للحائط."},
-  {id:"calfraise",name:"رفع السمانة",group:"calves",muscle:"calves",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ارفعي على أطراف أصابعك لأقصى مدى واعصري السمانة."},
-  {id:"hacksquat",name:"سكوات هاك بالجهاز",group:"quads",muscle:"quads",env:["gym"],level:2,risk:["knee"],tip:"حافظي على ظهرك ملاصقاً للوسادة وانزلي بتحكم."},
-  {id:"bulgarian",name:"سكوات بلغاري",group:"quads",muscle:"quads",env:["gym","home"],level:2,risk:["knee"],tip:"ارفعي قدمك الخلفية على مقعد وانزلي بثبات على الأمامية."},
-  {id:"stepup",name:"الصعود على المنصة",group:"quads",muscle:"quads",env:["home","bodyweight","gym"],level:1,risk:["knee"],tip:"اصعدي بالكامل على المنصة وادفعي من كعب القدم الأمامية."},
-  {id:"seatedcalf",name:"رفع السمانة جالساً",group:"calves",muscle:"calves",env:["gym"],level:1,risk:[],tip:"حرّكي ببطء واعصري السمانة في أعلى الحركة."},
-  {id:"sumosquat",name:"سكوات سومو",group:"quads",muscle:"quads",env:["home","bodyweight","gym"],level:1,risk:["knee"],tip:"باعدي قدميك ووجّهي أصابعك للخارج لاستهداف الفخذ الداخلي."},
+  {id:"squat",name:"سكوات بالبار",group:"quads",muscle:"quads",env:["gym"],level:2,risk:["knee","lowerback"],tip:"انزل والركبتان باتجاه أصابع القدم وظهرك مستقيم.",type:"compound",pattern:"legs"},
+  {id:"legpress",name:"جهاز دفع الأرجل",group:"quads",muscle:"quads",env:["gym"],level:1,risk:["knee"],tip:"لا تقفل ركبتيك في الأعلى وحافظ على ظهرك ملاصقاً للمقعد.",type:"compound",pattern:"legs"},
+  {id:"legext",name:"جهاز تمديد الأرجل",group:"quads",muscle:"quads",env:["gym"],level:1,risk:["knee"],tip:"ارفع بتحكم واعصر الفخذ في الأعلى دون اندفاع.",type:"isolation",pattern:"legs"},
+  {id:"legcurl",name:"جهاز ثني الأرجل (خلفي)",group:"hams",muscle:"hamstrings",env:["gym"],level:1,risk:["knee"],tip:"حرّك ببطء واعصر الفخذ الخلفي في النهاية.",type:"isolation",pattern:"legs"},
+  {id:"rdl",name:"رفعة رومانية بالدمبل",group:"hams",muscle:"hamstrings",env:["gym","home"],level:2,risk:["lowerback","knee"],tip:"ادفع وركك للخلف وحافظ على ظهرك مستقيماً تماماً.",type:"compound",pattern:"legs"},
+  {id:"gobletsquat",name:"سكوات كأسي بالدمبل",group:"quads",muscle:"quads",env:["gym","home"],level:1,risk:["knee"],tip:"أبقِ صدرك مرفوعاً وكعبيك ملاصقين للأرض.",type:"compound",pattern:"legs"},
+  {id:"lunge",name:"طعنات (لانجز)",group:"quads",muscle:"quads",env:["home","bodyweight","gym"],level:1,risk:["knee"],tip:"اخطُ خطوة ثابتة ولا تدع ركبتك الأمامية تتجاوز أصابع قدمك كثيراً.",type:"compound",pattern:"legs"},
+  {id:"bandsquat",name:"سكوات بالشريط",group:"quads",muscle:"quads",env:["home"],level:1,risk:["knee"],tip:"ادفع ركبتيك للخارج ضد مقاومة الشريط.",type:"compound",pattern:"legs"},
+  {id:"wallsit",name:"الجلوس على الحائط",group:"quads",muscle:"quads",env:["bodyweight","home"],level:1,risk:["knee"],tip:"حافظ على زاوية 90° للركبة وظهرك ملاصق للحائط.",type:"compound",pattern:"legs"},
+  {id:"calfraise",name:"رفع السمانة",group:"calves",muscle:"calves",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ارفعي على أطراف أصابعك لأقصى مدى واعصري السمانة.",type:"isolation",pattern:"legs"},
+  {id:"hacksquat",name:"سكوات هاك بالجهاز",group:"quads",muscle:"quads",env:["gym"],level:2,risk:["knee"],tip:"حافظي على ظهرك ملاصقاً للوسادة وانزلي بتحكم.",type:"compound",pattern:"legs"},
+  {id:"bulgarian",name:"سكوات بلغاري",group:"quads",muscle:"quads",env:["gym","home"],level:2,risk:["knee"],tip:"ارفعي قدمك الخلفية على مقعد وانزلي بثبات على الأمامية.",type:"compound",pattern:"legs"},
+  {id:"stepup",name:"الصعود على المنصة",group:"quads",muscle:"quads",env:["home","bodyweight","gym"],level:1,risk:["knee"],tip:"اصعدي بالكامل على المنصة وادفعي من كعب القدم الأمامية.",type:"compound",pattern:"legs"},
+  {id:"seatedcalf",name:"رفع السمانة جالساً",group:"calves",muscle:"calves",env:["gym"],level:1,risk:[],tip:"حرّكي ببطء واعصري السمانة في أعلى الحركة.",type:"isolation",pattern:"legs"},
+  {id:"sumosquat",name:"سكوات سومو",group:"quads",muscle:"quads",env:["home","bodyweight","gym"],level:1,risk:["knee"],tip:"باعدي قدميك ووجّهي أصابعك للخارج لاستهداف الفخذ الداخلي.",type:"compound",pattern:"legs"},
 
   /* ---------------- المؤخرة ---------------- */
-  {id:"hipthrust",name:"دفع الورك (هيب ثرست)",group:"glutes",muscle:"glutes",env:["gym","home"],level:1,risk:["lowerback"],tip:"اعصر مؤخرتك في الأعلى ولا تفرط في تقويس ظهرك."},
-  {id:"glutebridge",name:"جسر المؤخرة",group:"glutes",muscle:"glutes",env:["home","bodyweight"],level:1,risk:[],tip:"ادفع من كعبيك واعصر المؤخرة في الأعلى لثانية."},
-  {id:"kickback",name:"رفس خلفي للمؤخرة",group:"glutes",muscle:"glutes",env:["home","bodyweight","gym"],level:1,risk:[],tip:"حرّك من الورك فقط وحافظ على ظهرك ثابتاً."},
-  {id:"bandkick",name:"رفس خلفي بالشريط",group:"glutes",muscle:"glutes",env:["home"],level:1,risk:[],tip:"ادفع كعبك للخلف ببطء ضد مقاومة الشريط."},
-  {id:"cablekick",name:"رفس خلفي بالكيبل",group:"glutes",muscle:"glutes",env:["gym"],level:1,risk:[],tip:"حرّكي من الورك واعصري المؤخرة في نهاية الحركة."},
-  {id:"abduction",name:"جهاز تبعيد الأرجل",group:"glutes",muscle:"glutes",env:["gym"],level:1,risk:[],tip:"افتحي ساقيك ضد المقاومة واعصري الجانب."},
-  {id:"frogpump",name:"ضخ الضفدع للمؤخرة",group:"glutes",muscle:"glutes",env:["home","bodyweight"],level:1,risk:[],tip:"ضمّي كعبيك معاً وادفعي وركك لأعلى بعصر قوي."},
-  {id:"sidelunge",name:"طعنة جانبية",group:"glutes",muscle:"glutes",env:["home","bodyweight","gym"],level:1,risk:["knee"],tip:"اخطي للجانب وانزلي على ساق واحدة مع إبقاء الأخرى ممدودة."},
+  {id:"hipthrust",name:"دفع الورك (هيب ثرست)",group:"glutes",muscle:"glutes",env:["gym","home"],level:1,risk:["lowerback"],tip:"اعصر مؤخرتك في الأعلى ولا تفرط في تقويس ظهرك.",type:"compound",pattern:"legs"},
+  {id:"glutebridge",name:"جسر المؤخرة",group:"glutes",muscle:"glutes",env:["home","bodyweight"],level:1,risk:[],tip:"ادفع من كعبيك واعصر المؤخرة في الأعلى لثانية.",type:"compound",pattern:"legs"},
+  {id:"kickback",name:"رفس خلفي للمؤخرة",group:"glutes",muscle:"glutes",env:["home","bodyweight","gym"],level:1,risk:[],tip:"حرّك من الورك فقط وحافظ على ظهرك ثابتاً.",type:"isolation",pattern:"legs"},
+  {id:"bandkick",name:"رفس خلفي بالشريط",group:"glutes",muscle:"glutes",env:["home"],level:1,risk:[],tip:"ادفع كعبك للخلف ببطء ضد مقاومة الشريط.",type:"isolation",pattern:"legs"},
+  {id:"cablekick",name:"رفس خلفي بالكيبل",group:"glutes",muscle:"glutes",env:["gym"],level:1,risk:[],tip:"حرّكي من الورك واعصري المؤخرة في نهاية الحركة.",type:"isolation",pattern:"legs"},
+  {id:"abduction",name:"جهاز تبعيد الأرجل",group:"glutes",muscle:"glutes",env:["gym"],level:1,risk:[],tip:"افتحي ساقيك ضد المقاومة واعصري الجانب.",type:"isolation",pattern:"legs"},
+  {id:"frogpump",name:"ضخ الضفدع للمؤخرة",group:"glutes",muscle:"glutes",env:["home","bodyweight"],level:1,risk:[],tip:"ضمّي كعبيك معاً وادفعي وركك لأعلى بعصر قوي.",type:"isolation",pattern:"legs"},
+  {id:"sidelunge",name:"طعنة جانبية",group:"glutes",muscle:"glutes",env:["home","bodyweight","gym"],level:1,risk:["knee"],tip:"اخطي للجانب وانزلي على ساق واحدة مع إبقاء الأخرى ممدودة.",type:"compound",pattern:"legs"},
 
   /* ---------------- البطن ---------------- */
-  {id:"crunch",name:"كرنش (تقريب علوي)",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:["neck","diastasis"],tip:"ارفع كتفيك عن الأرض دون شدّ رقبتك بيديك."},
-  {id:"plank",name:"بلانك (الثبات)",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:["lowerback"],tip:"حافظ على جسمك بخط مستقيم ولا ترخِ وركك للأسفل."},
-  {id:"legraise",name:"رفع الأرجل",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:2,risk:["lowerback","diastasis"],tip:"ألصق أسفل ظهرك بالأرض ولا ترفع رجليك باندفاع."},
-  {id:"russian",name:"الالتفاف الروسي",group:"abs",muscle:"absside",env:["home","bodyweight","gym"],level:1,risk:["lowerback","diastasis"],tip:"لُف من خصرك ببطء وحافظ على ظهر مستقيم."},
-  {id:"sideplank",name:"بلانك جانبي",group:"abs",muscle:"absside",env:["gym","home","bodyweight"],level:1,risk:["shoulder"],tip:"ارفع وركك واحفظ جسمك بخط مستقيم من الكتف للقدم."},
-  {id:"bicycle",name:"كرنش الدراجة",group:"abs",muscle:"absside",env:["home","bodyweight","gym"],level:1,risk:["neck","diastasis"],tip:"لامس مرفقك بالركبة المعاكسة دون شدّ رقبتك."},
+  {id:"crunch",name:"كرنش (تقريب علوي)",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:["neck","diastasis"],tip:"ارفع كتفيك عن الأرض دون شدّ رقبتك بيديك.",type:"isolation",pattern:"core"},
+  {id:"plank",name:"بلانك (الثبات)",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:["lowerback"],tip:"حافظ على جسمك بخط مستقيم ولا ترخِ وركك للأسفل.",type:"isolation",pattern:"core"},
+  {id:"legraise",name:"رفع الأرجل",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:2,risk:["lowerback","diastasis"],tip:"ألصق أسفل ظهرك بالأرض ولا ترفع رجليك باندفاع.",type:"isolation",pattern:"core"},
+  {id:"russian",name:"الالتفاف الروسي",group:"abs",muscle:"absside",env:["home","bodyweight","gym"],level:1,risk:["lowerback","diastasis"],tip:"لُف من خصرك ببطء وحافظ على ظهر مستقيم.",type:"isolation",pattern:"core"},
+  {id:"sideplank",name:"بلانك جانبي",group:"abs",muscle:"absside",env:["gym","home","bodyweight"],level:1,risk:["shoulder"],tip:"ارفع وركك واحفظ جسمك بخط مستقيم من الكتف للقدم.",type:"isolation",pattern:"core"},
+  {id:"bicycle",name:"كرنش الدراجة",group:"abs",muscle:"absside",env:["home","bodyweight","gym"],level:1,risk:["neck","diastasis"],tip:"لامس مرفقك بالركبة المعاكسة دون شدّ رقبتك.",type:"isolation",pattern:"core"},
 
   /* ===== مكتبة التمارين الإضافية ===== */
   /* صدر */
-  {id:"pecdeck",name:"جهاز التفتيح (بيك ديك)",group:"chest",muscle:"chest",env:["gym"],level:1,risk:["shoulder"],tip:"اجمعي ذراعيك أمامك ببطء واعصري الصدر في المنتصف."},
-  {id:"inclinemachine",name:"جهاز ضغط صدر علوي",group:"chest",muscle:"chest",env:["gym"],level:1,risk:["shoulder"],tip:"ادفعي لأعلى لاستهداف الجزء العلوي من الصدر."},
-  {id:"svendpress",name:"ضغط سفيند بالدمبل",group:"chest",muscle:"chest",env:["home","gym"],level:2,risk:[],tip:"اضغطي دمبل بين راحتيك وادفعيه للأمام مع عصر الصدر."},
-  {id:"widepush",name:"ضغط واسع",group:"chest",muscle:"chest",env:["bodyweight","home"],level:1,risk:["wrist"],tip:"باعدي يديك أوسع من كتفيك لاستهداف الصدر أكثر."},
+  {id:"pecdeck",name:"جهاز التفتيح (بيك ديك)",group:"chest",muscle:"chest",env:["gym"],level:1,risk:["shoulder"],tip:"اجمعي ذراعيك أمامك ببطء واعصري الصدر في المنتصف.",type:"isolation",pattern:"push"},
+  {id:"inclinemachine",name:"جهاز ضغط صدر علوي",group:"chest",muscle:"chest",env:["gym"],level:1,risk:["shoulder"],tip:"ادفعي لأعلى لاستهداف الجزء العلوي من الصدر.",type:"compound",pattern:"push"},
+  {id:"svendpress",name:"ضغط سفيند بالدمبل",group:"chest",muscle:"chest",env:["home","gym"],level:2,risk:[],tip:"اضغطي دمبل بين راحتيك وادفعيه للأمام مع عصر الصدر.",type:"isolation",pattern:"push"},
+  {id:"widepush",name:"ضغط واسع",group:"chest",muscle:"chest",env:["bodyweight","home"],level:1,risk:["wrist"],tip:"باعدي يديك أوسع من كتفيك لاستهداف الصدر أكثر.",type:"compound",pattern:"push"},
 
   /* ظهر */
-  {id:"tbar",name:"تجديف تي-بار",group:"back",muscle:"midback",env:["gym"],level:2,risk:["lowerback"],tip:"حافظي على ظهر مستقيم واسحبي البار نحو بطنك."},
-  {id:"machinerow",name:"جهاز التجديف",group:"back",muscle:"midback",env:["gym"],level:1,risk:[],tip:"اسحبي المقبض نحو بطنك واعصري لوحي الكتف."},
-  {id:"straightpull",name:"سحب بذراع ممدودة",group:"back",muscle:"lats",env:["gym"],level:2,risk:[],tip:"أبقي ذراعيك ممدودتين واسحبي البار لأسفل من فوق."},
-  {id:"deadlift",name:"الرفعة الميتة",group:"back",muscle:"midback",env:["gym"],level:3,risk:["lowerback","knee"],tip:"حافظي على ظهر مستقيم تماماً وارفعي بدفع الورك."},
+  {id:"tbar",name:"تجديف تي-بار",group:"back",muscle:"midback",env:["gym"],level:2,risk:["lowerback"],tip:"حافظي على ظهر مستقيم واسحبي البار نحو بطنك.",type:"compound",pattern:"pull"},
+  {id:"machinerow",name:"جهاز التجديف",group:"back",muscle:"midback",env:["gym"],level:1,risk:[],tip:"اسحبي المقبض نحو بطنك واعصري لوحي الكتف.",type:"compound",pattern:"pull"},
+  {id:"straightpull",name:"سحب بذراع ممدودة",group:"back",muscle:"lats",env:["gym"],level:2,risk:[],tip:"أبقي ذراعيك ممدودتين واسحبي البار لأسفل من فوق.",type:"isolation",pattern:"pull"},
+  {id:"deadlift",name:"الرفعة الميتة",group:"back",muscle:"midback",env:["gym"],level:3,risk:["lowerback","knee"],tip:"حافظي على ظهر مستقيم تماماً وارفعي بدفع الورك.",type:"compound",pattern:"pull"},
 
   /* أكتاف */
-  {id:"arnold",name:"ضغط أرنولد",group:"shoulders",muscle:"frontdelt",env:["gym","home"],level:2,risk:["shoulder"],tip:"لُفّي راحتيك أثناء الدفع لأعلى لتفعيل الكتف بالكامل."},
-  {id:"frontraise",name:"رفعة أمامية",group:"shoulders",muscle:"frontdelt",env:["gym","home"],level:1,risk:["shoulder"],tip:"ارفعي الوزن أمامك لمستوى الكتف بتحكم دون تأرجح."},
-  {id:"uprightrow",name:"تجديف عمودي",group:"shoulders",muscle:"sidedelt",env:["gym","home"],level:2,risk:["shoulder"],tip:"اسحبي الوزن لأعلى قرب جسمك حتى مستوى الصدر."},
-  {id:"cablelateral",name:"رفرفة جانبية بالكيبل",group:"shoulders",muscle:"sidedelt",env:["gym"],level:2,risk:["shoulder"],tip:"ارفعي ذراعك للجانب بثبات وقاومي النزول ببطء."},
+  {id:"arnold",name:"ضغط أرنولد",group:"shoulders",muscle:"frontdelt",env:["gym","home"],level:2,risk:["shoulder"],tip:"لُفّي راحتيك أثناء الدفع لأعلى لتفعيل الكتف بالكامل.",type:"compound",pattern:"push"},
+  {id:"frontraise",name:"رفعة أمامية",group:"shoulders",muscle:"frontdelt",env:["gym","home"],level:1,risk:["shoulder"],tip:"ارفعي الوزن أمامك لمستوى الكتف بتحكم دون تأرجح.",type:"isolation",pattern:"push"},
+  {id:"uprightrow",name:"تجديف عمودي",group:"shoulders",muscle:"sidedelt",env:["gym","home"],level:2,risk:["shoulder"],tip:"اسحبي الوزن لأعلى قرب جسمك حتى مستوى الصدر.",type:"compound",pattern:"push"},
+  {id:"cablelateral",name:"رفرفة جانبية بالكيبل",group:"shoulders",muscle:"sidedelt",env:["gym"],level:2,risk:["shoulder"],tip:"ارفعي ذراعك للجانب بثبات وقاومي النزول ببطء.",type:"isolation",pattern:"push"},
 
   /* بايسبس */
-  {id:"preachercurl",name:"مرجحة بريتشر",group:"biceps",muscle:"biceps",env:["gym"],level:1,risk:[],tip:"ثبّتي عضدك على الوسادة وارفعي بتحكم كامل."},
-  {id:"concentration",name:"مرجحة تركيز",group:"biceps",muscle:"biceps",env:["gym","home"],level:1,risk:[],tip:"اسندي مرفقك على فخذك واعصري البايسبس في الأعلى."},
-  {id:"cablecurl",name:"مرجحة بايسبس بالكيبل",group:"biceps",muscle:"biceps",env:["gym"],level:1,risk:[],tip:"حافظي على شدّ ثابت طوال الحركة دون تأرجح."},
-  {id:"spidercurl",name:"مرجحة العنكبوت",group:"biceps",muscle:"biceps",env:["gym"],level:2,risk:[],tip:"انحني للأمام ودعي ذراعيك تتدليان ثم ارفعي بعزل تام."},
+  {id:"preachercurl",name:"مرجحة بريتشر",group:"biceps",muscle:"biceps",env:["gym"],level:1,risk:[],tip:"ثبّتي عضدك على الوسادة وارفعي بتحكم كامل.",type:"isolation",pattern:"pull"},
+  {id:"concentration",name:"مرجحة تركيز",group:"biceps",muscle:"biceps",env:["gym","home"],level:1,risk:[],tip:"اسندي مرفقك على فخذك واعصري البايسبس في الأعلى.",type:"isolation",pattern:"pull"},
+  {id:"cablecurl",name:"مرجحة بايسبس بالكيبل",group:"biceps",muscle:"biceps",env:["gym"],level:1,risk:[],tip:"حافظي على شدّ ثابت طوال الحركة دون تأرجح.",type:"isolation",pattern:"pull"},
+  {id:"spidercurl",name:"مرجحة العنكبوت",group:"biceps",muscle:"biceps",env:["gym"],level:2,risk:[],tip:"انحني للأمام ودعي ذراعيك تتدليان ثم ارفعي بعزل تام.",type:"isolation",pattern:"pull"},
 
   /* ترايسبس */
-  {id:"ropepush",name:"دفع الترايسبس بالحبل",group:"triceps",muscle:"triceps",env:["gym"],level:1,risk:[],tip:"افتحي الحبل في الأسفل واعصري الترايسبس بالكامل."},
-  {id:"kickbacktri",name:"ركلة الترايسبس",group:"triceps",muscle:"triceps",env:["gym","home"],level:1,risk:[],tip:"ثبّتي عضدك موازياً للأرض وافردي ساعدك للخلف."},
-  {id:"closegrippress",name:"بنش قبضة ضيقة",group:"triceps",muscle:"triceps",env:["gym"],level:2,risk:["shoulder","wrist"],tip:"ضمّي قبضتك على البار وأبقي مرفقيك قريبين من جسمك."},
-  {id:"overheadrope",name:"تمديد علوي بالحبل",group:"triceps",muscle:"triceps",env:["gym"],level:2,risk:["shoulder"],tip:"مدّي الحبل لأعلى خلف رأسك واعصري الترايسبس."},
+  {id:"ropepush",name:"دفع الترايسبس بالحبل",group:"triceps",muscle:"triceps",env:["gym"],level:1,risk:[],tip:"افتحي الحبل في الأسفل واعصري الترايسبس بالكامل.",type:"isolation",pattern:"push"},
+  {id:"kickbacktri",name:"ركلة الترايسبس",group:"triceps",muscle:"triceps",env:["gym","home"],level:1,risk:[],tip:"ثبّتي عضدك موازياً للأرض وافردي ساعدك للخلف.",type:"isolation",pattern:"push"},
+  {id:"closegrippress",name:"بنش قبضة ضيقة",group:"triceps",muscle:"triceps",env:["gym"],level:2,risk:["shoulder","wrist"],tip:"ضمّي قبضتك على البار وأبقي مرفقيك قريبين من جسمك.",type:"compound",pattern:"push"},
+  {id:"overheadrope",name:"تمديد علوي بالحبل",group:"triceps",muscle:"triceps",env:["gym"],level:2,risk:["shoulder"],tip:"مدّي الحبل لأعلى خلف رأسك واعصري الترايسبس.",type:"isolation",pattern:"push"},
 
   /* أرجل */
-  {id:"frontsquat",name:"سكوات أمامي",group:"quads",muscle:"quads",env:["gym"],level:3,risk:["knee","lowerback"],tip:"أبقي مرفقيك مرفوعين والبار على أعلى صدرك."},
-  {id:"goodmorning",name:"تمرين صباح الخير",group:"hams",muscle:"hamstrings",env:["gym","home"],level:2,risk:["lowerback"],tip:"ادفعي الورك للخلف بظهر مستقيم لاستهداف الفخذ الخلفي."},
-  {id:"jumpsquat",name:"سكوات بقفز",group:"quads",muscle:"quads",env:["bodyweight","home"],level:2,risk:["knee"],tip:"انزلي للسكوات ثم اقفزي بانفجار وأنزلي برفق."},
-  {id:"singleleg",name:"رفعة رومانية بساق واحدة",group:"hams",muscle:"hamstrings",env:["home","bodyweight","gym"],level:2,risk:["lowerback"],tip:"وازني على ساق واحدة ومدّي الأخرى خلفك مع ميل الجذع."},
+  {id:"frontsquat",name:"سكوات أمامي",group:"quads",muscle:"quads",env:["gym"],level:3,risk:["knee","lowerback"],tip:"أبقي مرفقيك مرفوعين والبار على أعلى صدرك.",type:"compound",pattern:"legs"},
+  {id:"goodmorning",name:"تمرين صباح الخير",group:"hams",muscle:"hamstrings",env:["gym","home"],level:2,risk:["lowerback"],tip:"ادفعي الورك للخلف بظهر مستقيم لاستهداف الفخذ الخلفي.",type:"compound",pattern:"legs"},
+  {id:"jumpsquat",name:"سكوات بقفز",group:"quads",muscle:"quads",env:["bodyweight","home"],level:2,risk:["knee"],tip:"انزلي للسكوات ثم اقفزي بانفجار وأنزلي برفق.",type:"compound",pattern:"legs"},
+  {id:"singleleg",name:"رفعة رومانية بساق واحدة",group:"hams",muscle:"hamstrings",env:["home","bodyweight","gym"],level:2,risk:["lowerback"],tip:"وازني على ساق واحدة ومدّي الأخرى خلفك مع ميل الجذع.",type:"compound",pattern:"legs"},
 
   /* مؤخرة */
-  {id:"curtsy",name:"طعنة كيرتسي",group:"glutes",muscle:"glutes",env:["home","bodyweight","gym"],level:1,risk:["knee"],tip:"اخطي بساقك خلف الأخرى قطرياً لاستهداف المؤخرة الجانبية."},
-  {id:"hipabduct",name:"فتح الورك بالشريط",group:"glutes",muscle:"glutes",env:["home"],level:1,risk:[],tip:"ضعي الشريط فوق ركبتيك وافتحيهما ضد المقاومة."},
-  {id:"donkeykick",name:"رفسة الحمار",group:"glutes",muscle:"glutes",env:["home","bodyweight"],level:1,risk:[],tip:"ادفعي كعبك للأعلى مع ثني الركبة واعصري المؤخرة."},
-  {id:"glutemachine",name:"جهاز المؤخرة",group:"glutes",muscle:"glutes",env:["gym"],level:1,risk:[],tip:"ادفعي المنصة للخلف من كعبك واعصري في النهاية."},
+  {id:"curtsy",name:"طعنة كيرتسي",group:"glutes",muscle:"glutes",env:["home","bodyweight","gym"],level:1,risk:["knee"],tip:"اخطي بساقك خلف الأخرى قطرياً لاستهداف المؤخرة الجانبية.",type:"compound",pattern:"legs"},
+  {id:"hipabduct",name:"فتح الورك بالشريط",group:"glutes",muscle:"glutes",env:["home"],level:1,risk:[],tip:"ضعي الشريط فوق ركبتيك وافتحيهما ضد المقاومة.",type:"isolation",pattern:"legs"},
+  {id:"donkeykick",name:"رفسة الحمار",group:"glutes",muscle:"glutes",env:["home","bodyweight"],level:1,risk:[],tip:"ادفعي كعبك للأعلى مع ثني الركبة واعصري المؤخرة.",type:"isolation",pattern:"legs"},
+  {id:"glutemachine",name:"جهاز المؤخرة",group:"glutes",muscle:"glutes",env:["gym"],level:1,risk:[],tip:"ادفعي المنصة للخلف من كعبك واعصري في النهاية.",type:"isolation",pattern:"legs"},
 
   /* بطن */
-  {id:"hangingraise",name:"رفع الأرجل معلقاً",group:"abs",muscle:"absfront",env:["gym"],level:3,risk:["shoulder","diastasis"],tip:"تعلّقي بالبار وارفعي ساقيك دون تأرجح."},
-  {id:"mountain",name:"متسلق الجبل",group:"abs",muscle:"absfront",env:["home","bodyweight","gym"],level:1,risk:["wrist","diastasis"],tip:"بدّلي ركبتيك نحو صدرك بسرعة مع ثبات الجذع."},
-  {id:"deadbug",name:"تمرين الخنفساء",group:"abs",muscle:"absfront",env:["home","bodyweight"],level:1,risk:[],tip:"مدّي ذراعاً وساقاً معاكسة مع إلصاق أسفل ظهرك بالأرض."},
-  {id:"vups",name:"تمرين V-Ups",group:"abs",muscle:"absfront",env:["home","bodyweight"],level:2,risk:["lowerback","diastasis"],tip:"ارفعي جذعك وساقيك معاً لتلامس يداك قدميك."},
-  {id:"woodchop",name:"تقطيع الخشب بالكيبل",group:"abs",muscle:"absside",env:["gym"],level:2,risk:["lowerback"],tip:"اسحبي قطرياً من أعلى لأسفل مع لفّ الجذع."},
+  {id:"hangingraise",name:"رفع الأرجل معلقاً",group:"abs",muscle:"absfront",env:["gym"],level:3,risk:["shoulder","diastasis"],tip:"تعلّقي بالبار وارفعي ساقيك دون تأرجح.",type:"isolation",pattern:"core"},
+  {id:"mountain",name:"متسلق الجبل",group:"abs",muscle:"absfront",env:["home","bodyweight","gym"],level:1,risk:["wrist","diastasis"],tip:"بدّلي ركبتيك نحو صدرك بسرعة مع ثبات الجذع.",type:"compound",pattern:"core"},
+  {id:"deadbug",name:"تمرين الخنفساء",group:"abs",muscle:"absfront",env:["home","bodyweight"],level:1,risk:[],tip:"مدّي ذراعاً وساقاً معاكسة مع إلصاق أسفل ظهرك بالأرض.",type:"isolation",pattern:"core"},
+  {id:"vups",name:"تمرين V-Ups",group:"abs",muscle:"absfront",env:["home","bodyweight"],level:2,risk:["lowerback","diastasis"],tip:"ارفعي جذعك وساقيك معاً لتلامس يداك قدميك.",type:"isolation",pattern:"core"},
+  {id:"woodchop",name:"تقطيع الخشب بالكيبل",group:"abs",muscle:"absside",env:["gym"],level:2,risk:["lowerback"],tip:"اسحبي قطرياً من أعلى لأسفل مع لفّ الجذع.",type:"isolation",pattern:"core"},
 
   /* ===== فخذ داخلي (Adductors) ===== */
-  {id:"hipadduction",name:"جهاز ضمّ الأرجل",group:"adductors",muscle:"quads",env:["gym"],level:1,risk:[],tip:"اضغطي ساقيك للداخل ببطء واعصري الفخذ الداخلي."},
-  {id:"sumosquat2",name:"سكوات سومو عميق",group:"adductors",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:["knee"],tip:"باعدي قدميك ووجّهي أصابعك للخارج وانزلي عميقاً."},
-  {id:"sidelyingraise",name:"رفع الساق جانبياً (مستلقية)",group:"adductors",muscle:"quads",env:["home","bodyweight"],level:1,risk:[],tip:"استلقي على جنبك وارفعي الساق السفلية للأعلى ببطء."},
-  {id:"copenhagen",name:"تمرين كوبنهاجن",group:"adductors",muscle:"quads",env:["bodyweight","home"],level:3,risk:[],tip:"ارفعي جسمك على مقعد بساق واحدة مع شدّ الفخذ الداخلي."},
-  {id:"plie",name:"سكوات بليه بالدمبل",group:"adductors",muscle:"quads",env:["gym","home"],level:1,risk:["knee"],tip:"قفي بوضع باليه وانزلي مستقيمة مع عصر الفخذ الداخلي."},
-  {id:"cableadduction",name:"ضمّ الورك بالكيبل",group:"adductors",muscle:"quads",env:["gym"],level:2,risk:[],tip:"اسحبي ساقك للداخل عبر جسمك ضد المقاومة."},
-  {id:"bandadduction",name:"ضمّ الأرجل بالشريط",group:"adductors",muscle:"quads",env:["home"],level:1,risk:[],tip:"ثبّتي الشريط جانباً واسحبي ساقك للداخل ببطء."},
+  {id:"hipadduction",name:"جهاز ضمّ الأرجل",group:"adductors",muscle:"quads",env:["gym"],level:1,risk:[],tip:"اضغطي ساقيك للداخل ببطء واعصري الفخذ الداخلي.",type:"isolation",pattern:"legs"},
+  {id:"sumosquat2",name:"سكوات سومو عميق",group:"adductors",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:["knee"],tip:"باعدي قدميك ووجّهي أصابعك للخارج وانزلي عميقاً.",type:"compound",pattern:"legs"},
+  {id:"sidelyingraise",name:"رفع الساق جانبياً (مستلقية)",group:"adductors",muscle:"quads",env:["home","bodyweight"],level:1,risk:[],tip:"استلقي على جنبك وارفعي الساق السفلية للأعلى ببطء.",type:"isolation",pattern:"legs"},
+  {id:"copenhagen",name:"تمرين كوبنهاجن",group:"adductors",muscle:"quads",env:["bodyweight","home"],level:3,risk:[],tip:"ارفعي جسمك على مقعد بساق واحدة مع شدّ الفخذ الداخلي.",type:"isolation",pattern:"legs"},
+  {id:"plie",name:"سكوات بليه بالدمبل",group:"adductors",muscle:"quads",env:["gym","home"],level:1,risk:["knee"],tip:"قفي بوضع باليه وانزلي مستقيمة مع عصر الفخذ الداخلي.",type:"compound",pattern:"legs"},
+  {id:"cableadduction",name:"ضمّ الورك بالكيبل",group:"adductors",muscle:"quads",env:["gym"],level:2,risk:[],tip:"اسحبي ساقك للداخل عبر جسمك ضد المقاومة.",type:"isolation",pattern:"legs"},
+  {id:"bandadduction",name:"ضمّ الأرجل بالشريط",group:"adductors",muscle:"quads",env:["home"],level:1,risk:[],tip:"ثبّتي الشريط جانباً واسحبي ساقك للداخل ببطء.",type:"isolation",pattern:"legs"},
 
   /* ===== فخذ خلفي إضافي ===== */
-  {id:"gluteham",name:"رفعة الفخذ الخلفي (GHR)",group:"hams",muscle:"hamstrings",env:["gym"],level:3,risk:["knee"],tip:"اخفضي جسمك ببطء مقاومةً بالفخذ الخلفي ثم ارجعي."},
-  {id:"nordic",name:"ثني نوردك للفخذ الخلفي",group:"hams",muscle:"hamstrings",env:["bodyweight","home"],level:3,risk:["knee"],tip:"ثبّتي كعبيك وانزلي للأمام ببطء بمقاومة الفخذ الخلفي."},
-  {id:"stiffdl",name:"رفعة ساق مستقيمة",group:"hams",muscle:"hamstrings",env:["gym","home"],level:2,risk:["lowerback"],tip:"حافظي على ساقيك شبه مستقيمتين وادفعي وركك للخلف."},
-  {id:"bandlegcurl",name:"ثني الفخذ الخلفي بالشريط",group:"hams",muscle:"hamstrings",env:["home"],level:1,risk:[],tip:"اثني ركبتك ضد مقاومة الشريط واعصري في النهاية."},
-  {id:"swissball",name:"ثني الفخذ بكرة سويسرية",group:"hams",muscle:"hamstrings",env:["home"],level:2,risk:[],tip:"اسحبي الكرة نحوك بكعبيك مع رفع وركك."},
+  {id:"gluteham",name:"رفعة الفخذ الخلفي (GHR)",group:"hams",muscle:"hamstrings",env:["gym"],level:3,risk:["knee"],tip:"اخفضي جسمك ببطء مقاومةً بالفخذ الخلفي ثم ارجعي.",type:"compound",pattern:"legs"},
+  {id:"nordic",name:"ثني نوردك للفخذ الخلفي",group:"hams",muscle:"hamstrings",env:["bodyweight","home"],level:3,risk:["knee"],tip:"ثبّتي كعبيك وانزلي للأمام ببطء بمقاومة الفخذ الخلفي.",type:"compound",pattern:"legs"},
+  {id:"stiffdl",name:"رفعة ساق مستقيمة",group:"hams",muscle:"hamstrings",env:["gym","home"],level:2,risk:["lowerback"],tip:"حافظي على ساقيك شبه مستقيمتين وادفعي وركك للخلف.",type:"compound",pattern:"legs"},
+  {id:"bandlegcurl",name:"ثني الفخذ الخلفي بالشريط",group:"hams",muscle:"hamstrings",env:["home"],level:1,risk:[],tip:"اثني ركبتك ضد مقاومة الشريط واعصري في النهاية.",type:"isolation",pattern:"legs"},
+  {id:"swissball",name:"ثني الفخذ بكرة سويسرية",group:"hams",muscle:"hamstrings",env:["home"],level:2,risk:[],tip:"اسحبي الكرة نحوك بكعبيك مع رفع وركك.",type:"isolation",pattern:"legs"},
 
   /* ===== سمانة إضافي ===== */
-  {id:"legpresscalf",name:"سمانة على جهاز الضغط",group:"calves",muscle:"calves",env:["gym"],level:1,risk:[],tip:"ادفعي بأطراف أصابعك على المنصة ومدّي السمانة بالكامل."},
-  {id:"donkeycalf",name:"رفع السمانة (دونكي)",group:"calves",muscle:"calves",env:["gym"],level:2,risk:[],tip:"انحني للأمام وارفعي كعبيك بأقصى مدى."},
-  {id:"singlecalf",name:"سمانة على ساق واحدة",group:"calves",muscle:"calves",env:["home","bodyweight","gym"],level:1,risk:[],tip:"قفي على ساق واحدة وارفعي كعبك ببطء واعصري."},
-  {id:"jumprope",name:"نطّ الحبل (سمانة)",group:"calves",muscle:"calves",env:["home","bodyweight"],level:1,risk:["knee"],tip:"انطّي على أطراف أصابعك بإيقاع ثابت لتنشيط السمانة."}
+  {id:"legpresscalf",name:"سمانة على جهاز الضغط",group:"calves",muscle:"calves",env:["gym"],level:1,risk:[],tip:"ادفعي بأطراف أصابعك على المنصة ومدّي السمانة بالكامل.",type:"isolation",pattern:"legs"},
+  {id:"donkeycalf",name:"رفع السمانة (دونكي)",group:"calves",muscle:"calves",env:["gym"],level:2,risk:[],tip:"انحني للأمام وارفعي كعبيك بأقصى مدى.",type:"isolation",pattern:"legs"},
+  {id:"singlecalf",name:"سمانة على ساق واحدة",group:"calves",muscle:"calves",env:["home","bodyweight","gym"],level:1,risk:[],tip:"قفي على ساق واحدة وارفعي كعبك ببطء واعصري.",type:"isolation",pattern:"legs"},
+  {id:"jumprope",name:"نطّ الحبل (سمانة)",group:"calves",muscle:"calves",env:["home","bodyweight"],level:1,risk:["knee"],tip:"انطّي على أطراف أصابعك بإيقاع ثابت لتنشيط السمانة.",type:"isolation",pattern:"legs"}
 ];
 
 /* ---------- الحالات الصحية ومناطق الخطر المرتبطة ---------- */
@@ -321,6 +321,24 @@ const LEVELS = {
   2:{name:"متوسط", sets:4, reps:"10–12", rest:"75 ث"},
   3:{name:"متقدم", sets:4, reps:"8–10",  rest:"90 ث"}
 };
+
+/* معاملات الأحمال حسب الهدف (مبنية على أسس علمية) */
+const GOALS = {
+  strength:    {name:"القوة",            ico:"🏋️", sets:5, reps:"3–6",   rest:"3–5 دقائق", weekVol:[12,18], note:"أوزان عالية وتكرارات قليلة لبناء القوة القصوى."},
+  hypertrophy: {name:"بناء العضل/التضخيم",ico:"💪", sets:4, reps:"8–12",  rest:"60–90 ث",  weekVol:[12,20], note:"النطاق الذهبي لزيادة حجم العضلة وشدّها."},
+  cutting:     {name:"التنشيف/حرق الدهون",ico:"🔥", sets:3, reps:"12–20", rest:"30–60 ث",  weekVol:[10,16], note:"تكرارات عالية وراحة قصيرة لحرق أعلى مع الحفاظ على العضلة."},
+  general:     {name:"لياقة عامة",        ico:"✨", sets:3, reps:"10–15", rest:"45–60 ث",  weekVol:[10,14], note:"توازن شامل للصحة واللياقة دون تخصص."}
+};
+
+/* معاملات الأحمال النهائية: الهدف يحدّد التكرارات/الراحة، والمستوى يعدّل المجموعات */
+function loadParams(){
+  const g = GOALS[S.goal] || GOALS.hypertrophy;
+  // المبتدئة تقلّل مجموعة واحدة لتفادي الإجهاد، المتقدمة كما هي
+  let sets = g.sets;
+  if(S.level===1) sets = Math.max(2, g.sets-1);
+  if(S.level===3 && S.goal==="strength") sets = g.sets; // المتقدمة في القوة تبقى عالية
+  return { sets, reps:g.reps, rest:g.rest, goalName:g.name, weekVol:g.weekVol };
+}
 
 /* تصنيف مجموعات العرض: كبيرة تحتاج تمارين أكثر، صغيرة أقل (منهجية ZahraaFit) */
 const BIG_GROUPS = ["chest","back","quads","hams","glutes"];
@@ -545,6 +563,7 @@ const S = {
   days:4,
   split:"ppl",
   dailyCount:6,
+  goal:"hypertrophy",
   aiRequest:"",
   includeEdu:true,
   conditions:[],
@@ -682,6 +701,15 @@ function screenSetup(){
             <span class="emoji">${v.emoji}</span><b>${v.name}</b><small>${v.sub}</small>
           </div>`).join("")}
       </div>
+      <span class="eyebrow" style="display:block;margin-top:24px">🎯 الهدف من التمرين</span>
+      <div class="choices g3" style="grid-template-columns:repeat(2,1fr)">
+        ${Object.entries(GOALS).map(([k,v])=>`
+          <div class="choice ${S.goal===k?'sel':''}" data-goal="${k}">
+            <span class="emoji">${v.ico}</span><b>${v.name}</b><small>${v.reps} عدّة · ${v.rest} راحة</small>
+          </div>`).join("")}
+      </div>
+      <div class="hint" style="margin-top:6px">${GOALS[S.goal]?.note||""}</div>
+
       <span class="eyebrow" style="display:block;margin-top:24px">عدد أيام التمرين</span>
       <div class="choices g3" style="grid-template-columns:repeat(4,1fr)">
         ${[2,3,4,5].map(d=>`
@@ -768,7 +796,7 @@ function screenPicker(){
 /* ---------------- شاشة الجدول ---------------- */
 function screenPlan(){
   if(!S.plan) return "";
-  const c=S.client, L=LEVELS[S.level];
+  const c=S.client, L=loadParams();
   const greeting = c.name ? `جدول ${c.name}` : "جدولك الرياضي";
   const today = new Date().toLocaleDateString('ar-SA-u-nu-latn',{year:'numeric',month:'long',day:'numeric'});
   return `<div class="app"><div class="screen on">
@@ -1005,31 +1033,29 @@ function generate(){
   const danger=dangerSet();
   const sys = SPLIT_SYSTEMS[S.split] || SPLIT_SYSTEMS.ppl;
   const split = sys.days[S.days] || sys.days[4] || Object.values(sys.days)[0];
-  const L=LEVELS[S.level];
+  const L=loadParams();
   const used=new Set();
 
-  const plan = split.map(groups=>{
+  const plan = split.map((groups, dayIdx)=>{
     const dayPicks=[];
-    const totalTarget = S.dailyCount; // العدد الإجمالي الذي اختارته المدربة
+    const totalTarget = S.dailyCount;
 
-    // وزّع العدد الإجمالي بين عضلات اليوم: الكبيرة وزنها 2، الصغيرة 1
+    // توزيع الحصص: العضلات الكبيرة تأخذ حصة أكبر (وزن 2)، الصغيرة (وزن 1)
     const weights = groups.map(g=>BIG_GROUPS.includes(g)?2:1);
     const wSum = weights.reduce((a,b)=>a+b,0);
-    // حصة كل عضلة (حد أدنى 1 لكل عضلة موجودة)
     let quotas = groups.map((g,i)=>Math.max(1, Math.round(totalTarget*weights[i]/wSum)));
-    // عدّل المجموع ليطابق الهدف تماماً
     let diff = totalTarget - quotas.reduce((a,b)=>a+b,0);
     while(diff!==0){
-      // أضف/اطرح من العضلة الأكبر وزناً (أو الأصغر عند الطرح)
       const idx = diff>0
         ? weights.indexOf(Math.max(...weights.map((w,i)=>quotas[i]>0?w:-1)))
         : quotas.indexOf(Math.max(...quotas));
       quotas[idx]+= diff>0?1:-1;
       if(quotas[idx]<1) quotas[idx]=1;
       diff = totalTarget - quotas.reduce((a,b)=>a+b,0);
-      if(quotas.every(q=>q<=1) && diff<0) break; // تفادي حلقة لا نهائية
+      if(quotas.every(q=>q<=1) && diff<0) break;
     }
 
+    // نجمع تمارين كل عضلة مرتّبة علمياً: المركّب أولاً ثم العزل
     groups.forEach((group,gi)=>{
       const target = quotas[gi];
       let pool = EX.filter(e=>
@@ -1039,25 +1065,47 @@ function generate(){
         !S.no.has(e.id) &&
         !e.risk.some(r=>danger.has(r))
       );
+      // الترتيب: (1) المفضّل أولاً (2) المركّب قبل العزل (3) الأقل استخداماً لتنويع الأسبوع
       pool.sort((a,b)=>{
         const fa=S.fav.has(a.id)?0:1, fb=S.fav.has(b.id)?0:1;
-        if(fa!==fb) return fa-fb;
+        if(fa!==fb) return fa-fb;                               // المفضّل أولاً
+        const ca=a.type==="compound"?0:1, cb=b.type==="compound"?0:1;
+        if(ca!==cb) return ca-cb;                               // مركّب قبل عزل
         const ua=used.has(a.id)?1:0, ub=used.has(b.id)?1:0;
-        return ua-ub;
+        return ua-ub;                                           // تنويع
       });
+
+      const groupPicks=[];
       let added=0;
+      // المرحلة 1: تمارين غير مستخدمة هذا الأسبوع (تنويع)
       for(const e of pool){
         if(added>=target) break;
         if(used.has(e.id)) continue;
-        dayPicks.push(e); used.add(e.id); added++;
+        groupPicks.push(e); used.add(e.id); added++;
       }
+      // المرحلة 2: عند نقص الخيارات، نسمح بإعادة الاستخدام
       if(added<target){
         for(const e of pool){
           if(added>=target) break;
-          if(dayPicks.includes(e)) continue;
-          dayPicks.push(e); added++;
+          if(groupPicks.includes(e)) continue;
+          groupPicks.push(e); added++;
         }
       }
+      // ضمان الترتيب العلمي داخل العضلة: المركّب قبل العزل
+      groupPicks.sort((a,b)=>(a.type==="compound"?0:1)-(b.type==="compound"?0:1));
+      dayPicks.push(...groupPicks);
+    });
+
+    // ترتيب اليوم كاملاً علمياً:
+    // 1) العضلات الكبيرة قبل الصغيرة (الأساسي قبل المساعد)
+    // 2) داخل كل عضلة: المركّب قبل العزل (محفوظ من فوق)
+    // هذا يضمن عدم إرهاق العضلة المساعدة قبل الأساسية (بايسبس بعد الظهر، ترايسبس بعد الصدر)
+    const groupOrder = {};
+    groups.forEach((g,i)=> groupOrder[g] = (BIG_GROUPS.includes(g)?0:100) + i);
+    dayPicks.sort((a,b)=>{
+      const go = (groupOrder[a.group]??50) - (groupOrder[b.group]??50);
+      if(go!==0) return go;
+      return (a.type==="compound"?0:1)-(b.type==="compound"?0:1);
     });
 
     // حماية أخيرة: لا يوم فارغ
@@ -1073,7 +1121,29 @@ function generate(){
     return {title, exercises:dayPicks.map(e=>({...e, video:videoLinks[e.id]||""}))};
   });
   S.plan=plan;
+  S.weekly = computeWeeklyVolume(plan);
   go(3);
+}
+
+/* حساب الحجم الأسبوعي (عدد المجموعات لكل عضلة) + تحقق علمي */
+function computeWeeklyVolume(plan){
+  const L=loadParams();
+  const setsPer = parseInt(L.sets,10)||3;
+  const vol={}; // group -> مجموع المجموعات أسبوعياً
+  let push=0, pull=0;
+  plan.forEach(day=>{
+    day.exercises.forEach(e=>{
+      vol[e.group]=(vol[e.group]||0)+setsPer;
+      if(e.pattern==="push") push+=setsPer;
+      else if(e.pattern==="pull") pull+=setsPer;
+    });
+  });
+  // تحقق: نسبة الدفع/السحب، والحجم لكل عضلة
+  const [minV,maxV]=L.weekVol;
+  const warnings=[];
+  const ratio = pull>0 ? push/pull : (push>0?99:1);
+  const balanced = ratio<=1.6 && ratio>=0.6; // ضمن النطاق المقبول
+  return { vol, push, pull, ratio, balanced, minV, maxV };
 }
 
 /* ---------- التوليد بالذكاء الاصطناعي ---------- */
@@ -1100,7 +1170,7 @@ async function generateAI(){
       body: JSON.stringify({
         client:S.client, env:S.env, level:S.level, days:S.days,
         split:S.split, dailyCount:S.dailyCount, conditions:S.conditions,
-        aiRequest:S.aiRequest, available
+        goal:S.goal, aiRequest:S.aiRequest, available
       })
     });
     if(!resp.ok){
@@ -1136,7 +1206,13 @@ function loadStored(){
     const vl=localStorage.getItem("zf_videos"); if(vl) videoLinks=JSON.parse(vl);
   }catch(e){}
 }
-function saveImages(){ try{localStorage.setItem("zf_images",JSON.stringify(S.images));}catch(e){} }
+function saveImages(){
+  try{
+    localStorage.setItem("zf_images",JSON.stringify(S.images));
+  }catch(e){
+    alert("⚠️ مساحة الحفظ ممتلئة. حاولي حذف صور غير مستخدمة أو استخدام صور أصغر حجماً.");
+  }
+}
 function saveVideos(){ try{localStorage.setItem("zf_videos",JSON.stringify(videoLinks));}catch(e){} }
 
 /* ---------- إدارة روابط الفيديو (نافذة بسيطة) ---------- */
@@ -1202,7 +1278,7 @@ function editVideos(){
    بدون أي عناصر واجهة برمجية، بألوان كاملة، كل يوم صفحة.
    ============================================================ */
 function buildPdfHTML(){
-  const c=S.client, L=LEVELS[S.level];
+  const c=S.client, L=loadParams();
   const today=new Date().toLocaleDateString('ar-SA-u-nu-latn',{year:'numeric',month:'long',day:'numeric'});
   const navy="#0f1f3d", navy2="#16294b", navy3="#1f3661", orange="#e8622c", orange2="#ff7a3d";
 
@@ -1294,9 +1370,47 @@ function buildPdfHTML(){
   });
 
   // ===== تنبيه صحي إن وُجد =====
-  let disc = S.conditions.length
+  // ===== ملخص الحجم الأسبوعي العلمي =====
+  const wk = S.weekly || computeWeeklyVolume(S.plan);
+  const grpNames={chest:"الصدر",back:"الظهر",shoulders:"الأكتاف",biceps:"البايسبس",triceps:"الترايسبس",quads:"فخذ أمامي",hams:"فخذ خلفي",adductors:"فخذ داخلي",glutes:"المؤخرة",calves:"السمانة",abs:"البطن"};
+  const volRows = Object.entries(wk.vol).sort((a,b)=>b[1]-a[1]).map(([g,v])=>{
+    const ok = v>=wk.minV && v<=wk.maxV;
+    const color = ok?"#1f9d57":(v<wk.minV?"#d98a1f":"#d24545");
+    const label = ok?"مثالي":(v<wk.minV?"خفيف":"عالٍ");
+    return `<tr style="border-bottom:1px solid #eef0f4">
+      <td style="padding:9px 14px;font-family:Cairo;font-weight:700;font-size:14px;color:${navy}">${grpNames[g]||g}</td>
+      <td style="padding:9px 14px;text-align:center;font-family:Cairo;font-weight:900;font-size:16px;color:${navy}">${v}</td>
+      <td style="padding:9px 14px;text-align:center"><span style="background:${color}1a;color:${color};font-weight:800;font-size:12px;padding:3px 12px;border-radius:20px">${label}</span></td>
+    </tr>`;}).join("");
+  const ratioTxt = wk.pull>0 ? (wk.push/wk.pull).toFixed(1)+" : 1" : "—";
+  const summary = `<div style="page-break-before:always;page-break-inside:avoid;padding:48px 52px;background:linear-gradient(180deg,#f5f7fa,#fff)">
+    <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · ملخص علمي</span></div>
+    <h1 style="font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">📊 الحجم التدريبي الأسبوعي</h1>
+    <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 16px"></div>
+    <p style="text-align:center;color:#6a7488;font-size:13.5px;font-weight:600;max-width:560px;margin:0 auto 22px;line-height:1.9">عدد المجموعات لكل عضلة أسبوعياً. النطاق المثالي للهدف الحالي (${(GOALS[S.goal]||{}).name||""}) هو ${wk.minV}–${wk.maxV} مجموعة لكل عضلة.</p>
+    <table style="width:100%;max-width:520px;margin:0 auto;border-collapse:collapse;background:#fff;border:1px solid #e3e7ee;border-radius:14px;overflow:hidden">
+      <tr style="background:linear-gradient(90deg,${navy},${navy2})">
+        <td style="padding:11px 14px;color:#fff;font-family:Cairo;font-weight:800;font-size:13px">العضلة</td>
+        <td style="padding:11px 14px;color:#fff;font-family:Cairo;font-weight:800;font-size:13px;text-align:center">مجموعات/أسبوع</td>
+        <td style="padding:11px 14px;color:#fff;font-family:Cairo;font-weight:800;font-size:13px;text-align:center">التقييم</td>
+      </tr>
+      ${volRows}
+    </table>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px">
+      <div style="background:#fff;border:1px solid #e3e7ee;border-radius:12px;padding:12px 22px;text-align:center">
+        <div style="font-family:Cairo;font-weight:900;font-size:20px;color:${navy}">${ratioTxt}</div>
+        <div style="font-size:11px;color:#6a7488;font-weight:700">توازن الدفع : السحب</div>
+      </div>
+      <div style="background:#fff;border:1px solid #e3e7ee;border-radius:12px;padding:12px 22px;text-align:center">
+        <div style="font-family:Cairo;font-weight:900;font-size:20px;color:${wk.balanced?'#1f9d57':'#d98a1f'}">${wk.balanced?'متوازن ✓':'مقبول'}</div>
+        <div style="font-size:11px;color:#6a7488;font-weight:700">الحالة العامة</div>
+      </div>
+    </div>
+  </div>`;
+
+  let disc = (S.conditions.length
     ? `<div style="page-break-inside:avoid;background:#fff7ee;border:1px solid rgba(217,138,31,.3);border-radius:12px;padding:14px 16px;font-size:12.5px;color:#8a5a13;font-weight:600;margin-top:14px">
-        ⚠️ روعيت الحالات الصحية المُدخلة بتعديل/استبعاد بعض التمارين. هذا إرشادي وليس بديلاً عن رأي مختص؛ يُوقف أي تمرين يسبّب ألماً.</div>` : "";
+        ⚠️ روعيت الحالات الصحية المُدخلة بتعديل/استبعاد بعض التمارين. هذا إرشادي وليس بديلاً عن رأي مختص؛ يُوقف أي تمرين يسبّب ألماً.</div>` : "") + summary;
 
   // ===== صفحة الإحماء =====
   const warmCol=(w)=>`
@@ -1492,7 +1606,7 @@ function buildPdfHTML(){
   // ===== صفحة تعليمات وملاحظات (بداية الجدول) =====
   let intro="";
   if(S.includeEdu){
-    const L2=LEVELS[S.level];
+    const L2=loadParams();
     const notes=[
       ["📅","الالتزام أهم من الحماس","التزمي بأيامك المختارة (${S.days} أيام) بثبات؛ الاستمرارية هي ما يصنع النتيجة."],
       ["💤","الراحة جزء من البرنامج","لا تمرّني نفس العضلة يومين متتاليين؛ العضلة تنمو وقت الراحة لا وقت التمرين."],
@@ -1672,6 +1786,7 @@ function bind(){
   // بيئة / مستوى / أيام
   $$("[data-env]").forEach(el=>el.onclick=()=>{ S.env=el.dataset.env; render(); });
   $$("[data-split]").forEach(el=>el.onclick=()=>{ S.split=el.dataset.split; render(); });
+  $$("[data-goal]").forEach(el=>el.onclick=()=>{ S.goal=el.dataset.goal; render(); });
   $$("[data-level]").forEach(el=>el.onclick=()=>{ S.level=+el.dataset.level; render(); });
   $$("[data-days]").forEach(el=>el.onclick=()=>{ S.days=+el.dataset.days; render(); });
   $$("[data-daily]").forEach(el=>el.onclick=()=>{ S.dailyCount=+el.dataset.daily; render(); });
@@ -1700,7 +1815,33 @@ function bind(){
     const inp=document.createElement("input");
     inp.type="file"; inp.accept="image/*";
     inp.onchange=()=>{ const f=inp.files[0]; if(!f) return;
-      const r=new FileReader(); r.onload=()=>{ S.images[k]=r.result; saveImages(); render(); }; r.readAsDataURL(f);
+      const r=new FileReader();
+      r.onload=()=>{
+        // نضغط الصورة قبل الحفظ لتفادي تجاوز حد التخزين
+        const img=new Image();
+        img.onload=()=>{
+          // الغلاف أكبر (عرض 1000)، باقي الصور (عرض 600)
+          const maxW = (k==="cover") ? 1000 : 600;
+          let w=img.width, h=img.height;
+          if(w>maxW){ h=Math.round(h*maxW/w); w=maxW; }
+          const canvas=document.createElement("canvas");
+          canvas.width=w; canvas.height=h;
+          const ctx=canvas.getContext("2d");
+          ctx.drawImage(img,0,0,w,h);
+          // PNG للشعار (يحافظ على الشفافية)، JPEG للباقي (أصغر حجماً)
+          const out = (k==="logo")
+            ? canvas.toDataURL("image/png")
+            : canvas.toDataURL("image/jpeg",0.82);
+          try{
+            S.images[k]=out; saveImages(); render();
+          }catch(err){
+            alert("تعذّر حفظ الصورة (قد تكون كبيرة جداً). جرّبي صورة أصغر.");
+          }
+        };
+        img.onerror=()=>{ S.images[k]=r.result; saveImages(); render(); };
+        img.src=r.result;
+      };
+      r.readAsDataURL(f);
     };
     inp.click();
   });

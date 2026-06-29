@@ -1279,15 +1279,15 @@ function buildPdfHTML(){
         <td style="width:44px;text-align:center;vertical-align:middle">${vidBtn}</td>
       </tr>`;
     });
-    body+=`<div style="page-break-inside:avoid;${i>0?'page-break-before:always;':''}margin-bottom:6px">
-      <table style="width:100%;border-collapse:collapse;background:linear-gradient(90deg,${navy},${navy2});border-radius:14px 14px 0 0;overflow:hidden">
+    body+=`<div style="page-break-inside:avoid;${i>0?'page-break-before:always;':''}padding-top:${i>0?'14mm':'0'};margin-bottom:18px">
+      <table style="width:100%;border-collapse:collapse;background:linear-gradient(90deg,${navy},${navy2});border-radius:14px 14px 0 0;overflow:hidden;box-shadow:0 4px 14px rgba(15,31,61,.12)">
         <tr><td style="padding:18px 22px">
           <span style="display:inline-grid;place-items:center;width:40px;height:40px;border-radius:11px;background:${orange};font-family:Cairo;font-weight:900;font-size:18px;color:#fff;vertical-align:middle">${i+1}</span>
           <span style="font-family:Cairo;font-weight:900;font-size:18px;color:#fff;margin-right:12px;vertical-align:middle">اليوم ${i+1} — ${day.title}</span>
           <div style="color:#b9c5dd;font-weight:600;font-size:12px;margin-top:4px">${day.exercises.length} تمارين · ${L.sets} مجموعات لكل تمرين</div>
         </td></tr>
       </table>
-      <table style="width:100%;border-collapse:collapse;border:1px solid #e3e7ee;border-top:none;border-radius:0 0 14px 14px;overflow:hidden">
+      <table style="width:100%;border-collapse:collapse;border:1px solid #e3e7ee;border-top:none;border-radius:0 0 14px 14px;overflow:hidden;background:#fff">
         ${rows.replace(/<tr /g,'<tr style="border-bottom:1px solid #eef0f4" ').replace('border-bottom:1px solid #eef0f4" style="page-break-inside:avoid','page-break-inside:avoid')}
       </table>
     </div>`;
@@ -1545,7 +1545,7 @@ function buildPdfHTML(){
     ${cover}
     ${intro}
     ${warmup}
-    <div style="padding:44px 50px">
+    <div style="padding:40px 50px;background:linear-gradient(180deg,#f5f7fa,#eef1f6)">
       ${body}
       ${disc}
     </div>

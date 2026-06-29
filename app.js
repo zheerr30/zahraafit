@@ -330,6 +330,14 @@ const GOALS = {
   general:     {name:"لياقة عامة",        ico:"✨", sets:3, reps:"10–15", rest:"45–60 ث",  weekVol:[10,14], note:"توازن شامل للصحة واللياقة دون تخصص."}
 };
 
+/* خيارات التركيز: ترفع حصة عضلات معيّنة دون إلغاء الباقي
+   (العضلات غير المركّز عليها تبقى موجودة بحدها الأدنى) */
+const FOCUS = {
+  lower:    {name:"تركيز سفلي", ico:"🍑", sub:"أرجل ومؤخرة", muscles:["quads","hams","glutes","calves"]},
+  balanced: {name:"متوازن",     ico:"⚖️", sub:"الجسم كامل بالتساوي", muscles:[]},
+  upper:    {name:"تركيز علوي", ico:"💪", sub:"صدر وظهر وذراعين", muscles:["chest","back","shoulders","biceps","triceps"]}
+};
+
 /* معاملات الأحمال النهائية: الهدف يحدّد التكرارات/الراحة، والمستوى يعدّل المجموعات */
 function loadParams(){
   const g = GOALS[S.goal] || GOALS.hypertrophy;
@@ -633,6 +641,7 @@ const S = {
   split:"ppl",
   dailyCount:6,
   goal:"hypertrophy",
+  focus:"balanced",
   aiRequest:"",
   includeEdu:true,
   conditions:[],
@@ -778,6 +787,15 @@ function screenSetup(){
           </div>`).join("")}
       </div>
       <div class="hint" style="margin-top:6px">${GOALS[S.goal]?.note||""}</div>
+
+      <span class="eyebrow" style="display:block;margin-top:24px">🎯 منطقة التركيز</span>
+      <div class="choices g3">
+        ${Object.entries(FOCUS).map(([k,v])=>`
+          <div class="choice ${S.focus===k?'sel':''}" data-focus="${k}">
+            <span class="emoji">${v.ico}</span><b>${v.name}</b><small>${v.sub}</small>
+          </div>`).join("")}
+      </div>
+      <div class="hint" style="margin-top:6px">التركيز يزيد تمارين المنطقة المختارة، مع بقاء جميع العضلات الأخرى في الجدول (لا تُلغى أي عضلة).</div>
 
       <span class="eyebrow" style="display:block;margin-top:24px">عدد أيام التمرين</span>
       <div class="choices g3" style="grid-template-columns:repeat(4,1fr)">
@@ -1109,25 +1127,37 @@ function generate(){
     const dayPicks=[];
     const totalTarget = S.dailyCount;
 
+    // العضلات المركّز عليها (إن وُجد تركيز)
+    const focusMuscles = (FOCUS[S.focus]?.muscles)||[];
+    const isFocus = g => focusMuscles.includes(g);
+
     // توزيع الحصص: لكل عضلة حد أدنى يضمن عدم إهمالها
-    // الكبيرة: تمرينان على الأقل (إن سمح العدد) — الصغيرة: تمرين على الأقل
-    const minQuota = groups.map(g=>BIG_GROUPS.includes(g)?2:1);
+    // الكبيرة: تمرينان — الصغيرة: تمرين — والمركّز عليها تحصل على +1 إضافي
+    const minQuota = groups.map(g=>{
+      let q = BIG_GROUPS.includes(g)?2:1;
+      if(isFocus(g)) q += 1;   // التركيز يرفع الحد الأدنى للعضلة المختارة
+      return q;
+    });
     const minSum = minQuota.reduce((a,b)=>a+b,0);
 
     // العدد المستهدف: الأكبر بين اختيار المدربة والحد الأدنى العلمي
-    // (هذا يضمن تغطية كل عضلات اليوم الشامل دون إهمال)
     const effectiveTarget = Math.max(totalTarget, minSum);
 
-    const weights = groups.map(g=>BIG_GROUPS.includes(g)?2:1);
+    // الوزن في توزيع الفائض: الكبيرة 2، الصغيرة 1، والمركّز عليها تُضاعف
+    const weights = groups.map(g=>{
+      let w = BIG_GROUPS.includes(g)?2:1;
+      if(isFocus(g)) w += 2;   // أولوية أعلى للفائض لصالح منطقة التركيز
+      return w;
+    });
     const wSum = weights.reduce((a,b)=>a+b,0);
-    // نبدأ بالحد الأدنى لكل عضلة، ثم نوزّع الفائض على الكبيرة
+    // نبدأ بالحد الأدنى لكل عضلة، ثم نوزّع الفائض حسب الوزن
     let quotas = [...minQuota];
     let extra = effectiveTarget - minSum;
     while(extra>0){
-      // نعطي الفائض للعضلة الأكبر وزناً (الكبيرة أولاً)
+      // نعطي الفائض للعضلة الأعلى وزناً والأقل حصة
       let idx=0, best=-1;
       for(let i=0;i<groups.length;i++){
-        const score = weights[i]*10 - quotas[i]; // الأعلى وزناً والأقل حصة
+        const score = weights[i]*10 - quotas[i];
         if(score>best){ best=score; idx=i; }
       }
       quotas[idx]++; extra--;
@@ -1950,6 +1980,7 @@ function bind(){
   $$("[data-env]").forEach(el=>el.onclick=()=>{ S.env=el.dataset.env; render(); });
   $$("[data-split]").forEach(el=>el.onclick=()=>{ S.split=el.dataset.split; render(); });
   $$("[data-goal]").forEach(el=>el.onclick=()=>{ S.goal=el.dataset.goal; render(); });
+  $$("[data-focus]").forEach(el=>el.onclick=()=>{ S.focus=el.dataset.focus; render(); });
   $$("[data-level]").forEach(el=>el.onclick=()=>{ S.level=+el.dataset.level; render(); });
   $$("[data-days]").forEach(el=>el.onclick=()=>{ S.days=+el.dataset.days; render(); });
   $$("[data-daily]").forEach(el=>el.onclick=()=>{ S.dailyCount=+el.dataset.daily; render(); });

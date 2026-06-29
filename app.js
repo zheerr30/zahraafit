@@ -137,12 +137,12 @@ const EX = [
   {id:"sidelunge",name:"طعنة جانبية",group:"glutes",muscle:"glutes",env:["home","bodyweight","gym"],level:1,risk:["knee"],tip:"اخطي للجانب وانزلي على ساق واحدة مع إبقاء الأخرى ممدودة."},
 
   /* ---------------- البطن ---------------- */
-  {id:"crunch",name:"كرنش (تقريب علوي)",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:["neck"],tip:"ارفع كتفيك عن الأرض دون شدّ رقبتك بيديك."},
+  {id:"crunch",name:"كرنش (تقريب علوي)",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:["neck","diastasis"],tip:"ارفع كتفيك عن الأرض دون شدّ رقبتك بيديك."},
   {id:"plank",name:"بلانك (الثبات)",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:["lowerback"],tip:"حافظ على جسمك بخط مستقيم ولا ترخِ وركك للأسفل."},
-  {id:"legraise",name:"رفع الأرجل",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:2,risk:["lowerback"],tip:"ألصق أسفل ظهرك بالأرض ولا ترفع رجليك باندفاع."},
-  {id:"russian",name:"الالتفاف الروسي",group:"abs",muscle:"absside",env:["home","bodyweight","gym"],level:1,risk:["lowerback"],tip:"لُف من خصرك ببطء وحافظ على ظهر مستقيم."},
+  {id:"legraise",name:"رفع الأرجل",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:2,risk:["lowerback","diastasis"],tip:"ألصق أسفل ظهرك بالأرض ولا ترفع رجليك باندفاع."},
+  {id:"russian",name:"الالتفاف الروسي",group:"abs",muscle:"absside",env:["home","bodyweight","gym"],level:1,risk:["lowerback","diastasis"],tip:"لُف من خصرك ببطء وحافظ على ظهر مستقيم."},
   {id:"sideplank",name:"بلانك جانبي",group:"abs",muscle:"absside",env:["gym","home","bodyweight"],level:1,risk:["shoulder"],tip:"ارفع وركك واحفظ جسمك بخط مستقيم من الكتف للقدم."},
-  {id:"bicycle",name:"كرنش الدراجة",group:"abs",muscle:"absside",env:["home","bodyweight","gym"],level:1,risk:["neck"],tip:"لامس مرفقك بالركبة المعاكسة دون شدّ رقبتك."},
+  {id:"bicycle",name:"كرنش الدراجة",group:"abs",muscle:"absside",env:["home","bodyweight","gym"],level:1,risk:["neck","diastasis"],tip:"لامس مرفقك بالركبة المعاكسة دون شدّ رقبتك."},
 
   /* ===== مكتبة التمارين الإضافية ===== */
   /* صدر */
@@ -188,10 +188,10 @@ const EX = [
   {id:"glutemachine",name:"جهاز المؤخرة",group:"glutes",muscle:"glutes",env:["gym"],level:1,risk:[],tip:"ادفعي المنصة للخلف من كعبك واعصري في النهاية."},
 
   /* بطن */
-  {id:"hangingraise",name:"رفع الأرجل معلقاً",group:"abs",muscle:"absfront",env:["gym"],level:3,risk:["shoulder"],tip:"تعلّقي بالبار وارفعي ساقيك دون تأرجح."},
-  {id:"mountain",name:"متسلق الجبل",group:"abs",muscle:"absfront",env:["home","bodyweight","gym"],level:1,risk:["wrist"],tip:"بدّلي ركبتيك نحو صدرك بسرعة مع ثبات الجذع."},
+  {id:"hangingraise",name:"رفع الأرجل معلقاً",group:"abs",muscle:"absfront",env:["gym"],level:3,risk:["shoulder","diastasis"],tip:"تعلّقي بالبار وارفعي ساقيك دون تأرجح."},
+  {id:"mountain",name:"متسلق الجبل",group:"abs",muscle:"absfront",env:["home","bodyweight","gym"],level:1,risk:["wrist","diastasis"],tip:"بدّلي ركبتيك نحو صدرك بسرعة مع ثبات الجذع."},
   {id:"deadbug",name:"تمرين الخنفساء",group:"abs",muscle:"absfront",env:["home","bodyweight"],level:1,risk:[],tip:"مدّي ذراعاً وساقاً معاكسة مع إلصاق أسفل ظهرك بالأرض."},
-  {id:"vups",name:"تمرين V-Ups",group:"abs",muscle:"absfront",env:["home","bodyweight"],level:2,risk:["lowerback"],tip:"ارفعي جذعك وساقيك معاً لتلامس يداك قدميك."},
+  {id:"vups",name:"تمرين V-Ups",group:"abs",muscle:"absfront",env:["home","bodyweight"],level:2,risk:["lowerback","diastasis"],tip:"ارفعي جذعك وساقيك معاً لتلامس يداك قدميك."},
   {id:"woodchop",name:"تقطيع الخشب بالكيبل",group:"abs",muscle:"absside",env:["gym"],level:2,risk:["lowerback"],tip:"اسحبي قطرياً من أعلى لأسفل مع لفّ الجذع."},
 
   /* ===== فخذ داخلي (Adductors) ===== */
@@ -224,7 +224,8 @@ const CONDITIONS = [
   {id:"shoulder",  name:"مشاكل في الكتف",     ico:"💪", avoid:["shoulder"]},
   {id:"weakcore",  name:"ضعف في الكور",       ico:"🔥", avoid:[]},
   {id:"wrist",     name:"مشاكل في الرسغ",      ico:"✋", avoid:["wrist"]},
-  {id:"neck",      name:"مشاكل في الرقبة",     ico:"🧣", avoid:["neck"]}
+  {id:"neck",      name:"مشاكل في الرقبة",     ico:"🧣", avoid:["neck"]},
+  {id:"diastasis", name:"انفصال عضلي (بطن)",  ico:"🤰", avoid:["diastasis"]}
 ];
 
 /* تمارين دعم وتأهيل لكل حالة صحية — تظهر في صفحة مخصصة بالـ PDF */
@@ -233,70 +234,82 @@ const SUPPORT = {
     name:"دعم الركبة", ico:"🦵",
     intro:"تمارين لطيفة لتقوية العضلات الداعمة للركبة (الفخذ الأمامي والخلفي) وتحسين ثباتها. أدّيها بلا ألم، وتوقّفي عند أي وجع حاد.",
     items:[
-      ["تمديد الفخذ الأمامي جالسة","افردي ركبتك ببطء وأنتِ جالسة على كرسي واثبتي ثانيتين. 3×12."],
-      ["رفع الساق المستقيمة","استلقي وارفعي الساق ممدودة 30 سم دون ثني الركبة. 3×10 لكل ساق."],
-      ["جسر المؤخرة","ادفعي وركك لأعلى من وضع الاستلقاء لتقوية الداعمات. 3×12."],
-      ["انزلاق على الحائط (نصف سكوات)","انزلي للنصف فقط مسندة ظهرك بالحائط دون ألم. 3×10."],
-      ["تمديد الفخذ الخلفي","استلقي وارفعي ساقك المستقيمة بمساعدة منشفة حول القدم. ثبات 20 ثانية."],
-      ["تقوية السمانة الخفيفة","ارفعي كعبيك ببطء وأنتِ ممسكة بحائط للتوازن. 3×15."]
+      ["sup_knee_1","تمديد الفخذ الأمامي جالسة","افردي ركبتك ببطء وأنتِ جالسة على كرسي واثبتي ثانيتين. 3×12."],
+      ["sup_knee_2","رفع الساق المستقيمة","استلقي وارفعي الساق ممدودة 30 سم دون ثني الركبة. 3×10 لكل ساق."],
+      ["sup_knee_3","جسر المؤخرة","ادفعي وركك لأعلى من وضع الاستلقاء لتقوية الداعمات. 3×12."],
+      ["sup_knee_4","انزلاق على الحائط (نصف سكوات)","انزلي للنصف فقط مسندة ظهرك بالحائط دون ألم. 3×10."],
+      ["sup_knee_5","تمديد الفخذ الخلفي","استلقي وارفعي ساقك المستقيمة بمساعدة منشفة حول القدم. ثبات 20 ثانية."],
+      ["sup_knee_6","تقوية السمانة الخفيفة","ارفعي كعبيك ببطء وأنتِ ممسكة بحائط للتوازن. 3×15."]
     ]
   },
   lowerback:{
     name:"دعم أسفل الظهر", ico:"🔙",
     intro:"تمارين لتثبيت العمود الفقري وتقوية عضلات الجذع الداعمة لأسفل الظهر، مع إطالات لطيفة لتخفيف الشدّ.",
     items:[
-      ["إمالة الحوض","استلقي واضغطي أسفل ظهرك للأرض بشدّ بطنك. 3×12."],
-      ["تمرين القطة-البقرة","قوّسي ظهرك لأعلى وأسفل برفق على وضع الزحف. 10 مرات."],
-      ["الكلب-الطائر","مدّي ذراعاً وساقاً معاكسة مع ثبات الجذع. 3×8 لكل جهة."],
-      ["بلانك معدّل على الركبتين","ثبات بطن خفيف دون ضغط على أسفل الظهر. 3×20 ثانية."],
-      ["ركبة للصدر","اسحبي ركبتك نحو صدرك برفق وأنتِ مستلقية. ثبات 20 ثانية لكل ساق."],
-      ["جسر المؤخرة","لتقوية المؤخرة وتخفيف الحمل عن أسفل الظهر. 3×12."]
+      ["sup_lowerback_1","إمالة الحوض","استلقي واضغطي أسفل ظهرك للأرض بشدّ بطنك. 3×12."],
+      ["sup_lowerback_2","تمرين القطة-البقرة","قوّسي ظهرك لأعلى وأسفل برفق على وضع الزحف. 10 مرات."],
+      ["sup_lowerback_3","الكلب-الطائر","مدّي ذراعاً وساقاً معاكسة مع ثبات الجذع. 3×8 لكل جهة."],
+      ["sup_lowerback_4","بلانك معدّل على الركبتين","ثبات بطن خفيف دون ضغط على أسفل الظهر. 3×20 ثانية."],
+      ["sup_lowerback_5","ركبة للصدر","اسحبي ركبتك نحو صدرك برفق وأنتِ مستلقية. ثبات 20 ثانية لكل ساق."],
+      ["sup_lowerback_6","جسر المؤخرة","لتقوية المؤخرة وتخفيف الحمل عن أسفل الظهر. 3×12."]
     ]
   },
   shoulder:{
     name:"دعم الكتف", ico:"💪",
     intro:"تمارين لتنشيط الكفة المدوّرة وتحسين مدى حركة الكتف وثباته، بأوزان خفيفة جداً أو بدون وزن.",
     items:[
-      ["دوران خارجي بالشريط","ثبّتي مرفقك بجانبك ولفّي ساعدك للخارج ضد شريط خفيف. 3×12."],
-      ["دوران داخلي بالشريط","نفس الوضع لكن لفّ الساعد للداخل. 3×12."],
-      ["رفع الذراع أماماً خفيف","ارفعي ذراعك لمستوى الكتف بوزن خفيف جداً أو بدون. 3×10."],
-      ["انزلاق على الحائط","حرّكي ذراعيك صعوداً ونزولاً ملاصقة للحائط. 3×10."],
-      ["شدّ لوحي الكتف","اسحبي لوحي كتفك للخلف وللأسفل واثبتي. 3×12."],
-      ["إطالة الكتف المتقاطعة","اسحبي ذراعك عبر صدرك برفق. ثبات 20 ثانية لكل جهة."]
+      ["sup_shoulder_1","دوران خارجي بالشريط","ثبّتي مرفقك بجانبك ولفّي ساعدك للخارج ضد شريط خفيف. 3×12."],
+      ["sup_shoulder_2","دوران داخلي بالشريط","نفس الوضع لكن لفّ الساعد للداخل. 3×12."],
+      ["sup_shoulder_3","رفع الذراع أماماً خفيف","ارفعي ذراعك لمستوى الكتف بوزن خفيف جداً أو بدون. 3×10."],
+      ["sup_shoulder_4","انزلاق على الحائط","حرّكي ذراعيك صعوداً ونزولاً ملاصقة للحائط. 3×10."],
+      ["sup_shoulder_5","شدّ لوحي الكتف","اسحبي لوحي كتفك للخلف وللأسفل واثبتي. 3×12."],
+      ["sup_shoulder_6","إطالة الكتف المتقاطعة","اسحبي ذراعك عبر صدرك برفق. ثبات 20 ثانية لكل جهة."]
     ]
   },
   weakcore:{
     name:"تقوية الكور", ico:"🔥",
     intro:"تمارين تدريجية لبناء قوة الجذع والثبات، أساس لكل التمارين الأخرى وحماية للظهر.",
     items:[
-      ["بلانك متدرّج","ابدئي بـ15 ثانية وزيدي تدريجياً. 3 مجموعات."],
-      ["الخنفساء (Dead Bug)","مدّي ذراعاً وساقاً معاكسة مع إلصاق ظهرك بالأرض. 3×10."],
-      ["إمالة الحوض","تنشيط عضلات البطن العميقة. 3×12."],
-      ["بلانك جانبي على الركبة","ثبات جانبي خفيف لتقوية الخصر. 3×15 ثانية لكل جهة."],
-      ["الكلب-الطائر","ثبات وتوازن للجذع. 3×8 لكل جهة."],
-      ["جسر المؤخرة مع شدّ البطن","يجمع تقوية المؤخرة والكور معاً. 3×12."]
+      ["sup_weakcore_1","بلانك متدرّج","ابدئي بـ15 ثانية وزيدي تدريجياً. 3 مجموعات."],
+      ["sup_weakcore_2","الخنفساء (Dead Bug)","مدّي ذراعاً وساقاً معاكسة مع إلصاق ظهرك بالأرض. 3×10."],
+      ["sup_weakcore_3","إمالة الحوض","تنشيط عضلات البطن العميقة. 3×12."],
+      ["sup_weakcore_4","بلانك جانبي على الركبة","ثبات جانبي خفيف لتقوية الخصر. 3×15 ثانية لكل جهة."],
+      ["sup_weakcore_5","الكلب-الطائر","ثبات وتوازن للجذع. 3×8 لكل جهة."],
+      ["sup_weakcore_6","جسر المؤخرة مع شدّ البطن","يجمع تقوية المؤخرة والكور معاً. 3×12."]
     ]
   },
   wrist:{
     name:"دعم الرسغ", ico:"✋",
     intro:"إطالات وتقوية لطيفة لمفصل الرسغ والساعد، مفيدة قبل التمارين التي تحمّل الرسغ.",
     items:[
-      ["إطالة ثني الرسغ","مدّي ذراعك واسحبي أصابعك للأسفل برفق. 20 ثانية لكل يد."],
-      ["إطالة بسط الرسغ","اسحبي أصابعك للأعلى برفق. 20 ثانية لكل يد."],
-      ["دوران الرسغ","لفّي رسغك بدوائر بطيئة. 10 لكل اتجاه."],
-      ["قبض وفرد الأصابع","اقبضي يدك ثم افرديها بالكامل. 3×15."],
-      ["تقوية الرسغ بوزن خفيف","ارفعي وزناً خفيفاً جداً بثني الرسغ لأعلى. 3×12."]
+      ["sup_wrist_1","إطالة ثني الرسغ","مدّي ذراعك واسحبي أصابعك للأسفل برفق. 20 ثانية لكل يد."],
+      ["sup_wrist_2","إطالة بسط الرسغ","اسحبي أصابعك للأعلى برفق. 20 ثانية لكل يد."],
+      ["sup_wrist_3","دوران الرسغ","لفّي رسغك بدوائر بطيئة. 10 لكل اتجاه."],
+      ["sup_wrist_4","قبض وفرد الأصابع","اقبضي يدك ثم افرديها بالكامل. 3×15."],
+      ["sup_wrist_5","تقوية الرسغ بوزن خفيف","ارفعي وزناً خفيفاً جداً بثني الرسغ لأعلى. 3×12."]
     ]
   },
   neck:{
     name:"دعم الرقبة", ico:"🧣",
     intro:"إطالات لطيفة لتخفيف توتر الرقبة وتحسين مرونتها. حرّكي ببطء شديد دون أي اندفاع.",
     items:[
-      ["إمالة جانبية","ميلي رأسك نحو كتفك برفق. 15 ثانية لكل جهة."],
-      ["تدوير بطيء","لفّي رأسك ببطء نحو كل كتف. 10 مرات."],
-      ["شدّ الذقن للداخل","اسحبي ذقنك للخلف لمحاذاة الرقبة. 3×10."],
-      ["إطالة خلفية","أنزلي ذقنك نحو صدرك برفق. ثبات 15 ثانية."],
-      ["استرخاء الكتفين","ارفعي كتفيك ثم أنزليهما بزفير. 10 مرات."]
+      ["sup_neck_1","إمالة جانبية","ميلي رأسك نحو كتفك برفق. 15 ثانية لكل جهة."],
+      ["sup_neck_2","تدوير بطيء","لفّي رأسك ببطء نحو كل كتف. 10 مرات."],
+      ["sup_neck_3","شدّ الذقن للداخل","اسحبي ذقنك للخلف لمحاذاة الرقبة. 3×10."],
+      ["sup_neck_4","إطالة خلفية","أنزلي ذقنك نحو صدرك برفق. ثبات 15 ثانية."],
+      ["sup_neck_5","استرخاء الكتفين","ارفعي كتفيك ثم أنزليهما بزفير. 10 مرات."]
+    ]
+  },
+  diastasis:{
+    name:"برنامج الانفصال العضلي", ico:"🤰",
+    intro:"الانفصال العضلي يحدث عندما تضعف عضلات البطن الأمامية وتبتعد عن بعضها. هذه التمارين تُقوّي العضلات العميقة للبطن والظهر بأمان، وتتجنّب الحركات التي تزيد الضغط على البطن (كالكرنش والمعدة الكاملة). أدّيها 2–3 مرات أسبوعياً بتحكّم وتنفّس عميق، وتوقّفي عند أي ألم.",
+    items:[
+      ["sup_diastasis_1","التنفس العميق بالحجاب الحاجز","استلقي وضعي يدك على بطنك. شهيق عميق من الأنف حتى يرتفع بطنك، ثم زفير ببطء مع سحب البطن للداخل. 5 دقائق يومياً."],
+      ["sup_diastasis_2","إمالة الحوض","استلقي مع ثني الركبتين. اضغطي أسفل ظهرك للأرض بشدّ البطن وإمالة الحوض لأعلى ببطء. 3×10."],
+      ["sup_diastasis_3","جسر المؤخرة","ارفعي الحوض ببطء مع شدّ البطن دون تقويس أسفل الظهر. 3×12."],
+      ["sup_diastasis_4","الكلب-الطائر (Bird Dog)","من وضع اليدين والركبتين، مدّي ذراعاً وساقاً معاكسة بشكل مستقيم وثبّتي مع شدّ الجذع. 3×10 لكل جهة."],
+      ["sup_diastasis_5","المحارة (Clamshell)","نامي على جنبك بركبتين مثنيتين 45°، وارفعي الركبة العليا دون تحريك الحوض (بشريط مقاومة إن توفّر). 3×12 لكل جهة."],
+      ["sup_diastasis_6","شدّ البطن العميق (Vacuum)","اسحبي بطنك للداخل نحو العمود الفقري وأنتِ تتنفّسين بشكل طبيعي، واثبتي 10–15 ثانية. 3 مرات."]
     ]
   }
 };
@@ -899,26 +912,53 @@ function screenVideos(){
   const total=EX.length;
   const filled=EX.filter(e=>videoLinks[e.id]).length;
 
+  // دالة بناء صف رابط موحّدة
+  const row=(id,name,sub)=>`
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)">
+        <span style="flex:none;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:14px;background:${videoLinks[id]?'#ff0000':'#eef0f4'};color:${videoLinks[id]?'#fff':'#aab3c2'}">▶</span>
+        <div style="flex:none;width:130px">
+          <div style="font-family:'Cairo';font-weight:700;font-size:13.5px">${name}</div>
+          <div style="font-size:11px;color:var(--muted);font-weight:600">${sub||""}</div>
+        </div>
+        <input data-vidlib="${id}" value="${videoLinks[id]||""}" placeholder="https://youtube.com/..."
+          style="flex:1;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;font-family:'Tajawal';font-size:13px;font-weight:600;background:#fbfbfc">
+      </div>`;
+  const sectionBox=(title,count,rowsHtml)=>`<div style="margin-bottom:18px">
+      <div style="font-family:'Cairo';font-weight:800;font-size:16px;color:var(--orange);margin-bottom:6px">${title} <span style="color:var(--muted);font-size:12px;font-weight:600">(${count})</span></div>
+      ${rowsHtml}</div>`;
+
   let sections="";
+  // 1) تمارين العضلات الأساسية
   Object.entries(groupNames).forEach(([g,gname])=>{
     let list=EX.filter(e=>e.group===g);
     if(videoFilter) list=list.filter(e=>e.name.includes(videoFilter));
     if(!list.length) return;
-    const rows=list.map(e=>`
-      <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)">
-        <span style="flex:none;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:14px;background:${videoLinks[e.id]?'#ff0000':'#eef0f4'};color:${videoLinks[e.id]?'#fff':'#aab3c2'}">▶</span>
-        <div style="flex:none;width:130px">
-          <div style="font-family:'Cairo';font-weight:700;font-size:13.5px">${e.name}</div>
-          <div style="font-size:11px;color:var(--muted);font-weight:600">${LEVELS[e.level].name}</div>
-        </div>
-        <input data-vidlib="${e.id}" value="${videoLinks[e.id]||""}" placeholder="https://youtube.com/..."
-          style="flex:1;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;font-family:'Tajawal';font-size:13px;font-weight:600;background:#fbfbfc">
-      </div>`).join("");
-    sections+=`<div style="margin-bottom:18px">
-      <div style="font-family:'Cairo';font-weight:800;font-size:16px;color:var(--orange);margin-bottom:6px">${gname} <span style="color:var(--muted);font-size:12px;font-weight:600">(${list.length})</span></div>
-      ${rows}
-    </div>`;
+    const rows=list.map(e=>row(e.id,e.name,LEVELS[e.level].name)).join("");
+    sections+=sectionBox(gname,list.length,rows);
   });
+
+  // 2) تمارين الإحماء
+  let warmRows="", warmCount=0;
+  Object.values(WARMUP).forEach(w=>{
+    w.items.forEach(it=>{
+      if(videoFilter && !it[1].includes(videoFilter)) return;
+      warmCount++;
+      warmRows+=row(it[0],it[1],w.name);
+    });
+  });
+  if(warmRows) sections+=sectionBox("🔥 تمارين الإحماء",warmCount,warmRows);
+
+  // 3) تمارين الدعم والتأهيل (لكل حالة صحية)
+  const condNames={knee:"دعم الركبة",lowerback:"دعم أسفل الظهر",shoulder:"دعم الكتف",weakcore:"تقوية الكور",wrist:"دعم الرسغ",neck:"دعم الرقبة",diastasis:"الانفصال العضلي"};
+  let supRows="", supCount=0;
+  Object.entries(SUPPORT).forEach(([cid,sup])=>{
+    sup.items.forEach((it,i)=>{
+      if(videoFilter && !it[1].includes(videoFilter)) return;
+      supCount++;
+      supRows+=row(`sup_${cid}_${i}`,it[1],condNames[cid]||sup.name);
+    });
+  });
+  if(supRows) sections+=sectionBox("🩹 تمارين الدعم والتأهيل",supCount,supRows);
 
   return `<div class="app"><div class="screen on">
     <div class="card">
@@ -1139,6 +1179,18 @@ function editVideos(){
   libIds.forEach(id=>{ const e=exById[id]; if(e) html+=fieldFor(id,e.name); });
   html+=`</div>`;
 
+  // تمارين الدعم للحالات الصحية المختارة
+  if(S.conditions.length){
+    S.conditions.forEach(cid=>{
+      const sup=SUPPORT[cid];
+      if(!sup) return;
+      html+=section(`${sup.ico} ${sup.name}`,"تمارين الدعم والتأهيل لهذه الحالة");
+      html+=`<div style="display:grid;gap:10px">`;
+      sup.items.forEach((it,i)=>{ html+=fieldFor(`sup_${cid}_${i}`, it[0]); });
+      html+=`</div>`;
+    });
+  }
+
   html+=`<div class="actions" style="margin-top:24px"><button class="btn line" data-act="backplan">→ رجوع للجدول</button>
     <button class="btn primary" data-act="savevideos">💾 حفظ الروابط</button></div></div></div></div>`;
   document.getElementById("root").innerHTML=topbar()+html;
@@ -1289,12 +1341,18 @@ function buildPdfHTML(){
     S.conditions.forEach(cid=>{
       const sup=SUPPORT[cid];
       if(!sup) return;
-      const items=sup.items.map((it,i)=>`
-        <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #f0f2f6">
+      const items=sup.items.map((it,i)=>{
+        const vl=videoLinks[`sup_${cid}_${i}`];
+        const vbtn=vl
+          ? `<a href="${vl}" style="flex:none;text-decoration:none;display:grid;place-items:center;width:30px;height:30px;border-radius:8px;background:#ff0000;color:#fff;font-size:13px">▶</a>`
+          : "";
+        return `
+        <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #f0f2f6;align-items:center">
           <div style="flex:none;width:28px;height:28px;border-radius:8px;background:${orange};color:#fff;font-family:Cairo;font-weight:800;font-size:13px;text-align:center;line-height:28px">${i+1}</div>
-          <div><div style="font-family:Cairo;font-weight:700;font-size:15px;color:${navy};margin-bottom:2px">${it[0]}</div>
+          <div style="flex:1"><div style="font-family:Cairo;font-weight:700;font-size:15px;color:${navy};margin-bottom:2px">${it[0]}</div>
           <div style="font-size:13px;color:#56627a;font-weight:600;line-height:1.7">${it[1]}</div></div>
-        </div>`).join("");
+          ${vbtn}
+        </div>`;}).join("");
       support+=`<div style="page-break-before:always;page-break-inside:avoid;padding:48px 52px;background:linear-gradient(180deg,#fef6f2,#fff)">
         <div style="text-align:center;margin-bottom:8px">
           <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · دعم وتأهيل</span>

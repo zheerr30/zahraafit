@@ -344,6 +344,14 @@ function loadParams(){
 const BIG_GROUPS = ["chest","back","quads","hams","glutes"];
 const SMALL_GROUPS = ["shoulders","biceps","triceps","abs","adductors","calves"];
 
+/* قاعدة التغطية الشاملة: كل عضلة يجب أن تظهر أسبوعياً بحد أدنى من المرات.
+   هذه تُستخدم في طبقة التحقق لإضافة أي عضلة مهملة قبل إخراج الجدول. */
+const COVERAGE_MUSCLES = ["chest","back","shoulders","quads","hams","glutes","biceps","triceps","calves","abs"];
+const MIN_WEEKLY_APPEARANCE = { // أقل عدد مرات يجب أن تظهر فيها العضلة أسبوعياً
+  chest:1, back:1, shoulders:1, quads:1, hams:1, glutes:1,
+  biceps:1, triceps:1, calves:1, abs:1
+};
+
 /* عدد التمارين المستهدف لكل عضلة في اليوم، حسب الحجم والمستوى */
 function exCountFor(group, level){
   const big = BIG_GROUPS.includes(group);
@@ -1181,11 +1189,76 @@ function generate(){
     }
 
     const title = groups.map(gp=>DAY_NAMES[gp]).join(" + ");
-    return {title, exercises:dayPicks.map(e=>({...e, video:videoLinks[e.id]||""}))};
+    return {title, groups, exercises:dayPicks.map(e=>({...e, video:videoLinks[e.id]||""}))};
   });
+
+  // ===== طبقة التغطية الشاملة =====
+  // نفحص كل عضلة في قائمة التغطية: إذا لم تظهر أسبوعياً، نضيف لها تمريناً
+  // في يوم يستهدف نفس نمطها (دون كسر خريطة التقسيم).
+  ensureFullCoverage(plan, danger, used);
+
   S.plan=plan;
   S.weekly = computeWeeklyVolume(plan);
   go(3);
+}
+
+/* تضمن أن كل عضلة في قائمة التغطية تظهر أسبوعياً بحدها الأدنى.
+   إذا وُجدت عضلة مهملة، تضيف لها أفضل تمرين متاح في يوم مناسب. */
+function ensureFullCoverage(plan, danger, used){
+  const appearance={};
+  COVERAGE_MUSCLES.forEach(m=>appearance[m]=0);
+  plan.forEach(day=>{
+    const seen=new Set();
+    day.exercises.forEach(e=>seen.add(e.group));
+    seen.forEach(g=>{ if(appearance[g]!==undefined) appearance[g]++; });
+  });
+
+  COVERAGE_MUSCLES.forEach(muscle=>{
+    const need=(MIN_WEEKLY_APPEARANCE[muscle]||1);
+    if(appearance[muscle]>=need) return; // مغطّاة
+
+    // نبحث عن تمرين متاح لهذه العضلة
+    const pool=EX.filter(e=>
+      e.group===muscle &&
+      e.env.includes(S.env) &&
+      e.level<=S.level &&
+      !S.no.has(e.id) &&
+      !e.risk.some(r=>danger.has(r))
+    );
+    if(!pool.length) return; // لا يوجد تمرين متاح (مثلاً مستبعد كلياً) — نحترم رغبة المدربة
+
+    // نختار التمرين: المفضّل أولاً ثم المركّب
+    pool.sort((a,b)=>{
+      const fa=S.fav.has(a.id)?0:1, fb=S.fav.has(b.id)?0:1;
+      if(fa!==fb) return fa-fb;
+      return (a.type==="compound"?0:1)-(b.type==="compound"?0:1);
+    });
+    const pick = pool.find(e=>!used.has(e.id)) || pool[0];
+
+    // نضيفه لليوم الأنسب: اليوم الأقل ازدحاماً، مع تفضيل يوم يحتوي عضلة مشابهة
+    const isBig=BIG_GROUPS.includes(muscle);
+    const pat = pick.pattern;
+    // نرتّب الأيام: أولاً اللي فيها نفس النمط (دفع/سحب/أرجل)، ثم الأقل تمارين
+    const dayScores=plan.map((d,idx)=>{
+      const samePattern=d.exercises.some(e=>e.pattern===pat)?0:1;
+      return {idx, samePattern, count:d.exercises.length};
+    }).sort((a,b)=> a.samePattern-b.samePattern || a.count-b.count);
+
+    const targetDay=plan[dayScores[0].idx];
+    targetDay.exercises.push({...pick, video:videoLinks[pick.id]||""});
+    used.add(pick.id);
+
+    // نعيد ترتيب اليوم علمياً (كبير قبل صغير، مركّب قبل عزل)
+    const gOrder={};
+    (targetDay.groups||[]).forEach((g,i)=>gOrder[g]=(BIG_GROUPS.includes(g)?0:100)+i);
+    if(gOrder[muscle]===undefined) gOrder[muscle]=isBig?50:150;
+    targetDay.exercises.sort((a,b)=>{
+      const go=(gOrder[a.group]??75)-(gOrder[b.group]??75);
+      if(go!==0) return go;
+      return (a.type==="compound"?0:1)-(b.type==="compound"?0:1);
+    });
+    appearance[muscle]++;
+  });
 }
 
 /* حساب الحجم الأسبوعي (عدد المجموعات لكل عضلة) + تحقق علمي */

@@ -363,28 +363,91 @@ const SPLIT_SYSTEMS = {
   ppl:{
     name:"بوش / بُل / ليق", sub:"دفع · سحب · أرجل", emoji:"🔄",
     days:{
-      2:[["chest","shoulders","triceps","abs"],["back","biceps","quads","hams","glutes"]],
-      3:[["chest","shoulders","triceps"],["back","biceps","abs"],["quads","hams","glutes","calves"]],
-      4:[["chest","shoulders","triceps"],["back","biceps"],["quads","hams","glutes","abs"],["chest","shoulders","triceps"]],
-      5:[["chest","shoulders","triceps"],["back","biceps"],["quads","hams","glutes"],["chest","triceps","abs"],["back","biceps","calves"]]
+      // يومان: دفع كامل علوي + (سحب علوي مدموج مع الأرجل) — يضمن تغطية الكل
+      2:[
+        ["chest","shoulders","triceps","abs"],
+        ["back","biceps","quads","hams","glutes","calves"]
+      ],
+      // ثلاثة: دفع / سحب / أرجل — كل عضلة مرة (مثالي للمبتدئة)
+      3:[
+        ["chest","shoulders","triceps","abs"],
+        ["back","biceps","abs"],
+        ["quads","hams","glutes","calves"]
+      ],
+      // أربعة: دفع / سحب / أرجل / علوي شامل — العضلات العلوية مرتين
+      4:[
+        ["chest","shoulders","triceps","abs"],
+        ["back","biceps","calves"],
+        ["quads","hams","glutes","calves"],
+        ["chest","back","shoulders","biceps","triceps","abs"]
+      ],
+      // خمسة: دفع / سحب / أرجل / دفع / سحب — أغلب العضلات مرتين
+      5:[
+        ["chest","shoulders","triceps","abs"],
+        ["back","biceps","calves"],
+        ["quads","hams","glutes","calves"],
+        ["chest","shoulders","triceps","abs"],
+        ["back","biceps","quads","glutes"]
+      ]
     }
   },
   ul:{
     name:"علوي / سفلي", sub:"الجزء العلوي · السفلي", emoji:"⬆️",
     days:{
-      2:[["chest","back","shoulders","biceps","triceps","abs"],["quads","hams","glutes","calves","abs"]],
-      3:[["chest","back","shoulders","biceps","triceps"],["quads","hams","glutes","calves","abs"],["chest","back","shoulders","biceps","triceps","abs"]],
-      4:[["chest","back","shoulders","biceps","triceps"],["quads","hams","glutes","calves","abs"],["chest","back","shoulders","abs"],["quads","hams","glutes","calves"]],
-      5:[["chest","back","shoulders","biceps","triceps"],["quads","hams","glutes","calves"],["chest","back","shoulders","abs"],["quads","hams","glutes","calves","abs"],["chest","back","biceps","triceps"]]
+      // يومان: علوي كامل + سفلي كامل
+      2:[
+        ["chest","back","shoulders","biceps","triceps","abs"],
+        ["quads","hams","glutes","calves","abs"]
+      ],
+      // ثلاثة: علوي / سفلي / علوي (تناوب)
+      3:[
+        ["chest","back","shoulders","biceps","triceps","abs"],
+        ["quads","hams","glutes","calves","abs"],
+        ["chest","back","shoulders","biceps","triceps"]
+      ],
+      // أربعة: علوي / سفلي / علوي / سفلي — كل عضلة مرتين (مثالي)
+      4:[
+        ["chest","back","shoulders","biceps","triceps","abs"],
+        ["quads","hams","glutes","calves","abs"],
+        ["chest","back","shoulders","biceps","triceps"],
+        ["quads","hams","glutes","calves"]
+      ],
+      // خمسة: علوي / سفلي / علوي / سفلي / علوي
+      5:[
+        ["chest","back","shoulders","biceps","triceps","abs"],
+        ["quads","hams","glutes","calves"],
+        ["chest","back","shoulders","biceps","triceps","abs"],
+        ["quads","hams","glutes","calves"],
+        ["chest","back","shoulders","biceps","triceps"]
+      ]
     }
   },
   fullbody:{
     name:"فل بدي", sub:"الجسم كامل كل يوم", emoji:"🔥",
     days:{
-      2:[["chest","back","quads","hams","shoulders","abs"],["back","quads","hams","glutes","biceps","triceps"]],
-      3:[["chest","back","quads","hams","abs"],["shoulders","quads","hams","biceps","triceps"],["chest","back","glutes","abs"]],
-      4:[["chest","back","quads","hams","abs"],["shoulders","quads","hams","biceps","triceps"],["chest","back","glutes","abs"],["quads","hams","shoulders","biceps","calves"]],
-      5:[["chest","quads","hams","abs"],["back","shoulders","glutes"],["quads","hams","biceps","triceps"],["chest","back","abs"],["quads","hams","glutes","calves"]]
+      // كل يوم يلمس كل المناطق الكبرى مع تدوير العضلات الصغيرة لتغطيتها بالتساوي
+      2:[
+        ["chest","back","quads","hams","glutes","shoulders","biceps","abs"],
+        ["chest","back","quads","hams","glutes","triceps","calves","abs"]
+      ],
+      3:[
+        ["chest","back","quads","glutes","shoulders","biceps","abs"],
+        ["chest","back","hams","glutes","triceps","calves"],
+        ["chest","back","quads","hams","shoulders","biceps","abs"]
+      ],
+      4:[
+        ["chest","back","quads","glutes","shoulders","biceps","abs"],
+        ["chest","back","hams","glutes","triceps","calves"],
+        ["chest","back","quads","glutes","shoulders","biceps","abs"],
+        ["chest","back","hams","glutes","triceps","calves","abs"]
+      ],
+      5:[
+        ["chest","back","quads","glutes","shoulders","biceps","abs"],
+        ["chest","back","hams","glutes","triceps","calves"],
+        ["chest","back","quads","glutes","shoulders","biceps"],
+        ["chest","back","hams","glutes","triceps","calves","abs"],
+        ["chest","back","quads","hams","glutes","shoulders","biceps","abs"]
+      ]
     }
   }
 };

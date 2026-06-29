@@ -402,31 +402,29 @@ const SPLIT_SYSTEMS = {
   ul:{
     name:"علوي / سفلي", sub:"الجزء العلوي · السفلي", emoji:"⬆️",
     days:{
-      // يومان: علوي كامل + سفلي كامل
+      // العلوي يشمل دائماً: صدر+ظهر+أكتاف+بايسبس+ترايسبس (+بطن)
+      // السفلي يشمل دائماً: فخذ أمامي+خلفي+مؤخرة+سمانة (+بطن)
       2:[
         ["chest","back","shoulders","biceps","triceps","abs"],
         ["quads","hams","glutes","calves","abs"]
       ],
-      // ثلاثة: علوي / سفلي / علوي (تناوب)
       3:[
         ["chest","back","shoulders","biceps","triceps","abs"],
         ["quads","hams","glutes","calves","abs"],
-        ["chest","back","shoulders","biceps","triceps"]
+        ["chest","back","shoulders","biceps","triceps","abs"]
       ],
-      // أربعة: علوي / سفلي / علوي / سفلي — كل عضلة مرتين (مثالي)
       4:[
         ["chest","back","shoulders","biceps","triceps","abs"],
         ["quads","hams","glutes","calves","abs"],
-        ["chest","back","shoulders","biceps","triceps"],
-        ["quads","hams","glutes","calves"]
+        ["chest","back","shoulders","biceps","triceps","abs"],
+        ["quads","hams","glutes","calves","abs"]
       ],
-      // خمسة: علوي / سفلي / علوي / سفلي / علوي
       5:[
         ["chest","back","shoulders","biceps","triceps","abs"],
-        ["quads","hams","glutes","calves"],
+        ["quads","hams","glutes","calves","abs"],
         ["chest","back","shoulders","biceps","triceps","abs"],
-        ["quads","hams","glutes","calves"],
-        ["chest","back","shoulders","biceps","triceps"]
+        ["quads","hams","glutes","calves","abs"],
+        ["chest","back","shoulders","biceps","triceps","abs"]
       ]
     }
   },
@@ -1111,19 +1109,28 @@ function generate(){
     const dayPicks=[];
     const totalTarget = S.dailyCount;
 
-    // توزيع الحصص: العضلات الكبيرة تأخذ حصة أكبر (وزن 2)، الصغيرة (وزن 1)
+    // توزيع الحصص: لكل عضلة حد أدنى يضمن عدم إهمالها
+    // الكبيرة: تمرينان على الأقل (إن سمح العدد) — الصغيرة: تمرين على الأقل
+    const minQuota = groups.map(g=>BIG_GROUPS.includes(g)?2:1);
+    const minSum = minQuota.reduce((a,b)=>a+b,0);
+
+    // العدد المستهدف: الأكبر بين اختيار المدربة والحد الأدنى العلمي
+    // (هذا يضمن تغطية كل عضلات اليوم الشامل دون إهمال)
+    const effectiveTarget = Math.max(totalTarget, minSum);
+
     const weights = groups.map(g=>BIG_GROUPS.includes(g)?2:1);
     const wSum = weights.reduce((a,b)=>a+b,0);
-    let quotas = groups.map((g,i)=>Math.max(1, Math.round(totalTarget*weights[i]/wSum)));
-    let diff = totalTarget - quotas.reduce((a,b)=>a+b,0);
-    while(diff!==0){
-      const idx = diff>0
-        ? weights.indexOf(Math.max(...weights.map((w,i)=>quotas[i]>0?w:-1)))
-        : quotas.indexOf(Math.max(...quotas));
-      quotas[idx]+= diff>0?1:-1;
-      if(quotas[idx]<1) quotas[idx]=1;
-      diff = totalTarget - quotas.reduce((a,b)=>a+b,0);
-      if(quotas.every(q=>q<=1) && diff<0) break;
+    // نبدأ بالحد الأدنى لكل عضلة، ثم نوزّع الفائض على الكبيرة
+    let quotas = [...minQuota];
+    let extra = effectiveTarget - minSum;
+    while(extra>0){
+      // نعطي الفائض للعضلة الأكبر وزناً (الكبيرة أولاً)
+      let idx=0, best=-1;
+      for(let i=0;i<groups.length;i++){
+        const score = weights[i]*10 - quotas[i]; // الأعلى وزناً والأقل حصة
+        if(score>best){ best=score; idx=i; }
+      }
+      quotas[idx]++; extra--;
     }
 
     // نجمع تمارين كل عضلة مرتّبة علمياً: المركّب أولاً ثم العزل
@@ -1136,10 +1143,30 @@ function generate(){
         !S.no.has(e.id) &&
         !e.risk.some(r=>danger.has(r))
       );
-      // الترتيب: (1) المفضّل أولاً (2) المركّب قبل العزل (3) الأقل استخداماً لتنويع الأسبوع
+      // تصنيف نوع المعدة لكل تمرين
+      const isBand = e => e.id.startsWith("band") || e.name.includes("شريط") || e.name.includes("باند");
+      const isMachine = e => e.name.includes("جهاز") || e.name.includes("كيبل") || e.name.includes("ماكينة") || e.name.includes("سميث");
+      // رتبة المعدة حسب البيئة (الأقل = الأولوية الأعلى)
+      const equipRank = e => {
+        if(S.env==="gym"){
+          // النادي: الأجهزة أولاً، ثم الأثقال الحرة، ثم الباند
+          if(isBand(e)) return 2;
+          if(isMachine(e)) return 0;
+          return 1;                 // أثقال حرة (دمبل/بار/وزن جسم)
+        }
+        if(S.env==="home"){
+          // البيت: الأثقال أولاً، الباند أخيراً
+          return isBand(e) ? 2 : 0;
+        }
+        return 0;                   // وزن الجسم: الكل متساوٍ
+      };
+
+      // الترتيب: (1) المفضّل (2) المعدة حسب البيئة (3) مركّب قبل عزل (4) تنويع
       pool.sort((a,b)=>{
         const fa=S.fav.has(a.id)?0:1, fb=S.fav.has(b.id)?0:1;
         if(fa!==fb) return fa-fb;                               // المفضّل أولاً
+        const ra=equipRank(a), rb=equipRank(b);
+        if(ra!==rb) return ra-rb;                              // أولوية المعدة
         const ca=a.type==="compound"?0:1, cb=b.type==="compound"?0:1;
         if(ca!==cb) return ca-cb;                               // مركّب قبل عزل
         const ua=used.has(a.id)?1:0, ub=used.has(b.id)?1:0;

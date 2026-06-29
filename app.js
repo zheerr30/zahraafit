@@ -1281,7 +1281,13 @@ function ensureMinimumVolume(plan, danger, used){
   };
 
   COVERAGE_MUSCLES.forEach(muscle=>{
-    const needSets = minSetsFor(muscle);
+    let needSets = minSetsFor(muscle);
+    // إذا كانت العضلة ضمن منطقة التركيز، نرفع حدها الأدنى الأسبوعي بقوة
+    // (هذا يضمن أن التركيز يعمل في كل الأنظمة: علوي/سفلي، PPL، فل بدي)
+    const focusMuscles = (FOCUS[S.focus]?.muscles)||[];
+    if(focusMuscles.includes(muscle)){
+      needSets = BIG_GROUPS.includes(muscle) ? 18 : 14; // حجم مرتفع للمنطقة المستهدفة
+    }
     // عدد التمارين المطلوب = تقريب لأعلى (الحد الأدنى ÷ المجموعات)
     const needExercises = Math.ceil(needSets / setsPer);
 
@@ -1339,6 +1345,42 @@ function ensureMinimumVolume(plan, danger, used){
       });
     }
   });
+
+  // ===== سقف منطقة غير التركيز =====
+  // عند اختيار تركيز معيّن، نتأكد أن العضلات المركّز عليها تبقى الأعلى فعلياً
+  // بتقليص العضلات غير المركّز عليها إذا تجاوزت (مع احترام الحد الأدنى المطلق).
+  const focusMuscles = (FOCUS[S.focus]?.muscles)||[];
+  if(focusMuscles.length){
+    // أقل عدد تمارين للعضلة المركّز عليها (الكبيرة)
+    const focusBigSets = 18;
+    const focusMinEx = Math.ceil(focusBigSets/setsPer);
+    // سقف العضلات غير المركّز عليها = أقل من تمارين منطقة التركيز
+    const capBig = Math.max(Math.ceil(10/setsPer), focusMinEx-1);   // لا يقل عن الحد الأدنى 10
+    const capSmall = Math.max(Math.ceil(8/setsPer), focusMinEx-1);
+
+    COVERAGE_MUSCLES.forEach(muscle=>{
+      if(focusMuscles.includes(muscle)) return; // لا نقصّ منطقة التركيز
+      const cap = BIG_GROUPS.includes(muscle) ? capBig : capSmall;
+      // نحسب تمارين هذه العضلة ونقصّ الزائد (نزيل من أكثر الأيام ازدحاماً)
+      let count = exCount()[muscle]||0;
+      while(count > cap){
+        // نجد يوماً يحتوي العضلة، ونزيل آخر تمرين لها (عزل غالباً)
+        let removed=false;
+        const dayIdxs=plan.map((d,i)=>({i,n:d.exercises.filter(e=>e.group===muscle).length}))
+                          .filter(x=>x.n>0).sort((a,b)=>b.n-a.n);
+        for(const {i} of dayIdxs){
+          const arr=plan[i].exercises;
+          // نزيل تمرين عزل أولاً (للحفاظ على المركّب)
+          let ri=-1;
+          for(let k=arr.length-1;k>=0;k--){ if(arr[k].group===muscle && arr[k].type==="isolation"){ri=k;break;} }
+          if(ri<0) for(let k=arr.length-1;k>=0;k--){ if(arr[k].group===muscle){ri=k;break;} }
+          if(ri>=0){ arr.splice(ri,1); removed=true; break; }
+        }
+        if(!removed) break;
+        count--;
+      }
+    });
+  }
 }
 
 /* تضمن أن كل عضلة في قائمة التغطية تظهر أسبوعياً بحدها الأدنى.
@@ -1679,6 +1721,12 @@ function buildPdfHTML(){
       <div style="background:#fff;border:1px solid #e3e7ee;border-radius:12px;padding:12px 22px;text-align:center">
         <div style="font-family:Cairo;font-weight:900;font-size:20px;color:${wk.balanced?'#1f9d57':'#d98a1f'}">${wk.balanced?'متوازن ✓':'مقبول'}</div>
         <div style="font-size:11px;color:#6a7488;font-weight:700">الحالة العامة</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:flex-start;background:#eef4ff;border:1px solid #c9dcff;border-radius:14px;padding:14px 18px;max-width:600px;margin:20px auto 0">
+      <span style="font-size:20px;flex:none">💡</span>
+      <div style="font-size:12.5px;color:#33476b;font-weight:600;line-height:1.9;text-align:right">
+        <b style="color:${navy}">ملاحظة علمية:</b> لا يوجد جدول يحقق تفعيلاً مثالياً 100% لكل عضلة في الوقت نفسه — فرفع حجم عضلة قد يخفض أخرى، وهذا طبيعي. لكن هذا الجدول مصمَّم ليحقق <b style="color:${navy}">توازناً ممتازاً</b> بين جميع العضلات، مع تغطية كاملة وحجم تدريبي ضمن النطاق الصحي لكل مجموعة. الأهم هو الاستمرارية والتدرّج، لا الكمال المطلق في الأرقام.
       </div>
     </div>
   </div>`;

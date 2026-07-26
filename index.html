@@ -464,6 +464,10 @@ const EX = [
   {id:"ytwraise",name:"رفع Y-T-W منبطحة",group:"shoulders",muscle:"reardelt",env:["gym","home","bodyweight"],level:1,risk:[],tip:"منبطحة، ارفعي ذراعيك على شكل Y ثم T ثم W مع إبهام لأعلى ودون رفع الكتفين.",type:"isolation",pattern:"pull",video:"https://youtu.be/R6hm0NI_e58",en:"Prone Y-T-W Raise"},
   {id:"shouldertap",name:"لمس الكتف في البلانك",group:"shoulders",muscle:"frontdelt",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"من وضع البلانك على اليدين، المسي كتفك المقابل دون تحريك الحوض.",type:"isolation",pattern:"push",video:"https://youtu.be/gKA5LBy7WAI",en:"Plank Shoulder Taps"},
   {id:"elevatedpike",name:"ضغط بايك بقدمين مرتفعتين",group:"shoulders",muscle:"frontdelt",env:["gym","home","bodyweight"],level:3,risk:["shoulder","wrist"],tip:"قدماك على كرسي والورك عالٍ، انزلي برأسك للأرض بين يديك.",type:"compound",pattern:"push",video:"https://youtu.be/UYAn98jcRMs",en:"Elevated Pike Push-Up"},
+
+  {id:"dbfloorpress",name:"ضغط أرضي بالدمبل",group:"chest",muscle:"chest",env:["gym","home"],level:1,risk:[],tip:"استلقي على الأرض والدمبل قريب من صدرك، وانزلي حتى يلمس مرفقك الأرض ثم ادفعي.",type:"compound",pattern:"push",video:"https://youtu.be/qHCI9rK7HqM",en:"Dumbbell Floor Press"},
+  {id:"reverselunge",name:"طعنة خلفية",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:["knee"],tip:"اخطي للخلف وانزلي حتى تصير الركبتان بزاوية قائمة، والوزن على الرجل الأمامية.",type:"compound",pattern:"legs",video:"https://youtu.be/RZKXLMxPF_I",en:"Reverse Lunge"},
+  {id:"inclinepush",name:"ضغط مائل لأعلى (اليدان مرتفعتان)",group:"chest",muscle:"chest",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"يداك على كرسي أو طاولة والجسم بخط مستقيم — كل ما ارتفعت اليدان صار أسهل.",type:"compound",pattern:"push",video:"https://youtu.be/49jfZ_z7-us",en:"Incline Push-Up"},
 ];
 
 /* ===== مكتبة الإطالة والمرونة — معرّفات مطابقة لمكتبة التمارين ===== */
@@ -873,7 +877,7 @@ const S = {
   days:4,
   split:"ppl",
   dailyCount:6,
-  minDaily:4, maxDaily:9,      // حدّا عدد التمارين اليومي (العدد نفسه يُحسب تلقائياً)
+  minDaily:0, maxDaily:8,      // حدّا عدد التمارين اليومي (العدد نفسه يُحسب تلقائياً)
   gluteEmphasis:true,          // أولوية المؤخرة
   flexTab:null,
   subsUrl:"", subsFilter:"workout",
@@ -1093,7 +1097,7 @@ function screenSetup(){
       <span class="eyebrow" style="display:block;margin-top:20px">حدّا عدد التمارين اليومي</span>
       <div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:8px">
         <div><small style="color:var(--muted);font-weight:700">أدنى</small><div class="choices" style="display:flex;gap:6px;margin-top:4px">
-          ${[3,4,5].map(n=>`<div class="choice ${S.minDaily==n?'sel':''}" data-mind="${n}" style="padding:8px 14px">${n}</div>`).join("")}
+          ${[0,3,4,5].map(n=>`<div class="choice ${S.minDaily==n?'sel':''}" data-mind="${n}" style="padding:8px 14px">${n||'بلا'}</div>`).join("")}
         </div></div>
         <div><small style="color:var(--muted);font-weight:700">أقصى</small><div class="choices" style="display:flex;gap:6px;margin-top:4px">
           ${[7,8,9,10].map(n=>`<div class="choice ${S.maxDaily==n?'sel':''}" data-maxd="${n}" style="padding:8px 14px">${n}</div>`).join("")}
@@ -1881,9 +1885,9 @@ async function generateAI(){
     const data = await resp.json();
     if(!data.plan || !Array.isArray(data.plan)) throw new Error("ناتج غير متوقع من الذكاء");
 
-    /* ناتج الذكاء يمر على نفس طبقات الجودة في المحرك:
-       وصفة المجموعات/التكرارات · التحقق من الحجم · حذف الزائد · تدقيق التوازن
-       · الإحماء والإطالة لكل يوم · كتلة التدرّج. الذكاء يختار، والمحرك يضمن. */
+    /* جدول الذكاء يُنفَّذ كما هو: نفس التمارين وبنفس الترتيب.
+       المحرك يضيف الوصفة والإحماء والإطالة والتقرير فقط، ولا يعيد الترتيب.
+       إعادة الترتيب كانت تُلغي أي تسلسل تطلبه المدربة في نص الطلب. */
     const exById = Object.fromEntries(EX.map(e=>[e.id,e]));
     const used = new Set();
     const seen = {};
@@ -1895,9 +1899,16 @@ async function generateAI(){
       return {
         groups,
         title: day.title || groups.map(g=>DAY_NAMES[g]).join(" + "),
-        exercises: orderDay(list).map(e=>{
+        exercises: list.map((e,i)=>{
           const sch = schemeFor(e);
-          if(seen[e.group] === 2) sch.reps = shiftReps(sch.reps);
+          /* إن حدّد الذكاء مجموعات أو تكرارات (لأن المدربة كتبتها في طلبها)
+             فهي الأولى، ووصفة المحرك تُستخدم فقط لما لا يُحدَّد شيء.
+             استبدال أرقام المدربة بوصفتي كان يُفرغ طلبها من معناه. */
+          const req = (day.prescriptions || [])[i] || {};
+          if(req.sets) sch.sets = Math.min(6, Math.max(1, parseInt(req.sets,10) || sch.sets));
+          if(req.reps) sch.reps = String(req.reps).slice(0,12);
+          else if(seen[e.group] === 2) sch.reps = shiftReps(sch.reps);
+          sch.baseSets = sch.sets;
           return Object.assign({}, e, sch, {video: videoLinks[e.id]||""});
         })
       };
@@ -1905,8 +1916,14 @@ async function generateAI(){
 
     if(!S.plan.length) throw new Error("لم يُنتج الذكاء جدولاً صالحاً");
 
-    const report = verifyVolume(S.plan, dangerSet(), used, S.maxDaily||9);
-    trimOvershoot(S.plan);
+    /* جدول الذكاء يُحترم كما هو: لا إضافة ولا حذف.
+       الطلب الصريح للمدربة أولى من أهداف الحجم، والحجم يُقاس ويُعرض
+       في التقرير لتقرّر هي، لا ليُعدَّل الجدول من تحت يدها. */
+    const report = { advice:null, shortfalls:[], fixes:[], volume: volumeReport(S.plan) };
+    report.volume.forEach(v=>{
+      if(!v.ok) report.shortfalls.push({muscle:v.muscle, got:v.effective, target:v.target,
+        direct:v.direct, dmin:v.dmin, fix:"جدول الذكاء مُحترم كما هو — عدّلي الطلب إن أردتِ رفع الحجم"});
+    });
     S.plan.forEach(d=>{ d.warmup=buildWarmup(d); d.cooldown=buildCooldown(d); });
     report.balance     = balanceAudit(S.plan);
     report.progression = progressionBlock();
@@ -2051,6 +2068,7 @@ function pdfMuscleCSS(){
     /* قواعد الطباعة: الصف والبطاقة والملاحظة لا تُقصّ بين صفحتين */
     tr{page-break-inside:avoid}
     h1,h2,h3{page-break-after:avoid}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
     @media print{
       tr{page-break-inside:avoid}
       table{page-break-inside:auto}
@@ -2143,7 +2161,7 @@ function buildPdfHTML(){
         <td style="width:44px;text-align:center;vertical-align:middle">${vidBtn}</td>
       </tr>`;
     });
-    body+=`<div style="page-break-before:always;padding:16mm 52px 26px;margin-bottom:0;background:linear-gradient(180deg,#e9edf5,#eef1f7)">
+    body+=`<div style="page-break-before:always;padding:16mm 52px 26px;margin-bottom:0">
       <table style="width:100%;border-collapse:collapse;background:linear-gradient(90deg,${navy},${navy2});border-radius:14px 14px 0 0;overflow:hidden;box-shadow:0 4px 14px rgba(15,31,61,.12);page-break-after:avoid;page-break-inside:avoid">
         <tr><td style="padding:18px 22px">
           <span style="display:inline-grid;place-items:center;width:40px;height:40px;border-radius:11px;background:${orange};font-family:Cairo;font-weight:900;font-size:18px;color:#fff;vertical-align:middle">${i+1}</span>
@@ -2175,7 +2193,7 @@ function buildPdfHTML(){
       <td style="padding:9px 14px;text-align:center"><span style="background:${color}1a;color:${color};font-weight:800;font-size:12px;padding:3px 12px;border-radius:20px">${label}</span></td>
     </tr>`;}).join("");
   const ratioTxt = wk.pull>0 ? (wk.push/wk.pull).toFixed(1)+" : 1" : "—";
-  const summary = `<div style="page-break-before:always;page-break-inside:avoid;padding:44px 52px 26px;background:linear-gradient(180deg,#e9edf5,#eef1f7)">
+  const summary = `<div style="page-break-before:always;page-break-inside:avoid;padding:44px 52px 26px">
     <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · ملخص علمي</span></div>
     <h1 style="font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">📊 الحجم التدريبي الأسبوعي</h1>
     <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 16px"></div>
@@ -2233,7 +2251,7 @@ function buildPdfHTML(){
     </div>`;
   let warmup="";
   if(S.includeEdu){
-  warmup=`<div style="page-break-before:always;page-break-inside:avoid;padding:44px 52px 26px;background:linear-gradient(180deg,#e9edf5,#eef1f7)">
+  warmup=`<div style="page-break-before:always;page-break-inside:avoid;padding:44px 52px 26px">
     <div style="text-align:center;margin-bottom:8px">
       <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · قبل التمرين</span>
     </div>
@@ -2265,7 +2283,7 @@ function buildPdfHTML(){
           <div style="font-size:13px;color:#56627a;font-weight:600;line-height:1.7">${it[1]}</div></div>
           ${vbtn}
         </div>`;}).join("");
-      support+=`<div style="page-break-before:always;page-break-inside:avoid;padding:44px 52px 26px;background:linear-gradient(180deg,#e9edf5,#eef1f7)">
+      support+=`<div style="page-break-before:always;page-break-inside:avoid;padding:44px 52px 26px">
         <div style="text-align:center;margin-bottom:8px">
           <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · دعم وتأهيل</span>
         </div>
@@ -2290,7 +2308,7 @@ function buildPdfHTML(){
           <div style="font-family:Cairo;font-weight:800;font-size:16px;color:${navy};margin-bottom:5px">${b.h}</div>
           <div style="font-size:14px;line-height:1.85;color:#445">${b.p}</div>
         </div>`).join("");
-      edu+=`<div style="page-break-before:always;page-break-inside:avoid;padding:44px 52px 26px;background:linear-gradient(180deg,#e9edf5,#eef1f7)">
+      edu+=`<div style="page-break-before:always;page-break-inside:avoid;padding:44px 52px 26px">
         <div style="text-align:center;margin-bottom:8px">
           <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · دليل تثقيفي</span>
         </div>
@@ -2347,7 +2365,7 @@ function buildPdfHTML(){
     });
 
     if(cards){
-      library=`<div style="page-break-before:always;padding:44px 52px 26px;background:linear-gradient(180deg,#e9edf5,#eef1f7)">
+      library=`<div style="page-break-before:always;padding:44px 52px 26px">
         <div style="text-align:center;margin-bottom:8px">
           <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · بدائل التمارين</span>
         </div>
@@ -2419,7 +2437,7 @@ function buildPdfHTML(){
         <div><div style="font-family:Cairo;font-weight:800;font-size:15px;color:${navy};margin-bottom:2px">${n[1]}</div>
         <div style="font-size:13px;color:#56627a;font-weight:600;line-height:1.7">${n[2].replace('${S.days}',S.days).replace('${L2.rest}',L2.rest)}</div></div>
       </div>`).join("");
-    intro=`<div style="page-break-before:always;padding:44px 52px 26px;background:linear-gradient(180deg,#e9edf5,#eef1f7)">
+    intro=`<div style="page-break-before:always;padding:44px 52px 26px">
       <div style="text-align:center;margin-bottom:8px">
         <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · قبل أن تبدئي</span>
       </div>
@@ -2446,7 +2464,7 @@ function buildPdfHTML(){
         <div style="font-size:12.5px;color:#56627a;font-weight:600;line-height:1.7">${note}</div>
       </div>`;
 
-    cardio=`<div style="page-break-before:always;page-break-inside:avoid;padding:44px 48px;background:linear-gradient(180deg,#e9edf5,#eef1f7)">
+    cardio=`<div style="page-break-before:always;page-break-inside:avoid;padding:44px 48px">
       <div style="text-align:center;margin-bottom:8px">
         <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · بعد التمرين</span>
       </div>
@@ -2500,7 +2518,7 @@ function buildPdfHTML(){
         ${sec.items.map(it=>stretchItem(it[0],it[1],it[2])).join("")}
       </div>`;
 
-    stretch=`<div style="page-break-before:always;page-break-inside:avoid;padding:44px 48px;background:linear-gradient(180deg,#e9edf5,#eef1f7)">
+    stretch=`<div style="page-break-before:always;page-break-inside:avoid;padding:44px 48px">
       <div style="text-align:center;margin-bottom:8px">
         <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · التبريد</span>
       </div>
@@ -2525,8 +2543,12 @@ function buildPdfHTML(){
      فلا يُضاف summary معه وإلا تكرّر جدول الحجم الأسبوعي مرتين. */
   /* الـPDF بأكمله موجّه للعميل، فيمرّ على محوّل الصياغة دفعة واحدة.
      الرموز اللاتينية (روابط، CSS) لا تتأثر لأن القواعد عربية بحتة. */
-  return gt([pdfMuscleCSS(), cover, intro, body, disc, warmup, stretch, cardio, support, library, edu, rights]
+  /* الخلفية على حاوية واحدة تلف كل الصفحات: الكتلة التي تمتد على عدة صفحات
+     تُرسم خلفيتها في كل صفحة. وضعها على أقسام المحتوى كان يلوّن صندوق
+     المحتوى فقط فيظهر نصف الصفحة ملوّناً ونصفها أبيض. */
+  const __pages = gt([pdfMuscleCSS(), cover, intro, body, disc, warmup, stretch, cardio, support, library, edu, rights]
          .filter(Boolean).join("\n"));
+  return `<div style="background:#eef1f7;-webkit-print-color-adjust:exact;print-color-adjust:exact">${__pages}</div>`;
 }
 
 /* تصدير عبر نافذة طباعة نظيفة — مضمون بأي متصفح، بدون مكتبات */
@@ -2751,7 +2773,7 @@ function saveClient(){
 function resetPlan(){
   S.client={name:"",age:"",height:"",weight:"",gender:S.client.gender};
   S.env="gym"; S.level=1; S.days=4; S.dailyCount=6; S.conditions=[];
-  S.minDaily=4; S.maxDaily=9; S.gluteEmphasis=true;
+  S.minDaily=0; S.maxDaily=8; S.gluteEmphasis=true;
   S.fav=new Set(); S.no=new Set(); S.plan=null;
 }
 
@@ -3245,8 +3267,8 @@ function generate(){
   const danger = dangerSet();
   const sys    = SPLIT_SYSTEMS[S.split] || SPLIT_SYSTEMS.ppl;
   const split  = sys.days[S.days] || sys.days[4] || Object.values(sys.days)[0];
-  const minDaily = S.minDaily || 4;
-  const maxDaily = S.maxDaily || 8;
+  const minDaily = S.minDaily ?? 0;
+  const maxDaily = S.maxDaily ?? 8;
 
   /* أ) تكرار كل عضلة أسبوعياً — يُقرأ من التقسيمة نفسها */
   const freq = {};
@@ -3303,11 +3325,30 @@ function generate(){
       if(idx<0) idx = groups.findIndex((g,i)=>!BIG_GROUPS.includes(g) && quotas[i]===1 && survives[g]>1);
       if(idx>=0 && quotas[idx]===1) survives[groups[idx]]--;   // نسجّل الإسقاط حتى لا تُسقط من كل الأيام
       if(idx<0) idx = groups.findIndex((g,i)=>BIG_GROUPS.includes(g) && quotas[i]>1);
+      /* (هـ) إن كان عدد العضلات في اليوم أكبر من الحد الأقصى نفسه، فلا مفر من
+         إسقاط عضلة كاملة. نُسقط الأقل أولوية (بطن ← سمانة ← داخلي ← بايسبس/ترايسبس)
+         ولا نتجاوز رقم المدربة أبداً. النقص يُبلَّغ في التقرير. */
+      if(idx<0){
+        const DROP_ORDER = ["abs","calves","adductors","biceps","triceps","shoulders"];
+        for(const g of DROP_ORDER){
+          const i = groups.indexOf(g);
+          if(i>=0 && quotas[i]>0){ idx=i; break; }
+        }
+        /* وإن نفدت العضلات المساعدة، نُسقط الأدنى أولوية من الكبيرة أيضاً.
+           رقم المدربة مطلق: يُنفَّذ حتى لو كلّف إسقاط عضلة، والنقص يُبلَّغ. */
+        if(idx<0){
+          for(let k=GROUP_ORDER.length-1;k>=0;k--){
+            const i = groups.indexOf(GROUP_ORDER[k]);
+            if(i>=0 && quotas[i]>0){ idx=i; break; }
+          }
+        }
+        if(idx>=0) survives[groups[idx]]--;
+      }
       if(idx<0) break;
       quotas[idx]--; total--;
     }
-    // احترام الحد الأدنى: نزيد على الكبيرة أولاً
-    while(total < minDaily){
+    // الحد الأدنى اختياري: صفر يعني لا إضافة قسرية
+    while(minDaily > 0 && total < minDaily){
       let idx=-1, bestScore=-1;
       groups.forEach((g,i)=>{
         if(quotas[i]>=4) return;
@@ -3428,12 +3469,8 @@ function verifyVolume(plan, danger, used, maxDaily){
       if(!day) day = plan.filter(d=>d.exercises.length < maxDaily &&
                         (freePlace || d.groups.some(g=>LOWER_G.includes(g)===wantLower)))
                         .sort((a,b)=>a.exercises.length-b.exercises.length)[0];
-      // ج) تجاوز الحد الأقصى بتمرينين كحد أقصى
-      if(!day){
-        day = plan.filter(d=>(d.groups.includes(muscle) || freePlace) && d.exercises.length < maxDaily+2)
-                  .sort((a,b)=>a.exercises.length-b.exercises.length)[0];
-        if(day) overflow.add(muscle);
-      }
+      /* لا تجاوز للحد الأقصى. الرقم الذي تحدّده المدربة حدّ لا تفضيل،
+         وإن تعذّرت التغطية داخله يُبلَّغ النقص ولا يُخالَف الطلب. */
       if(!day) break;
       addTo(day, pick);
     }

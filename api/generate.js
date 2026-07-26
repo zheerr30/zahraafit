@@ -32,18 +32,10 @@ export default async function handler(req, res) {
     if (!Array.isArray(available) || !available.length)
       return res.status(400).json({ error: "قائمة التمارين فارغة" });
 
-    /* ---- تخفيف 1: نقصّ القائمة إلى 12 تمريناً لكل عضلة كحد أقصى ----
-       المفضّل أولاً ثم المركّب. 137 تمريناً في الطلب كانت تُبطئ الرد كثيراً. */
-    const byGroup = {};
-    available.forEach(e => { (byGroup[e.group] = byGroup[e.group] || []).push(e); });
-    const trimmed = [];
-    Object.values(byGroup).forEach(list => {
-      list.sort((a, b) =>
-        (b.fav ? 1 : 0) - (a.fav ? 1 : 0) ||
-        (a.type === "compound" ? 0 : 1) - (b.type === "compound" ? 0 : 1)
-      );
-      trimmed.push(...list.slice(0, 12));
-    });
+    /* القائمة تُرسل كاملة. القصّ إلى 12 لكل عضلة كان يُخفي تمارين
+       قد تسمّيها المدربة في طلبها، فلا يقدر الذكاء على تنفيذه.
+       الأسطر المضغوطة تكفي لتفادي المهلة بلا حذف أي تمرين. */
+    const trimmed = available;
 
     /* ---- تخفيف 2: سطر واحد قصير لكل تمرين (بلا أسماء إنجليزية ولا تفاصيل) ---- */
     const exLines = trimmed.map(e => `${e.id}|${e.group}|${e.type === "compound" ? "م" : "ع"}`).join("\n");
@@ -56,7 +48,12 @@ export default async function handler(req, res) {
     /* ---- تخفيف 3: نطلب معرّفات فقط بلا شرح، فيقصر الرد كثيراً ---- */
     const system = `أنتِ مساعدة برمجة تدريب. اختاري التمارين ووزّعيها على الأيام.
 
-قواعد:
+${aiRequest ? `الأولوية القصوى — طلب المدربة الحرفي، نفّذيه كما هو حتى لو خالف القواعد أدناه:
+"""${aiRequest}"""
+إن حدّدت تمارين بعينها فاستخدميها بالضبط وبالترتيب الذي ذكرته.
+إن حدّدت عدداً فالتزمي به حرفياً.
+
+` : ""}قواعد عامة (تُطبَّق فيما لم يحدّده الطلب):
 1. معرّفات (id) من القائمة فقط. أي معرّف خارجها يُرفض.
 2. ${days} أيام بالضبط، و${minDaily}-${maxDaily} تمرين في اليوم.
 3. المركّب (م) أولاً ثم العزل (ع). العضلات الكبيرة قبل الصغيرة. البطن آخراً.
@@ -64,8 +61,11 @@ export default async function handler(req, res) {
 5. أهداف المجموعات الأسبوعية: ${targetLines}
 ${gluteEmphasis ? "6. المؤخرة أولوية: أعلى حجم + عمل مباشر لها (هيب ثرست/جسر/رفس)." : ""}
 
-أعيدي JSON فقط بلا أي نص أو علامات كود، وبلا حقل notes:
-{"plan":[{"title":"اسم اليوم","exerciseIds":["id1","id2"]}]}`;
+أعيدي JSON فقط بلا أي نص أو علامات كود:
+{"plan":[{"title":"اسم اليوم","exerciseIds":["id1","id2"],"prescriptions":[{"sets":3,"reps":"8-12"},{"sets":2,"reps":"10-12"}]}]}
+
+مهم: إن ذكرت المدربة مجموعات أو تكرارات لأي تمرين، ضعيها في prescriptions
+بنفس ترتيب exerciseIds. وإن لم تُذكر، اتركي prescriptions فارغة [] ليتولّاها البرنامج.`;
 
     const user = `${ENVN[env] || env} | ${LEVELN[level] || level} | ${days} أيام | ${split} | ${GOALN[goal] || goal}${client.gender === "male" ? " | ذكر" : ""}
 ${conditions.length ? `حالات صحية: ${conditions.join("،")}` : ""}
@@ -90,7 +90,7 @@ ${exLines}`;
         },
         body: JSON.stringify({
           model: MODEL,
-          max_tokens: 1500,        // كان 4000
+          max_tokens: 2500,        // كان 4000
           temperature: 0.3,        // رد أسرع وأكثر ثباتاً
           system,
           messages: [{ role: "user", content: user }]
@@ -119,10 +119,17 @@ ${exLines}`;
     catch { return res.status(502).json({ error: "ناتج الذكاء ليس JSON صالحاً" }); }
 
     const valid = new Set(available.map(e => e.id));
-    out.plan = (out.plan || []).map(d => ({
-      title: String(d.title || "يوم").slice(0, 60),
-      exerciseIds: [...new Set((d.exerciseIds || []).filter(id => valid.has(id)))]
-    })).filter(d => d.exerciseIds.length);
+    out.plan = (out.plan || []).map(d => {
+      const ids = d.exerciseIds || [];
+      const pres = Array.isArray(d.prescriptions) ? d.prescriptions : [];
+      /* نُزيل المكرر مع الحفاظ على تطابق الأرقام مع التمارين */
+      const keep = [], kp = [], seenId = new Set();
+      ids.forEach((id, i) => {
+        if (!valid.has(id) || seenId.has(id)) return;
+        seenId.add(id); keep.push(id); kp.push(pres[i] || {});
+      });
+      return { title: String(d.title || "يوم").slice(0, 60), exerciseIds: keep, prescriptions: kp };
+    }).filter(d => d.exerciseIds.length);
 
     if (!out.plan.length)
       return res.status(502).json({ error: "لم يُنتج الذكاء أي تمرين صالح" });

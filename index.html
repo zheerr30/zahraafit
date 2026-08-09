@@ -2210,9 +2210,15 @@ function pdfMuscleCSS(){
     tr{page-break-inside:avoid}
     h1,h2,h3{page-break-after:avoid}
     *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-    /* منع انقطاع سطر أو سطرين وحدهما في صفحة (يتيم/أرملة) */
+    /* منع انقطاع سطر أو سطرين وحدهما في صفحة (يتيم/أرملة).
+       سفاري يعتمد الصيغة الحديثة break-* لا القديمة، فنكتب الاثنتين. */
     p,div,li,td{orphans:3;widows:3}
-    b,strong{page-break-after:avoid}
+    b,strong{page-break-after:avoid;break-after:avoid}
+    h1,h2,h3{page-break-after:avoid;break-after:avoid}
+    tr{page-break-inside:avoid;break-inside:avoid}
+    [style*="page-break-inside:avoid"]{break-inside:avoid}
+    [style*="page-break-before:always"]{break-before:page}
+    [style*="page-break-after:avoid"]{break-after:avoid}
     @media print{
       tr{page-break-inside:avoid}
       table{page-break-inside:auto}
@@ -2369,7 +2375,7 @@ function buildPdfHTML(){
 
   const summary = `<div style="page-break-before:always;padding:44px 52px 26px">
     <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · صفحة توضيحية</span></div>
-    <h1 style="font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">📊 كيف وزع جهدك في الأسبوع</h1>
+    <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">📊 كيف وزع جهدك في الأسبوع</h1>
     <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 16px"></div>
 
     <div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:14px;padding:16px 20px;max-width:640px;direction:rtl;text-align:right;word-wrap:break-word;overflow-wrap:break-word;margin:0 auto 18px">
@@ -2403,8 +2409,9 @@ function buildPdfHTML(){
     <div style="page-break-inside:avoid;background:#eef4ff;border:1px solid #c9dcff;border-radius:14px;padding:16px 20px;max-width:640px;direction:rtl;text-align:right;word-wrap:break-word;overflow-wrap:break-word;margin:18px auto 0">
       <b style="font-family:Cairo;color:${navy};font-size:14px">💡 توضيحات مهمة قبل أن تبدأ</b>
       <div style="font-size:13px;color:#33476b;font-weight:600;line-height:2.1;margin-top:8px;direction:rtl;text-align:right;word-wrap:break-word">
-        <div style="page-break-inside:avoid;margin-bottom:9px"><b style="color:${navy}">١. لماذا ${topMuscle} الأعلى في الجدول؟</b><br>
-        لأنها الأولوية في جدولك. رفع عضلة يخفض أخرى بالضرورة — لا يمكن أن تكون كل العضلات في القمة معا.</div>
+        <div style="page-break-inside:avoid;margin-bottom:9px"><b style="color:${navy}">١. لماذا تختلف أطوال الأشرطة؟</b><br>
+        لأن العضلات لا تتساوى في الحاجة ولا في الأولوية${topMuscle?` — ${topMuscle} أعلى شريط في جدولك الحالي`:""}.
+        رفع حجم عضلة يخفض أخرى بالضرورة، فلا يمكن أن تكون كلها في القمة معا. هذا التوزيع مقصود لا خلل.</div>
         <div style="page-break-inside:avoid;margin-bottom:9px"><b style="color:${navy}">٢. هل العضلة «الخفيفة» مهملة؟</b><br>
         لا. تأخذ شغلا تمهيديا في هذه الدورة، ويزيد حجمها في الدورة القادمة. التدرج مقصود لا نقص.</div>
         <div style="page-break-inside:avoid"><b style="color:${navy}">٣. العضلة تعمل حتى في تمارين غيرها</b><br>
@@ -2445,13 +2452,13 @@ function buildPdfHTML(){
     </div>`;
   let warmup="";
   if(S.includeEdu){
-  warmup=`<div style="page-break-before:always;page-break-inside:avoid;padding:44px 52px 26px">
+  warmup=`<div style="page-break-before:always;padding:44px 52px 26px">
     <div style="text-align:center;margin-bottom:8px">
       <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · قبل التمرين</span>
     </div>
-    <h1 style="font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">الإحماء</h1>
+    <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">الإحماء</h1>
     <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 18px"></div>
-    <p style="text-align:center;color:#6a7488;font-size:14.5px;font-weight:600;max-width:560px;margin:0 auto 26px;line-height:1.9">الإحماء 5–10 دقائق قبل كل تمرين يقلل خطر الإصابة ويرفع كفاءة الأداء. اختاري القسم المناسب ليومك.</p>
+    <p style="page-break-inside:avoid;page-break-after:avoid;text-align:center;color:#6a7488;font-size:14.5px;font-weight:600;max-width:560px;margin:0 auto 26px;line-height:1.9">الإحماء 5–10 دقائق قبل كل تمرين يقلل خطر الإصابة ويرفع كفاءة الأداء. اختاري القسم المناسب ليومك.</p>
     <table style="width:100%;border-collapse:separate;border-spacing:12px"><tr>
       <td style="width:50%;vertical-align:top">${warmCol(WARMUP.upper)}</td>
       <td style="width:50%;vertical-align:top">${warmCol(WARMUP.lower)}</td>
@@ -2477,7 +2484,7 @@ function buildPdfHTML(){
           <div style="font-size:13px;color:#56627a;font-weight:600;line-height:1.7">${it[1]}</div></div>
           ${vbtn}
         </div>`;}).join("");
-      support+=`<div style="page-break-before:always;page-break-inside:avoid;padding:44px 52px 26px">
+      support+=`<div style="page-break-before:always;padding:44px 52px 26px">
         <div style="text-align:center;margin-bottom:8px">
           <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · دعم وتأهيل</span>
         </div>
@@ -2502,13 +2509,13 @@ function buildPdfHTML(){
           <div style="font-family:Cairo;font-weight:800;font-size:16px;color:${navy};margin-bottom:5px">${b.h}</div>
           <div style="font-size:14px;line-height:1.85;color:#445">${b.p}</div>
         </div>`).join("");
-      edu+=`<div style="page-break-before:always;page-break-inside:avoid;padding:44px 52px 26px">
+      edu+=`<div style="page-break-before:always;padding:44px 52px 26px">
         <div style="text-align:center;margin-bottom:8px">
           <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · دليل تثقيفي</span>
         </div>
-        <h1 style="font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">${pg.title}</h1>
+        <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">${pg.title}</h1>
         <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 18px"></div>
-        <p style="text-align:center;color:#6a7488;font-size:14.5px;font-weight:600;max-width:560px;margin:0 auto 26px;line-height:1.9">${pg.intro}</p>
+        <p style="page-break-inside:avoid;page-break-after:avoid;text-align:center;color:#6a7488;font-size:14.5px;font-weight:600;max-width:560px;margin:0 auto 26px;line-height:1.9">${pg.intro}</p>
         ${blocks}
       </div>`;
     });
@@ -2563,7 +2570,7 @@ function buildPdfHTML(){
         <div style="text-align:center;margin-bottom:8px">
           <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · بدائل التمارين</span>
         </div>
-        <h1 style="font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">مكتبة التمارين الإضافية</h1>
+        <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">مكتبة التمارين الإضافية</h1>
         <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 18px"></div>
         <p style="text-align:center;color:#6a7488;font-size:14px;font-weight:600;max-width:580px;margin:0 auto 24px;line-height:1.9">
           هذه تمارين بديلة (غير الموجودة في جدولك) مرتبة حسب العضلة، يمكنك استخدامها لإضافة تنوع أو استبدال تمرين عند الحاجة — دون تغيير ترتيب جدولك الأساسي. زر ▶ يفتح فيديو الشرح إن تم إضافته.
@@ -2581,7 +2588,7 @@ function buildPdfHTML(){
         <span style="font-family:Cairo;font-weight:800;font-size:13px;color:${orange2};min-width:70px">${label}</span>
         <span style="font-weight:700;font-size:14px;color:#fff;direction:ltr">${handle}</span>
       </div>`;
-    rights=`<div style="page-break-before:always;page-break-inside:avoid;position:relative;width:100%;min-height:272mm;background:linear-gradient(160deg,${navy} 0%,${navy2} 60%,${navy3} 100%);overflow:hidden">
+    rights=`<div style="page-break-before:always;position:relative;width:100%;min-height:272mm;background:linear-gradient(160deg,${navy} 0%,${navy2} 60%,${navy3} 100%);overflow:hidden">
       
       
       <div style="position:relative;z-index:2;padding:8% 7%;color:#fff;text-align:center">
@@ -2635,7 +2642,7 @@ function buildPdfHTML(){
       <div style="text-align:center;margin-bottom:8px">
         <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · قبل أن تبدئي</span>
       </div>
-      <h1 style="font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">تعليمات وملاحظات هامة</h1>
+      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">تعليمات وملاحظات هامة</h1>
       <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 20px"></div>
       <div style="column-count:2;column-gap:16px">${cards2}</div>
     </div>`;
@@ -2658,11 +2665,11 @@ function buildPdfHTML(){
         <div style="font-size:12.5px;color:#56627a;font-weight:600;line-height:1.7">${note}</div>
       </div>`;
 
-    cardio=`<div style="page-break-before:always;page-break-inside:avoid;padding:44px 48px">
+    cardio=`<div style="page-break-before:always;padding:44px 48px">
       <div style="text-align:center;margin-bottom:8px">
         <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · بعد التمرين</span>
       </div>
-      <h1 style="font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">الكارديو — دليلك الكامل</h1>
+      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">الكارديو — دليلك الكامل</h1>
       <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 14px"></div>
       <p style="text-align:center;color:#6a7488;font-size:13px;font-weight:600;max-width:580px;margin:0 auto 20px;line-height:1.8">اختاري نوعا واحدا حسب لياقتك ووقتك. الأهم الانتظام، لا الشدة المفرطة. الكارديو بعد الأوزان أو في يوم منفصل.</p>
 
@@ -2712,11 +2719,11 @@ function buildPdfHTML(){
         ${sec.items.map(it=>stretchItem(it[0],it[1],it[2])).join("")}
       </div>`;
 
-    stretch=`<div style="page-break-before:always;page-break-inside:avoid;padding:44px 48px">
+    stretch=`<div style="page-break-before:always;padding:44px 48px">
       <div style="text-align:center;margin-bottom:8px">
         <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · التبريد</span>
       </div>
-      <h1 style="font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">🧘‍♀️ تمارين المرونة والإطالة</h1>
+      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">🧘‍♀️ تمارين المرونة والإطالة</h1>
       <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 14px"></div>
       <p style="text-align:center;color:#6a7488;font-size:13px;font-weight:600;max-width:580px;margin:0 auto 20px;line-height:1.8">أدي الإطالات بعد التمرين مباشرة والعضلات دافئة. تحسن المرونة، تقلل الشد والألم، وتسرع الاستشفاء. لا تندفعي — إطالة هادئة حتى تشعرين بشد مريح دون ألم.</p>
       <div style="max-width:600px;margin:0 auto">
@@ -2756,9 +2763,9 @@ function buildPdfHTML(){
       return out.join(" و");
     };
     postureP = `
-    <div style="page-break-before:always;padding:44px 52px 26px;min-height:200mm">
+    <div style="page-break-before:always;padding:44px 52px 26px">
       <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · مهم جدا</span></div>
-      <h1 style="font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">🧭 التمارين التصحيحية في جدولك</h1>
+      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">🧭 التمارين التصحيحية في جدولك</h1>
       <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 16px"></div>
 
       <div style="page-break-inside:avoid;background:#e8f3ff;border:1px solid #bcd8f5;border-radius:14px;padding:16px 20px;max-width:640px;direction:rtl;text-align:right;word-wrap:break-word;margin:0 auto 18px">
@@ -2811,7 +2818,7 @@ function buildPdfHTML(){
   const __dn = Object.entries(S.dayNotes||{}).filter(([i,v])=>v && v.trim());
   if(__n){
     coachNotes = `
-    <div style="page-break-before:always;padding:44px 52px 26px;min-height:200mm">
+    <div style="page-break-before:always;padding:44px 52px 26px">
       <div style="text-align:center;margin-bottom:26px">
         <div style="font-family:Cairo;font-weight:800;font-size:12px;color:${orange};letter-spacing:2px">ZAHRAAFIT · من مدربتك</div>
         <h1 style="font-family:Cairo;font-weight:900;font-size:28px;color:${navy};margin:8px 0 6px">📝 ملاحظات خاصة لك</h1>
@@ -2962,6 +2969,7 @@ function bind(){
         S.notes=""; S.dayNotes={}; saveNotes(); render();
       }
     }
+    else if(a==="tocard") go(0);
     else if(a==="manual"){ S._back=S.step; go(14); }
     else if(a==="manualexample"){
       S.manualText = `اليوم الأول — فل بدي A
@@ -2993,7 +3001,13 @@ function bind(){
     }
     else if(a==="manualbuild"){
       if(!manualParsed) return;
+      if(!(S.client && S.client.name)){
+        if(!confirm("بطاقة العميلة فارغة — سيصدر الجدول بلا اسم ولا بيانات.\nهل تريدين المتابعة؟")) return;
+      }
       S.plan = buildManualPlan(manualParsed);
+      /* التصحيح القوامي يطبق على الجدول اليدوي أيضا: اختيارك للحالة
+         لا يجوز أن يضيع لأنك كتبت الجدول بنفسك. يضاف في آخر كل يوم. */
+      if((S.posture||[]).length) injectCorrectives(S.plan, (S.maxDaily??8)+2);
       S.plan.forEach(d=>{ d.warmup=buildWarmup(d); d.cooldown=buildCooldown(d); });
       const rep = { advice:null, shortfalls:[], fixes:[], volume: volumeReport(S.plan), source:"manual" };
       rep.balance = balanceAudit(S.plan);
@@ -4677,6 +4691,18 @@ function screenManual(){
         <h2>اكتبي الجدول بنفسك</h2>
         <p>الصقي جدولك كما هو، والبرنامج ينفذه حرفيا — نفس التمارين ونفس الترتيب ونفس المجموعات والتكرارات. لا محرك ولا ذكاء يعدل عليه.</p>
       </div></div>
+
+      ${!(S.client&&S.client.name)?`
+        <div class="note" style="margin-top:12px;background:#fff7ee;border-color:rgba(232,98,44,.3);color:#8a5a13">
+          <b>⚠️ بطاقة العميلة فارغة.</b>
+          الاسم والعمر والطول والوزن تظهر في غلاف الـ PDF، والجنس يحدد صياغة النصوص.
+          املئيها أولا ثم ارجعي هنا.
+          <div style="margin-top:9px"><button class="btn line" data-act="tocard">← بطاقة العميلة</button></div>
+        </div>`:`
+        <div class="note" style="margin-top:12px;background:#eef7f0;border-color:#bfe0ca;color:#1f6b3f">
+          ✅ سيصدر الجدول باسم <b>${S.client.name}</b>${S.client.age?` · ${S.client.age} سنة`:""}${S.client.gender==="male"?" · ذكر":" · أنثى"}
+          ${(S.posture||[]).length?` · مع ${(S.posture||[]).length} حالة قوامية`:""}
+        </div>`}
 
       <div class="note" style="margin-top:12px">
         <b>الصيغة:</b> اكتبي عنوان اليوم في سطر، ثم كل تمرين في سطر مستقل بصيغة

@@ -881,6 +881,8 @@ const S = {
   gluteEmphasis:true,          // أولوية المؤخرة
   flexTab:null,
   subsUrl:"", subsFilter:"workout",
+  posture:[], manualText:"",
+  notes:"", dayNotes:{},   // ملاحظات المدربة — لا يمسّها التوليد
   goal:"hypertrophy",
   focus:"balanced",
   aiRequest:"",
@@ -965,7 +967,8 @@ function render(){
     S.step===10 ? screenVideos()  :
     S.step===11 ? screenWarmup() :
     S.step===12 ? screenFlex()   :
-    S.step===13 ? screenSubs()   : ""
+    S.step===13 ? screenSubs()   :
+    S.step===14 ? screenManual() : ""
   );
   bind();
 }
@@ -979,6 +982,7 @@ function topbar(){
     <div class="right">
       <button class="ghost-btn" data-act="images">🖼️ مكتبة الصور</button>
       <button class="ghost-btn" data-act="videos">🎬 مكتبة الفيديوهات</button>
+      <button class="ghost-btn" data-act="manual">✍️ اكتبي الجدول</button>
       <button class="ghost-btn" data-act="subs">📥 المشتركون</button>
       <button class="ghost-btn" data-act="warmup">🔥 الإحماء</button>
       <button class="ghost-btn" data-act="flex">🧘 الإطالة</button>
@@ -1094,6 +1098,7 @@ function screenSetup(){
       <div class="hint" style="margin-top:6px">
         <b>ملاحظة:</b> عدد التمارين اليومي يُحسب الآن تلقائياً من الحجم الأسبوعي المستهدف لكل عضلة، وينحصر بين الحدّين أدناه.
       </div>
+      ${postureChips()}
       <span class="eyebrow" style="display:block;margin-top:20px">حدّا عدد التمارين اليومي</span>
       <div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:8px">
         <div><small style="color:var(--muted);font-weight:700">أدنى</small><div class="choices" style="display:flex;gap:6px;margin-top:4px">
@@ -1187,6 +1192,50 @@ function screenPicker(){
 }
 
 /* ---------------- شاشة الجدول ---------------- */
+/* بطاقة الملاحظات: تُعرض تحت الجدول وتُحفظ بضغطة.
+   موضعها بعد الجدول عمداً — تكتبينها وأنتِ ترين ما ولّدتِه. */
+/* لماذا هذا التمرين موجود؟ العميلة لا تعرف أن تمريناً بعينه وُضع
+   لتصحيح وضعيتها، فتظنّه حشواً وتتجاوزه. الشرح بجانبه يمنع ذلك. */
+function correctiveWhy(id){
+  const p = postureSelected().find(x => (x.prescribe||[]).includes(id));
+  if(!p) return "تمرين تصحيحي لوضعيتك — لا تتجاوزيه.";
+  return `لتصحيح: ${p.name} — جزء أساسي من جدولك لا تمرين إضافي.`;
+}
+
+function notesCard(){
+  const saved = savedNotesList();
+  return `
+  <div class="card no-print" style="margin-top:16px">
+    <div class="sec-head"><div class="ico">📝</div><div>
+      <h2 style="font-size:18px">ملاحظاتك للعميلة</h2>
+      <p>تُحفظ باسمها وتظهر في الـ PDF — وإعادة توليد الجدول لا تغيّرها</p>
+    </div></div>
+
+    <div class="field" style="margin-top:10px">
+      <label>ملاحظات عامة</label>
+      <textarea id="cl-notes" rows="5" style="line-height:2"
+        placeholder="مثال: ابدئي بأوزان خفيفة أول أسبوعين · راقبي ألم الركبة اليمنى في السكوات وقلّلي المدى إن زاد · صوّري نفسك في الرفعة الرومانية وأرسلي المقطع.">${(S.notes||"").replace(/</g,"&lt;")}</textarea>
+    </div>
+
+    ${(S.plan||[]).map((d,i)=>`
+      <div class="field" style="margin-top:8px">
+        <label style="font-size:12.5px">ملاحظة على ${d.title}</label>
+        <input id="cl-note-${i}" value="${((S.dayNotes||{})[i]||"").replace(/"/g,'&quot;')}"
+               placeholder="اختياري — تنبيه خاص بهذا اليوم">
+      </div>`).join("")}
+
+    <div class="actions" style="margin-top:12px">
+      <button class="btn primary" data-act="savenotes">💾 حفظ الملاحظات</button>
+      ${(S.notes||"").trim()?`<button class="btn line" data-act="clearnotes">مسح</button>`:""}
+    </div>
+
+    ${saved.length?`<div class="hint" style="margin-top:10px">
+      محفوظة لـ: ${saved.map(s=>`<b>${s.name==="_default"?"بلا اسم":s.name}</b>`).join(" · ")}
+      — تُستعاد تلقائياً عند كتابة نفس الاسم في بطاقة العميلة.
+    </div>`:""}
+  </div>`;
+}
+
 function screenPlan(){
   if(!S.plan) return "";
   const c=S.client, L=loadParams();
@@ -1242,12 +1291,17 @@ function screenPlan(){
           <div><b>اليوم ${i+1} — ${day.title}</b>
           <small>${day.exercises.length} تمارين · وصفة كل تمرين مبيّنة بجانبه</small></div>
         </div>
+        ${((S.dayNotes||{})[i]||"").trim()?`
+          <div style="background:#fff7ee;border-right:4px solid var(--orange);padding:11px 16px;font-size:13.5px;color:#8a5a13;font-weight:700;line-height:1.9">
+            📝 <b>من مدربتك:</b> ${(S.dayNotes[i]||"").replace(/</g,"&lt;")}
+          </div>`:""}
         ${day.exercises.map(e=>`
           <div class="ex-row">
             <div class="pic">${imgPic(e.muscle)}</div>
             <div class="body">
-              <b>${gt(e.name)}</b>
+              <b>${gt(e.name)}</b>${e.corrective?` <span style="background:#e8f3ff;color:#1e5fa8;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:20px;vertical-align:middle">🧭 تصحيحي</span>`:""}
               ${e.en?`<div style="font-size:11.5px;color:var(--muted);font-weight:700;letter-spacing:.2px;margin-top:1px">${e.en}</div>`:""}
+              ${e.corrective?`<div style="font-size:11.5px;color:#1e5fa8;font-weight:700;margin-top:3px;line-height:1.7">${correctiveWhy(e.id)}</div>`:""}
               <div class="tip"><span class="i">💡</span> ${gt(e.tip)}</div>
             </div>
             <div class="sets">
@@ -1277,6 +1331,16 @@ function screenPlan(){
         <button class="btn primary" data-act="exportprint">⬇️ حفظ كـ PDF</button>
       </div>
     </div>
+    ${((S.notes||"").trim())?`
+      <div class="card" style="margin-top:16px;border-right:5px solid var(--orange)">
+        <div class="sec-head"><div class="ico">📝</div><div>
+          <h2 style="font-size:18px">من مدربتك</h2>
+          <p>تظهر في الـ PDF أيضاً</p>
+        </div></div>
+        <div style="white-space:pre-wrap;font-size:14.5px;line-height:2.1;color:#33476b;font-weight:600;margin-top:8px">${(S.notes||"").replace(/</g,"&lt;")}</div>
+      </div>`:""}
+    ${notesCard()}
+    ${postureCard()}
     ${reportPanel()}
     <div class="note">كل تمرين مربوط بصورة عضلته تلقائياً · الـ PDF يحتوي غلافاً + الجدول + الإحماء + الدليل التثقيفي.</div>
   </div></div>`;
@@ -1468,12 +1532,39 @@ function imgPic(muscle){
    ============================================================ */
 function dangerSet(){
   const d=new Set();
+  postureAvoidRisks().forEach(r=>d.add(r));   // مخاطر الحالات القوامية
   S.conditions.forEach(cid=>{
     const c=CONDITIONS.find(x=>x.id===cid);
     if(c) c.avoid.forEach(r=>d.add(r));
   });
   return d;
 }
+/* التمارين التصحيحية القوامية تُفرَض في الجدول: تُوزَّع على الأيام
+   بالتناوب وتُوضع في آخر اليوم (بعد الأساسي، قبل البطن).
+   السبب: التصحيح لا ينفع كنصيحة في ورقة — لازم يكون داخل الجدول. */
+function injectCorrectives(plan, maxDaily){
+  const list = postureCorrectives();
+  if(!list.length || !plan.length) return;
+  const inPlan = new Set();
+  plan.forEach(d=>d.exercises.forEach(e=>inPlan.add(e.id)));
+  let di = 0;
+  list.forEach(ex=>{
+    if(inPlan.has(ex.id)) return;
+    /* نبحث عن يوم فيه متّسع؛ وإن امتلأت كل الأيام نضع في الأقل ازدحاماً */
+    let day = null;
+    for(let k=0;k<plan.length;k++){
+      const cand = plan[(di+k) % plan.length];
+      if(cand.exercises.length < maxDaily){ day = cand; di = (di+k+1) % plan.length; break; }
+    }
+    if(!day) return;                       // الحد الأقصى يُحترم حتى مع التصحيح
+    const sch = schemeFor(ex);
+    sch.sets = Math.min(sch.sets, 3);
+    day.exercises.push(Object.assign({}, ex, sch,
+      {video: videoLinks[ex.id]||ex.video||"", corrective:true}));
+    inPlan.add(ex.id);
+  });
+}
+
 function generate(){
   const danger=dangerSet();
   const sys = SPLIT_SYSTEMS[S.split] || SPLIT_SYSTEMS.ppl;
@@ -1986,6 +2077,49 @@ function importSettings(file){
 }
 function saveVideos(){ try{localStorage.setItem("zf_videos",JSON.stringify(videoLinks));}catch(e){} }
 
+/* ============================================================
+   ملاحظات المدربة
+   تُحفظ في المتصفح ولا يمسّها التوليد إطلاقاً: إعادة توليد الجدول
+   تغيّر التمارين ولا تلمس ما كتبتِه. الحفظ باسم العميلة حتى تبقى
+   لكل واحدة ملاحظاتها، ويُستعاد تلقائياً عند اختيار اسمها.
+   ============================================================ */
+function notesKey(){
+  const n = (S.client && S.client.name || "").trim();
+  return "zf_notes_" + (n ? n.replace(/\s+/g,"_") : "_default");
+}
+function saveNotes(){
+  try{
+    localStorage.setItem(notesKey(), JSON.stringify({
+      notes: S.notes || "", dayNotes: S.dayNotes || {}, savedAt: new Date().toISOString()
+    }));
+  }catch(e){}
+}
+function loadNotes(){
+  try{
+    const raw = localStorage.getItem(notesKey());
+    if(!raw) return false;
+    const d = JSON.parse(raw);
+    S.notes = d.notes || "";
+    S.dayNotes = d.dayNotes || {};
+    return true;
+  }catch(e){ return false; }
+}
+/* قائمة العميلات اللواتي لهنّ ملاحظات محفوظة */
+function savedNotesList(){
+  const out = [];
+  try{
+    for(let i=0;i<localStorage.length;i++){
+      const k = localStorage.key(i);
+      if(k && k.startsWith("zf_notes_")){
+        const d = JSON.parse(localStorage.getItem(k) || "{}");
+        out.push({ key:k, name: k.replace("zf_notes_","").replace(/_/g," "),
+                   len: (d.notes||"").length, at: d.savedAt || "" });
+      }
+    }
+  }catch(e){}
+  return out.filter(x=>x.len>0).sort((a,b)=>(b.at||"").localeCompare(a.at||""));
+}
+
 /* ---------- إدارة روابط الفيديو (نافذة بسيطة) ---------- */
 function editVideos(){
   const exById=Object.fromEntries(EX.map(e=>[e.id,e]));
@@ -2146,7 +2280,8 @@ function buildPdfHTML(){
       rows+=`<tr style="page-break-inside:avoid">
         <td style="width:84px;padding:9px 8px;vertical-align:middle">${pic}</td>
         <td style="padding:9px 6px;vertical-align:middle">
-          <div style="font-family:Cairo;font-weight:700;font-size:14.5px;color:${navy}">${e.name}</div>
+          <div style="font-family:Cairo;font-weight:700;font-size:14.5px;color:${navy}">${e.name}${e.corrective?` <span style="background:#e8f3ff;color:#1e5fa8;font-size:10px;font-weight:800;padding:2px 7px;border-radius:20px">🧭 تصحيحي</span>`:""}</div>
+          ${e.corrective?`<div style="font-size:11px;color:#1e5fa8;font-weight:700;margin-top:2px">${correctiveWhy(e.id)}</div>`:""}
           <div style="font-size:12px;color:#6a7488;font-weight:600;margin-top:2px">💡 ${e.tip}</div>
         </td>
         <td style="width:60px;text-align:center;vertical-align:middle">
@@ -2168,6 +2303,12 @@ function buildPdfHTML(){
           <span style="font-family:Cairo;font-weight:900;font-size:18px;color:#fff;margin-right:12px;vertical-align:middle">اليوم ${i+1} — ${day.title}</span>
           <div style="color:#b9c5dd;font-weight:600;font-size:12px;margin-top:4px">${day.exercises.length} تمارين · وصفة كل تمرين بجانبه</div>
         </td></tr>
+        ${((S.dayNotes||{})[i]||"").trim()?`
+        <tr><td style="padding:0">
+          <div style="background:#fff7ee;border-top:1px solid rgba(232,98,44,.25);padding:12px 22px;direction:rtl;text-align:right;font-size:13px;color:#8a5a13;font-weight:700;line-height:1.9;word-wrap:break-word">
+            📝 <b>من مدربتك:</b> ${(S.dayNotes[i]||"").replace(/</g,"&lt;")}
+          </div>
+        </td></tr>`:""}
       </table>
       <table style="width:100%;border-collapse:collapse;border:1px solid #dfe4ee;border-top:none;border-radius:0 0 14px 14px;overflow:hidden;background:#fff;box-shadow:0 6px 18px rgba(15,31,61,.07)">
         ${rows.replace(/<tr /g,'<tr style="border-bottom:1px solid #eef0f4" ').replace('border-bottom:1px solid #eef0f4" style="page-break-inside:avoid','page-break-inside:avoid')}
@@ -2193,34 +2334,77 @@ function buildPdfHTML(){
       <td style="padding:9px 14px;text-align:center"><span style="background:${color}1a;color:${color};font-weight:800;font-size:12px;padding:3px 12px;border-radius:20px">${label}</span></td>
     </tr>`;}).join("");
   const ratioTxt = wk.pull>0 ? (wk.push/wk.pull).toFixed(1)+" : 1" : "—";
-  const summary = `<div style="page-break-before:always;page-break-inside:avoid;padding:44px 52px 26px">
-    <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · ملخص علمي</span></div>
-    <h1 style="font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">📊 الحجم التدريبي الأسبوعي</h1>
-    <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 16px"></div>
-    <p style="text-align:center;color:#6a7488;font-size:13.5px;font-weight:600;max-width:560px;margin:0 auto 22px;line-height:1.9">عدد المجموعات لكل عضلة أسبوعياً. النطاق المثالي للهدف الحالي (${(GOALS[S.goal]||{}).name||""}) محسوب لكل عضلة على حدة. الرقم الأول هو الحجم الفعّال (يشمل تفعيل العضلة في التمارين المركّبة) والثاني هو الهدف.</p>
-    <table style="width:100%;max-width:520px;margin:0 auto;border-collapse:collapse;background:#fff;border:1px solid #e3e7ee;border-radius:14px;overflow:hidden">
-      <tr style="background:linear-gradient(90deg,${navy},${navy2})">
-        <td style="padding:11px 14px;color:#fff;font-family:Cairo;font-weight:800;font-size:13px">العضلة</td>
-        <td style="padding:11px 14px;color:#fff;font-family:Cairo;font-weight:800;font-size:13px;text-align:center">مجموعات/أسبوع</td>
-        <td style="padding:11px 14px;color:#fff;font-family:Cairo;font-weight:800;font-size:13px;text-align:center">التقييم</td>
-      </tr>
-      ${volRows}
-    </table>
-    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px">
-      <div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:12px;padding:12px 22px;text-align:center">
-        <div style="font-family:Cairo;font-weight:900;font-size:20px;color:${navy}">${ratioTxt}</div>
-        <div style="font-size:11px;color:#6a7488;font-weight:700">توازن الدفع : السحب</div>
+  /* صفحة الحجم الأسبوعي: أُعيدت كتابتها للعميلة لا للمدربة.
+     الأرقام الخام (21.8/13) لا تعني شيئاً لغير المختص، فصارت
+     أشرطة مرئية + شرح بلغة مفهومة + مثال محسوب. */
+  const volMax = Math.max(...(RV ? RV.map(x=>x.effective) : [1]), 1);
+  const volBars = (RV || []).map(x => {
+    const gr = volumeGrade(x.effective, x.target);
+    const pct = Math.max(6, Math.round(x.effective / volMax * 100));
+    const days = x.freq;
+    return `<div style="page-break-inside:avoid;margin-bottom:11px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+        <div style="width:78px;font-family:Cairo;font-weight:800;font-size:13px;color:${navy};flex:none">${grpNames[x.muscle]||x.muscle}</div>
+        <div style="flex:1;height:19px;background:#e9edf5;border-radius:10px;overflow:hidden">
+          <div style="width:${pct}%;height:100%;background:linear-gradient(90deg,${gr.color},${gr.color}bb);border-radius:10px"></div>
+        </div>
+        <div style="width:96px;text-align:left;flex:none;font-size:11.5px;color:#6a7488;font-weight:700">
+          ${days} ${days===1?"يوم":"أيام"} · ${gr.label}
+        </div>
       </div>
-      <div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:12px;padding:12px 22px;text-align:center">
-        <div style="font-family:Cairo;font-weight:900;font-size:20px;color:${wk.balanced?'#1f9d57':'#d98a1f'}">${wk.balanced?'متوازن ✓':'مقبول'}</div>
-        <div style="font-size:11px;color:#6a7488;font-weight:700">الحالة العامة</div>
+    </div>`;
+  }).join("");
+
+  const topMuscle = RV && RV.length ? (grpNames[RV[0].muscle]||RV[0].muscle) : "";
+
+  const summary = `<div style="page-break-before:always;padding:44px 52px 26px">
+    <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · اقرئي هذه الصفحة</span></div>
+    <h1 style="font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">📊 كيف وُزِّع جهدك في الأسبوع</h1>
+    <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 16px"></div>
+
+    <div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:14px;padding:16px 20px;max-width:640px;direction:rtl;text-align:right;word-wrap:break-word;overflow-wrap:break-word;margin:0 auto 18px">
+      <b style="font-family:Cairo;color:${navy};font-size:15px">ما معنى هذه الصفحة؟</b>
+      <div style="font-size:13.5px;color:#4a5a78;font-weight:600;line-height:2.1;margin-top:7px;direction:rtl;text-align:right;word-wrap:break-word">
+        كل عضلة تحتاج قدراً معيّناً من الشغل أسبوعياً حتى تنمو — لا أقل فتتوقف، ولا أكثر فتُرهق.
+        الشريط أدناه يوضّح <b style="color:${navy}">نصيب كل عضلة من جهدك</b>: كلما طال الشريط زاد شغلها.
+        وبجانبه عدد الأيام التي تشتغل فيها.
       </div>
     </div>
-    <div style="page-break-inside:avoid;display:flex;gap:10px;align-items:flex-start;background:#eef4ff;border:1px solid #c9dcff;border-radius:14px;padding:14px 18px;max-width:600px;margin:20px auto 0">
-      <span style="font-size:20px;flex:none">💡</span>
-      <div style="font-size:12.5px;color:#33476b;font-weight:600;line-height:1.9;text-align:right">
-        <b style="color:${navy}">ملاحظة علمية:</b> لا يوجد جدول يحقق تفعيلاً مثالياً 100% لكل عضلة في الوقت نفسه — فرفع حجم عضلة قد يخفض أخرى، وهذا طبيعي. لكن هذا الجدول مصمَّم ليحقق <b style="color:${navy}">توازناً ممتازاً</b> بين جميع العضلات، مع تغطية كاملة وحجم تدريبي ضمن النطاق الصحي لكل مجموعة. الأهم هو الاستمرارية والتدرّج، لا الكمال المطلق في الأرقام.
+
+    <div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:14px;padding:18px 20px;max-width:640px;margin:0 auto">
+      ${volBars}
+    </div>
+
+    <div style="page-break-inside:avoid;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:16px auto 0;max-width:640px">
+      <div style="background:#fff;border:1px solid #e3e7ee;border-radius:11px;padding:9px 16px;font-size:12px;font-weight:700;color:#4a5a78">
+        <span style="display:inline-block;width:11px;height:11px;border-radius:3px;background:#d98a1f;vertical-align:-1px;margin-left:5px"></span>
+        خفيف — شغل تمهيدي
       </div>
+      <div style="background:#fff;border:1px solid #e3e7ee;border-radius:11px;padding:9px 16px;font-size:12px;font-weight:700;color:#4a5a78">
+        <span style="display:inline-block;width:11px;height:11px;border-radius:3px;background:#1f9d57;vertical-align:-1px;margin-left:5px"></span>
+        متوسط — النطاق المثالي للنمو
+      </div>
+      <div style="background:#fff;border:1px solid #e3e7ee;border-radius:11px;padding:9px 16px;font-size:12px;font-weight:700;color:#4a5a78">
+        <span style="display:inline-block;width:11px;height:11px;border-radius:3px;background:#2563c9;vertical-align:-1px;margin-left:5px"></span>
+        عالي — عضلة أولوية في جدولك
+      </div>
+    </div>
+
+    <div style="page-break-inside:avoid;background:#eef4ff;border:1px solid #c9dcff;border-radius:14px;padding:16px 20px;max-width:640px;direction:rtl;text-align:right;word-wrap:break-word;overflow-wrap:break-word;margin:18px auto 0">
+      <b style="font-family:Cairo;color:${navy};font-size:14px">💡 ثلاث نقاط تُسألين عنها كثيراً</b>
+      <div style="font-size:13px;color:#33476b;font-weight:600;line-height:2.1;margin-top:8px;direction:rtl;text-align:right;word-wrap:break-word">
+        <div style="margin-bottom:9px"><b style="color:${navy}">١. لماذا ${topMuscle} الأعلى؟</b><br>
+        لأنها الأولوية في جدولك. رفع عضلة يخفض أخرى بالضرورة — لا يمكن أن تكون كل العضلات في القمة معاً.</div>
+        <div style="margin-bottom:9px"><b style="color:${navy}">٢. عضلة «خفيفة» يعني مهملة؟</b><br>
+        لا. تعني أنها تأخذ شغلاً تمهيدياً هذه الدورة، وتُرفع في الدورة القادمة. التدرّج مقصود لا نقص.</div>
+        <div><b style="color:${navy}">٣. العضلة تشتغل حتى في تمارين غيرها.</b><br>
+        الشريط يحسب ذلك: تمرين الظهر يشغّل البايسبس أيضاً، فلا يحتاج البايسبس تمارين كثيرة مستقلة.</div>
+      </div>
+    </div>
+
+    <div style="page-break-inside:avoid;text-align:center;margin-top:16px;font-size:12.5px;color:#6a7488;font-weight:600">
+      نسبة الدفع إلى السحب: <b style="color:${navy}">${ratioTxt}</b> — ${wk.balanced?"متوازنة ✓":"مقبولة"}
+      &nbsp;·&nbsp; الأهم الاستمرارية والتدرّج، لا الأرقام المثالية.
     </div>
   </div>`;
 
@@ -2546,9 +2730,94 @@ function buildPdfHTML(){
   /* الخلفية على حاوية واحدة تلف كل الصفحات: الكتلة التي تمتد على عدة صفحات
      تُرسم خلفيتها في كل صفحة. وضعها على أقسام المحتوى كان يلوّن صندوق
      المحتوى فقط فيظهر نصف الصفحة ملوّناً ونصفها أبيض. */
-  const __pages = gt([pdfMuscleCSS(), cover, intro, body, disc, warmup, stretch, cardio, support, library, edu, rights]
+  /* صفحة ملاحظات المدربة: تُدرَج بعد أيام الجدول مباشرة لأنها
+     الأقرب لما ستطبّقه العميلة. تُحذف تلقائياً إن لم تُكتب ملاحظات. */
+  /* صفحة التصحيح القوامي: تشرح للعميلة لماذا في جدولها تمارين
+     لا تشبه بقية التمارين، وأين تجدها بالضبط. بدون هذه الصفحة
+     تتجاوزها ظنّاً أنها حشو. */
+  let postureP = "";
+  const __ps = (typeof postureSelected === "function") ? postureSelected() : [];
+  if(__ps.length && S.plan){
+    /* رقم اليوم أوضح من عنوانه: العنوان قد يكون
+       «صدر + أكتاف + ترايسبس + سمانة» فيطغى على الاسم. */
+    const where = id => {
+      const out = [];
+      S.plan.forEach((d,i)=>{ if(d.exercises.some(e=>e.id===id)) out.push("اليوم "+(i+1)); });
+      return out.join(" و");
+    };
+    postureP = `
+    <div style="page-break-before:always;padding:44px 52px 26px;min-height:200mm">
+      <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · مهم جداً</span></div>
+      <h1 style="font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">🧭 التمارين التصحيحية في جدولك</h1>
+      <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 16px"></div>
+
+      <div style="page-break-inside:avoid;background:#e8f3ff;border:1px solid #bcd8f5;border-radius:14px;padding:16px 20px;max-width:640px;direction:rtl;text-align:right;word-wrap:break-word;margin:0 auto 18px">
+        <b style="font-family:Cairo;color:${navy};font-size:15px">لماذا هذه الصفحة؟</b>
+        <div style="font-size:13.5px;color:#33476b;font-weight:600;line-height:2.1;margin-top:7px;direction:rtl;text-align:right;word-wrap:break-word">
+          في جدولك تمارين قد تبدو غريبة أو «سهلة» مقارنةً بالبقية — وهي ليست إضافية ولا حشواً.
+          وُضعت لتصحيح وضعية جسمك، وهي <b style="color:${navy}">مدمجة داخل أيامك</b> ومعلَّمة بشارة
+          <span style="background:#fff;color:#1e5fa8;font-size:11px;font-weight:800;padding:2px 8px;border-radius:20px">🧭 تصحيحي</span>.
+          تجاوزها يعني بقاء المشكلة، ومع الوقت ألماً وتقييداً في التمارين الأخرى.
+        </div>
+      </div>
+
+      ${__ps.map(pp=>`
+        <div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:14px;padding:18px 20px;max-width:640px;direction:rtl;text-align:right;word-wrap:break-word;margin:0 auto 14px">
+          <b style="font-family:Cairo;color:${navy};font-size:16px">${pp.ico} ${pp.name}</b>
+          <div style="font-size:13px;color:#6a7488;font-weight:600;margin-top:4px">${pp.desc}</div>
+          <div style="font-size:13.5px;color:#4a5a78;font-weight:600;line-height:2;margin-top:10px;padding-top:10px;border-top:1px solid #eef0f4">
+            ${pp.note}
+          </div>
+          <div style="margin-top:12px">
+            <b style="font-size:13px;color:${navy}">تمارينك التصحيحية وأين تجدينها:</b>
+            ${(pp.prescribe||[]).map(id=>{
+              const e = EX.find(x=>x.id===id) || (typeof SUPPORT_EX==="function"?SUPPORT_EX(id):null);
+              const w = where(id);
+              return e ? `<div style="font-size:13px;color:#4a5a78;font-weight:600;padding:5px 0;line-height:1.8">
+                • <b style="color:${navy}">${e.name}</b>${w?` <span style="color:#6a7488">— في ${w}</span>`:""}
+              </div>` : "";
+            }).join("")}
+          </div>
+          ${(pp.avoidIds||[]).length?`
+            <div style="margin-top:10px;padding-top:10px;border-top:1px solid #eef0f4;font-size:12.5px;color:#8a5a13;font-weight:600;line-height:1.9">
+              <b>مؤجّلة مؤقتاً:</b> ${pp.avoidIds.map(id=>{const e=EX.find(x=>x.id===id);return e?e.name:"";}).filter(Boolean).join(" · ")}
+              — تعود بعد تحسّن الوضعية، وليست ممنوعة للأبد.
+            </div>`:""}
+          ${pp.medical?`
+            <div style="margin-top:10px;background:#fff7ee;border:1px solid rgba(217,138,31,.3);border-radius:10px;padding:11px 14px;font-size:12.5px;color:#8a5a13;font-weight:700;line-height:1.9">
+              ⚠️ هذه حالة طبية. الجدول داعم لا علاجي، ومتابعة أخصائي العلاج الطبيعي ضرورية.
+            </div>`:""}
+        </div>`).join("")}
+
+      <div style="page-break-inside:avoid;text-align:center;margin-top:14px;font-size:12.5px;color:#6a7488;font-weight:600;max-width:600px;margin-inline:auto">
+        التصحيح القوامي يحتاج ٦–١٢ أسبوعاً من الالتزام. النتيجة تدريجية ولن تلاحظيها في أسبوع،
+        لكن تركها يعني بقاء المشكلة كما هي.
+      </div>
+    </div>`;
+  }
+
+  let coachNotes = "";
+  const __n = (S.notes||"").trim();
+  const __dn = Object.entries(S.dayNotes||{}).filter(([i,v])=>v && v.trim());
+  if(__n){
+    coachNotes = `
+    <div style="page-break-before:always;padding:44px 52px 26px;min-height:200mm">
+      <div style="text-align:center;margin-bottom:26px">
+        <div style="font-family:Cairo;font-weight:800;font-size:12px;color:${orange};letter-spacing:2px">ZAHRAAFIT · من مدربتك</div>
+        <h1 style="font-family:Cairo;font-weight:900;font-size:28px;color:${navy};margin:8px 0 6px">📝 ملاحظات خاصة لكِ</h1>
+        <div style="width:70px;height:4px;background:${orange};margin:0 auto;border-radius:3px"></div>
+      </div>
+      ${__n?`<div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-right:5px solid ${orange};border-radius:14px;padding:20px 24px;margin-bottom:16px;font-size:15px;line-height:2.1;color:#33476b;white-space:pre-wrap">${__n.replace(/</g,"&lt;")}</div>`:""}
+      ${__dn.length?`<div style="direction:rtl;text-align:right;font-size:12.5px;color:#6a7488;font-weight:600;margin-top:6px">
+        ملاحظات الأيام تجدينها مكتوبة أعلى كل يوم في الجدول.
+      </div>`:""}
+    </div>`;
+  }
+
+
+  const __pages = gt([pdfMuscleCSS(), cover, intro, coachNotes, body, postureP, disc, warmup, stretch, cardio, support, library, edu, rights]
          .filter(Boolean).join("\n"));
-  return `<div style="background:#eef1f7;-webkit-print-color-adjust:exact;print-color-adjust:exact">${__pages}</div>`;
+  return `<div dir="rtl" style="background:#eef1f7;-webkit-print-color-adjust:exact;print-color-adjust:exact">${__pages}</div>`;
 }
 
 /* تصدير عبر نافذة طباعة نظيفة — مضمون بأي متصفح، بدون مكتبات */
@@ -2641,6 +2910,12 @@ function bind(){
   const impEl=document.getElementById("imp-settings");
   if(impEl) impEl.onchange=e=>{ if(e.target.files[0]) importSettings(e.target.files[0]); };
   $$("[data-sub]").forEach(el=>el.onclick=()=>applySubscriber(+el.dataset.sub));
+  $$("[data-posture]").forEach(el=>el.onclick=()=>{
+    const id=el.dataset.posture;
+    S.posture = S.posture||[];
+    S.posture = S.posture.includes(id) ? S.posture.filter(x=>x!==id) : S.posture.concat(id);
+    render();
+  });
   $$("[data-subfilter]").forEach(el=>el.onclick=()=>{ S.subsFilter=el.dataset.subfilter; render(); });
   $$("[data-flextab]").forEach(el=>el.onclick=()=>{ S.flexTab=el.dataset.flextab; render(); });
   $$("[data-mind]").forEach(el=>el.onclick=()=>{ S.minDaily=+el.dataset.mind; render(); });
@@ -2659,6 +2934,68 @@ function bind(){
     else if(a==="toggleedu"){ S.includeEdu=!S.includeEdu; render(); }
     else if(a==="exportpdf") exportPDF();
     else if(a==="restart"){ if(confirm("بدء جدول جديد؟ ستُحذف اختياراتك الحالية (الصور تبقى محفوظة).")){ resetPlan(); go(-1);} }
+    else if(a==="savenotes"){
+      const el=document.getElementById("cl-notes");
+      S.notes = el ? el.value : (S.notes||"");
+      S.dayNotes = S.dayNotes || {};
+      (S.plan||[]).forEach((d,i)=>{
+        const x=document.getElementById("cl-note-"+i);
+        if(x) S.dayNotes[i] = x.value.trim();
+      });
+      saveNotes();
+      alert("✅ حُفظت الملاحظات باسم: " + ((S.client&&S.client.name)||"بلا اسم") +
+            "\nلن تتغيّر عند إعادة توليد الجدول.");
+      render();
+    }
+    else if(a==="clearnotes"){
+      if(confirm("مسح كل الملاحظات لهذه العميلة؟")){
+        S.notes=""; S.dayNotes={}; saveNotes(); render();
+      }
+    }
+    else if(a==="manual"){ S._back=S.step; go(14); }
+    else if(a==="manualexample"){
+      S.manualText = `اليوم الأول — فل بدي A
+سكوات كأسي بالدمبل 3 × 8-12
+رفعة رومانية بالدمبل 3 × 8-12
+تجديف بالدمبل 3 × 10-12
+ضغط أرضي بالدمبل 3 × 8-12
+ضغط الكتف بالدمبل 2 × 10-12
+رفع السمانة 3 × 15-20
+
+اليوم الثاني — فل بدي B
+طعنة خلفية 3 × 10
+دفع الورك بالدمبل 3 × 10-15
+ضغط مائل لأعلى 3 × 8-12
+تجديف بالدمبل 3 × 10-12
+رفرفة جانبية 2 × 12-15
+مرجحة مطرقية 2 × 10-12`;
+      manualParsed=null; render();
+    }
+    else if(a==="manualparse"){
+      const el=document.getElementById("manual-text");
+      S.manualText = el ? el.value : "";
+      manualErr="";
+      try{
+        manualParsed = parseManualPlan(S.manualText);
+        if(!manualParsed.days.length){ manualErr="لم يُتعرَّف على أي تمرين. تأكدي من كتابة كل تمرين في سطر مستقل."; manualParsed=null; }
+      }catch(e){ manualErr="تعذّر التحليل: "+e.message; manualParsed=null; }
+      render();
+    }
+    else if(a==="manualbuild"){
+      if(!manualParsed) return;
+      S.plan = buildManualPlan(manualParsed);
+      S.plan.forEach(d=>{ d.warmup=buildWarmup(d); d.cooldown=buildCooldown(d); });
+      const rep = { advice:null, shortfalls:[], fixes:[], volume: volumeReport(S.plan), source:"manual" };
+      rep.balance = balanceAudit(S.plan);
+      rep.progression = progressionBlock();
+      rep.tracking = trackingSheet(S.plan);
+      /* الجدول اليدوي يُقاس ولا يُعدَّل: النقص يُعرض في التقرير لتقرّر المدربة */
+      rep.volume.forEach(v=>{ if(!v.ok) rep.shortfalls.push({muscle:v.muscle, got:v.effective,
+        target:v.target, direct:v.direct, dmin:v.dmin, fix:"جدولك مُنفَّذ حرفياً — هذا قياس لا اعتراض"}); });
+      S.report = rep;
+      S.weekly = computeWeeklyVolume(S.plan);
+      go(3);
+    }
     else if(a==="subs"){ S._back=S.step; go(13); }
     else if(a==="fetchsubs"){ const el=document.getElementById("subs-url"); if(el) S.subsUrl=el.value.trim(); fetchSubscribers(); }
     else if(a==="pastesubs"){ S.subsPaste=""; render(); }
@@ -2767,14 +3104,22 @@ function bind(){
 
 function saveClient(){
   const v=id=>{const el=document.getElementById(id);return el?el.value.trim():"";};
+  const prev = S.client.name;
   S.client.name=v("f-name"); S.client.age=v("f-age");
   S.client.height=v("f-height"); S.client.weight=v("f-weight");
+  /* تغيّر الاسم ⇒ نستعيد ملاحظات هذه العميلة إن كانت محفوظة،
+     ولا نُبقي ملاحظات عميلة سابقة على عميلة جديدة. */
+  if(S.client.name !== prev){
+    S.notes=""; S.dayNotes={};
+    loadNotes();
+  }
 }
 function resetPlan(){
   S.client={name:"",age:"",height:"",weight:"",gender:S.client.gender};
   S.env="gym"; S.level=1; S.days=4; S.dailyCount=6; S.conditions=[];
   S.minDaily=0; S.maxDaily=8; S.gluteEmphasis=true;
   S.fav=new Set(); S.no=new Set(); S.plan=null;
+  S.posture=[]; S.notes=""; S.dayNotes={};   // تفريغ الجلسة — المحفوظ في المتصفح يبقى
 }
 
 /* ============================================================
@@ -3013,7 +3358,7 @@ function trimOvershoot(plan){
     const {eff, dir} = volumeOf(plan);
     let best = null;
     plan.forEach(d=>d.exercises.forEach(e=>{
-      if(e.type === "compound") return;                       // المركّب لا يُحذف أبداً
+      if(e.type === "compound" || e.corrective) return;       // المركّب والتصحيحي لا يُحذفان
       const t = targetWeeklySets(e.group);
       if(eff[e.group] < t * 1.45) return;                     // لم تتجاوز بما يكفي
       if(dir[e.group] - e.sets < directMinFor(e.group)) return; // لا نكسر الحد المباشر
@@ -3126,6 +3471,7 @@ function targetWeeklySets(group){
   const focus = (FOCUS[S.focus] && FOCUS[S.focus].muscles) || [];
   if(focus.length) v *= focus.includes(group) ? FOCUS_MULT_ON : FOCUS_MULT_OFF;
   v *= (typeof priorityOf==='function' ? priorityOf(group) : 1);   // أولوية المؤخرة
+  v *= (typeof postureRatio==='function' ? postureRatio(group) : 1); // تعديل قوامي
   const hi = CEIL_OVERRIDE[group] || VOLUME_CEIL[tier];
   return Math.min(hi, Math.max(VOLUME_FLOOR[tier], Math.round(v)));
 }
@@ -3216,7 +3562,9 @@ function dangerSet(){
   return d;
 }
 function poolFor(group, danger){
+  const pAvoid = postureAvoidIds();          // تمارين تُؤجَّل حتى تتحسّن الوضعية
   return EX.filter(e=>
+    !pAvoid.has(e.id) &&
     e.group===group &&
     e.env.includes(S.env) &&
     e.level<=S.level &&
@@ -3270,6 +3618,13 @@ function generate(){
   const minDaily = S.minDaily ?? 0;
   const maxDaily = S.maxDaily ?? 8;
 
+  /* حجز مقاعد للتمارين التصحيحية القوامية قبل البناء.
+     بدون الحجز تمتلئ الأيام فتُرمى التصحيحية — وهي أهم من التمرين
+     العازل الأخير لمن عندها مشكلة قوامية. الحد الأقصى يبقى محترماً. */
+  const __corr = (typeof postureCorrectives === "function") ? postureCorrectives() : [];
+  const __perDay = Math.ceil(__corr.length / Math.max(1, S.days));
+  const workCap = Math.max(3, maxDaily - __perDay);
+
   /* أ) تكرار كل عضلة أسبوعياً — يُقرأ من التقسيمة نفسها */
   const freq = {};
   split.forEach(groups=>groups.forEach(g=>{ freq[g]=(freq[g]||0)+1; }));
@@ -3318,7 +3673,7 @@ function generate(){
        (أ) صغيرة فوق 1  (ب) كبيرة فوق 2  (ج) إسقاط عضلة صغيرة تظهر في يوم آخر
        (د) كبيرة إلى 1. هكذا لا تُجوَّع عضلة كبيرة بسبب سمانة أو بطن. */
     let total = quotas.reduce((a,b)=>a+b,0);
-    while(total > maxDaily){
+    while(total > workCap){
       let idx = -1;
       idx = groups.findIndex((g,i)=>!BIG_GROUPS.includes(g) && quotas[i]>1);
       if(idx<0) idx = groups.findIndex((g,i)=>BIG_GROUPS.includes(g) && quotas[i]>2);
@@ -3348,7 +3703,7 @@ function generate(){
       quotas[idx]--; total--;
     }
     // الحد الأدنى اختياري: صفر يعني لا إضافة قسرية
-    while(minDaily > 0 && total < minDaily){
+    while(minDaily > 0 && total < Math.min(minDaily, workCap)){
       let idx=-1, bestScore=-1;
       groups.forEach((g,i)=>{
         if(quotas[i]>=4) return;
@@ -3407,6 +3762,11 @@ function generate(){
   });
 
   /* د) طبقة التحقق — تقيس الحجم الفعلي وتصلّح النقص، وتصارح بما تعذّر */
+  /* التصحيح يُحقن قبل ملء الحجم: verifyVolume تملأ الأيام حتى الحد،
+     فلو أُخّر الحقن لما بقي له مكان. المشكلة القوامية أولى من
+     المجموعة الإضافية لعضلة وصلت 80% من هدفها أصلاً. */
+  injectCorrectives(plan, maxDaily);
+  plan.forEach(d=>d.exercises.forEach(e=>used.add(e.id)));
   const report = verifyVolume(plan, danger, used, maxDaily);
   trimOvershoot(plan);
   plan.forEach(d=>{ d.warmup = buildWarmup(d); d.cooldown = buildCooldown(d); });
@@ -4038,6 +4398,383 @@ function reportPanel(){
     <div class="note" style="margin:10px 0">${P.rule}</div>
     ${weeks}
     <small style="display:block;color:var(--muted);margin-top:10px">${P.after}</small>
+  </div>`;
+}
+
+/* ============================================================
+   ZahraaFit — إضافة v5
+   1) الحالات القوامية: لا تكتفي بالمنع، بل تفرض تمارين تصحيحية
+      وتعدّل نسب الحجم (مثال: تقوّس الظهر يحتاج سحباً أكثر من دفع)
+   2) الإدخال اليدوي: المدربة تكتب الجدول والبرنامج ينفّذه حرفياً
+   ============================================================ */
+
+/* ---------- 1. الحالات القوامية ---------- */
+/* الفرق عن الحالات الإصابية: هذه لا تُعالَج بالمنع وحده.
+   الانحناء لا يُصلحه تجنّب تمرين، بل يُصلحه تمرين مضاد يُفرض في الجدول. */
+const POSTURE = [
+  {
+    id:"kyphosis", name:"تقوّس الظهر العلوي (كتفان للأمام)", ico:"🙇‍♀️",
+    desc:"الكتفان مدوّران للأمام والصدر مغلق. شائع مع الجلوس الطويل.",
+    avoid:["shoulder"],
+    avoidIds:["ohp","uprightrow","behindneck"],           // الضغط العلوي الثقيل يفاقمه قبل التصحيح
+    prescribe:["facepull","reverssnow","ytwraise","sup_shoulder_5"],
+    ratio:{ pull:1.5, push:0.8 },                          // السحب يفوق الدفع
+    stretch:["flex_chest_1"],
+    note:"الأولوية لعضلات السحب وشدّ لوحي الكتف، مع إطالة الصدر. يُؤجَّل الضغط العلوي الثقيل حتى تتحسّن الوضعية."
+  },
+  {
+    id:"lordosis", name:"تقعّر أسفل الظهر / إمالة الحوض الأمامية", ico:"🧍‍♀️",
+    desc:"أسفل الظهر مقوّس والحوض مائل للأمام والبطن بارز.",
+    avoid:["lowerback"],
+    avoidIds:["superman","goodmorning","ohp"],             // ما يزيد تقوّس القطنية
+    prescribe:["sup_lowerback_1","deadbug","glutebridge","sup_diastasis_6"],
+    ratio:{ glutes:1.3, abs:1.4 },
+    stretch:["flex_hip_1","flex_quads_1"],
+    note:"التصحيح يقوم على تقوية المؤخرة والبطن العميق مع إطالة قابضات الورك. تُتجنّب التمارين التي تزيد تقوّس أسفل الظهر."
+  },
+  {
+    id:"forwardhead", name:"تقدّم الرأس للأمام", ico:"🦴",
+    desc:"الرأس متقدّم عن خط الكتفين. غالباً مصاحب لتقوّس الظهر العلوي.",
+    avoid:["neck"],
+    avoidIds:["uprightrow"],
+    prescribe:["sup_neck_3","facepull","sup_shoulder_5"],
+    ratio:{ back:1.2 },
+    stretch:["flex_neck_1","flex_neck_2"],
+    note:"شدّ الذقن للداخل (Chin Tuck) هو التمرين الأساسي، مع تقوية الظهر العلوي وإطالة الترابيس."
+  },
+  {
+    id:"valgus", name:"تقارب الركبتين للداخل", ico:"🦵",
+    desc:"الركبتان تميلان للداخل عند السكوات أو النزول.",
+    avoid:[],
+    avoidIds:["jumpsquat","hacksquat"],                    // حِمل عالٍ بلا تحكّم
+    prescribe:["abduction","sup_diastasis_5","glutebridge","sidelyingraise"],
+    ratio:{ glutes:1.4, adductors:0.8 },
+    stretch:["flex_adductors_1"],
+    note:"السبب الأشيع ضعف المؤخرة الجانبية. التقوية تسبق زيادة الأوزان، ويُراقَب اتجاه الركبة في كل تكرار."
+  },
+  {
+    id:"roundedlow", name:"تدوير أسفل الظهر عند النزول", ico:"🪑",
+    desc:"أسفل الظهر يتقوّس للخارج في السكوات أو الرفعة الميتة (Butt Wink).",
+    avoid:["lowerback"],
+    avoidIds:["deadlift","goodmorning","stiffdl"],
+    prescribe:["sup_lowerback_2","deadbug","plank","gobletsquat"],
+    ratio:{ abs:1.3 },
+    stretch:["flex_hams_3","flex_glutes_2"],
+    note:"يُقلَّل مدى النزول حتى النقطة التي يبقى فيها الظهر مستقيماً، مع إطالة الفخذ الخلفي وتقوية الكور."
+  },
+  {
+    id:"scoliosis", name:"جنف (انحناء جانبي)", ico:"〰️",
+    desc:"انحناء جانبي في العمود الفقري — يحتاج متابعة طبية.",
+    avoid:["lowerback","shoulder"],
+    avoidIds:["deadlift","squat","ohp","bentrow"],          // الحِمل المحوري الثقيل
+    prescribe:["sup_lowerback_3","deadbug","plank","sideplank","dbrow"],
+    ratio:{ abs:1.3, back:1.2 },
+    stretch:["flex_back_1","flex_side_1"],
+    medical:true,
+    note:"التمارين أحادية الجانب (ذراع/رجل واحدة) أفضل لأنها تسمح بتصحيح الفرق بين الجهتين. يُتجنّب الحِمل المحوري الثقيل، ومتابعة أخصائي العلاج الطبيعي ضرورية."
+  }
+];
+
+/* حالات المستخدمة القوامية المختارة */
+function postureSelected(){
+  return POSTURE.filter(p => (S.posture||[]).includes(p.id));
+}
+/* دمج المنع القوامي مع المنع الإصابي */
+function postureAvoidIds(){
+  const s = new Set();
+  postureSelected().forEach(p => (p.avoidIds||[]).forEach(id => s.add(id)));
+  return s;
+}
+function postureAvoidRisks(){
+  const s = new Set();
+  postureSelected().forEach(p => (p.avoid||[]).forEach(r => s.add(r)));
+  return s;
+}
+/* معامل الحجم القوامي: يُضرب في هدف العضلة */
+/* النسب تُكتب بأنماط الحركة (push/pull) لأنها أوضح للمدربة،
+   وتُترجم هنا إلى العضلات الفعلية. الكتابة بأسماء العضلات مباشرة تعمل أيضاً. */
+const RATIO_MAP = {
+  pull: ["back","biceps"],
+  push: ["chest","shoulders","triceps"],
+  legs: ["quads","hams","glutes"]
+};
+function postureRatio(group){
+  let m = 1;
+  postureSelected().forEach(p => {
+    if(!p.ratio) return;
+    Object.keys(p.ratio).forEach(k => {
+      if(k === group) m *= p.ratio[k];
+      else if(RATIO_MAP[k] && RATIO_MAP[k].includes(group)) m *= p.ratio[k];
+    });
+  });
+  return m;
+}
+/* التمارين التصحيحية المفروضة — تُضاف لكل يوم مناسب */
+function postureCorrectives(){
+  const ids = [];
+  postureSelected().forEach(p => (p.prescribe||[]).forEach(id => { if(!ids.includes(id)) ids.push(id); }));
+  return ids.map(id => EX.find(e => e.id === id) || SUPPORT_EX(id)).filter(Boolean);
+}
+/* بعض التصحيحيات في مكتبة الدعم لا في EX */
+function SUPPORT_EX(id){
+  for(const k in SUPPORT){
+    const hit = (SUPPORT[k].items||[]).find(it => it[0] === id);
+    if(hit) return {id:hit[0], name:hit[1], tip:hit[2]||"", group:"corrective",
+                    muscle:"absfront", type:"isolation", pattern:"core",
+                    env:["gym","home","bodyweight"], level:1, risk:[],
+                    video: videoLinks[hit[0]] || ""};
+  }
+  return null;
+}
+
+/* ---------- 2. الإدخال اليدوي ---------- */
+/* المدربة تكتب الجدول نصاً، والبرنامج يطابق الأسماء بالمكتبة وينفّذه حرفياً.
+   لا محرك ولا ذكاء: ما تكتبينه هو ما يخرج. */
+
+/* تطبيع النص العربي للمطابقة: يزيل التشكيل ويوحّد الألف والهاء والياء */
+function normAr(s){
+  return String(s||"")
+    .replace(/[\u064B-\u0652\u0640]/g,"")
+    .replace(/[أإآ]/g,"ا").replace(/ة/g,"ه").replace(/ى/g,"ي")
+    .replace(/[^\u0621-\u064Aa-zA-Z0-9 ]/g," ")
+    .replace(/\s+/g," ").trim().toLowerCase();
+}
+/* يبحث عن التمرين بالاسم العربي أو الإنجليزي أو المعرّف */
+function findExercise(raw){
+  const q = normAr(raw);
+  if(!q) return null;
+  const pool = EX.concat(FLEX.map(f=>({...f, group:"flex", type:"isolation",
+    muscle:f.group, env:["gym","home","bodyweight"], level:1, risk:[], tip:""})));
+
+  let hit = pool.find(e => e.id.toLowerCase() === q);                 // بالمعرّف
+  if(hit) return hit;
+  hit = pool.find(e => normAr(e.name) === q || normAr(e.en) === q);   // تطابق تام
+  if(hit) return hit;
+  hit = pool.find(e => normAr(e.name).includes(q) || normAr(e.en).includes(q)); // احتواء
+  if(hit) return hit;
+  hit = pool.find(e => q.includes(normAr(e.name)) && normAr(e.name).length > 6);
+  if(hit) return hit;
+
+  /* مطابقة بالكلمات: أعلى تداخل يفوز، بشرط كلمتين على الأقل */
+  const words = q.split(" ").filter(w => w.length > 2);
+  if(!words.length) return null;
+  let best = null, bestScore = 0;
+  pool.forEach(e => {
+    const t = normAr(e.name) + " " + normAr(e.en);
+    const score = words.filter(w => t.includes(w)).length;
+    if(score > bestScore){ bestScore = score; best = e; }
+  });
+  return bestScore >= Math.min(2, words.length) ? best : null;
+}
+
+/* يحلّل نصاً كاملاً إلى أيام وتمارين.
+   يفهم: عناوين الأيام · «3 × 8-12» بأي صيغة · الشُرَط والنقاط في أول السطر */
+function parseManualPlan(text){
+  const lines = String(text||"").split("\n");
+  const days = [];
+  let cur = null;
+  const unmatched = [];
+
+  const isDayHeader = l => /^(اليوم|يوم|day)\b/i.test(l) ||
+                           /^(full\s*body|fullbody|upper|lower|push|pull|legs)\b/i.test(l) ||
+                           /^[■▪●#*]{0,2}\s*(اليوم|يوم)/.test(l);
+
+  lines.forEach(raw => {
+    let l = raw.replace(/^[\s*\-–—•·.\d)]+/,"").trim();
+    if(!l) return;
+
+    if(isDayHeader(l) || (cur === null && !/\d\s*[x×]\s*\d/.test(l) && l.length < 40 && !findExercise(l))){
+      cur = { title: l.replace(/[:：]$/,"").trim(), rows: [] };
+      days.push(cur);
+      return;
+    }
+    if(!cur){ cur = { title:"اليوم 1", rows: [] }; days.push(cur); }
+
+    /* استخراج المجموعات والتكرارات: 3×8-12 · 3 x 10 · 3 مجموعات 12 تكرار */
+    let sets = null, reps = null;
+    const m1 = l.match(/(\d+)\s*[x×*]\s*([\d]+\s*[-–]\s*[\d]+|\d+)/);
+    if(m1){ sets = +m1[1]; reps = m1[2].replace(/\s/g,"").replace("–","-"); }
+    else {
+      const m2 = l.match(/(\d+)\s*(?:مجموعا?ت|جولات|sets?)/);
+      const m3 = l.match(/([\d]+\s*[-–]\s*[\d]+|\d+)\s*(?:تكرار|عدة|عدّة|reps?)/);
+      if(m2) sets = +m2[1];
+      if(m3) reps = m3[1].replace(/\s/g,"").replace("–","-");
+    }
+
+    /* اسم التمرين = السطر بعد إزالة الأرقام والوصف الجانبي */
+    let name = l.split(/[-–—]\s*\d|\d+\s*[x×*]\s*\d/)[0];
+    name = name.replace(/\(.*?\)/g,"")
+               .replace(/\d+\s*(?:مجموعا?ت|جولات|تكرار|عدة|عدّة|sets?|reps?)/g,"")
+               .replace(/لكل\s*(جهة|رجل|ذراع|جانب)/g,"")
+               .replace(/[:：].*$/,"")
+               .trim();
+
+    const ex = findExercise(name);
+    if(ex) cur.rows.push({ ex, sets, reps, raw: name });
+    else   unmatched.push(name || l);
+  });
+
+  return { days: days.filter(d => d.rows.length), unmatched };
+}
+
+/* يبني الجدول من النص المُحلَّل — بلا أي تعديل من المحرك */
+function buildManualPlan(parsed){
+  const seen = {};
+  const plan = parsed.days.map(d => {
+    const groups = [...new Set(d.rows.map(r => r.ex.group))];
+    groups.forEach(g => { seen[g] = (seen[g]||0) + 1; });
+    return {
+      groups,
+      title: d.title,
+      manual: true,
+      exercises: d.rows.map(r => {
+        const sch = schemeFor(r.ex);
+        if(r.sets) sch.sets = Math.min(6, Math.max(1, r.sets));
+        if(r.reps) sch.reps = r.reps;
+        sch.baseSets = sch.sets;
+        return Object.assign({}, r.ex, sch, { video: videoLinks[r.ex.id] || r.ex.video || "" });
+      })
+    };
+  });
+  return plan;
+}
+
+
+/* ---------- 3. شاشة الإدخال اليدوي ---------- */
+let manualParsed = null, manualErr = "";
+
+function screenManual(){
+  const p = manualParsed;
+  const example = `اليوم الأول — فل بدي A
+سكوات كأسي بالدمبل 3 × 8-12
+رفعة رومانية بالدمبل 3 × 8-12
+تجديف بالدمبل 3 × 10-12
+ضغط أرضي بالدمبل 3 × 8-12
+ضغط الكتف بالدمبل 2 × 10-12
+رفع السمانة 3 × 15-20
+
+اليوم الثاني — فل بدي B
+طعنة خلفية 3 × 10
+دفع الورك بالدمبل 3 × 10-15
+ضغط مائل لأعلى 3 × 8-12
+تجديف بالدمبل 3 × 10-12
+رفرفة جانبية 2 × 12-15
+مرجحة مطرقية 2 × 10-12`;
+
+  return `<div class="app"><div class="screen on">
+    <div class="card">
+      <div class="sec-head"><div class="ico">✍️</div><div>
+        <h2>اكتبي الجدول بنفسك</h2>
+        <p>الصقي جدولك كما هو، والبرنامج ينفّذه حرفياً — نفس التمارين ونفس الترتيب ونفس المجموعات والتكرارات. لا محرك ولا ذكاء يعدّل عليه.</p>
+      </div></div>
+
+      <div class="note" style="margin-top:12px">
+        <b>الصيغة:</b> اكتبي عنوان اليوم في سطر، ثم كل تمرين في سطر مستقل بصيغة
+        <code style="background:#fff;padding:1px 6px;border-radius:5px">اسم التمرين 3 × 8-12</code>.
+        الأسماء تُقبل بالعربي أو الإنجليزي. اتركي سطراً فارغاً بين الأيام.
+      </div>
+
+      <div class="field" style="margin-top:14px">
+        <label>جدولك</label>
+        <textarea id="manual-text" rows="14" style="font-family:inherit;line-height:2"
+          placeholder="${example.replace(/"/g,'&quot;')}">${S.manualText||""}</textarea>
+      </div>
+
+      <div class="actions" style="margin-top:12px">
+        <button class="btn primary" data-act="manualparse">🔍 تحقّق من الأسماء</button>
+        <button class="btn line" data-act="manualexample">استخدمي المثال</button>
+      </div>
+
+      ${manualErr?`<div class="note" style="margin-top:12px;color:#8a5a13">⚠️ ${manualErr}</div>`:""}
+
+      ${p?`
+        ${p.unmatched.length?`
+          <div class="note" style="margin-top:14px;color:#8a5a13">
+            <b>لم يُتعرَّف على ${p.unmatched.length}:</b><br>
+            ${p.unmatched.map(u=>`• ${u}`).join("<br>")}
+            <div style="margin-top:8px;font-size:12.5px">
+              عدّلي الاسم ليطابق المكتبة، أو اتركيه ويُحذف من الجدول.
+              تجدين الأسماء المعتمدة في 🎬 مكتبة الفيديوهات.
+            </div>
+          </div>`:`
+          <div class="note" style="margin-top:14px;color:#1f6b3f">
+            ✅ تُعرِّف على كل التمارين.
+          </div>`}
+
+        ${p.days.map((d,i)=>`
+          <div class="card" style="margin-top:14px">
+            <div class="sec-head"><div class="ico">${i+1}</div><div>
+              <h2 style="font-size:17px">${d.title}</h2>
+              <p>${d.rows.length} تمارين</p>
+            </div></div>
+            ${d.rows.map(r=>`
+              <div class="exrow">
+                <div style="flex:1">
+                  <b>${r.ex.name}</b>
+                  ${r.ex.en?`<small style="display:block;color:var(--muted)">${r.ex.en}</small>`:""}
+                </div>
+                <div style="color:var(--muted);font-weight:800;font-size:13px">
+                  ${r.sets||"—"} × ${r.reps||"—"}
+                </div>
+              </div>`).join("")}
+          </div>`).join("")}
+
+        <div class="actions" style="margin-top:16px">
+          <button class="btn primary" data-act="manualbuild">✓ اعتمدي هذا الجدول</button>
+        </div>
+      `:""}
+    </div>
+  </div></div>`;
+}
+
+/* ---------- 4. اختيار الحالات القوامية في شاشة الإعداد ---------- */
+function postureChips(){
+  return `
+    <span class="eyebrow" style="display:block;margin-top:22px">الحالات القوامية</span>
+    <div class="hint" style="margin-bottom:8px">
+      تختلف عن الإصابات: لا تُعالَج بالمنع وحده، بل بتمارين تصحيحية تُفرَض في الجدول وبتعديل نسب الحجم.
+    </div>
+    <div class="choices g3">
+      ${POSTURE.map(p=>`
+        <div class="choice ${(S.posture||[]).includes(p.id)?'sel':''}" data-posture="${p.id}"
+             style="text-align:right;padding:12px 14px">
+          <span class="emoji">${p.ico}</span>
+          <b style="font-size:13.5px">${p.name}</b>
+          <small style="display:block;color:var(--muted);font-weight:600;margin-top:3px;line-height:1.6">${p.desc}</small>
+        </div>`).join("")}
+    </div>
+    ${postureSelected().some(p=>p.medical)?`
+      <div class="note" style="margin-top:10px;color:#8a5a13">
+        ⚠️ الجنف حالة طبية. هذا الجدول داعم لا علاجي، ومتابعة أخصائي علاج طبيعي ضرورية قبل البدء.
+      </div>`:""}`;
+}
+
+/* بطاقة التصحيح القوامي في شاشة الجدول والـPDF */
+function postureCard(){
+  const sel = postureSelected();
+  if(!sel.length) return "";
+  return `
+  <div class="card" style="margin-top:16px">
+    <div class="sec-head"><div class="ico">🧭</div><div>
+      <h2 style="font-size:18px">التصحيح القوامي</h2>
+      <p>تمارين مفروضة في جدولك لمعالجة الوضعية</p>
+    </div></div>
+    ${sel.map(p=>`
+      <div style="padding:12px 0;border-bottom:1px solid rgba(0,0,0,.06)">
+        <b>${p.ico} ${p.name}</b>
+        <div class="note" style="margin-top:8px">${p.note}</div>
+        <div style="margin-top:8px;font-size:13px">
+          <b>مفروضة:</b> ${(p.prescribe||[]).map(id=>{
+            const e = EX.find(x=>x.id===id) || SUPPORT_EX(id);
+            return e ? e.name : id;
+          }).join(" · ")}
+        </div>
+        ${(p.avoidIds||[]).length?`<div style="margin-top:5px;font-size:13px;color:var(--muted)">
+          <b>مؤجّلة:</b> ${p.avoidIds.map(id=>{
+            const e = EX.find(x=>x.id===id); return e ? e.name : id;
+          }).join(" · ")}
+        </div>`:""}
+      </div>`).join("")}
   </div>`;
 }
 

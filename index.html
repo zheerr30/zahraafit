@@ -2042,6 +2042,28 @@ let videoLinks={};
    دون أن تدخليه يدويا. ما تحفظينه بنفسك يبقى له الأولوية. */
 function seedLibraryVideos(){
   [].concat(EX, WARM, FLEX).forEach(x=>{ if(x.video && !videoLinks[x.id]) videoLinks[x.id]=x.video; });
+  /* تمارين الدعم والتأهيل بلا روابط في الملف أصلا.
+     ما له نظير في المكتبة الرئيسية يأخذ رابطه، والباقي روابط مستقلة.
+     بدون هذا تظهر في الجدول اليدوي بلا زر فيديو. */
+  const SUP_SAME = {                       // نفس التمرين بمعرف آخر
+    sup_lowerback_2:"flex_back_1", sup_lowerback_3:"birddog",
+    sup_weakcore_1:"deadbug",      sup_weakcore_2:"plank",
+    sup_weakcore_4:"sideplank",    sup_knee_2:"glutebridge",
+    sup_knee_5:"calfraise",        sup_shoulder_1:"facepull",
+    sup_neck_1:"flex_neck_1",      sup_diastasis_3:"glutebridge",
+    sup_diastasis_4:"birddog",     sup_lowerback_5:"superman",
+    sup_shoulder_2:"reardelt",     sup_wrist_1:"flex_forearm_1"
+  };
+  Object.entries(SUP_SAME).forEach(([a,b])=>{
+    if(!videoLinks[a] && videoLinks[b]) videoLinks[a] = videoLinks[b];
+  });
+  const SUP_OWN = {
+    sup_neck_3:      "https://youtu.be/u8C5LgpK3r4",   // شد الذقن للداخل
+    sup_knee_4:      "https://youtu.be/BiREOSisYWU",   // انزلاق على الحائط
+    sup_shoulder_5:  "https://youtu.be/UB_n4DxOTCo",   // شد لوحي الكتف
+    sup_diastasis_5: "https://youtu.be/DAAjOdwZdks"    // المحارة
+  };
+  Object.entries(SUP_OWN).forEach(([a,u])=>{ if(!videoLinks[a]) videoLinks[a] = u; });
 }
 function loadStored(){
   try{
@@ -4564,11 +4586,58 @@ function normAr(s){
     .replace(/\s+/g," ").trim().toLowerCase();
 }
 /* يبحث عن التمرين بالاسم العربي أو الإنجليزي أو المعرف */
+/* مرادفات شائعة: المدربة تكتب الاسم المتداول لا الاسم المسجل في المكتبة.
+   الإنجليزي مهم أيضا لأن تمارين الدعم بلا أسماء إنجليزية. */
+const EX_ALIAS = {
+  "ملاك الحائط":"sup_knee_4", "ملاك الجدار":"sup_knee_4", "wall angel":"sup_knee_4",
+  "wall slide":"sup_knee_4",
+  "chin tuck":"sup_neck_3", "شد الذقن":"sup_neck_3", "سحب الذقن":"sup_neck_3",
+  "scapular retraction":"sup_shoulder_5", "شد اللوحين":"sup_shoulder_5",
+  "ضم اللوحين":"sup_shoulder_5", "شد لوح الكتف":"sup_shoulder_5",
+  "bird dog":"sup_lowerback_3", "الكلب الطائر":"sup_lowerback_3",
+  "dead bug":"deadbug", "الخنفساء":"deadbug",
+  "cat cow":"sup_lowerback_2", "القطة والبقرة":"sup_lowerback_2",
+  "clamshell":"sup_diastasis_5", "المحارة":"sup_diastasis_5",
+  "glute bridge":"glutebridge", "plank":"plank", "side plank":"sideplank",
+  "face pull":"facepull", "hip thrust":"hipthrustdb", "goblet squat":"gobletsquat",
+  "romanian deadlift":"rdl", "rdl":"rdl", "bulgarian split squat":"bulgarian",
+  "plie squat":"plie", "superman":"superman", "hammer curl":"hammer"
+};
+
 function findExercise(raw){
   const q = normAr(raw);
   if(!q) return null;
-  const pool = EX.concat(FLEX.map(f=>({...f, group:"flex", type:"isolation",
-    muscle:f.group, env:["gym","home","bodyweight"], level:1, risk:[], tip:""})));
+  /* المرادفات أولا: مطابقة تامة أو احتواء */
+  for(const k in EX_ALIAS){
+    const nk = normAr(k);
+    if(q === nk || (nk.length > 5 && q.includes(nk))){
+      const hit = EX.find(e=>e.id===EX_ALIAS[k]);
+      if(hit) return hit;
+      for(const s in SUPPORT){
+        const it=(SUPPORT[s].items||[]).find(x=>x[0]===EX_ALIAS[k]);
+        if(it) return {id:it[0], name:it[1], en:"", tip:it[2]||"", group:"corrective",
+          muscle:"absfront", type:"isolation", pattern:"core",
+          env:["gym","home","bodyweight"], level:1, risk:[],
+          video:(typeof videoLinks!=="undefined"&&videoLinks[it[0]])||""};
+      }
+    }
+  }
+  /* المخزن يشمل الدعم والتأهيل أيضا: «شد الذقن» و«ملاك الحائط»
+     و«ضم لوحي الكتف» تمارين حقيقية في المكتبة، وحصر البحث في
+     EX و FLEX كان يجعلها تبدو غير موجودة. */
+  const supPool = [];
+  for(const k in SUPPORT){
+    (SUPPORT[k].items||[]).forEach(it=>{
+      supPool.push({ id:it[0], name:it[1], en:"", tip:it[2]||"", group:"corrective",
+        muscle:"absfront", type:"isolation", pattern:"core",
+        env:["gym","home","bodyweight"], level:1, risk:[],
+        video: (typeof videoLinks!=="undefined" && videoLinks[it[0]]) || "" });
+    });
+  }
+  const pool = EX
+    .concat(FLEX.map(f=>({...f, group:"flex", type:"isolation",
+      muscle:f.group, env:["gym","home","bodyweight"], level:1, risk:[], tip:""})))
+    .concat(supPool);
 
   let hit = pool.find(e => e.id.toLowerCase() === q);                 // بالمعرف
   if(hit) return hit;
@@ -4603,39 +4672,61 @@ function parseManualPlan(text){
                            /^(full\s*body|fullbody|upper|lower|push|pull|legs)\b/i.test(l) ||
                            /^[■▪●#*]{0,2}\s*(اليوم|يوم)/.test(l);
 
+  /* نمط الوصفة: 4 × 12-15 · 3x10 · 3 × 40 sec — يقبل الفاصلة العربية والإنجليزية */
+  const RX = /(\d+)\s*[x×*]\s*(\d+\s*[-–]\s*\d+|\d+)\s*(?:sec|ثانية|ث)?/gi;
+
+  /* يقسم سطرا يحوي عدة تمارين إلى قطع: كل قطعة تنتهي عند وصفتها.
+     السبب: كثير من الجداول تكتب اليوم كله في سطر واحد، وقراءة
+     سطر = تمرين كانت تبتلع بقية التمارين بلا تحذير. */
+  function splitLine(l){
+    const hits = [...l.matchAll(RX)];
+    if(hits.length <= 1) return [{ text:l, m:hits[0]||null }];
+    const parts = [];
+    let from = 0;
+    hits.forEach(m => {
+      parts.push({ text: l.slice(from, m.index + m[0].length), m });
+      from = m.index + m[0].length;
+    });
+    const tail = l.slice(from).trim();
+    if(tail) parts.push({ text: tail, m:null });
+    return parts;
+  }
+
+  function addRow(chunk, m){
+    let sets = null, reps = null;
+    if(m){ sets = +m[1]; reps = String(m[2]).replace(/\s/g,"").replace("–","-"); }
+    else {
+      const a = chunk.match(/(\d+)\s*(?:مجموعات?|جولات|sets?)/);
+      const b = chunk.match(/(\d+\s*[-–]\s*\d+|\d+)\s*(?:تكرار|عدة|reps?)/);
+      if(a) sets = +a[1];
+      if(b) reps = b[1].replace(/\s/g,"").replace("–","-");
+    }
+    let name = chunk
+      .replace(RX, " ")
+      .replace(/\(.*?\)/g," ")
+      .replace(/\d+\s*(?:مجموعات?|جولات|تكرار|عدة|sets?|reps?|sec|ثانية|ث)\b/gi," ")
+      .replace(/لكل\s*(جهة|رجل|ذراع|جانب|ساق)/g," ")
+      .replace(/^[\s*\-–—•·.]+|[\s*\-–—•·.:：]+$/g,"")
+      .replace(/\s+/g," ")
+      .trim();
+    if(!name) return;
+    const ex = findExercise(name);
+    if(ex) cur.rows.push({ ex, sets, reps, raw:name });
+    else   unmatched.push(name);
+  }
+
   lines.forEach(raw => {
-    let l = raw.replace(/^[\s*\-–—•·.\d)]+/,"").trim();
+    let l = raw.replace(/^[\s*\-–—•·.]+/,"").trim();
     if(!l) return;
 
-    if(isDayHeader(l) || (cur === null && !/\d\s*[x×]\s*\d/.test(l) && l.length < 40 && !findExercise(l))){
+    const hasRx = new RegExp(RX.source, "i").test(l);
+    if(isDayHeader(l) || (!hasRx && cur === null && l.length < 40 && !findExercise(l))){
       cur = { title: l.replace(/[:：]$/,"").trim(), rows: [] };
       days.push(cur);
       return;
     }
     if(!cur){ cur = { title:"اليوم 1", rows: [] }; days.push(cur); }
-
-    /* استخراج المجموعات والتكرارات: 3×8-12 · 3 x 10 · 3 مجموعات 12 تكرار */
-    let sets = null, reps = null;
-    const m1 = l.match(/(\d+)\s*[x×*]\s*([\d]+\s*[-–]\s*[\d]+|\d+)/);
-    if(m1){ sets = +m1[1]; reps = m1[2].replace(/\s/g,"").replace("–","-"); }
-    else {
-      const m2 = l.match(/(\d+)\s*(?:مجموعا?ت|جولات|sets?)/);
-      const m3 = l.match(/([\d]+\s*[-–]\s*[\d]+|\d+)\s*(?:تكرار|عدة|عدة|reps?)/);
-      if(m2) sets = +m2[1];
-      if(m3) reps = m3[1].replace(/\s/g,"").replace("–","-");
-    }
-
-    /* اسم التمرين = السطر بعد إزالة الأرقام والوصف الجانبي */
-    let name = l.split(/[-–—]\s*\d|\d+\s*[x×*]\s*\d/)[0];
-    name = name.replace(/\(.*?\)/g,"")
-               .replace(/\d+\s*(?:مجموعا?ت|جولات|تكرار|عدة|عدة|sets?|reps?)/g,"")
-               .replace(/لكل\s*(جهة|رجل|ذراع|جانب)/g,"")
-               .replace(/[:：].*$/,"")
-               .trim();
-
-    const ex = findExercise(name);
-    if(ex) cur.rows.push({ ex, sets, reps, raw: name });
-    else   unmatched.push(name || l);
+    splitLine(l).forEach(part => addRow(part.text, part.m));
   });
 
   return { days: days.filter(d => d.rows.length), unmatched };

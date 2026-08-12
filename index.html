@@ -1307,9 +1307,8 @@ function screenPlan(){
           <div class="ex-row">
             <div class="pic">${imgPic(e.muscle)}</div>
             <div class="body">
-              <b>${gt(e.name)}</b>${e.corrective?` <span style="background:#e8f3ff;color:#1e5fa8;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:20px;vertical-align:middle">🧭 تصحيحي</span>`:""}
+              <b>${gt(e.name)}</b>
               ${e.en?`<div style="font-size:11.5px;color:var(--muted);font-weight:700;letter-spacing:.2px;margin-top:1px">${e.en}</div>`:""}
-              ${e.corrective?`<div style="font-size:11.5px;color:#1e5fa8;font-weight:700;margin-top:3px;line-height:1.7">${correctiveWhy(e.id)}</div>`:""}
               <div class="tip"><span class="i">💡</span> ${gt(e.tip)}</div>
             </div>
             <div class="sets">
@@ -1550,28 +1549,58 @@ function dangerSet(){
 /* التمارين التصحيحية القوامية تفرض في الجدول: توزع على الأيام
    بالتناوب وتوضع في آخر اليوم (بعد الأساسي، قبل البطن).
    السبب: التصحيح لا ينفع كنصيحة في ورقة — لازم يكون داخل الجدول. */
-function injectCorrectives(plan, maxDaily){
-  const list = postureCorrectives();
-  if(!list.length || !plan.length) return;
-  const inPlan = new Set();
-  plan.forEach(d=>d.exercises.forEach(e=>inPlan.add(e.id)));
-  let di = 0;
-  list.forEach(ex=>{
-    if(inPlan.has(ex.id)) return;
-    /* نبحث عن يوم فيه متسع؛ وإن امتلأت كل الأيام نضع في الأقل ازدحاما */
-    let day = null;
-    for(let k=0;k<plan.length;k++){
-      const cand = plan[(di+k) % plan.length];
-      if(cand.exercises.length < maxDaily){ day = cand; di = (di+k+1) % plan.length; break; }
-    }
-    if(!day) return;                       // الحد الأقصى يحترم حتى مع التصحيح
-    const sch = schemeFor(ex);
-    sch.sets = Math.min(sch.sets, 3);
-    day.exercises.push(Object.assign({}, ex, sch,
-      {video: videoLinks[ex.id]||ex.video||"", corrective:true}));
-    inPlan.add(ex.id);
+/* ============================================================
+   الروتين التصحيحي — مستقل عن الجدول
+   توزيع التصحيح على الأيام كان يخلطه بالتمارين الأساسية فتظنه
+   العميلة تمرينا عاديا وتتجاوزه. صفحة واحدة بتكرار أسبوعي واضح
+   أسهل عليها وأوضح للمدربة.
+   ============================================================ */
+const CORR_FREQ = {
+  kyphosis:    { times:"4-5 مرات أسبوعيا", when:"قبل تمارين العلوي أو في أي وقت من اليوم", mins:"8-10 دقائق" },
+  lordosis:    { times:"5 مرات أسبوعيا",   when:"قبل تمارين السفلي أو قبل النوم",          mins:"8-10 دقائق" },
+  forwardhead: { times:"يوميا",             when:"كل ساعتين أمام الشاشة — دقيقة تكفي",     mins:"5 دقائق"    },
+  valgus:      { times:"4 مرات أسبوعيا",   when:"قبل تمارين الأرجل — تنشيط قبل التحميل",  mins:"8 دقائق"    },
+  roundedlow:  { times:"4 مرات أسبوعيا",   when:"قبل تمارين السفلي",                       mins:"8 دقائق"    },
+  scoliosis:   { times:"5 مرات أسبوعيا",   when:"في وقت مستقل عن التمرين",                 mins:"10-12 دقيقة"}
+};
+
+/* يبني الروتين: قائمة تمارين موحدة بلا تكرار، مع جرعة كل واحد */
+function buildCorrectiveRoutine(){
+  const sel = postureSelected();
+  if(!sel.length) return null;
+  const seen = new Set();
+  const items = [];
+  sel.forEach(p=>{
+    (p.prescribe||[]).forEach(id=>{
+      if(seen.has(id)) return;
+      seen.add(id);
+      const ex = EX.find(e=>e.id===id) || SUPPORT_EX(id);
+      if(!ex) return;
+      items.push({
+        id, name: ex.name, tip: ex.tip || "",
+        video: videoLinks[id] || ex.video || "",
+        muscle: ex.muscle || "absfront",
+        sets: 3,
+        reps: /plank|بلانك|ثبات/i.test(ex.name) ? "20-30 ثانية" : "10-15",
+        forCond: p.name
+      });
+    });
   });
+  /* التكرار: الأعلى بين الحالات المختارة */
+  const freqs = sel.map(p=>CORR_FREQ[p.id]).filter(Boolean);
+  const daily = freqs.some(f=>f.times==="يوميا");
+  return {
+    items,
+    conditions: sel,
+    times: daily ? "يوميا" : (freqs[0] ? freqs[0].times : "4 مرات أسبوعيا"),
+    when:  freqs.length===1 ? freqs[0].when : "قبل تمرينك أو في وقت مستقل",
+    mins:  freqs.length===1 ? freqs[0].mins : "10-12 دقيقة",
+    weeks: "6-12 أسبوعا"
+  };
 }
+
+/* لم تعد تحقن في الأيام — تبقى للتوافق فقط */
+function injectCorrectives(plan, maxDaily){ return; }
 
 function generate(){
   const danger=dangerSet();
@@ -2062,7 +2091,12 @@ function seedLibraryVideos(){
     sup_neck_3:      "https://youtu.be/u8C5LgpK3r4",   // شد الذقن للداخل
     sup_knee_4:      "https://youtu.be/BiREOSisYWU",   // انزلاق على الحائط
     sup_shoulder_5:  "https://youtu.be/UB_n4DxOTCo",   // شد لوحي الكتف
-    sup_diastasis_5: "https://youtu.be/DAAjOdwZdks"    // المحارة
+    sup_diastasis_5: "https://youtu.be/DAAjOdwZdks",   // المحارة
+    sup_lowerback_1: "https://youtu.be/44s2-4rEjoo",   // إمالة الحوض
+    sup_diastasis_6: "https://youtu.be/Ielt7Mj-F_I",   // شد البطن العميق
+    sup_diastasis_1: "https://youtu.be/44s2-4rEjoo",
+    sup_neck_2:      "https://youtu.be/u8C5LgpK3r4",
+    sup_shoulder_4:  "https://youtu.be/UB_n4DxOTCo"
   };
   Object.entries(SUP_OWN).forEach(([a,u])=>{ if(!videoLinks[a]) videoLinks[a] = u; });
 }
@@ -2319,8 +2353,7 @@ function buildPdfHTML(){
       rows+=`<tr style="page-break-inside:avoid">
         <td style="width:84px;padding:9px 8px;vertical-align:middle">${pic}</td>
         <td style="padding:9px 6px;vertical-align:middle">
-          <div style="font-family:Cairo;font-weight:700;font-size:14.5px;color:${navy}">${e.name}${e.corrective?` <span style="background:#e8f3ff;color:#1e5fa8;font-size:10px;font-weight:800;padding:2px 7px;border-radius:20px">🧭 تصحيحي</span>`:""}</div>
-          ${e.corrective?`<div style="font-size:11px;color:#1e5fa8;font-weight:700;margin-top:2px">${correctiveWhy(e.id)}</div>`:""}
+          <div style="font-family:Cairo;font-weight:700;font-size:14.5px;color:${navy}">${e.name}</div>
           <div style="font-size:12px;color:#6a7488;font-weight:600;margin-top:2px">💡 ${e.tip}</div>
         </td>
         <td style="width:60px;text-align:center;vertical-align:middle">
@@ -2775,64 +2808,69 @@ function buildPdfHTML(){
   /* صفحة التصحيح القوامي: تشرح للعميلة لماذا في جدولها تمارين
      لا تشبه بقية التمارين، وأين تجدها بالضبط. بدون هذه الصفحة
      تتجاوزها ظنا أنها حشو. */
+  /* صفحة الروتين التصحيحي — مستقلة عن الجدول.
+     التوزيع على الأيام كان يخلط التصحيح بالتمارين الأساسية،
+     وصفحة واحدة بتكرار واضح أسهل على العميلة. */
   let postureP = "";
-  const __ps = (typeof postureSelected === "function") ? postureSelected() : [];
-  if(__ps.length && S.plan){
-    /* رقم اليوم أوضح من عنوانه: العنوان قد يكون
-       «صدر + أكتاف + ترايسبس + سمانة» فيطغى على الاسم. */
-    const where = id => {
-      const out = [];
-      S.plan.forEach((d,i)=>{ if(d.exercises.some(e=>e.id===id)) out.push("اليوم "+(i+1)); });
-      return out.join(" و");
-    };
+  const __r = (typeof buildCorrectiveRoutine === "function") ? buildCorrectiveRoutine() : null;
+  if(__r){
     postureP = `
     <div style="page-break-before:always;padding:44px 52px 26px">
-      <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · مهم جدا</span></div>
-      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">🧭 التمارين التصحيحية في جدولك</h1>
+      <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · روتين منفصل</span></div>
+      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">🧭 روتينك التصحيحي</h1>
       <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 16px"></div>
 
-      <div style="page-break-inside:avoid;background:#e8f3ff;border:1px solid #bcd8f5;border-radius:14px;padding:16px 20px;max-width:640px;direction:rtl;text-align:right;word-wrap:break-word;margin:0 auto 18px">
-        <b style="font-family:Cairo;color:${navy};font-size:15px">لماذا هذه الصفحة؟</b>
-        <div style="font-size:13.5px;color:#33476b;font-weight:600;line-height:2.1;margin-top:7px;direction:rtl;text-align:right;word-wrap:break-word">
-          في جدولك تمارين قد تبدو غريبة أو «سهلة» مقارنة بالبقية — وهي ليست إضافية ولا حشوا.
-          وضعت لتصحيح وضعية جسمك، وهي <b style="color:${navy}">مدمجة داخل أيامك</b> ومعلمة بشارة
-          <span style="background:#fff;color:#1e5fa8;font-size:11px;font-weight:800;padding:2px 8px;border-radius:20px">🧭 تصحيحي</span>.
-          تجاوزها يعني بقاء المشكلة، ومع الوقت ألما وتقييدا في التمارين الأخرى.
+      <div style="page-break-inside:avoid;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;max-width:640px;margin:0 auto 16px">
+        <div style="background:#fff;border:1px solid #e3e7ee;border-radius:12px;padding:12px 20px;text-align:center;min-width:130px">
+          <div style="font-family:Cairo;font-weight:900;font-size:17px;color:#2563c9">${__r.times}</div>
+          <div style="font-size:11px;color:#6a7488;font-weight:700;margin-top:2px">التكرار</div>
+        </div>
+        <div style="background:#fff;border:1px solid #e3e7ee;border-radius:12px;padding:12px 20px;text-align:center;min-width:130px">
+          <div style="font-family:Cairo;font-weight:900;font-size:17px;color:#2563c9">${__r.mins}</div>
+          <div style="font-size:11px;color:#6a7488;font-weight:700;margin-top:2px">المدة</div>
+        </div>
+        <div style="background:#fff;border:1px solid #e3e7ee;border-radius:12px;padding:12px 20px;text-align:center;min-width:130px">
+          <div style="font-family:Cairo;font-weight:900;font-size:17px;color:#2563c9">${__r.weeks}</div>
+          <div style="font-size:11px;color:#6a7488;font-weight:700;margin-top:2px">حتى التحسن</div>
         </div>
       </div>
 
-      ${__ps.map(pp=>`
-        <div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:14px;padding:18px 20px;max-width:640px;direction:rtl;text-align:right;word-wrap:break-word;margin:0 auto 14px">
-          <b style="font-family:Cairo;color:${navy};font-size:16px">${pp.ico} ${pp.name}</b>
-          <div style="font-size:13px;color:#6a7488;font-weight:600;margin-top:4px">${pp.desc}</div>
-          <div style="font-size:13.5px;color:#4a5a78;font-weight:600;line-height:2;margin-top:10px;padding-top:10px;border-top:1px solid #eef0f4">
-            ${pp.note}
-          </div>
-          <div style="margin-top:12px">
-            <b style="font-size:13px;color:${navy}">تمارينك التصحيحية وأين تجدينها:</b>
-            ${(pp.prescribe||[]).map(id=>{
-              const e = EX.find(x=>x.id===id) || (typeof SUPPORT_EX==="function"?SUPPORT_EX(id):null);
-              const w = where(id);
-              return e ? `<div style="page-break-inside:avoid;font-size:13px;color:#4a5a78;font-weight:600;padding:5px 0;line-height:1.8">
-                • <b style="color:${navy}">${e.name}</b>${w?` <span style="color:#6a7488">— في ${w}</span>`:""}
-              </div>` : "";
-            }).join("")}
-          </div>
-          ${(pp.avoidIds||[]).length?`
-            <div style="margin-top:10px;padding-top:10px;border-top:1px solid #eef0f4;font-size:12.5px;color:#8a5a13;font-weight:600;line-height:1.9">
-              <b>مؤجلة مؤقتا:</b> ${pp.avoidIds.map(id=>{const e=EX.find(x=>x.id===id);return e?e.name:"";}).filter(Boolean).join(" · ")}
-              — تعود بعد تحسن الوضعية، وليست ممنوعة للأبد.
-            </div>`:""}
-          ${pp.medical?`
-            <div style="margin-top:10px;background:#fff7ee;border:1px solid rgba(217,138,31,.3);border-radius:10px;padding:11px 14px;font-size:12.5px;color:#8a5a13;font-weight:700;line-height:1.9">
-              ⚠️ هذه حالة طبية. الجدول داعم لا علاجي، ومتابعة أخصائي العلاج الطبيعي ضرورية.
-            </div>`:""}
-        </div>`).join("")}
-
-      <div style="page-break-inside:avoid;text-align:center;margin-top:14px;font-size:12.5px;color:#6a7488;font-weight:600;max-width:600px;margin-inline:auto">
-        التصحيح القوامي يحتاج ٦–١٢ أسبوعا من الالتزام. النتيجة تدريجية ولن تلاحظيها في أسبوع،
-        لكن تركها يعني بقاء المشكلة كما هي.
+      <div style="page-break-inside:avoid;background:#e8f3ff;border:1px solid #bcd8f5;border-radius:14px;padding:16px 20px;max-width:640px;direction:rtl;text-align:right;word-wrap:break-word;margin:0 auto 16px">
+        <b style="font-family:Cairo;color:${navy};font-size:15px">لماذا روتين منفصل؟</b>
+        <div style="font-size:13.5px;color:#33476b;font-weight:600;line-height:2.1;margin-top:7px">
+          هذه التمارين ليست جزءا من جدول القوة، ولا تحتاج أوزانا ولا تعبا.
+          هدفها تصحيح وضعية جسمك، وتؤدى <b style="color:${navy}">${__r.times}</b> — ${__r.when}.
+          تجاوزها يعني بقاء المشكلة، ومع الوقت ألما وتقييدا في تمارينك الأساسية.
+        </div>
+        <div style="font-size:13px;color:#33476b;font-weight:700;margin-top:9px;padding-top:9px;border-top:1px solid #bcd8f5">
+          حالتك: ${__r.conditions.map(c=>c.ico+" "+c.name).join(" · ")}
+        </div>
       </div>
+
+      <div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:14px;padding:8px 0;max-width:640px;margin:0 auto">
+        ${__r.items.map((it,n)=>`
+          <div style="page-break-inside:avoid;display:flex;gap:12px;align-items:center;padding:11px 18px;border-bottom:1px solid #f0f2f6">
+            <div style="width:28px;height:28px;border-radius:9px;background:#e8f3ff;color:#1e5fa8;font-family:Cairo;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;flex:none">${n+1}</div>
+            ${pdfMuscleBox(it.muscle, 46)}
+            <div style="flex:1;direction:rtl;text-align:right">
+              <div style="font-family:Cairo;font-weight:800;font-size:14.5px;color:${navy}">${it.name}</div>
+              ${it.tip?`<div style="font-size:12px;color:#6a7488;font-weight:600;line-height:1.8;margin-top:2px">${it.tip}</div>`:""}
+            </div>
+            <div style="text-align:center;flex:none;min-width:74px">
+              <div style="font-family:Cairo;font-weight:900;font-size:14px;color:#2563c9">${it.sets} × ${it.reps}</div>
+            </div>
+          </div>`).join("")}
+      </div>
+
+      ${__r.conditions.map(c=>`
+        <div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:12px;padding:14px 20px;max-width:640px;direction:rtl;text-align:right;word-wrap:break-word;margin:14px auto 0">
+          <b style="font-family:Cairo;color:${navy};font-size:14.5px">${c.ico} ${c.name}</b>
+          <div style="font-size:13px;color:#4a5a78;font-weight:600;line-height:2;margin-top:6px">${c.note}</div>
+          ${(c.avoidIds||[]).length?`<div style="margin-top:9px;padding-top:9px;border-top:1px solid #eef0f4;font-size:12.5px;color:#8a5a13;font-weight:600;line-height:1.9">
+            <b>مؤجلة من جدولك مؤقتا:</b> ${c.avoidIds.map(id=>{const e=EX.find(x=>x.id===id);return e?e.name:"";}).filter(Boolean).join(" · ")} — تعود بعد تحسن الوضعية.
+          </div>`:""}
+          ${c.medical?`<div style="margin-top:9px;background:#fff7ee;border:1px solid rgba(217,138,31,.3);border-radius:10px;padding:10px 14px;font-size:12.5px;color:#8a5a13;font-weight:700">⚠️ حالة طبية — الروتين داعم لا علاجي، ومتابعة أخصائي العلاج الطبيعي ضرورية.</div>`:""}
+        </div>`).join("")}
     </div>`;
   }
 
@@ -3030,7 +3068,7 @@ function bind(){
       S.plan = buildManualPlan(manualParsed);
       /* التصحيح القوامي يطبق على الجدول اليدوي أيضا: اختيارك للحالة
          لا يجوز أن يضيع لأنك كتبت الجدول بنفسك. يضاف في آخر كل يوم. */
-      if((S.posture||[]).length) injectCorrectives(S.plan, (S.maxDaily??8)+2);
+      /* الروتين التصحيحي مستقل — لا يحقن في الجدول اليدوي أيضا */
       S.plan.forEach(d=>{ d.warmup=buildWarmup(d); d.cooldown=buildCooldown(d); });
       const rep = { advice:null, shortfalls:[], fixes:[], volume: volumeReport(S.plan), source:"manual" };
       rep.balance = balanceAudit(S.plan);
@@ -4879,30 +4917,36 @@ function postureChips(){
 
 /* بطاقة التصحيح القوامي في شاشة الجدول والـPDF */
 function postureCard(){
-  const sel = postureSelected();
-  if(!sel.length) return "";
+  const r = buildCorrectiveRoutine();
+  if(!r) return "";
   return `
-  <div class="card" style="margin-top:16px">
+  <div class="card" style="margin-top:16px;border-right:5px solid #2563c9">
     <div class="sec-head"><div class="ico">🧭</div><div>
-      <h2 style="font-size:18px">التصحيح القوامي</h2>
-      <p>تمارين مفروضة في جدولك لمعالجة الوضعية</p>
+      <h2 style="font-size:18px">الروتين التصحيحي</h2>
+      <p>منفصل عن الجدول — ${r.times} · ${r.mins}</p>
     </div></div>
-    ${sel.map(p=>`
-      <div style="padding:12px 0;border-bottom:1px solid rgba(0,0,0,.06)">
-        <b>${p.ico} ${p.name}</b>
-        <div class="note" style="margin-top:8px">${p.note}</div>
-        <div style="margin-top:8px;font-size:13px">
-          <b>مفروضة:</b> ${(p.prescribe||[]).map(id=>{
-            const e = EX.find(x=>x.id===id) || SUPPORT_EX(id);
-            return e ? e.name : id;
-          }).join(" · ")}
+
+    <div class="note" style="margin-top:10px;background:#e8f3ff;border-color:#bcd8f5;color:#1e5fa8">
+      <b>متى؟</b> ${r.when}<br>
+      <b>المدة المتوقعة للتحسن:</b> ${r.weeks} من الالتزام.
+    </div>
+
+    ${r.items.map((it,n)=>`
+      <div class="exrow">
+        <div style="width:26px;height:26px;border-radius:8px;background:#e8f3ff;color:#1e5fa8;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;flex:none">${n+1}</div>
+        <div style="flex:1;margin-right:10px">
+          <b>${gt(it.name)}</b>
+          ${it.tip?`<small style="display:block;color:var(--muted);margin-top:2px;line-height:1.7">${gt(it.tip)}</small>`:""}
+          <small style="display:block;color:#1e5fa8;font-weight:700;margin-top:2px">لتصحيح: ${it.forCond}</small>
         </div>
-        ${(p.avoidIds||[]).length?`<div style="margin-top:5px;font-size:13px;color:var(--muted)">
-          <b>مؤجلة:</b> ${p.avoidIds.map(id=>{
-            const e = EX.find(x=>x.id===id); return e ? e.name : id;
-          }).join(" · ")}
-        </div>`:""}
+        <div style="color:var(--muted);font-weight:800;font-size:13px;flex:none">${it.sets} × ${it.reps}</div>
+        ${it.video?`<a class="pchip" href="${it.video}" target="_blank" rel="noopener">▶</a>`:""}
       </div>`).join("")}
+
+    ${r.conditions.some(c=>c.medical)?`
+      <div class="note" style="margin-top:10px;color:#8a5a13">
+        ⚠️ الجنف حالة طبية. هذا الروتين داعم لا علاجي، ومتابعة أخصائي علاج طبيعي ضرورية.
+      </div>`:""}
   </div>`;
 }
 

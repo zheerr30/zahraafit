@@ -929,7 +929,10 @@ const GT_WORDS = {
   "تسألين":"تسأل","تجدينها":"تجدها","تجدين":"تجد","تلاحظينها":"تلاحظها","تلاحظين":"تلاحظ","تلاحظي":"تلاحظ","تجاوزي":"تجاوز","تنسي":"تنس",
   "ترين":"ترى","تعبت":"تعبت","تشعرين":"تشعر","تريدين":"تريد","تكتبين":"تكتب",
   "ستجدينها":"ستجدها","ستلاحظين":"ستلاحظ","تطبقينه":"تطبقه","تفتحينها":"تفتحها",
-  "لكِ":"لك","لكي":"لك","عندكِ":"عندك","بكِ":"بك","إليكِ":"إليك","وضعيتك":"وضعيتك"
+  "لكِ":"لك","لكي":"لك",
+  "مشتركة":"مشترك","عميلة":"عميل",
+  "متدربة":"متدرب","المدربة":"المدربة",
+  "خاصة":"خاص","مدربتك":"مدربتك","صاحبتها":"صاحبها","عندكِ":"عندك","بكِ":"بك","إليكِ":"إليك","وضعيتك":"وضعيتك"
 };
 /* يبنى مرة واحدة: تعبير واحد لكل الكلمات مع حدود عربية سليمة */
 let __gtRe = null;
@@ -941,7 +944,9 @@ function gtRegex(){
      وإلا فاتت أكثر من نصف الحالات. */
   /* البنية: [واو/فاء ملتصقة] + الفعل + [ضمير ملتصق]
      «واسحبيه» = و + اسحبي + ه ← «واسحبه». بدون الضمير تفوت حالات كثيرة. */
-  __gtRe = new RegExp("(^|[^\\u0621-\\u064A])([وف]?)(" + keys.join("|") +
+  /* السوابق: واو وفاء ولام الجر والباء والكاف — «للمشتركة» و«بالعميلة»
+     كانت تفوت لأن التعبير يقبل الواو والفاء فقط. */
+  __gtRe = new RegExp("(^|[^\\u0621-\\u064A])([وف]?(?:لل|بال|كال|ال|ل|ب|ك)?)(" + keys.join("|") +
                       ")(ها|هما|هم|هن|ه)?(?![\\u0621-\\u064A])","g");
   return __gtRe;
 }
@@ -1261,7 +1266,7 @@ function screenPlan(){
         </div>
         <div class="cover-photo">${imgSrc("cover")?`<img src="${imgSrc("cover")}">`:`<span>🖼️<br><em>صورة الغلاف</em></span>`}</div>
         <span class="cover-eyebrow">برنامج تدريبي مخصص</span>
-        <h1 class="cover-title">${c.name||"المشتركة"}</h1>
+        <h1 class="cover-title">${c.name||(S.client.gender==="male"?"المشترك":"المشتركة")}</h1>
         <div class="cover-data">
           ${c.age?`<div><b>${c.age}</b><small>العمر</small></div>`:""}
           ${c.height?`<div><b>${c.height}</b><small>الطول سم</small></div>`:""}
@@ -2323,7 +2328,7 @@ function buildPdfHTML(){
         ${imgSrc("cover")?`<img src="${imgSrc("cover")}" style="width:100%;height:auto;display:block;object-fit:contain">`:`🖼️`}
       </div>
       <div style="color:${orange2};font-family:Cairo;font-weight:800;font-size:14px;letter-spacing:2px">برنامج تدريبي مخصص</div>
-      <div style="font-family:Cairo;font-weight:900;font-size:46px;margin:8px 0 30px">${c.name||"المشتركة"}</div>
+      <div style="font-family:Cairo;font-weight:900;font-size:46px;margin:8px 0 30px">${c.name||(S.client.gender==="male"?"المشترك":"المشتركة")}</div>
       <table style="width:100%;border-collapse:separate;border-spacing:11px;margin-bottom:10px"><tr>
         ${c.age?dataCell(c.age,"العمر"):""}
         ${c.height?dataCell(c.height,"الطول سم"):""}
@@ -2354,6 +2359,7 @@ function buildPdfHTML(){
         <td style="width:84px;padding:9px 8px;vertical-align:middle">${pic}</td>
         <td style="padding:9px 6px;vertical-align:middle">
           <div style="font-family:Cairo;font-weight:700;font-size:14.5px;color:${navy}">${e.name}</div>
+          ${e.en?`<div style="font-size:10.5px;color:#8a94a8;font-weight:700;letter-spacing:.3px;direction:ltr;text-align:right;margin-top:1px">${e.en}</div>`:""}
           <div style="font-size:12px;color:#6a7488;font-weight:600;margin-top:2px">💡 ${e.tip}</div>
         </td>
         <td style="width:60px;text-align:center;vertical-align:middle">

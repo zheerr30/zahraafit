@@ -882,6 +882,7 @@ const S = {
   flexTab:null,
   subsUrl:"", subsFilter:"workout",
   posture:[], manualText:"",
+  cycle:false,   // صفحة الدورة الشهرية — اختيارية، لا تغير الجدول
   notes:"", dayNotes:{},   // ملاحظات المدربة — لا يمسها التوليد
   goal:"hypertrophy",
   focus:"balanced",
@@ -1111,6 +1112,15 @@ function screenSetup(){
       <div class="hint" style="margin-top:6px">
         <b>ملاحظة:</b> عدد التمارين اليومي يحسب الآن تلقائيا من الحجم الأسبوعي المستهدف لكل عضلة، وينحصر بين الحدين أدناه.
       </div>
+      ${S.client && S.client.gender!=="male" ? `
+        <span class="eyebrow" style="display:block;margin-top:22px">الدورة الشهرية</span>
+        <div class="hint" style="margin-bottom:8px">
+          صفحة تثقيفية في الـ PDF + خانة تتبع في ورقة المتابعة. لا تغير الجدول ولا التمارين.
+        </div>
+        <div class="choices" style="display:flex;gap:8px">
+          <div class="choice ${S.cycle?'sel':''}" data-cycle="1" style="padding:10px 18px">مفعلة</div>
+          <div class="choice ${!S.cycle?'sel':''}" data-cycle="0" style="padding:10px 18px">بدون</div>
+        </div>` : ""}
       ${postureChips()}
       <span class="eyebrow" style="display:block;margin-top:20px">حدا عدد التمارين اليومي</span>
       <div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:8px">
@@ -2880,6 +2890,57 @@ function buildPdfHTML(){
     </div>`;
   }
 
+  /* صفحة الدورة الشهرية — تثقيفية بحتة.
+     لا تغير الجدول ولا التمارين: الأدلة على تعديل التدريب حسب المراحل
+     ضعيفة وغير متسقة، والفروق بين امرأة وأخرى أكبر من فروق المراحل.
+     فالأنفع أن تتعلم القراءة من جسمها لا أن تتبع تقويما. */
+  let cyclePage = "";
+  if(S.cycle && S.client && S.client.gender !== "male"){
+    const card = (t,b) => `<div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:13px;padding:15px 19px;direction:rtl;text-align:right;word-wrap:break-word;margin-bottom:11px">
+      <b style="font-family:Cairo;color:${navy};font-size:14.5px">${t}</b>
+      <div style="font-size:13px;color:#4a5a78;font-weight:600;line-height:2.05;margin-top:6px">${b}</div></div>`;
+
+    cyclePage = `
+    <div style="page-break-before:always;padding:44px 52px 26px">
+      <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · صفحة توضيحية</span></div>
+      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">🌙 التمرين والدورة الشهرية</h1>
+      <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 16px"></div>
+
+      <div style="page-break-inside:avoid;background:#f6f0ff;border:1px solid #ddd0f5;border-radius:14px;padding:16px 20px;max-width:640px;direction:rtl;text-align:right;word-wrap:break-word;margin:0 auto 16px">
+        <b style="font-family:Cairo;color:${navy};font-size:15px">القاعدة الأولى: جسمك لا التقويم</b>
+        <div style="font-size:13.5px;color:#33476b;font-weight:600;line-height:2.1;margin-top:7px">
+          انتشر أن التمرين يجب أن يتغير كل أسبوع حسب مرحلة الدورة. الحقيقة أن الفروق بين
+          امرأة وأخرى <b style="color:${navy}">أكبر بكثير</b> من الفروق بين المراحل، والدراسات
+          لم تجد أثرا ثابتا يبرر تغيير الجدول.
+          <br><br>
+          لذلك جدولك <b style="color:${navy}">لا يتغير</b>. ما يتغير هو قراءتك لجسمك:
+          يوم تشعرين فيه بقوة، ارفعي. ويوم تشعرين فيه بثقل، خففي — بغض النظر عن اليوم من الشهر.
+        </div>
+      </div>
+
+      <div style="max-width:640px;margin:0 auto">
+        ${card("أثناء الدورة — التمرين مفيد لا ممنوع",
+          "الحركة الخفيفة تقلل التقلصات وتحسن المزاج أكثر من الراحة التامة. لا داعي لإلغاء التمرين إلا إذا كان الألم شديدا. خففي الوزن أو قللي المجموعات وأكملي.")}
+        ${card("الحديد — أهم نقطة عملية",
+          "الدورة الغزيرة تستنزف الحديد، ونقصه يسبب تعبا وضيق نفس وضعف أداء يستمر أسابيع. إن شعرت بإرهاق غير مبرر أو لهاث سريع في تمارين كنت تؤدينها بسهولة، اطلبي تحليل الحديد والفيريتين قبل أن تلومي جدولك.")}
+        ${card("الانتفاخ وتغير الوزن",
+          "زيادة كيلو أو اثنين قبل الدورة ماء لا دهن، وتزول خلال أيام. لا تقيسي وزنك في هذه الفترة ولا تبني عليه قرارا.")}
+        ${card("انقطاع الدورة — علامة تستدعي التوقف والمراجعة",
+          "غياب الدورة ثلاثة أشهر مع التدريب المكثف أو الأكل القليل ليس علامة لياقة، بل إشارة إلى أن الجسم لا يجد طاقة كافية. له أثر على العظام والهرمونات على المدى الطويل. راجعي طبيبة نساء، وأخبري مدربتك.")}
+        ${card("متى تتوقفين",
+          "ألم شديد لا يسمح بالحركة · نزف غزير جدا · دوخة أو إغماء · ألم مفاجئ غير معتاد. هذه ليست علامات ضعف، بل إشارات تستحق التوقف والمراجعة.")}
+      </div>
+
+      <div style="page-break-inside:avoid;background:#eef4ff;border:1px solid #c9dcff;border-radius:14px;padding:15px 20px;max-width:640px;direction:rtl;text-align:right;word-wrap:break-word;margin:14px auto 0">
+        <b style="font-family:Cairo;color:${navy};font-size:14px">📓 تتبعي شهرين</b>
+        <div style="font-size:13px;color:#33476b;font-weight:600;line-height:2.05;margin-top:6px">
+          سجلي في ورقة المتابعة: يوم الدورة · مستوى طاقتك · هل نزلت أوزانك.
+          بعد شهرين سيظهر نمطك أنت — وهذا أنفع من أي جدول عام، لأنه مبني على جسمك لا على متوسط غيرك.
+        </div>
+      </div>
+    </div>`;
+  }
+
   let coachNotes = "";
   const __n = (S.notes||"").trim();
   const __dn = Object.entries(S.dayNotes||{}).filter(([i,v])=>v && v.trim());
@@ -2899,7 +2960,7 @@ function buildPdfHTML(){
   }
 
 
-  const __pages = gt([pdfMuscleCSS(), cover, intro, coachNotes, body, postureP, disc, warmup, stretch, cardio, support, library, edu, rights]
+  const __pages = gt([pdfMuscleCSS(), cover, intro, coachNotes, body, postureP, cyclePage, disc, warmup, stretch, cardio, support, library, edu, rights]
          .filter(Boolean).join("\n"));
   return `<div dir="rtl" style="background:#eef1f7;-webkit-print-color-adjust:exact;print-color-adjust:exact">${__pages}</div>`;
 }
@@ -2994,6 +3055,7 @@ function bind(){
   const impEl=document.getElementById("imp-settings");
   if(impEl) impEl.onchange=e=>{ if(e.target.files[0]) importSettings(e.target.files[0]); };
   $$("[data-sub]").forEach(el=>el.onclick=()=>applySubscriber(+el.dataset.sub));
+  $$("[data-cycle]").forEach(el=>el.onclick=()=>{ S.cycle = el.dataset.cycle==="1"; render(); });
   $$("[data-posture]").forEach(el=>el.onclick=()=>{
     const id=el.dataset.posture;
     S.posture = S.posture||[];
@@ -3519,6 +3581,8 @@ function balanceAudit(plan){
 }
 
 /* ---------- 5. ورقة متابعة أسبوعية ---------- */
+/* ورقة المتابعة: عمود إضافي عند تفعيل تتبع الدورة.
+   التتبع في يد العميلة — البرنامج يوفر المكان فقط. */
 function trackingSheet(plan){
   return plan.map(d=>({
     day:d.title,
@@ -3709,12 +3773,9 @@ function generate(){
   const minDaily = S.minDaily ?? 0;
   const maxDaily = S.maxDaily ?? 8;
 
-  /* حجز مقاعد للتمارين التصحيحية القوامية قبل البناء.
-     بدون الحجز تمتلئ الأيام فترمى التصحيحية — وهي أهم من التمرين
-     العازل الأخير لمن عندها مشكلة قوامية. الحد الأقصى يبقى محترما. */
-  const __corr = (typeof postureCorrectives === "function") ? postureCorrectives() : [];
-  const __perDay = Math.ceil(__corr.length / Math.max(1, S.days));
-  const workCap = Math.max(3, maxDaily - __perDay);
+  /* الروتين التصحيحي صار مستقلا عن الجدول، فلا حاجة لحجز مقاعد له.
+     الحجز القديم كان يقلص الجدول بلا سبب ويجعل الناتج غير ثابت. */
+  const workCap = maxDaily;
 
   /* أ) تكرار كل عضلة أسبوعيا — يقرأ من التقسيمة نفسها */
   const freq = {};

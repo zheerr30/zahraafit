@@ -2090,30 +2090,51 @@ function seedLibraryVideos(){
   /* تمارين الدعم والتأهيل بلا روابط في الملف أصلا.
      ما له نظير في المكتبة الرئيسية يأخذ رابطه، والباقي روابط مستقلة.
      بدون هذا تظهر في الجدول اليدوي بلا زر فيديو. */
-  const SUP_SAME = {                       // نفس التمرين بمعرف آخر
-    sup_lowerback_2:"flex_back_1", sup_lowerback_3:"birddog",
-    sup_weakcore_1:"deadbug",      sup_weakcore_2:"plank",
-    sup_weakcore_4:"sideplank",    sup_knee_2:"glutebridge",
-    sup_knee_5:"calfraise",        sup_shoulder_1:"facepull",
-    sup_neck_1:"flex_neck_1",      sup_diastasis_3:"glutebridge",
-    sup_diastasis_4:"birddog",     sup_lowerback_5:"superman",
-    sup_shoulder_2:"reardelt",     sup_wrist_1:"flex_forearm_1"
+  /* روابط تمارين الدعم — كلها مأخوذة من مكتبة التمارين المتحقق منها،
+     لا مخترعة. سبق أن كتبت أربعة روابط بالتخمين فطلعت معطلة. */
+  const SUP_VIDEOS = {
+    sup_diastasis_1: "https://youtu.be/TPGUgXWBY4Y?si=TTeC7WA1oSBEqgcV",
+    sup_diastasis_2: "https://youtu.be/-AWtsAzHBp4?si=08s-f0i7EvFXhVt8",
+    sup_diastasis_3: "https://youtu.be/YRqoIM0u0PY?si=8H_-8fxJYknOa9CS",
+    sup_diastasis_4: "https://youtu.be/ZdAHe9_HeEw?si=12SoRcTIZ_40fozG",
+    sup_diastasis_5: "https://youtu.be/DAAjOdwZdks?si=SlxXFbImDBf3melR",
+    sup_diastasis_6: "https://youtu.be/SAgwDAPK8L8?si=EaA-HbTo7Ykx3CWp",
+    sup_knee_1: "https://youtu.be/MuDHSzyb8Go?si=vptLKcVzEPCBJhOS",
+    sup_knee_2: "https://youtu.be/U4L_6JEv9Jg?si=tfgB-eWIWL1J3iwV",
+    sup_knee_3: "https://youtu.be/YRqoIM0u0PY?si=nJRWOOGRyIMTcQGm",
+    sup_knee_4: "https://youtu.be/xhbpQ80JiUQ?si=0mFSCl5fV1mfzH1u",
+    sup_knee_5: "https://youtu.be/Il1L75v6gq0?si=yhC8JmfUs6B9FvY-",
+    sup_knee_6: "https://youtu.be/k8ipHzKeAkQ?si=cp6bUGPgJ94hSrjT",
+    sup_lowerback_1: "https://youtu.be/44s2-4rEjoo?si=gWmFcbC293yTS_pd",
+    sup_lowerback_2: "https://youtu.be/LIVJZZyZ2qM?si=4uCDc-7i_bPcEiv1",
+    sup_lowerback_3: "https://youtu.be/ZdAHe9_HeEw?si=suymPECSnMAD75CF",
+    sup_lowerback_4: "https://youtu.be/iDSHokfXqyA?si=P0ITgsNt4zTpVhSx",
+    sup_lowerback_5: "https://youtu.be/Yd9wY25koVk?si=_AfTZJRmI7lYCuqN",
+    sup_lowerback_6: "https://youtu.be/YRqoIM0u0PY?si=HlJP2VLcCFIE98Lw",
+    sup_neck_1: "https://youtu.be/-r0eoFS7_5Q?si=tXuzXDrMwpoh4q5x",
+    sup_neck_2: "https://youtu.be/UbHEH6t_OJQ?si=dmChMGOc3LmpCFl_",
+    sup_neck_3: "https://youtu.be/7rnlAVhAK-8?si=NE0AkP29YyCkTunh",
+    sup_neck_4: "https://youtu.be/GSoXPJRnR6E?si=1dUaLyogGdtpT8Ra",
+    sup_neck_5: "https://youtu.be/XbzY45Z5DE8?si=ODnfMqwKb137yhqd",
+    sup_shoulder_1: "https://youtu.be/_UvmPNGtlPM?si=TD0Din9KmUL0oe5k",
+    sup_shoulder_2: "https://youtu.be/N3P7rp7bCYc?si=KR0IAt5YAB-C_brc",
+    sup_shoulder_3: "https://youtu.be/XOAIGRH90RY",
+    sup_shoulder_4: "https://youtu.be/1UU4VvklQ44?si=Epa6pei9XOSzS24l",
+    sup_shoulder_5: "https://youtu.be/QN1oZVMMRjE?si=ntVaxnLFVn4rUym0",
+    sup_shoulder_6: "https://youtube.com/shorts/aIq0fLi8iak?si=0KAHBixixtSv9M5-",
+    sup_weakcore_1: "https://youtu.be/pvIjsG5Svck?si=pe7Pn6yeASZ8Sngo",
+    sup_weakcore_2: "https://youtu.be/GbSC02oU3To?si=idRQd-MS5Mn87_Tu",
+    sup_weakcore_3: "https://youtu.be/TWuR_U9ddcc?si=zx8DFP4qHJvarZaK",
+    sup_weakcore_4: "https://youtu.be/N_s9em1xTqU?si=efWo54Nel5v0cHBH",
+    sup_weakcore_5: "https://youtu.be/ZdAHe9_HeEw?si=TQwahVMYP3_WdveK",
+    sup_weakcore_6: "https://youtu.be/J_2ImNPjxtc?si=yjf_PS8ElvWJ8URA",
+    sup_wrist_1: "https://youtu.be/i-JV2PsFzWA?si=Zqq2FVqjEtBAn4ml",
+    sup_wrist_2: "https://youtu.be/80Y3HHMgo6w?si=OQxprCmkapzuTIFg",
+    sup_wrist_3: "https://youtu.be/wRSk1_C6yOM?si=4bcMEvwL7hdp7fx0",
+    sup_wrist_4: "https://youtu.be/8h0tSMxLNG4?si=xuCOxDPfmoG7gqc6",
+    sup_wrist_5: "https://youtu.be/UcwgCTkVvIQ?si=Nc54YPcxmLQhDUAP"
   };
-  Object.entries(SUP_SAME).forEach(([a,b])=>{
-    if(!videoLinks[a] && videoLinks[b]) videoLinks[a] = videoLinks[b];
-  });
-  const SUP_OWN = {
-    sup_neck_3:      "https://youtu.be/u8C5LgpK3r4",   // شد الذقن للداخل
-    sup_knee_4:      "https://youtu.be/BiREOSisYWU",   // انزلاق على الحائط
-    sup_shoulder_5:  "https://youtu.be/UB_n4DxOTCo",   // شد لوحي الكتف
-    sup_diastasis_5: "https://youtu.be/DAAjOdwZdks",   // المحارة
-    sup_lowerback_1: "https://youtu.be/44s2-4rEjoo",   // إمالة الحوض
-    sup_diastasis_6: "https://youtu.be/Ielt7Mj-F_I",   // شد البطن العميق
-    sup_diastasis_1: "https://youtu.be/44s2-4rEjoo",
-    sup_neck_2:      "https://youtu.be/u8C5LgpK3r4",
-    sup_shoulder_4:  "https://youtu.be/UB_n4DxOTCo"
-  };
-  Object.entries(SUP_OWN).forEach(([a,u])=>{ if(!videoLinks[a]) videoLinks[a] = u; });
+  Object.entries(SUP_VIDEOS).forEach(([a,u])=>{ if(!videoLinks[a]) videoLinks[a] = u; });
 }
 function loadStored(){
   try{

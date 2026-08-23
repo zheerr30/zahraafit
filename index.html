@@ -916,7 +916,11 @@ const GT_VERBS = {
   "نامي":"نم","اشربي":"اشرب","تمرني":"تمرن","التزمي":"التزم","ركزي":"ركز","انتبهي":"انتبه","راقبي":"راقب","سخني":"سخن","اقرئي":"اقرأ","احفظي":"احفظ",
   "اسحبي":"اسحب","أمسكي":"أمسك","ارفعي":"ارفع","اخفضي":"اخفض","اعصري":"اعصر",
   "قربي":"قرب","باعدي":"باعد","وجهي":"وجه","بدلي":"بدل","اثبتي":"اثبت",
-  "تنفسي":"تنفس","كرري":"كرر","اضغطي":"اضغط","استلقي":"استلق","اجلسي":"اجلس"
+  "تنفسي":"تنفس","كرري":"كرر","جربي":"جرب","أضيفي":"أضف","اضيفي":"اضف",
+  "زيديه":"زده","أديها":"أدها","سجليه":"سجله","استخدميه":"استخدمه","أعيدي":"أعد",
+  "أكملي":"أكمل","تكملي":"تكمل","تصلي":"تصل","تنتظري":"تنتظر","أبطئي":"أبطئ",
+  "تزيدي":"تزيد","تزيدين":"تزيد","تحددينه":"تحدده","انتهيت":"انتهيت","توقفت":"توقفت",
+  "تخمني":"تخمن","راجعي":"راجع","أنت":"أنت","ثبتي":"ثبت","ركزي":"ركز","اضغطي":"اضغط","استلقي":"استلق","اجلسي":"اجلس"
 };
 const GT_WORDS = {
   "مستلقية":"مستلقيا","جالسة":"جالسا","واقفة":"واقفا","منبطحة":"منبطحا","ممدودة":"ممدودة",
@@ -930,10 +934,10 @@ const GT_WORDS = {
   "تسألين":"تسأل","تجدينها":"تجدها","تجدين":"تجد","تلاحظينها":"تلاحظها","تلاحظين":"تلاحظ","تلاحظي":"تلاحظ","تجاوزي":"تجاوز","تنسي":"تنس",
   "ترين":"ترى","تعبت":"تعبت","تشعرين":"تشعر","تريدين":"تريد","تكتبين":"تكتب",
   "ستجدينها":"ستجدها","ستلاحظين":"ستلاحظ","تطبقينه":"تطبقه","تفتحينها":"تفتحها",
-  "لكِ":"لك","لكي":"لك",
+  "لك":"لك","لكي":"لك",
   "مشتركة":"مشترك","عميلة":"عميل",
   "متدربة":"متدرب","المدربة":"المدربة",
-  "خاصة":"خاص","مدربتك":"مدربتك","صاحبتها":"صاحبها","عندكِ":"عندك","بكِ":"بك","إليكِ":"إليك","وضعيتك":"وضعيتك"
+  "خاصة":"خاص","مدربتك":"مدربتك","صاحبتها":"صاحبها","عندك":"عندك","بك":"بك","إليك":"إليك","وضعيتك":"وضعيتك"
 };
 /* يبنى مرة واحدة: تعبير واحد لكل الكلمات مع حدود عربية سليمة */
 let __gtRe = null;
@@ -2915,6 +2919,100 @@ function buildPdfHTML(){
      لا تغير الجدول ولا التمارين: الأدلة على تعديل التدريب حسب المراحل
      ضعيفة وغير متسقة، والفروق بين امرأة وأخرى أكبر من فروق المراحل.
      فالأنفع أن تتعلم القراءة من جسمها لا أن تتبع تقويما. */
+  /* صفحة «أول أربعة أسابيع» — مثال محسوب لا شرح مجرد.
+     المشتركات يسألن «وش نسوي في البداية؟» رغم وجود الشرح، لأن الشرح
+     يقول «زيدي عند الوصول لأعلى التكرارات» ولا يقول كيف يبدو ذلك بالأرقام.
+     هنا نأخذ تمرينها هي، بنطاقها هي، ونمشي معها أسبوعا أسبوعا. */
+  let startPage = "";
+  if(S.plan && S.plan.length && S.plan[0].exercises.length){
+    const ex = S.plan[0].exercises.find(e=>e.type==="compound") || S.plan[0].exercises[0];
+    const reps = String(ex.reps||"8-12");
+    const rr = reps.match(/(\d+)\s*[-–]\s*(\d+)/);
+    const lo = rr ? +rr[1] : 8, hi = rr ? +rr[2] : 12;
+    const sets = ex.sets || 3;
+    const isLeg = ["quads","hams","glutes","adductors","calves"].includes(ex.group);
+    const w1 = isLeg ? 6 : 4;                 // وزن ابتدائي تقريبي للمبتدئة
+    const step = isLeg ? 2 : 1;               // خطوة الزيادة
+    const mid = Math.round((lo+hi)/2);
+
+    const row = (wk,label,w,r,note,hl) => `
+      <tr style="${hl?`background:#eef7f0`:""}">
+        <td style="padding:11px 12px;font-family:Cairo;font-weight:900;font-size:14px;color:${navy};text-align:center;border-bottom:1px solid #eef0f4">${wk}</td>
+        <td style="padding:11px 12px;font-size:13px;font-weight:700;color:#4a5a78;border-bottom:1px solid #eef0f4">${label}</td>
+        <td style="padding:11px 12px;font-family:Cairo;font-weight:900;font-size:15px;color:${hl?"#1f6b3f":navy};text-align:center;border-bottom:1px solid #eef0f4">${w} كجم</td>
+        <td style="padding:11px 12px;font-family:Cairo;font-weight:800;font-size:14px;color:#4a5a78;text-align:center;border-bottom:1px solid #eef0f4">${r}</td>
+        <td style="padding:11px 12px;font-size:12px;font-weight:600;color:#6a7488;border-bottom:1px solid #eef0f4;line-height:1.8">${note}</td>
+      </tr>`;
+
+    const q = (t,b) => `<div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:12px;padding:13px 18px;direction:rtl;text-align:right;word-wrap:break-word;margin-bottom:9px">
+      <b style="font-family:Cairo;color:${navy};font-size:13.5px">${t}</b>
+      <div style="font-size:12.5px;color:#4a5a78;font-weight:600;line-height:1.95;margin-top:4px">${b}</div></div>`;
+
+    startPage = `
+    <div style="page-break-before:always;padding:44px 52px 26px">
+      <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · ابدأ من هنا</span></div>
+      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">🎯 أول أربعة أسابيع — مثال محسوب</h1>
+      <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 16px"></div>
+
+      <div style="page-break-inside:avoid;background:#fff7ee;border:1px solid rgba(232,98,44,.3);border-radius:14px;padding:16px 20px;max-width:660px;direction:rtl;text-align:right;word-wrap:break-word;margin:0 auto 16px">
+        <b style="font-family:Cairo;color:${navy};font-size:15px">الأسبوع الأول: كيف تعرف وزن البداية؟</b>
+        <div style="font-size:13.5px;color:#8a5a13;font-weight:600;line-height:2.1;margin-top:7px">
+          لا تخمني. جربي مجموعة واحدة بوزن خفيف جدا وأديها <b>${lo} تكرارات</b>.
+          إن انتهيت وأنت تشعرين أنك تقدرين على <b>4 تكرارات إضافية بسهولة</b> — الوزن خفيف، زيديه.
+          كرري حتى تصلي لوزن ينتهي عنده ${lo} تكرارات وأنت تشعرين أنك تقدرين على <b>2-3 فقط</b>.
+          هذا وزن بدايتك. سجليه واستخدميه في كل المجموعات.
+        </div>
+      </div>
+
+      <div style="page-break-inside:avoid;font-size:13px;color:#6a7488;font-weight:700;text-align:center;margin-bottom:9px">
+        المثال أدناه على تمرينك: <b style="color:${navy}">${ex.name}</b> — ${sets} مجموعات × ${reps} تكرار
+      </div>
+
+      <div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:14px;overflow:hidden;max-width:660px;margin:0 auto">
+        <table style="width:100%;border-collapse:collapse;direction:rtl">
+          <tr style="background:${navy}">
+            <td style="padding:10px 12px;color:#fff;font-family:Cairo;font-weight:800;font-size:12px;text-align:center">الأسبوع</td>
+            <td style="padding:10px 12px;color:#fff;font-family:Cairo;font-weight:800;font-size:12px">الحالة</td>
+            <td style="padding:10px 12px;color:#fff;font-family:Cairo;font-weight:800;font-size:12px;text-align:center">الوزن</td>
+            <td style="padding:10px 12px;color:#fff;font-family:Cairo;font-weight:800;font-size:12px;text-align:center">التكرارات</td>
+            <td style="padding:10px 12px;color:#fff;font-family:Cairo;font-weight:800;font-size:12px">ماذا تفعل</td>
+          </tr>
+          ${row(1,"البداية",w1,`${sets} × ${lo}`,"ثبتي الوزن وركزي على التكنيك. لا تزيدي شيئا هذا الأسبوع.")}
+          ${row(2,"نفس الوزن",w1,`${sets} × ${mid}`,"نفس الوزن، لكن أضيفي تكرارا أو اثنين. الوزن يبقى.")}
+          ${row(3,"وصلت للأعلى",w1,`${sets} × ${hi}`,"أكملت "+hi+" في كل المجموعات — الآن فقط تزيدين الوزن.")}
+          ${row(4,"زيادة",w1+step,`${sets} × ${lo}`,"زيدي "+step+" كجم وارجعي لأسفل النطاق. تبدأ الدورة من جديد.",true)}
+        </table>
+      </div>
+
+      <div style="page-break-inside:avoid;background:#eef7f0;border:1px solid #bfe0ca;border-radius:14px;padding:15px 20px;max-width:660px;direction:rtl;text-align:right;word-wrap:break-word;margin:14px auto 0">
+        <b style="font-family:Cairo;color:#1f6b3f;font-size:14.5px">القاعدة في سطر واحد</b>
+        <div style="font-size:13.5px;color:#33476b;font-weight:700;line-height:2.1;margin-top:6px">
+          الوزن لا يزيد إلا بعد أن تكملي <b>${hi} تكرارا في كل المجموعات</b>.
+          قبل ذلك، ما يزيد هو عدد التكرارات لا الوزن.
+        </div>
+      </div>
+
+      <div style="max-width:660px;margin:16px auto 0">
+        <b style="font-family:Cairo;color:${navy};font-size:15px;display:block;margin-bottom:9px">ماذا لو…</b>
+        ${q("الوزن ثقيل ولا أكملي "+lo+" تكرارات؟",
+           "انزلي خطوة واحدة ("+step+" كجم) وأكملي. الوزن الذي يكسر التكنيك لا يبني شيئا.")}
+        ${q("أكملت "+hi+" بسهولة من الأسبوع الأول؟",
+           "الوزن خفيف. زيدي خطوتين مباشرة ولا تنتظر أربعة أسابيع.")}
+        ${q("أكملت "+hi+" في مجموعتين فقط والثالثة لا؟",
+           "لم تصلي بعد. أعيدي نفس الوزن الأسبوع القادم حتى تكملي "+hi+" في المجموعات كلها.")}
+        ${q("توقفت عن التقدم ثلاثة أسابيع؟",
+           "راجعي نومك وأكلك أولا — الثبات غالبا خارج الصالة. ثم جربي أسبوعا بأوزان أخف (تفريغ) وارجعي.")}
+        ${q("لا توجد أوزان بهذه الدقة عندي؟",
+           "زيدي التكرارات بدل الوزن، أو أبطئ النزول إلى 3 ثوان. كلاهما زيادة حقيقية في الحمل.")}
+      </div>
+
+      <div style="page-break-inside:avoid;text-align:center;margin-top:14px;font-size:12.5px;color:#6a7488;font-weight:600;max-width:600px;margin-inline:auto">
+        الأرقام أعلاه مثال توضيحي. وزن بدايتك الحقيقي تحددينه أنت بتجربة الأسبوع الأول،
+        وقد يكون أعلى أو أقل — المهم القاعدة لا الرقم.
+      </div>
+    </div>`;
+  }
+
   let cyclePage = "";
   if(S.cycle && S.client && S.client.gender !== "male"){
     const card = (t,b) => `<div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:13px;padding:15px 19px;direction:rtl;text-align:right;word-wrap:break-word;margin-bottom:11px">
@@ -2981,7 +3079,7 @@ function buildPdfHTML(){
   }
 
 
-  const __pages = gt([pdfMuscleCSS(), cover, intro, coachNotes, body, postureP, cyclePage, disc, warmup, stretch, cardio, support, library, edu, rights]
+  const __pages = gt([pdfMuscleCSS(), cover, intro, coachNotes, body, startPage, postureP, cyclePage, disc, warmup, stretch, cardio, support, library, edu, rights]
          .filter(Boolean).join("\n"));
   return `<div dir="rtl" style="background:#eef1f7;-webkit-print-color-adjust:exact;print-color-adjust:exact">${__pages}</div>`;
 }

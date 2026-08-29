@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZahraaFit — مولد الجداول الرياضية</title>
+<title>ZahraaFit - مولد الجداول الرياضية</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -230,7 +230,7 @@ h1,h2,h3,h4{font-family:'Cairo',sans-serif;font-weight:800;line-height:1.25}
 <div id="root"></div>
 <script>
 /* ============================================================
-   ZahraaFit — مولد الجداول الرياضية
+   ZahraaFit - مولد الجداول الرياضية
    نسخة أولى كاملة وشغالة
    ============================================================ */
 
@@ -448,10 +448,10 @@ const EX = [
   {id:"singlecalf",name:"سمانة على ساق واحدة",group:"calves",muscle:"calves",env:["home","bodyweight","gym"],level:1,risk:[],tip:"قفي على ساق واحدة وارفعي كعبك ببطء واعصري.",type:"isolation",pattern:"legs",video:"https://youtu.be/qPd73snQfUs?si=3fh9CXyQHgUgBLxC",en:"Single-Leg Calf Raise"},
   {id:"jumprope",name:"نط الحبل (سمانة)",group:"calves",muscle:"calves",env:["home","bodyweight"],level:1,risk:["knee"],tip:"انطي على أطراف أصابعك بإيقاع ثابت لتنشيط السمانة.",type:"isolation",pattern:"legs",video:"https://youtu.be/u3zgHI8QnqE?si=jDPrObe6QwPAgFje",en:"Jump Rope"},
 
-/* ===== 15 تمرينا جديدا — أضيفيها داخل مصفوفة EX قبل القوس الأخير ] ===== */
+/* ===== 15 تمرينا جديدا - أضيفيها داخل مصفوفة EX قبل القوس الأخير ] ===== */
   {id:"hipthrustdb",name:"دفع الورك بالدمبل (هيب ثرست)",group:"glutes",muscle:"glutes",env:["gym","home"],level:1,risk:[],tip:"ضعي الدمبل على الحوض واعصري المؤخرة في الأعلى دون تقويس الظهر.",type:"compound",pattern:"legs",video:"https://youtu.be/29OfN4ztW_g?si=iT3-Zr8jrQyN6ATl",en:"Dumbbell Hip Thrust"},
   {id:"invertedcurl",name:"تجديف معكوس بقبضة عكسية",group:"biceps",muscle:"biceps",env:["gym","home","bodyweight"],level:2,risk:[],tip:"امسكي البار بقبضة عكسية واسحبي صدرك له مع إبقاء الجسم بخط مستقيم.",type:"compound",pattern:"pull",video:"https://youtu.be/y8rULfGW2o8",en:"Underhand Inverted Row"},
-  {id:"chinnegative",name:"عقلة سلبية (نزول بطيء)",group:"biceps",muscle:"biceps",env:["gym","bodyweight"],level:1,risk:["shoulder"],tip:"اقفزي للأعلى ثم انزلي ببطء في 5 ثوان — هذه أفضل بداية قبل العقلة الكاملة.",type:"compound",pattern:"pull",video:"https://youtu.be/Dx740NIKX94",en:"Chin-Up Negative"},
+  {id:"chinnegative",name:"عقلة سلبية (نزول بطيء)",group:"biceps",muscle:"biceps",env:["gym","bodyweight"],level:1,risk:["shoulder"],tip:"اقفزي للأعلى ثم انزلي ببطء في 5 ثوان - هذه أفضل بداية قبل العقلة الكاملة.",type:"compound",pattern:"pull",video:"https://youtu.be/Dx740NIKX94",en:"Chin-Up Negative"},
   {id:"selfcurl",name:"مرجحة بمقاومة ذاتية",group:"biceps",muscle:"biceps",env:["gym","home","bodyweight"],level:1,risk:[],tip:"قاومي بيدك الأخرى أثناء الرفع والنزول، 5 ثوان لكل اتجاه.",type:"isolation",pattern:"pull",video:"https://youtu.be/3LixnZr0YKo",en:"Self-Resisted Biceps Curl"},
   {id:"sphinxpush",name:"ضغط أبو الهول (تمديد الترايسبس)",group:"triceps",muscle:"triceps",env:["gym","home","bodyweight"],level:2,risk:["wrist"],tip:"من وضع البلانك على الساعدين، ادفعي بمرفقيك حتى تفرد ذراعيك.",type:"isolation",pattern:"push",video:"https://youtu.be/Xn4g0G2rS44",en:"Sphinx Push-Up"},
   {id:"closegrippush",name:"ضغط قبضة ضيقة (بوش أب)",group:"triceps",muscle:"triceps",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"قربي يديك لعرض الكتف والصقي مرفقيك بجسمك طوال الحركة.",type:"compound",pattern:"push",video:"https://youtu.be/F1Lq9LnyvVc",en:"Close-Grip Push-Up"},
@@ -467,10 +467,36 @@ const EX = [
 
   {id:"dbfloorpress",name:"ضغط أرضي بالدمبل",group:"chest",muscle:"chest",env:["gym","home"],level:1,risk:[],tip:"استلقي على الأرض والدمبل قريب من صدرك، وانزلي حتى يلمس مرفقك الأرض ثم ادفعي.",type:"compound",pattern:"push",video:"https://youtu.be/qHCI9rK7HqM",en:"Dumbbell Floor Press"},
   {id:"reverselunge",name:"طعنة خلفية",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:["knee"],tip:"اخطي للخلف وانزلي حتى تصير الركبتان بزاوية قائمة، والوزن على الرجل الأمامية.",type:"compound",pattern:"legs",video:"https://youtu.be/RZKXLMxPF_I",en:"Reverse Lunge"},
-  {id:"inclinepush",name:"ضغط مائل لأعلى (اليدان مرتفعتان)",group:"chest",muscle:"chest",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"يداك على كرسي أو طاولة والجسم بخط مستقيم — كل ما ارتفعت اليدان صار أسهل.",type:"compound",pattern:"push",video:"https://youtu.be/49jfZ_z7-us",en:"Incline Push-Up"},
+  {id:"inclinepush",name:"ضغط مائل لأعلى (اليدان مرتفعتان)",group:"chest",muscle:"chest",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"يداك على كرسي أو طاولة والجسم بخط مستقيم - كل ما ارتفعت اليدان صار أسهل.",type:"compound",pattern:"push",video:"https://youtu.be/49jfZ_z7-us",en:"Incline Push-Up"},
+
+  {id:"kneepush",name:"ضغط على الركبتين",group:"chest",muscle:"chest",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"من وضع الركبتين، حافظي على استقامة الجذع من الركبة للكتف.",type:"compound",pattern:"push",video:"https://www.youtube.com/watch?v=lFR1GWy1Dcs",en:"Knee Push-Up"},
+  {id:"negpush",name:"ضغط سلبي بطيء",group:"chest",muscle:"chest",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"انزلي ببطء في 4 ثوان ثم ارجعي بأي طريقة. أفضل تدرج نحو الضغط الكامل.",type:"compound",pattern:"push",video:"https://www.youtube.com/watch?v=otG1M7Xl64I",en:"Negative Push-Up"},
+  {id:"archerpush",name:"ضغط الأرشر",group:"chest",muscle:"chest",env:["gym","home","bodyweight"],level:2,risk:["wrist"],tip:"مدي ذراعا للجانب واضغطي بالأخرى - تدرج نحو الضغط بذراع واحدة.",type:"compound",pattern:"push",video:"https://www.youtube.com/watch?v=OVRBYrjszy4",en:"Archer Push-Up"},
+  {id:"tablerow",name:"تجديف تحت الطاولة",group:"back",muscle:"upperback",env:["home","bodyweight"],level:1,risk:[],tip:"استلقي تحت طاولة ثابتة واسحبي صدرك نحوها والجسم مستقيم.",type:"compound",pattern:"pull",video:"https://www.youtube.com/watch?v=6NTruShwwKk",en:"Table / Australian Row"},
+  {id:"doorrow",name:"تجديف ثابت على إطار الباب",group:"back",muscle:"upperback",env:["home","bodyweight"],level:1,risk:[],tip:"امسكي إطار الباب واتكئي للخلف ثم اسحبي نفسك.",type:"compound",pattern:"pull",video:"https://www.youtube.com/watch?v=n5MbUcLIpRQ",en:"Isometric Doorway Row"},
+  {id:"scappull",name:"سحب لوحي الكتف معلقا",group:"back",muscle:"upperback",env:["gym","bodyweight"],level:2,risk:[],tip:"معلقة على البار، اسحبي لوحي كتفك لأسفل دون ثني المرفق.",type:"compound",pattern:"pull",video:"https://www.youtube.com/watch?v=-ZIpSoTRsuE",en:"Scapular Pull-Up"},
+  {id:"selflateral",name:"رفرفة جانبية بمقاومة ذاتية",group:"shoulders",muscle:"frontdelt",env:["gym","home","bodyweight"],level:1,risk:["shoulder"],tip:"قاومي بيدك الأخرى أثناء رفع الذراع للجانب.",type:"compound",pattern:"push",video:"https://www.youtube.com/watch?v=7UJ_ZN05Vfs",en:"Self-Resisted Lateral Raise"},
+  {id:"elevpike",name:"ضغط بايك على سطح مرتفع",group:"shoulders",muscle:"frontdelt",env:["gym","home","bodyweight"],level:2,risk:["shoulder"],tip:"قدماك على سطح مرتفع والورك عال، انزلي برأسك بين يديك.",type:"compound",pattern:"push",video:"https://www.youtube.com/watch?v=Pzth0n3oWBQ",en:"Elevated Pike Push-Up"},
+  {id:"bearcrawl",name:"زحف الدب",group:"shoulders",muscle:"frontdelt",env:["gym","home","bodyweight"],level:2,risk:["shoulder"],tip:"ازحفي والركبة على بعد شبر من الأرض والظهر مستقيم.",type:"compound",pattern:"push",video:"https://www.youtube.com/watch?v=U3Y58Kyw7Xw",en:"Bear Crawl"},
+  {id:"walltri",name:"ضغط الترايسبس على الحائط",group:"triceps",muscle:"triceps",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"يداك على الحائط بقبضة ضيقة، اثني المرفقين وادفعي.",type:"isolation",pattern:"push",video:"https://www.youtube.com/watch?v=6dAXX9ipvj4",en:"Wall Triceps Push-Up"},
+  {id:"kneeclosepush",name:"ضغط قبضة ضيقة على الركبتين",group:"triceps",muscle:"triceps",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"ضغط على الركبتين واليدان قريبتان والمرفقان ملاصقان للجسم.",type:"isolation",pattern:"push",video:"https://www.youtube.com/watch?v=cExlq_fU4tc",en:"Knee Close-Grip Push-Up"},
+  {id:"bwskull",name:"تمديد الترايسبس على الأرض",group:"triceps",muscle:"triceps",env:["gym","home","bodyweight"],level:2,risk:["wrist"],tip:"من وضع الركوع أو الوقوف على سطح، اثني المرفقين فقط.",type:"isolation",pattern:"push",video:"https://www.youtube.com/watch?v=hl86OCmYZG4",en:"Bodyweight Floor Triceps Extension"},
+  {id:"chairsquat",name:"سكوات على الكرسي",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:["knee"],tip:"انزلي حتى تلمسي الكرسي بخفة ثم انهضي دون ارتخاء كامل.",type:"compound",pattern:"legs",video:"https://www.youtube.com/watch?v=rvpC9QkTc3Y",en:"Chair / Box Squat to Stand"},
+  {id:"splitsquat",name:"سكوات سبليت ثابت",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:["knee"],tip:"قدم أمام وقدم خلف ثابتتان، انزلي عموديا لا للأمام.",type:"compound",pattern:"legs",video:"https://www.youtube.com/watch?v=REflwhg0jNs",en:"Bodyweight Split Squat"},
+  {id:"temposquat",name:"سكوات بطيء (تيمبو)",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:["knee"],tip:"انزلي في 3 ثوان واثبتي ثانية ثم اصعدي. البطء يزيد الحمل.",type:"compound",pattern:"legs",video:"https://www.youtube.com/watch?v=HjKa7I_maY8",en:"Tempo Bodyweight Squat"},
+  {id:"slgbridge",name:"جسر المؤخرة بساق واحدة",group:"hams",muscle:"hamstrings",env:["gym","home","bodyweight"],level:1,risk:["lowerback"],tip:"جسر بساق واحدة والكعب قريب من المؤخرة، اعصري في الأعلى.",type:"isolation",pattern:"legs",video:"https://www.youtube.com/watch?v=nat5dN0Kuao",en:"Single-Leg Glute Bridge"},
+  {id:"bridgemarch",name:"مسير جسر المؤخرة",group:"hams",muscle:"hamstrings",env:["gym","home","bodyweight"],level:1,risk:["lowerback"],tip:"من وضع الجسر، ارفعي ركبة ثم الأخرى بالتناوب مع ثبات الحوض.",type:"isolation",pattern:"legs",video:"https://www.youtube.com/watch?v=RESEoAnLEmk",en:"Glute Bridge March"},
+  {id:"towelcurl",name:"ثني الفخذ الخلفي بالمنشفة",group:"hams",muscle:"hamstrings",env:["gym","home","bodyweight"],level:2,risk:["lowerback"],tip:"منشفة تحت الكعبين على أرض ملساء، مدي وارجعي والحوض مرفوع.",type:"isolation",pattern:"legs",video:"https://www.youtube.com/watch?v=cWSsWpuxmYM",en:"Towel / Sliding Hamstring Curl"},
+  {id:"hamwalkout",name:"مشي الجسر للأمام",group:"hams",muscle:"hamstrings",env:["gym","home","bodyweight"],level:2,risk:["lowerback"],tip:"من الجسر، امشي بقدميك للأمام تدريجيا مع بقاء الحوض عاليا.",type:"isolation",pattern:"legs",video:"https://www.youtube.com/watch?v=ucvakYAHzWw",en:"Hamstring Walkout"},
+  {id:"revhyper",name:"تمديد الورك المعكوس على المقعد",group:"hams",muscle:"hamstrings",env:["gym","home","bodyweight"],level:2,risk:["lowerback"],tip:"جذعك على المقعد وساقاك حرتان، ارفعيهما لمستوى الجسم.",type:"isolation",pattern:"legs",video:"https://www.youtube.com/watch?v=CxnHZ3Oy3YQ",en:"Bench Reverse Hyperextension"},
+  {id:"adductsqueeze",name:"عصر الوسادة بين الركبتين",group:"adductors",muscle:"adductors",env:["gym","home","bodyweight"],level:1,risk:[],tip:"وسادة بين الركبتين، اعصري 10 ثوان واسترخي دون أن تسقط.",type:"isolation",pattern:"legs",video:"https://www.youtube.com/watch?v=_ZE5oF1qaWo",en:"Isometric Adductor Squeeze"},
+  {id:"slidelunge",name:"طعنة جانبية منزلقة",group:"adductors",muscle:"adductors",env:["gym","home","bodyweight"],level:2,risk:[],tip:"انزلقي بساق للجانب مع بقاء الأخرى ممدودة.",type:"isolation",pattern:"legs",video:"https://www.youtube.com/watch?v=jV41XYrGW6U",en:"Sliding Lateral Lunge"},
+  {id:"clamshell",name:"المحارة",group:"glutes",muscle:"glutes",env:["gym","home","bodyweight"],level:1,risk:[],tip:"مستلقية على الجنب والركبتان مثنيتان، افتحي الركبة العليا.",type:"compound",pattern:"legs",video:"https://www.youtube.com/watch?v=EG5_gXcfozw",en:"Clamshell"},
+  {id:"stepcalf",name:"رفع السمانة على درجة",group:"calves",muscle:"calves",env:["gym","home","bodyweight"],level:1,risk:[],tip:"كعبك خارج الدرجة، انزلي لأقصى مدى ثم ارفعي لأعلى نقطة.",type:"isolation",pattern:"legs",video:"https://www.youtube.com/watch?v=rbvyXV1uHhY",en:"Calf Raise on Step"},
+  {id:"tiptoewalk",name:"المشي على أطراف الأصابع",group:"calves",muscle:"calves",env:["gym","home","bodyweight"],level:1,risk:[],tip:"امشي على أطراف أصابعك مسافة 20 مترا أو 30 ثانية.",type:"isolation",pattern:"legs",video:"https://www.youtube.com/watch?v=D71EAOKlob4",en:"Tiptoe Walk"}
 ];
 
-/* ===== مكتبة الإطالة والمرونة — معرفات مطابقة لمكتبة التمارين ===== */
+/* ===== مكتبة الإطالة والمرونة - معرفات مطابقة لمكتبة التمارين ===== */
 const FLEX = [
   {id:"flex_chest_1",name:"إطالة الصدر على زاوية الحائط",en:"Corner / Doorway Chest Stretch",group:"chest",kind:"إطالة",video:"https://youtu.be/M850sCj9LHQ?si=SWoxEf-NDcdR8pOw"},
   {id:"flex_shoulders_1",name:"إطالة الكتف الأمامي خلف الظهر",en:"Behind-the-Back Shoulder Stretch",group:"shoulders",kind:"إطالة",video:"https://youtu.be/omeww85Mhkw?si=avviTxCnI1M7p8J5"},
@@ -529,7 +555,7 @@ const CONDITIONS = [
   {id:"diastasis", name:"انفصال عضلي (بطن)",  ico:"🤰", avoid:["diastasis"]}
 ];
 
-/* تمارين دعم وتأهيل لكل حالة صحية — تظهر في صفحة مخصصة بالـ PDF */
+/* تمارين دعم وتأهيل لكل حالة صحية - تظهر في صفحة مخصصة بالـ PDF */
 const SUPPORT = {
   knee:{
     name:"دعم الركبة", ico:"🦵",
@@ -603,14 +629,14 @@ const SUPPORT = {
   },
   diastasis:{
     name:"برنامج الانفصال العضلي", ico:"🤰",
-    intro:"الانفصال العضلي يحدث عندما تضعف عضلات البطن الأمامية وتبتعد عن بعضها. هذه التمارين تقوي العضلات العميقة للبطن والظهر بأمان، وتتجنب الحركات التي تزيد الضغط على البطن (كالكرنش والمعدة الكاملة). أديها 2–3 مرات أسبوعيا بتحكم وتنفس عميق، وتوقفي عند أي ألم.",
+    intro:"الانفصال العضلي يحدث عندما تضعف عضلات البطن الأمامية وتبتعد عن بعضها. هذه التمارين تقوي العضلات العميقة للبطن والظهر بأمان، وتتجنب الحركات التي تزيد الضغط على البطن (كالكرنش والمعدة الكاملة). أديها 2-3 مرات أسبوعيا بتحكم وتنفس عميق، وتوقفي عند أي ألم.",
     items:[
       ["sup_diastasis_1","التنفس العميق بالحجاب الحاجز","استلقي وضعي يدك على بطنك. شهيق عميق من الأنف حتى يرتفع بطنك، ثم زفير ببطء مع سحب البطن للداخل. 5 دقائق يوميا."],
       ["sup_diastasis_2","إمالة الحوض","استلقي مع ثني الركبتين. اضغطي أسفل ظهرك للأرض بشد البطن وإمالة الحوض لأعلى ببطء. 3×10."],
       ["sup_diastasis_3","جسر المؤخرة","ارفعي الحوض ببطء مع شد البطن دون تقويس أسفل الظهر. 3×12."],
       ["sup_diastasis_4","الكلب-الطائر (Bird Dog)","من وضع اليدين والركبتين، مدي ذراعا وساقا معاكسة بشكل مستقيم وثبتي مع شد الجذع. 3×10 لكل جهة."],
       ["sup_diastasis_5","المحارة (Clamshell)","نامي على جنبك بركبتين مثنيتين 45°، وارفعي الركبة العليا دون تحريك الحوض (بشريط مقاومة إن توفر). 3×12 لكل جهة."],
-      ["sup_diastasis_6","شد البطن العميق (Vacuum)","اسحبي بطنك للداخل نحو العمود الفقري وأنت تتنفسين بشكل طبيعي، واثبتي 10–15 ثانية. 3 مرات."]
+      ["sup_diastasis_6","شد البطن العميق (Vacuum)","اسحبي بطنك للداخل نحو العمود الفقري وأنت تتنفسين بشكل طبيعي، واثبتي 10-15 ثانية. 3 مرات."]
     ]
   }
 };
@@ -618,17 +644,17 @@ const SUPPORT = {
 
 /* ---------- إعدادات المستوى (مجموعات × تكرارات × راحة) ---------- */
 const LEVELS = {
-  1:{name:"مبتدئ", sets:3, reps:"12–15", rest:"60 ث"},
-  2:{name:"متوسط", sets:4, reps:"10–12", rest:"75 ث"},
-  3:{name:"متقدم", sets:4, reps:"8–10",  rest:"90 ث"}
+  1:{name:"مبتدئ", sets:3, reps:"12-15", rest:"60 ث"},
+  2:{name:"متوسط", sets:4, reps:"10-12", rest:"75 ث"},
+  3:{name:"متقدم", sets:4, reps:"8-10",  rest:"90 ث"}
 };
 
 /* معاملات الأحمال حسب الهدف (مبنية على أسس علمية) */
 const GOALS = {
-  strength:    {name:"القوة",            ico:"🏋️", sets:5, reps:"3–6",   rest:"3–5 دقائق", weekVol:[12,18], note:"أوزان عالية وتكرارات قليلة لبناء القوة القصوى."},
-  hypertrophy: {name:"بناء العضل/التضخيم",ico:"💪", sets:4, reps:"8–12",  rest:"60–90 ث",  weekVol:[12,20], note:"النطاق الذهبي لزيادة حجم العضلة وشدها."},
-  cutting:     {name:"التنشيف/حرق الدهون",ico:"🔥", sets:3, reps:"12–20", rest:"30–60 ث",  weekVol:[10,16], note:"تكرارات عالية وراحة قصيرة لحرق أعلى مع الحفاظ على العضلة."},
-  general:     {name:"لياقة عامة",        ico:"✨", sets:3, reps:"10–15", rest:"45–60 ث",  weekVol:[10,14], note:"توازن شامل للصحة واللياقة دون تخصص."}
+  strength:    {name:"القوة",            ico:"🏋️", sets:5, reps:"3-6",   rest:"3-5 دقائق", weekVol:[12,18], note:"أوزان عالية وتكرارات قليلة لبناء القوة القصوى."},
+  hypertrophy: {name:"بناء العضل/التضخيم",ico:"💪", sets:4, reps:"8-12",  rest:"60-90 ث",  weekVol:[12,20], note:"النطاق الذهبي لزيادة حجم العضلة وشدها."},
+  cutting:     {name:"التنشيف/حرق الدهون",ico:"🔥", sets:3, reps:"12-20", rest:"30-60 ث",  weekVol:[10,16], note:"تكرارات عالية وراحة قصيرة لحرق أعلى مع الحفاظ على العضلة."},
+  general:     {name:"لياقة عامة",        ico:"✨", sets:3, reps:"10-15", rest:"45-60 ث",  weekVol:[10,14], note:"توازن شامل للصحة واللياقة دون تخصص."}
 };
 
 /* خيارات التركيز: ترفع حصة عضلات معينة دون إلغاء الباقي
@@ -661,7 +687,7 @@ const MIN_WEEKLY_APPEARANCE = { // أقل عدد مرات يجب أن تظهر �
   adductors:1, biceps:1, triceps:1, calves:1, abs:1
 };
 
-/* الحد الأدنى الصارم للجلسات (المجموعات) الأسبوعية لكل عضلة — لا ينزل تحته أبدا */
+/* الحد الأدنى الصارم للجلسات (المجموعات) الأسبوعية لكل عضلة - لا ينزل تحته أبدا */
 const MIN_WEEKLY_SETS = { big:10, small:8 };
 function minSetsFor(group){ return BIG_GROUPS.includes(group) ? MIN_WEEKLY_SETS.big : MIN_WEEKLY_SETS.small; }
 
@@ -679,18 +705,18 @@ const ENVS = {
   bodyweight:{name:"وزن الجسم",   sub:"بدون أي معدات",     emoji:"🤸"}
 };
 
-/* أنظمة التقسيمة — تختارها العميلة */
-/* SPLIT_SYSTEMS القديمة أزيلت — البديل في محرك v4 أسفل الملف */
+/* أنظمة التقسيمة - تختارها العميلة */
+/* SPLIT_SYSTEMS القديمة أزيلت - البديل في محرك v4 أسفل الملف */
 const DAY_NAMES = {
   chest:"صدر",back:"ظهر",shoulders:"أكتاف",biceps:"بايسبس",
   triceps:"ترايسبس",quads:"فخذ أمامي",hams:"فخذ خلفي",adductors:"فخذ داخلي",glutes:"مؤخرة",calves:"سمانة",abs:"بطن"
 };
 
 /* ============================================================
-   الإحماء — قسم علوي وسفلي ثابت يرفق في الجدول
+   الإحماء - قسم علوي وسفلي ثابت يرفق في الجدول
    ============================================================ */
 /* ============================================================
-   الإحماء والإطالة — مبنيان من مكتبتي WARM و FLEX
+   الإحماء والإطالة - مبنيان من مكتبتي WARM و FLEX
    المعرفات هنا حقيقية، فتظهر الفيديوهات في الـ PDF ومحرر الروابط.
    (النسخة السابقة استخدمت st_* و wl_walk وهي غير موجودة في المكتبة)
    ============================================================ */
@@ -725,15 +751,15 @@ function libItems(arr, ids){
             .filter(Boolean);
 }
 const WARMUP = {
-  upper:{ name:"إحماء علوي", sub:"قبل تمارين الصدر · الظهر · الأكتاف · الذراعين",
+  upper:{ name:"إحماء علوي", sub:"قبل تمارين الصدر | الظهر | الأكتاف | الذراعين",
     items: libItems(WARM, ["wu_shoulders","wu_arms","wu_chest","wu_neck","wu_warmset_u"]) },
-  lower:{ name:"إحماء سفلي", sub:"قبل تمارين الأرجل · المؤخرة · السمانة",
+  lower:{ name:"إحماء سفلي", sub:"قبل تمارين الأرجل | المؤخرة | السمانة",
     items: libItems(WARM, ["wl_squat","wl_hip","wl_bridge","wl_ham","wl_warmset"]) }
 };
 const STRETCH = {
-  upper:{ name:"إطالة الجزء العلوي", sub:"بعد تمارين الصدر · الظهر · الأكتاف · الذراعين",
+  upper:{ name:"إطالة الجزء العلوي", sub:"بعد تمارين الصدر | الظهر | الأكتاف | الذراعين",
     items: libItems(FLEX, ["flex_chest_1","flex_back_2","flex_back_1","flex_shoulders_2","flex_triceps_1","flex_biceps_1","flex_neck_1"]) },
-  lower:{ name:"إطالة الجزء السفلي", sub:"بعد تمارين الأرجل · المؤخرة · السمانة",
+  lower:{ name:"إطالة الجزء السفلي", sub:"بعد تمارين الأرجل | المؤخرة | السمانة",
     items: libItems(FLEX, ["flex_quads_1","flex_hams_3","flex_glutes_2","flex_adductors_1","flex_calves_1","flex_hip_1"]) }
 };
 const EDU_PAGES = [
@@ -743,26 +769,26 @@ const EDU_PAGES = [
       {h:"عدد أيام التمارين", p:"اختاري الأيام التي تناسب جدولك فعليا؛ المهم الاستمرارية لا الحماس المؤقت. الأفضل أن تكون أيام تمرينك من 3 إلى 5 أيام أسبوعيا. يومان بانتظام لشهور أفضل من ستة أيام تتوقفين بعدها بأسبوع."},
       {h:"الاستشفاء سر النتيجة", p:"العضلة تكبر وقت الراحة لا وقت التمرين. أثناء التمرين أنت تهدمين الألياف، وأثناء النوم والراحة يبنيها الجسم أقوى. تقسيم الأسبوع لـ6 أو 7 أيام متتالية لا يعطي الجسم فرصة لترميم نفسه، وقد يؤدي لتراجع النتائج بدل تقدمها."},
       {h:"ممنوع تكرار نفس العضلة يومين متتاليين", p:"كل عضلة تمرن بجهد عال  تحتاج 48 ساعة على الأقل لترتاح وتبنى من جديد. يمكنك تمرين الجزء العلوي اليوم والسفلي غدا، لكن لا تمرني الصدر مثلا في يومين متتاليين."},
-      {h:"التوقعات الواقعية", p:"النتائج الحقيقية تظهر خلال 8–12 أسبوعا من الالتزام، لا خلال أيام. الصبر والثبات على الجدول أهم من شدة الحماس في الأسبوع الأول."}
+      {h:"التوقعات الواقعية", p:"النتائج الحقيقية تظهر خلال 8-12 أسبوعا من الالتزام، لا خلال أيام. الصبر والثبات على الجدول أهم من شدة الحماس في الأسبوع الأول."}
     ]},
   { title:"كيف تعمل التمارين؟",
     intro:"يقسم الجسم إلى عضلات كبيرة وصغيرة، ولكل عضلة احتياجها من حجم التمرين الأسبوعي (عدد الجلسات). فهم هذا يساعدك على توزيع جهدك بذكاء.",
     blocks:[
-      {h:"العضلات الصغيرة", p:"مثل البايسبس والترايسبس والأكتاف والبطن والسمانة. تحتاج 4 جلسات أسبوعيا كحد أدنى (تمرين واحد بـ4 جلسات). للاستفادة الأكبر: 8–12 جلسة، أي 2–3 تمارين."},
-      {h:"العضلات الكبيرة", p:"مثل الصدر والظهر والأرجل والمؤخرة. تحتاج 8 جلسات أسبوعيا كحد أدنى (تمرينان بـ4 جلسات لكل  منهما). للاستفادة الأكبر: 12–15 جلسة، أي 3–4 تمارين."},
+      {h:"العضلات الصغيرة", p:"مثل البايسبس والترايسبس والأكتاف والبطن والسمانة. تحتاج 4 جلسات أسبوعيا كحد أدنى (تمرين واحد بـ4 جلسات). للاستفادة الأكبر: 8-12 جلسة، أي 2-3 تمارين."},
+      {h:"العضلات الكبيرة", p:"مثل الصدر والظهر والأرجل والمؤخرة. تحتاج 8 جلسات أسبوعيا كحد أدنى (تمرينان بـ4 جلسات لكل  منهما). للاستفادة الأكبر: 12-15 جلسة، أي 3-4 تمارين."},
       {h:"كيف تنمو العضلة؟", p:"النمو يحدث عبر ثلاثة محفزات: التوتر الميكانيكي (رفع أوزان تتحداك)، التلف العضلي (الإجهاد الذي يصلح أقوى)، والإجهاد الأيضي (الحرقان من التكرارات العالية). جدولك مصمم ليجمعها."},
-      {h:"الهدف", p:"ينصح بأداء 12–15 جلسة للعضلة أسبوعيا للحصول على أفضل نتيجة. المهم أن تفهمي المبدأ لا أن تحفظي الأرقام فقط، لتقدري على تعديل تمرينك بنفسك مع الوقت."}
+      {h:"الهدف", p:"ينصح بأداء 12-15 جلسة للعضلة أسبوعيا للحصول على أفضل نتيجة. المهم أن تفهمي المبدأ لا أن تحفظي الأرقام فقط، لتقدري على تعديل تمرينك بنفسك مع الوقت."}
     ]},
   { title:"كم الوزن الذي نبدأ به؟",
     intro:"اختيار الوزن الصحيح فن مهم: ثقيل جدا يكسر التكنيك ويسبب الإصابة، وخفيف جدا لا يحفز النمو. الهدف وزن يتحداك مع حفاظك على الأداء السليم.",
     blocks:[
-      {h:"البداية الآمنة", p:"في البداية لا نرفع أوزانا ثقيلة. ابدئي بوزن 2–3 كيلو في أغلب التمارين، وبعض التمارين (كالأرجل) تتحملين فيها أكثر. ركزي أول أسبوعين على إتقان الحركة قبل زيادة الوزن."},
+      {h:"البداية الآمنة", p:"في البداية لا نرفع أوزانا ثقيلة. ابدئي بوزن 2-3 كيلو في أغلب التمارين، وبعض التمارين (كالأرجل) تتحملين فيها أكثر. ركزي أول أسبوعين على إتقان الحركة قبل زيادة الوزن."},
       {h:"نطاق التكرارات", p:"الحد الأدنى 8 تكرارات لكل جولة، والحد الأقصى 12 تكرارا. الوزن المناسب هو الذي يجعل آخر تكرارين صعبين لكن بتكنيك سليم."},
       {h:"متى تزيدين الوزن؟", p:"إذا وصلت في كل الجولات للحد الأقصى (12 تكرارا) بسهولة، فالمرة القادمة ارفعي الوزن قليلا (نصف إلى واحد كيلو). الهدف الاقتراب من الفشل العضلي في آخر مجموعة."},
       {h:"بديل زيادة الوزن", p:"إذا كان الوزن الأعلى ثقيلا عليك، يمكنك زيادة عدد التكرارات أو إبطاء النزول حتى الوصول للتحدي المطلوب، ثم تنتقلين للوزن الأعلى لاحقا."},
       {h:"ما الفشل العضلي؟", p:"هو النقطة التي لا تقدرين فيها على تكرار إضافي بتكنيك سليم. لا يعني الإصابة، بل أنك استنفدت العضلة. للمبتدئة يكفي الاقتراب منه دون الوصول التام إليه."}
     ]},
-  { title:"التكنيك الصحيح — كيف أعرف أني صح؟",
+  { title:"التكنيك الصحيح - كيف أعرف أني صح؟",
     intro:"أداء التمرين بشكل صحيح هو أساس النتيجة والسلامة. تمرين واحد بتكنيك سليم أفضل من عشرة بأداء خاطئ، لأن الخطأ يبني عادة سيئة ويعرضك للإصابة.",
     blocks:[
       {h:"الشعور بالعضلة المستهدفة", p:"عند الأداء الصحيح ستشعرين بتقلصات في العضلة المستهدفة؛ غياب الإحساس قد يعني خطأ في الأداء أو وزنا ثقيلا يجبر عضلات أخرى على المساعدة."},
@@ -782,31 +808,31 @@ const EDU_PAGES = [
   { title:"نطاقات التكرارات حسب الهدف",
     intro:"عدد التكرارات ليس عشوائيا؛ كل نطاق يحفز الجسم بطريقة مختلفة. معرفتك بهذا تتيح لك تفصيل تمرينك حسب هدفك.",
     blocks:[
-      {h:"تكرارات منخفضة (1–5)", p:"تركز على القوة القصوى وتدريب الجهاز العصبي على تجنيد أكبر عدد من الألياف. مناسبة للمتقدمات، وتحتاج أوزانا ثقيلة وراحة أطول بين الجولات."},
-      {h:"تكرارات متوسطة (6–12)", p:"النطاق الذهبي للتضخيم وشد العضلات؛ يجمع بين التوتر الميكانيكي والإجهاد الأيضي بتوازن. الأنسب لأغلب أهداف التشكيل والقوام."},
+      {h:"تكرارات منخفضة (1-5)", p:"تركز على القوة القصوى وتدريب الجهاز العصبي على تجنيد أكبر عدد من الألياف. مناسبة للمتقدمات، وتحتاج أوزانا ثقيلة وراحة أطول بين الجولات."},
+      {h:"تكرارات متوسطة (6-12)", p:"النطاق الذهبي للتضخيم وشد العضلات؛ يجمع بين التوتر الميكانيكي والإجهاد الأيضي بتوازن. الأنسب لأغلب أهداف التشكيل والقوام."},
       {h:"تكرارات عالية (15+)", p:"تركز على التحمل العضلي وزيادة ضخ الدم وكفاءة الأكسجين. مفيدة للسمانة والبطن وللإحماء وللمبتدئات في إتقان الحركة."},
       {h:"الأهم من النطاق", p:"بغض النظر عن النطاق، النمو يتطلب الاقتراب من الفشل العضلي. 15 تكرارا سهلة لا تبني، بينما 8 تكرارات متحدية تبني. التحدي هو المفتاح."}
     ]},
   { title:"سرعة الحركة (Tempo)",
     intro:"رتم الحركة يتكون من مراحل، والتحكم فيه يضاعف نتيجة نفس التمرين دون زيادة الوزن. سلاح خفي تجهله كثيرات.",
     blocks:[
-      {h:"مرحلة الانبساط (النزول)", p:"أهم مرحلة للبناء العضلي. اجعليها بطيئة ومتحكمة (2–3 ثوان) لزيادة وقت التوتر على العضلة. مقاومة النزول أقوى محفز للنمو يهمله المبتدئون."},
+      {h:"مرحلة الانبساط (النزول)", p:"أهم مرحلة للبناء العضلي. اجعليها بطيئة ومتحكمة (2-3 ثوان) لزيادة وقت التوتر على العضلة. مقاومة النزول أقوى محفز للنمو يهمله المبتدئون."},
       {h:"مرحلة الانقباض (الرفع)", p:"يفضل أن تكون مسيطرا عليها وبقوة، لتفعيل أكبر قدر من الألياف. ليست متسرعة بالزخم، بل قوية بتحكم."},
       {h:"لحظة الانقباض (العصر)", p:"اعصري العضلة لحظة في قمة الحركة (مثلا أعلى تمرين البايسبس). هذه اللحظة تزيد تفعيل العضلة وتحسن الاتصال الذهني العضلي."},
       {h:"الثبات في الأسفل", p:"الثبات لحظة في أسفل الحركة يقلل الزخم ويجبر العضلة على حمل الوزن بالكامل دون استعانة بالاندفاع، فتشتغل العضلة لا الحركة."}
     ]},
-  { title:"الزيادة التدريجية — مفتاح كل تطور",
+  { title:"الزيادة التدريجية - مفتاح كل تطور",
     intro:"أن تطلبي من جسمك مجهودا أكبر تدريجيا مع الوقت. هذا المبدأ هو السبب الأول للنتائج، وغيابه السبب الأول للثبات.",
     blocks:[
       {h:"لماذا ضرورية؟", p:"الجسم يتكيف مع أي ضغط يتكرر. لو بقيت على نفس الوزن والتكرار شهورا، يتوقف النمو لأن جسمك اعتاد. الزيادة التدريجية تعطيه تحديا جديدا باستمرار."},
       {h:"طرق التطبيق", p:"زيادة الأوزان، أو زيادة التكرارات، أو زيادة عدد الجولات، أو إبطاء التمبو، أو تقليل الراحة بين الجولات، أو تحسين المدى والتكنيك. لا تقتصري على الوزن فقط."},
-      {h:"متى تزيدين؟ (اختبار RPE)", p:"إذا أنهيت تكراراتك وأحسست أنك تقدرين على 3–4 إضافية بسهولة، فالوزن صار خفيفا وحان وقت الزيادة. اهدفي لإنهاء كل مجموعة وأنت تشعرين بتحد حقيقي."},
+      {h:"متى تزيدين؟ (اختبار RPE)", p:"إذا أنهيت تكراراتك وأحسست أنك تقدرين على 3-4 إضافية بسهولة، فالوزن صار خفيفا وحان وقت الزيادة. اهدفي لإنهاء كل مجموعة وأنت تشعرين بتحد حقيقي."},
       {h:"التدرج لا القفز", p:"زيدي بخطوات صغيرة (نصف كيلو أو تكرار واحد). القفزات الكبيرة المفاجئة تكسر التكنيك وتسبب الإصابة وتراجعا يضيع تقدمك."}
     ]},
   { title:"الألم بعد التمرين (DOMS)",
     intro:"الألم بعد التمرين ليس مقياسا لجودة التمرين، وهذه معلومة يخطئ فيها الكثيرون فيطاردون الألم بدل النتيجة.",
     blocks:[
-      {h:"ما هو؟", p:"تمزقات مجهرية بسيطة في الألياف العضلية، تظهر بعد 24–48 ساعة، وتحدث غالبا عند تغيير الجدول أو زيادة الأوزان أو العودة بعد انقطاع."},
+      {h:"ما هو؟", p:"تمزقات مجهرية بسيطة في الألياف العضلية، تظهر بعد 24-48 ساعة، وتحدث غالبا عند تغيير الجدول أو زيادة الأوزان أو العودة بعد انقطاع."},
       {h:"لماذا ليس مقياسا؟", p:"الجسم يتكيف مع الوقت؛ غياب الألم قد يعني أن استشفاءك جيد وتغذيتك ونومك ممتازان، لا أن التمرين بلا فائدة. كثير من تمارينك الفعالة لن تسبب ألما."},
       {h:"كيف تخففينه؟", p:"الحركة الخفيفة والمشي، الترطيب الجيد، النوم الكافي، والبروتين تساعد على التعافي. الراحة التامة قد تطيل الألم بدل تقصيره."},
       {h:"متى يكون مقلقا؟", p:"ألم العضلة الطبيعي يتحسن خلال أيام. أما الألم الحاد في المفصل أو الألم المفاجئ أثناء الحركة فإشارة توقف ومراجعة، وليس DOMS."}
@@ -818,13 +844,13 @@ const EDU_PAGES = [
       {h:"في التمارين العازلة", p:"كمرجحة البايسبس وتفتيح الصدر، الإحساس بالعضلة مفيد جدا ويحسن التفعيل. اعصري وركزي ذهنك على العضلة العاملة."},
       {h:"المقياس الحقيقي", p:"هل أوزانك تزيد مع الوقت؟ هل تكنيكك تحسن؟ هل شكلك وقوتك في تطور؟ هذا هو الدليل الحقيقي على التقدم، لا مجرد الحرقان أو غيابه."}
     ]},
-  { title:"النوم والاستشفاء — نصف النتيجة",
+  { title:"النوم والاستشفاء - نصف النتيجة",
     intro:"كثيرات يركزن على التمرين ويهملن أهم عاملين خارج الصالة: النوم والتعافي. هنا تبنى العضلة فعليا.",
     blocks:[
       {h:"دور النوم", p:"أثناء النوم العميق يفرز الجسم هرمونات البناء ويصلح الألياف. النوم أقل من 6 ساعات يقلل النتائج، يزيد الجوع، ويرفع هرمون التوتر الذي يعيق التقدم."},
-      {h:"كم تحتاجين؟", p:"7–9 ساعات نوم متواصل ليلا. جودة النوم لا تقل أهمية عن عدد ساعاته؛ غرفة مظلمة وهادئة وبعيدة عن الشاشات قبل النوم تصنع فرقا."},
+      {h:"كم تحتاجين؟", p:"7-9 ساعات نوم متواصل ليلا. جودة النوم لا تقل أهمية عن عدد ساعاته؛ غرفة مظلمة وهادئة وبعيدة عن الشاشات قبل النوم تصنع فرقا."},
       {h:"الراحة بين التمارين", p:"خذي يوم راحة أو يومين أسبوعيا. أيام الراحة ليست كسلا بل جزء من البرنامج؛ فيها يكتمل البناء وتعودين أقوى."},
-      {h:"علامات الإفراط", p:"تعب مستمر، تراجع الأداء، قلة النوم، فقدان الحماس، أو ألم لا يزول — كلها إشارات أنك تحتاجين راحة أكثر، لا تمرينا أكثر."}
+      {h:"علامات الإفراط", p:"تعب مستمر، تراجع الأداء، قلة النوم، فقدان الحماس، أو ألم لا يزول - كلها إشارات أنك تحتاجين راحة أكثر، لا تمرينا أكثر."}
     ]},
   { title:"أخطاء شائعة تجنبيها",
     intro:"تجنب الأخطاء أحيانا أهم من إضافة تمارين. هذه أكثر الأخطاء التي تعيق نتائج المبتدئات وحتى المتوسطات.",
@@ -848,14 +874,14 @@ const EDU_PAGES = [
     blocks:[
       {h:"الكارديو وحده لا ينحت", p:"حرق الدهون يعتمد أساسا على عجز السعرات (تأكلين أقل مما تحرقين). الكارديو يساعد، لكن تمارين المقاومة والتغذية هي الأساس في تشكيل القوام."},
       {h:"التوقيت", p:"يفضل الكارديو بعد تمارين المقاومة أو في يوم منفصل، حتى لا يستهلك طاقتك قبل رفع الأوزان. الأوزان أولا للحفاظ على العضلة."},
-      {h:"النوع والمدة", p:"المشي السريع أو الدراجة 20–40 دقيقة معتدلة خيار ممتاز ولطيف على المفاصل. الأهم الانتظام لا الشدة المفرطة."},
-      {h:"الخطوات اليومية", p:"النشاط اليومي خارج التمرين (الخطوات) يحرق سعرات أكثر مما تتخيلين. استهدفي 8–10 آلاف خطوة يوميا كقاعدة لحرق مستدام."}
+      {h:"النوع والمدة", p:"المشي السريع أو الدراجة 20-40 دقيقة معتدلة خيار ممتاز ولطيف على المفاصل. الأهم الانتظام لا الشدة المفرطة."},
+      {h:"الخطوات اليومية", p:"النشاط اليومي خارج التمرين (الخطوات) يحرق سعرات أكثر مما تتخيلين. استهدفي 8-10 آلاف خطوة يوميا كقاعدة لحرق مستدام."}
     ]},
   { title:"الماء والترطيب",
     intro:"الماء عنصر يهمل رغم أثره المباشر على الأداء والطاقة والتعافي وحتى الشعور بالجوع.",
     blocks:[
       {h:"لماذا يهم؟", p:"العضلات نحو 75% ماء. الجفاف البسيط يقلل القوة والتركيز، يزيد التعب، ويبطئ التعافي. الترطيب الجيد يحسن أداءك فورا."},
-      {h:"كم تشربين؟", p:"قاعدة عامة: 30–35 مل لكل كيلو من وزنك يوميا، وأكثر في أيام التمرين والجو الحار. اجعلي الماء في متناولك طوال اليوم."},
+      {h:"كم تشربين؟", p:"قاعدة عامة: 30-35 مل لكل كيلو من وزنك يوميا، وأكثر في أيام التمرين والجو الحار. اجعلي الماء في متناولك طوال اليوم."},
       {h:"حول التمرين", p:"اشربي كوبا قبل التمرين بنصف ساعة، ورشفات أثناءه، وكوبا بعده لتعويض ما فقدته بالعرق."},
       {h:"الماء والجوع", p:"كثيرا ما يخلط بين العطش والجوع. كوب ماء قبل الوجبة قد يقلل الإفراط في الأكل ويساعد على ضبط السعرات."}
     ]},
@@ -882,8 +908,8 @@ const S = {
   flexTab:null,
   subsUrl:"", subsFilter:"workout",
   posture:[], manualText:"",
-  cycle:false,   // صفحة الدورة الشهرية — اختيارية، لا تغير الجدول
-  notes:"", dayNotes:{},   // ملاحظات المدربة — لا يمسها التوليد
+  cycle:false,   // صفحة الدورة الشهرية - اختيارية، لا تغير الجدول
+  notes:"", dayNotes:{},   // ملاحظات المدربة - لا يمسها التوليد
   goal:"hypertrophy",
   focus:"balanced",
   aiRequest:"",
@@ -899,8 +925,8 @@ const S = {
 /* ============================================================
    الصياغة حسب جنس العميل
    النصوص الموجهة للعميل مكتوبة بصيغة المؤنث لأن أغلب المشتركات إناث.
-   عند اختيار «ذكر» تحول آليا. القاموس صريح لا اشتقاقي، لأن حذف
-   الياء الأخيرة يفسد كلمات مثل «كرسي» و«لوحي» و«الخلفي».
+   عند اختيار ذكر تحول آليا. القاموس صريح لا اشتقاقي، لأن حذف
+   الياء الأخيرة يفسد كلمات مثل كرسي ولوحي والخلفي».
    ============================================================ */
 const GT_VERBS = {
   "أبقي":"أبق","أمسكي":"أمسك","أنزلي":"أنزل","اثني":"اثن","اجمعي":"اجمع","اخطي":"اخط",
@@ -927,7 +953,7 @@ const GT_WORDS = {
   "تشعرين":"تشعر","تقدرين":"تقدر","تزيدين":"تزيد","تحتاجين":"تحتاج","ترسمين":"ترسم",
   "تتوقفين":"تتوقف","تهدمين":"تهدم","تتحملين":"تتحمل","ستشعرين":"ستشعر","تلاحظين":"تلاحظ",
   "تستطيعين":"تستطيع","تبدئين":"تبدأ","أنت":"أنت","نفسك":"نفسك","جسمك":"جسمك",
-  /* صيغ النهي: «لا تتأرجحي» → «لا تتأرجح» */
+  /* صيغ النهي: لا تتأرجحي» → «لا تتأرجح» */
   "تتأرجحي":"تتأرجح","تتحركي":"تتحرك","تندفعي":"تندفع","تتركي":"تترك","تعتمدي":"تعتمد",
   "تقتصري":"تقتصر","تكفي":"تكف","تبني":"تبن","تنسي":"تنس","تستعجلي":"تستعجل",
   "تفرطي":"تفرط","تحبسي":"تحبس","تميلي":"تمل","تقفلي":"تقفل","تهملي":"تهمل","تقارني":"تقارن","تتجاوزيه":"تتجاوزه","تتجاوزي":"تتجاوز","تتركيها":"تتركها",
@@ -945,17 +971,17 @@ function gtRegex(){
   if(__gtRe) return __gtRe;
   const keys = Object.keys(GT_VERBS).concat(Object.keys(GT_WORDS))
     .sort((a,b)=>b.length-a.length).map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"));
-  /* نسمح بواو أو فاء ملتصقة قبل الفعل («واعصري» و«فارفعي») ونعيدها كما هي،
+  /* نسمح بواو أو فاء ملتصقة قبل الفعل (واعصري وفارفعي) ونعيدها كما هي،
      وإلا فاتت أكثر من نصف الحالات. */
   /* البنية: [واو/فاء ملتصقة] + الفعل + [ضمير ملتصق]
-     «واسحبيه» = و + اسحبي + ه ← «واسحبه». بدون الضمير تفوت حالات كثيرة. */
-  /* السوابق: واو وفاء ولام الجر والباء والكاف — «للمشتركة» و«بالعميلة»
+     «واسحبيه» = و + اسحبي + ه ← «واسحبه. بدون الضمير تفوت حالات كثيرة. */
+  /* السوابق: واو وفاء ولام الجر والباء والكاف - للمشتركة وبالعميلة
      كانت تفوت لأن التعبير يقبل الواو والفاء فقط. */
   __gtRe = new RegExp("(^|[^\\u0621-\\u064A])([وف]?(?:لل|بال|كال|ال|ل|ب|ك)?)(" + keys.join("|") +
                       ")(ها|هما|هم|هن|ه)?(?![\\u0621-\\u064A])","g");
   return __gtRe;
 }
-/* gt = gender text — تطبق على كل نص موجه للعميل */
+/* gt = gender text - تطبق على كل نص موجه للعميل */
 function gt(txt){
   if(!txt || S.client.gender !== "male") return txt;
   return String(txt).replace(gtRegex(), (m,pre,conj,w,suf)=> pre + conj + (GT_VERBS[w] || GT_WORDS[w] || w) + (suf||""));
@@ -1022,7 +1048,7 @@ function screenHero(){
     <div class="hero"><div class="hero-in">
       <span class="eyebrow">الجدول الرياضي</span>
       <h1>دربي عميلاتك بجداول <span>احترافية</span> تبنى في دقائق</h1>
-      <p>اختاري بيئة التمرين والمستوى، راعي الحالات الصحية، وولدي جدولا متكاملا — كل تمرين مع صورة عضلته وفيديو شرحه.</p>
+      <p>اختاري بيئة التمرين والمستوى، راعي الحالات الصحية، وولدي جدولا متكاملا - كل تمرين مع صورة عضلته وفيديو شرحه.</p>
       <button class="cta" data-act="start">ابدئي الآن ←</button>
       <div class="hero-badges">
         <div><b>٣</b> بيئات تمرين</div>
@@ -1087,7 +1113,7 @@ function screenSetup(){
       <div class="choices g3">
         ${Object.entries(LEVELS).map(([k,v])=>`
           <div class="choice ${S.level==k?'sel':''}" data-level="${k}">
-            <b>${v.name}</b><small>${v.sets} مجموعات · ${v.reps} عدة</small>
+            <b>${v.name}</b><small>${v.sets} مجموعات | ${v.reps} عدة</small>
           </div>`).join("")}
       </div>
       <span class="eyebrow" style="display:block;margin-top:24px">نظام الجدول</span>
@@ -1101,7 +1127,7 @@ function screenSetup(){
       <div class="choices g3" style="grid-template-columns:repeat(2,1fr)">
         ${Object.entries(GOALS).map(([k,v])=>`
           <div class="choice ${S.goal===k?'sel':''}" data-goal="${k}">
-            <span class="emoji">${v.ico}</span><b>${v.name}</b><small>${v.reps} عدة · ${v.rest} راحة</small>
+            <span class="emoji">${v.ico}</span><b>${v.name}</b><small>${v.reps} عدة | ${v.rest} راحة</small>
           </div>`).join("")}
       </div>
       <div class="hint" style="margin-top:6px">${GOALS[S.goal]?.note||""}</div>
@@ -1148,7 +1174,7 @@ function screenSetup(){
             <span class="emoji">${d}</span><b>${d} أيام</b>
           </div>`).join("")}
       </div>
-      <!-- محدد «عدد التمارين في اليوم» أزيل: المحرك يحسبه من الحجم الأسبوعي،
+      <!-- محدد عدد التمارين في اليوم أزيل: المحرك يحسبه من الحجم الأسبوعي،
            وبقاؤه كان يوهم بأنه يؤثر وهو لا يؤثر. الحدان أعلاه هما التحكم الفعلي. -->
 
       <span class="eyebrow" style="display:block;margin-top:24px">الحالات الصحية <span style="color:var(--muted);font-weight:600">(اختياري)</span></span>
@@ -1166,7 +1192,7 @@ function screenSetup(){
       <span class="eyebrow" style="display:block;margin-top:24px">🤖 طلب خاص للذكاء الاصطناعي <span style="color:var(--muted);font-weight:600">(اختياري)</span></span>
       <textarea id="ai-request" placeholder="اكتبي أي تخصيص تريدينه، مثال: ركزي على المؤخرة والأرجل، تجنبي تمارين القفز، اجعلي اليوم الأخير خفيفا..."
         style="width:100%;min-height:90px;padding:14px;border:1.5px solid var(--line);border-radius:13px;font-family:'Tajawal';font-size:15px;font-weight:600;background:#fbfbfc;resize:vertical;line-height:1.7">${S.aiRequest||""}</textarea>
-      <div class="hint" style="margin-top:6px">يطبق فقط عند الضغط على «توليد بالذكاء الاصطناعي». الذكاء يفهم طلبك وينفذه في الجدول.</div>
+      <div class="hint" style="margin-top:6px">يطبق فقط عند الضغط على توليد بالذكاء الاصطناعي. الذكاء يفهم طلبك وينفذه في الجدول.</div>
 
       <div class="actions">
         <button class="btn line" data-act="to0">→ رجوع</button>
@@ -1198,7 +1224,7 @@ function screenPicker(){
           const locked = e.level>S.level;
           return `<div class="ex">
             <div class="thumb">${imgThumb(e.muscle)}</div>
-            <div class="meta"><b>${e.name}</b><small>${LEVELS[e.level].name} · ${MUSCLES[e.muscle]||""}</small></div>
+            <div class="meta"><b>${e.name}</b><small>${LEVELS[e.level].name} | ${MUSCLES[e.muscle]||""}</small></div>
             <div class="picks">
               <button class="pchip fav ${S.fav.has(e.id)?'on':''}" data-fav="${e.id}" title="مفضل">★</button>
               <button class="pchip no ${S.no.has(e.id)?'on':''}" data-no="${e.id}" title="استبعاد">✕</button>
@@ -1206,7 +1232,7 @@ function screenPicker(){
           </div>`;
         }).join("")}
       </div>
-      <div class="note">المفضل: ${S.fav.size} · المستبعد: ${S.no.size} — يمكنك تجاوز هذه الخطوة وتوليد الجدول مباشرة.</div>
+      <div class="note">المفضل: ${S.fav.size} | المستبعد: ${S.no.size} - يمكنك تجاوز هذه الخطوة وتوليد الجدول مباشرة.</div>
       <div class="actions">
         <button class="btn line" data-act="to1">→ رجوع</button>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
@@ -1220,13 +1246,13 @@ function screenPicker(){
 
 /* ---------------- شاشة الجدول ---------------- */
 /* بطاقة الملاحظات: تعرض تحت الجدول وتحفظ بضغطة.
-   موضعها بعد الجدول عمدا — تكتبينها وأنت ترين ما ولدته. */
+   موضعها بعد الجدول عمدا - تكتبينها وأنت ترين ما ولدته. */
 /* لماذا هذا التمرين موجود؟ العميلة لا تعرف أن تمرينا بعينه وضع
    لتصحيح وضعيتها، فتظنه حشوا وتتجاوزه. الشرح بجانبه يمنع ذلك. */
 function correctiveWhy(id){
   const p = postureSelected().find(x => (x.prescribe||[]).includes(id));
-  if(!p) return "تمرين تصحيحي لوضعيتك — لا تتجاوزيه.";
-  return `لتصحيح: ${p.name} — جزء أساسي من جدولك لا تمرين إضافي.`;
+  if(!p) return "تمرين تصحيحي لوضعيتك - لا تتجاوزيه.";
+  return `لتصحيح: ${p.name} - جزء أساسي من جدولك لا تمرين إضافي.`;
 }
 
 function notesCard(){
@@ -1235,20 +1261,20 @@ function notesCard(){
   <div class="card no-print" style="margin-top:16px">
     <div class="sec-head"><div class="ico">📝</div><div>
       <h2 style="font-size:18px">ملاحظاتك للعميلة</h2>
-      <p>تحفظ باسمها وتظهر في الـ PDF — وإعادة توليد الجدول لا تغيرها</p>
+      <p>تحفظ باسمها وتظهر في الـ PDF - وإعادة توليد الجدول لا تغيرها</p>
     </div></div>
 
     <div class="field" style="margin-top:10px">
       <label>ملاحظات عامة</label>
       <textarea id="cl-notes" rows="5" style="line-height:2"
-        placeholder="مثال: ابدئي بأوزان خفيفة أول أسبوعين · راقبي ألم الركبة اليمنى في السكوات وقللي المدى إن زاد · صوري نفسك في الرفعة الرومانية وأرسلي المقطع.">${(S.notes||"").replace(/</g,"&lt;")}</textarea>
+        placeholder="مثال: ابدئي بأوزان خفيفة أول أسبوعين | راقبي ألم الركبة اليمنى في السكوات وقللي المدى إن زاد | صوري نفسك في الرفعة الرومانية وأرسلي المقطع.">${(S.notes||"").replace(/</g,"&lt;")}</textarea>
     </div>
 
     ${(S.plan||[]).map((d,i)=>`
       <div class="field" style="margin-top:8px">
         <label style="font-size:12.5px">ملاحظة على ${d.title}</label>
         <input id="cl-note-${i}" value="${((S.dayNotes||{})[i]||"").replace(/"/g,'&quot;')}"
-               placeholder="اختياري — تنبيه خاص بهذا اليوم">
+               placeholder="اختياري - تنبيه خاص بهذا اليوم">
       </div>`).join("")}
 
     <div class="actions" style="margin-top:12px">
@@ -1257,8 +1283,8 @@ function notesCard(){
     </div>
 
     ${saved.length?`<div class="hint" style="margin-top:10px">
-      محفوظة لـ: ${saved.map(s=>`<b>${s.name==="_default"?"بلا اسم":s.name}</b>`).join(" · ")}
-      — تستعاد تلقائيا عند كتابة نفس الاسم في بطاقة العميلة.
+      محفوظة لـ: ${saved.map(s=>`<b>${s.name==="_default"?"بلا اسم":s.name}</b>`).join(" | ")}
+      - تستعاد تلقائيا عند كتابة نفس الاسم في بطاقة العميلة.
     </div>`:""}
   </div>`;
 }
@@ -1294,8 +1320,8 @@ function screenPlan(){
     </div>
 
     <div class="plan-head"><div class="in">
-      <span class="eyebrow" style="color:var(--orange-2)">ZahraaFit · جدول مخصص</span>
-      <h2>${greeting} <span>· ${ENVS[S.env].name}</span></h2>
+      <span class="eyebrow" style="color:var(--orange-2)">ZahraaFit | جدول مخصص</span>
+      <h2>${greeting} <span>| ${ENVS[S.env].name}</span></h2>
       <p style="color:#c4cfe6;font-weight:500">${g("جاهز للانطلاق؟ التزم بالأداء الصحيح","جاهزة للانطلاق؟ التزمي بالأداء الصحيح")} والراحة بين المجموعات.</p>
       <div class="plan-meta">
         <span>📍 ${ENVS[S.env].name}</span>
@@ -1315,8 +1341,8 @@ function screenPlan(){
       <div class="day-card">
         <div class="day-top">
           <div class="num">${i+1}</div>
-          <div><b>اليوم ${i+1} — ${day.title}</b>
-          <small>${day.exercises.length} تمارين · وصفة كل تمرين مبينة بجانبه</small></div>
+          <div><b>اليوم ${i+1} - ${day.title}</b>
+          <small>${day.exercises.length} تمارين | وصف كل تمرين بجانبه</small></div>
         </div>
         ${((S.dayNotes||{})[i]||"").trim()?`
           <div style="background:#fff7ee;border-right:4px solid var(--orange);padding:11px 16px;font-size:13.5px;color:#8a5a13;font-weight:700;line-height:1.9">
@@ -1326,8 +1352,8 @@ function screenPlan(){
           <div class="ex-row">
             <div class="pic">${imgPic(e.muscle)}</div>
             <div class="body">
-              <b>${gt(e.name)}</b>
-              ${e.en?`<div style="font-size:11.5px;color:var(--muted);font-weight:700;letter-spacing:.2px;margin-top:1px">${e.en}</div>`:""}
+              ${e.en?`<b style="direction:ltr;display:block;text-align:right;letter-spacing:.2px">${e.en}</b>`:""}
+              <div style="font-size:13.5px;color:#3d4d68;font-weight:700;margin-top:2px">${gt(e.name)}</div>
               <div class="tip"><span class="i">💡</span> ${gt(e.tip)}</div>
             </div>
             <div class="sets">
@@ -1342,7 +1368,7 @@ function screenPlan(){
     <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:18px">
       <div>
         <b style="font-family:'Cairo';font-size:15px">📚 إرفاق الدليل التثقيفي وصفحة الإحماء</b>
-        <div style="color:var(--muted);font-size:13px;font-weight:600;margin-top:2px">صفحة إحماء + ${EDU_PAGES.length} صفحات تثقيفية + صفحة الحقوق والتواصل — ترفق كلها في الـ PDF.</div>
+        <div style="color:var(--muted);font-size:13px;font-weight:600;margin-top:2px">صفحة إحماء + ${EDU_PAGES.length} صفحات تثقيفية + صفحة الحقوق والتواصل - ترفق كلها في الـ PDF.</div>
       </div>
       <div class="cond ${S.includeEdu?'on':''}" data-act="toggleedu" style="cursor:pointer;flex:none">
         <span class="box">✓</span>${S.includeEdu?'مفعل':'معطل'}
@@ -1368,7 +1394,7 @@ function screenPlan(){
     ${notesCard()}
     ${postureCard()}
     ${reportPanel()}
-    <div class="note">كل تمرين مربوط بصورة عضلته تلقائيا · الـ PDF يحتوي غلافا + الجدول + الإحماء + الدليل التثقيفي.</div>
+    <div class="note">كل تمرين مربوط بصورة عضلته تلقائيا | الـ PDF يحتوي غلافا + الجدول + الإحماء + الدليل التثقيفي.</div>
   </div></div>`;
 }
 
@@ -1401,8 +1427,8 @@ function screenImages(){
       <div style="background:#eef4ff;border:1px solid #c9dcff;border-radius:14px;padding:14px 16px;margin-bottom:18px;font-size:13px;color:#33476b;font-weight:600;line-height:1.9">
         <b>📱 الفتح من أي جهاز:</b> الصور المرفوعة هنا تحفظ في متصفح هذا الجهاز فقط.
         لتظهر على كل جهاز، ضعي الصور كملفات في مجلد <code style="background:#fff;padding:1px 6px;border-radius:5px">img/</code> بجانب البرنامج على الخادم
-        بأسماء المفاتيح (<code style="background:#fff;padding:1px 6px;border-radius:5px">chest.png</code>، <code style="background:#fff;padding:1px 6px;border-radius:5px">glutes.png</code>، <code style="background:#fff;padding:1px 6px;border-radius:5px">logo.png</code> …)
-        — البرنامج يلتقطها تلقائيا.<br>
+        بأسماء المفاتيح (<code style="background:#fff;padding:1px 6px;border-radius:5px">chest.png</code>، <code style="background:#fff;padding:1px 6px;border-radius:5px">glutes.png</code>، <code style="background:#fff;padding:1px 6px;border-radius:5px">logo.png</code> ...)
+        - البرنامج يلتقطها تلقائيا.<br>
         أو استخدمي التصدير والاستيراد أدناه لنقل كل شيء بملف واحد.
         <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
           <button class="pchip" data-act="exportsettings">⬇️ تصدير الإعدادات</button>
@@ -1420,7 +1446,7 @@ function screenImages(){
             ${S.images[k]?`<button class="pchip no" style="margin-top:6px" data-delimg="${k}">حذف</button>`:""}
           </div>`).join("")}
       </div>
-      <div class="note">صيغ مدعومة: JPG / PNG. الصور لا ترفع لأي خادم — تبقى على جهازك فقط.</div>
+      <div class="note">صيغ مدعومة: JPG / PNG. الصور لا ترفع لأي خادم - تبقى على جهازك فقط.</div>
       <div class="actions">
         <span></span>
         <button class="btn primary" data-act="closeimg">تم ←</button>
@@ -1491,7 +1517,7 @@ function screenVideos(){
   return `<div class="app"><div class="screen on">
     <div class="card">
       <div class="sec-head"><div class="ico">🎬</div><div>
-        <h2>مكتبة الفيديوهات</h2><p>ألصقي رابط يوتيوب لكل تمرين مرة واحدة فقط. يحفظ تلقائيا، ويسحب في أي جدول تولدينه — لن تعيدي إدخاله أبدا.</p>
+        <h2>مكتبة الفيديوهات</h2><p>ألصقي رابط يوتيوب لكل تمرين مرة واحدة فقط. يحفظ تلقائيا، ويسحب في أي جدول تولدينه - لن تعيدي إدخاله أبدا.</p>
       </div></div>
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0 18px">
         <div style="flex:1;min-width:180px">
@@ -1519,7 +1545,7 @@ function imgThumb(muscle){
    مزامنة الصور بين الأجهزة
    المشكلة: localStorage مخزن خاص بكل متصفح على كل جهاز، فالصور
    المرفوعة على اللابتوب لا تظهر على الجوال ولو كان الملف منشورا.
-   الحل: صور موضوعة كملفات بجانب البرنامج على الخادم — يراها كل جهاز.
+   الحل: صور موضوعة كملفات بجانب البرنامج على الخادم - يراها كل جهاز.
    المرفوع محليا يبقى له الأولوية حتى لا يضيع عمل سابق.
    ============================================================ */
 const BUILTIN_THUMBS = {};
@@ -1567,9 +1593,9 @@ function dangerSet(){
 }
 /* التمارين التصحيحية القوامية تفرض في الجدول: توزع على الأيام
    بالتناوب وتوضع في آخر اليوم (بعد الأساسي، قبل البطن).
-   السبب: التصحيح لا ينفع كنصيحة في ورقة — لازم يكون داخل الجدول. */
+   السبب: التصحيح لا ينفع كنصيحة في ورقة - لازم يكون داخل الجدول. */
 /* ============================================================
-   الروتين التصحيحي — مستقل عن الجدول
+   الروتين التصحيحي - مستقل عن الجدول
    توزيع التصحيح على الأيام كان يخلطه بالتمارين الأساسية فتظنه
    العميلة تمرينا عاديا وتتجاوزه. صفحة واحدة بتكرار أسبوعي واضح
    أسهل عليها وأوضح للمدربة.
@@ -1577,8 +1603,8 @@ function dangerSet(){
 const CORR_FREQ = {
   kyphosis:    { times:"4-5 مرات أسبوعيا", when:"قبل تمارين العلوي أو في أي وقت من اليوم", mins:"8-10 دقائق" },
   lordosis:    { times:"5 مرات أسبوعيا",   when:"قبل تمارين السفلي أو قبل النوم",          mins:"8-10 دقائق" },
-  forwardhead: { times:"يوميا",             when:"كل ساعتين أمام الشاشة — دقيقة تكفي",     mins:"5 دقائق"    },
-  valgus:      { times:"4 مرات أسبوعيا",   when:"قبل تمارين الأرجل — تنشيط قبل التحميل",  mins:"8 دقائق"    },
+  forwardhead: { times:"يوميا",             when:"كل ساعتين أمام الشاشة - دقيقة تكفي",     mins:"5 دقائق"    },
+  valgus:      { times:"4 مرات أسبوعيا",   when:"قبل تمارين الأرجل - تنشيط قبل التحميل",  mins:"8 دقائق"    },
   roundedlow:  { times:"4 مرات أسبوعيا",   when:"قبل تمارين السفلي",                       mins:"8 دقائق"    },
   scoliosis:   { times:"5 مرات أسبوعيا",   when:"في وقت مستقل عن التمرين",                 mins:"10-12 دقيقة"}
 };
@@ -1618,7 +1644,7 @@ function buildCorrectiveRoutine(){
   };
 }
 
-/* لم تعد تحقن في الأيام — تبقى للتوافق فقط */
+/* لم تعد تحقن في الأيام - تبقى للتوافق فقط */
 function injectCorrectives(plan, maxDaily){ return; }
 
 function generate(){
@@ -1637,7 +1663,7 @@ function generate(){
     const isFocus = g => focusMuscles.includes(g);
 
     // توزيع الحصص: لكل عضلة حد أدنى يضمن عدم إهمالها
-    // الكبيرة: تمرينان — الصغيرة: تمرين — والمركز عليها تحصل على +2 إضافي
+    // الكبيرة: تمرينان - الصغيرة: تمرين - والمركز عليها تحصل على +2 إضافي
     const minQuota = groups.map(g=>{
       let q = BIG_GROUPS.includes(g)?2:1;
       if(isFocus(g)) q += 2;   // التركيز يرفع الحد الأدنى للعضلة المختارة بقوة
@@ -1825,7 +1851,7 @@ function ensureMinimumVolume(plan, danger, used){
         !S.no.has(e.id) &&
         !e.risk.some(r=>danger.has(r))
       );
-      if(!pool.length) break; // لا يوجد تمرين متاح — نحترم الاستبعاد ولا نكسره
+      if(!pool.length) break; // لا يوجد تمرين متاح - نحترم الاستبعاد ولا نكسره
 
       // ترتيب الاختيار: المفضل، ثم المعدة حسب البيئة، ثم مركب، ثم غير مستخدم
       const isBand = e => e.id.startsWith("band")||e.name.includes("شريط")||e.name.includes("باند");
@@ -1845,7 +1871,7 @@ function ensureMinimumVolume(plan, danger, used){
         return (a.type==="compound"?0:1)-(b.type==="compound"?0:1);
       });
       const pick = pool.find(e=>!used.has(e.id));
-      if(!pick) break; // كل التمارين المتاحة مستخدمة بالفعل — لا نكرر
+      if(!pick) break; // كل التمارين المتاحة مستخدمة بالفعل - لا نكرر
 
       // نضيفه لأنسب يوم يحتوي العضلة ولم يتجاوز (العدد المحدد + 1 كحد أقصى)
       // مسموح تجاوز العدد بتمرين واحد فقط لضمان التغطية دون تضخم اليوم
@@ -1857,7 +1883,7 @@ function ensureMinimumVolume(plan, danger, used){
       .filter(x=> plan[x.idx].exercises.length < dayCap)  // فقط الأيام التي لم تصل السقف
       .sort((a,b)=> a.hasMuscle-b.hasMuscle || a.count-b.count);
 
-      if(!dayScores.length) break; // كل الأيام وصلت السقف — نتوقف
+      if(!dayScores.length) break; // كل الأيام وصلت السقف - نتوقف
 
       const targetDay=plan[dayScores[0].idx];
       targetDay.exercises.push({...pick, video:videoLinks[pick.id]||""});
@@ -1935,7 +1961,7 @@ function ensureFullCoverage(plan, danger, used){
       !S.no.has(e.id) &&
       !e.risk.some(r=>danger.has(r))
     );
-    if(!pool.length) return; // لا يوجد تمرين متاح (مثلا مستبعد كليا) — نحترم رغبة المدربة
+    if(!pool.length) return; // لا يوجد تمرين متاح (مثلا مستبعد كليا) - نحترم رغبة المدربة
 
     // نختار التمرين: المفضل أولا ثم المركب
     pool.sort((a,b)=>{
@@ -2069,7 +2095,7 @@ async function generateAI(){
     const report = { advice:null, shortfalls:[], fixes:[], volume: volumeReport(S.plan) };
     report.volume.forEach(v=>{
       if(!v.ok) report.shortfalls.push({muscle:v.muscle, got:v.effective, target:v.target,
-        direct:v.direct, dmin:v.dmin, fix:"جدول الذكاء محترم كما هو — عدلي الطلب إن أردت رفع الحجم"});
+        direct:v.direct, dmin:v.dmin, fix:"جدول الذكاء محترم كما هو - عدلي الطلب إن أردت رفع الحجم"});
     });
     S.plan.forEach(d=>{ d.warmup=buildWarmup(d); d.cooldown=buildCooldown(d); });
     report.balance     = balanceAudit(S.plan);
@@ -2094,7 +2120,7 @@ function seedLibraryVideos(){
   /* تمارين الدعم والتأهيل بلا روابط في الملف أصلا.
      ما له نظير في المكتبة الرئيسية يأخذ رابطه، والباقي روابط مستقلة.
      بدون هذا تظهر في الجدول اليدوي بلا زر فيديو. */
-  /* روابط تمارين الدعم — كلها مأخوذة من مكتبة التمارين المتحقق منها،
+  /* روابط تمارين الدعم - كلها مأخوذة من مكتبة التمارين المتحقق منها،
      لا مخترعة. سبق أن كتبت أربعة روابط بالتخمين فطلعت معطلة. */
   const SUP_VIDEOS = {
     sup_diastasis_1: "https://youtu.be/TPGUgXWBY4Y?si=TTeC7WA1oSBEqgcV",
@@ -2156,7 +2182,7 @@ function saveImages(){
   }
 }
 /* ملف إعدادات محمول: يحمل الصور والروابط بين الأجهزة دون خادم.
-   صدريه من جهاز واستورديه في الآخر — أبسط حل يعمل حتى بلا إنترنت. */
+   صدريه من جهاز واستورديه في الآخر - أبسط حل يعمل حتى بلا إنترنت. */
 function exportSettings(){
   const data = { v:4, exportedAt:new Date().toISOString(), images:S.images, videoLinks };
   const blob = new Blob([JSON.stringify(data)], {type:"application/json"});
@@ -2260,7 +2286,7 @@ function editVideos(){
   warmIds.forEach(it=>{ html+=fieldFor(it[0], it[1]); });
   html+=`</div>`;
 
-  html+=section("🧘 تمارين الإطالة","الإطالة بعد التمرين — مربوطة بالمكتبة");
+  html+=section("🧘 تمارين الإطالة","الإطالة بعد التمرين - مربوطة بالمكتبة");
   html+=`<div style="display:grid;gap:10px">`;
   flexIds.forEach(it=>{ html+=fieldFor(it[0], it[1]); });
   html+=`</div>`;
@@ -2289,7 +2315,7 @@ function editVideos(){
 }
 
 /* ============================================================
-   تصدير PDF احترافي — يبني مستندا نظيفا (غلاف + أيام)
+   تصدير PDF احترافي - يبني مستندا نظيفا (غلاف + أيام)
    بدون أي عناصر واجهة برمجية، بألوان كاملة، كل يوم صفحة.
    ============================================================ */
 
@@ -2393,8 +2419,8 @@ function buildPdfHTML(){
       rows+=`<tr style="page-break-inside:avoid">
         <td style="width:84px;padding:9px 8px;vertical-align:middle">${pic}</td>
         <td style="padding:9px 6px;vertical-align:middle">
-          <div style="font-family:Cairo;font-weight:700;font-size:14.5px;color:${navy}">${e.name}</div>
-          ${e.en?`<div style="font-size:10.5px;color:#8a94a8;font-weight:700;letter-spacing:.3px;direction:ltr;text-align:right;margin-top:1px">${e.en}</div>`:""}
+          ${e.en?`<div style="font-family:Cairo;font-weight:800;font-size:14px;color:${navy};direction:ltr;text-align:right;letter-spacing:.2px">${e.en}</div>`:""}
+          <div style="font-family:Cairo;font-weight:700;font-size:13.5px;color:#3d4d68;margin-top:2px">${e.name}</div>
           <div style="font-size:12px;color:#6a7488;font-weight:600;margin-top:2px">💡 ${e.tip}</div>
         </td>
         <td style="width:60px;text-align:center;vertical-align:middle">
@@ -2413,8 +2439,8 @@ function buildPdfHTML(){
       <table style="width:100%;border-collapse:collapse;background:linear-gradient(90deg,${navy},${navy2});border-radius:14px 14px 0 0;overflow:hidden;box-shadow:0 4px 14px rgba(15,31,61,.12);page-break-after:avoid;page-break-inside:avoid">
         <tr><td style="padding:18px 22px">
           <span style="display:inline-grid;place-items:center;width:40px;height:40px;border-radius:11px;background:${orange};font-family:Cairo;font-weight:900;font-size:18px;color:#fff;vertical-align:middle">${i+1}</span>
-          <span style="font-family:Cairo;font-weight:900;font-size:18px;color:#fff;margin-right:12px;vertical-align:middle">اليوم ${i+1} — ${day.title}</span>
-          <div style="color:#b9c5dd;font-weight:600;font-size:12px;margin-top:4px">${day.exercises.length} تمارين · وصفة كل تمرين بجانبه</div>
+          <span style="font-family:Cairo;font-weight:900;font-size:18px;color:#fff;margin-right:12px;vertical-align:middle">اليوم ${i+1} - ${day.title}</span>
+          <div style="color:#b9c5dd;font-weight:600;font-size:12px;margin-top:4px">${day.exercises.length} تمارين | وصف كل تمرين بجانبه</div>
         </td></tr>
         ${((S.dayNotes||{})[i]||"").trim()?`
         <tr><td style="padding:0">
@@ -2446,7 +2472,7 @@ function buildPdfHTML(){
       <td style="padding:9px 14px;text-align:center;font-family:Cairo;font-weight:900;font-size:16px;color:${navy}">${v}${tg?` <span style="font-size:12px;font-weight:700;color:#94a0b4">/ ${tg}</span>`:""}</td>
       <td style="padding:9px 14px;text-align:center"><span style="background:${color}1a;color:${color};font-weight:800;font-size:12px;padding:3px 12px;border-radius:20px">${label}</span></td>
     </tr>`;}).join("");
-  const ratioTxt = wk.pull>0 ? (wk.push/wk.pull).toFixed(1)+" : 1" : "—";
+  const ratioTxt = wk.pull>0 ? (wk.push/wk.pull).toFixed(1)+" : 1" : "-";
   /* صفحة الحجم الأسبوعي: أعيدت كتابتها للعميلة لا للمدربة.
      الأرقام الخام (21.8/13) لا تعني شيئا لغير المختص، فصارت
      أشرطة مرئية + شرح بلغة مفهومة + مثال محسوب. */
@@ -2462,7 +2488,7 @@ function buildPdfHTML(){
           <div style="width:${pct}%;height:100%;background:linear-gradient(90deg,${gr.color},${gr.color}bb);border-radius:10px"></div>
         </div>
         <div style="width:96px;text-align:left;flex:none;font-size:11.5px;color:#6a7488;font-weight:700">
-          ${days} ${days===1?"يوم":"أيام"} · ${gr.label}
+          ${days} ${days===1?"يوم":"أيام"} | ${gr.label}
         </div>
       </div>
     </div>`;
@@ -2471,14 +2497,14 @@ function buildPdfHTML(){
   const topMuscle = RV && RV.length ? (grpNames[RV[0].muscle]||RV[0].muscle) : "";
 
   const summary = `<div style="page-break-before:always;padding:44px 52px 26px">
-    <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · صفحة توضيحية</span></div>
+    <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | صفحة توضيحية</span></div>
     <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">📊 كيف وزع جهدك في الأسبوع</h1>
     <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 16px"></div>
 
     <div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:14px;padding:16px 20px;max-width:640px;direction:rtl;text-align:right;word-wrap:break-word;overflow-wrap:break-word;margin:0 auto 18px">
       <b style="font-family:Cairo;color:${navy};font-size:15px">ما معنى هذه الصفحة؟</b>
       <div style="font-size:13.5px;color:#4a5a78;font-weight:600;line-height:2.1;margin-top:7px;direction:rtl;text-align:right;word-wrap:break-word">
-        كل عضلة تحتاج قدرا معينا من الشغل أسبوعيا حتى تنمو — لا أقل فتتوقف، ولا أكثر فترهق.
+        كل عضلة تحتاج قدرا معينا من الشغل أسبوعيا حتى تنمو - لا أقل فتتوقف، ولا أكثر فترهق.
         الشريط أدناه يوضح <b style="color:${navy}">نصيب كل عضلة من جهدك</b>: كلما طال الشريط زاد شغلها.
         وبجانبه عدد الأيام التي تشتغل فيها.
       </div>
@@ -2491,15 +2517,15 @@ function buildPdfHTML(){
     <div style="page-break-inside:avoid;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:16px auto 0;max-width:640px">
       <div style="background:#fff;border:1px solid #e3e7ee;border-radius:11px;padding:9px 16px;font-size:12px;font-weight:700;color:#4a5a78">
         <span style="display:inline-block;width:11px;height:11px;border-radius:3px;background:#d98a1f;vertical-align:-1px;margin-left:5px"></span>
-        خفيف — شغل تمهيدي
+        خفيف - شغل تمهيدي
       </div>
       <div style="background:#fff;border:1px solid #e3e7ee;border-radius:11px;padding:9px 16px;font-size:12px;font-weight:700;color:#4a5a78">
         <span style="display:inline-block;width:11px;height:11px;border-radius:3px;background:#1f9d57;vertical-align:-1px;margin-left:5px"></span>
-        متوسط — النطاق المثالي للنمو
+        متوسط - النطاق المثالي للنمو
       </div>
       <div style="background:#fff;border:1px solid #e3e7ee;border-radius:11px;padding:9px 16px;font-size:12px;font-weight:700;color:#4a5a78">
         <span style="display:inline-block;width:11px;height:11px;border-radius:3px;background:#2563c9;vertical-align:-1px;margin-left:5px"></span>
-        عالي — عضلة أولوية في جدولك
+        عالي - عضلة أولوية في جدولك
       </div>
     </div>
 
@@ -2507,9 +2533,9 @@ function buildPdfHTML(){
       <b style="font-family:Cairo;color:${navy};font-size:14px">💡 توضيحات مهمة قبل أن تبدأ</b>
       <div style="font-size:13px;color:#33476b;font-weight:600;line-height:2.1;margin-top:8px;direction:rtl;text-align:right;word-wrap:break-word">
         <div style="page-break-inside:avoid;margin-bottom:9px"><b style="color:${navy}">١. لماذا تختلف أطوال الأشرطة؟</b><br>
-        لأن العضلات لا تتساوى في الحاجة ولا في الأولوية${topMuscle?` — ${topMuscle} أعلى شريط في جدولك الحالي`:""}.
+        لأن العضلات لا تتساوى في الحاجة ولا في الأولوية${topMuscle?` - ${topMuscle} أعلى شريط في جدولك الحالي`:""}.
         رفع حجم عضلة يخفض أخرى بالضرورة، فلا يمكن أن تكون كلها في القمة معا. هذا التوزيع مقصود لا خلل.</div>
-        <div style="page-break-inside:avoid;margin-bottom:9px"><b style="color:${navy}">٢. هل العضلة «الخفيفة» مهملة؟</b><br>
+        <div style="page-break-inside:avoid;margin-bottom:9px"><b style="color:${navy}">٢. هل العضلة الخفيفة مهملة؟</b><br>
         لا. تأخذ شغلا تمهيديا في هذه الدورة، ويزيد حجمها في الدورة القادمة. التدرج مقصود لا نقص.</div>
         <div style="page-break-inside:avoid"><b style="color:${navy}">٣. العضلة تعمل حتى في تمارين غيرها</b><br>
         الشريط يحسب ذلك: تمرين الظهر يعمل على البايسبس أيضا، فلا يحتاج البايسبس تمارين كثيرة مستقلة.</div>
@@ -2517,8 +2543,8 @@ function buildPdfHTML(){
     </div>
 
     <div style="page-break-inside:avoid;text-align:center;margin-top:16px;font-size:12.5px;color:#6a7488;font-weight:600">
-      نسبة الدفع إلى السحب: <b style="color:${navy}">${ratioTxt}</b> — ${wk.balanced?"متوازنة ✓":"مقبولة"}
-      &nbsp;·&nbsp; الأهم الاستمرارية والتدرج، لا الأرقام المثالية.
+      نسبة الدفع إلى السحب: <b style="color:${navy}">${ratioTxt}</b> - ${wk.balanced?"متوازنة ✓":"مقبولة"}
+      &nbsp;|&nbsp; الأهم الاستمرارية والتدرج، لا الأرقام المثالية.
     </div>
   </div>`;
 
@@ -2551,11 +2577,11 @@ function buildPdfHTML(){
   if(S.includeEdu){
   warmup=`<div style="page-break-before:always;padding:44px 52px 26px">
     <div style="text-align:center;margin-bottom:8px">
-      <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · قبل التمرين</span>
+      <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | قبل التمرين</span>
     </div>
     <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">الإحماء</h1>
     <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 18px"></div>
-    <p style="page-break-inside:avoid;page-break-after:avoid;text-align:center;color:#6a7488;font-size:14.5px;font-weight:600;max-width:560px;margin:0 auto 26px;line-height:1.9">الإحماء 5–10 دقائق قبل كل تمرين يقلل خطر الإصابة ويرفع كفاءة الأداء. اختاري القسم المناسب ليومك.</p>
+    <p style="page-break-inside:avoid;page-break-after:avoid;text-align:center;color:#6a7488;font-size:14.5px;font-weight:600;max-width:560px;margin:0 auto 26px;line-height:1.9">الإحماء 5-10 دقائق قبل كل تمرين يقلل خطر الإصابة ويرفع كفاءة الأداء. اختاري القسم المناسب ليومك.</p>
     <table style="width:100%;border-collapse:separate;border-spacing:12px"><tr>
       <td style="width:50%;vertical-align:top">${warmCol(WARMUP.upper)}</td>
       <td style="width:50%;vertical-align:top">${warmCol(WARMUP.lower)}</td>
@@ -2583,7 +2609,7 @@ function buildPdfHTML(){
         </div>`;}).join("");
       support+=`<div style="page-break-before:always;padding:44px 52px 26px">
         <div style="text-align:center;margin-bottom:8px">
-          <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · دعم وتأهيل</span>
+          <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | دعم وتأهيل</span>
         </div>
         <h1 style="font-family:Cairo;font-weight:900;font-size:29px;color:${navy};text-align:center;margin-bottom:6px">${sup.ico} ${sup.name}</h1>
         <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 16px"></div>
@@ -2608,7 +2634,7 @@ function buildPdfHTML(){
         </div>`).join("");
       edu+=`<div style="page-break-before:always;padding:44px 52px 26px">
         <div style="text-align:center;margin-bottom:8px">
-          <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · دليل تثقيفي</span>
+          <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | دليل تثقيفي</span>
         </div>
         <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">${pg.title}</h1>
         <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 18px"></div>
@@ -2665,12 +2691,12 @@ function buildPdfHTML(){
     if(cards){
       library=`<div style="page-break-before:always;padding:44px 52px 26px">
         <div style="text-align:center;margin-bottom:8px">
-          <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · بدائل التمارين</span>
+          <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | بدائل التمارين</span>
         </div>
         <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">مكتبة التمارين الإضافية</h1>
         <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 18px"></div>
         <p style="text-align:center;color:#6a7488;font-size:14px;font-weight:600;max-width:580px;margin:0 auto 24px;line-height:1.9">
-          هذه تمارين بديلة (غير الموجودة في جدولك) مرتبة حسب العضلة، يمكنك استخدامها لإضافة تنوع أو استبدال تمرين عند الحاجة — دون تغيير ترتيب جدولك الأساسي. زر ▶ يفتح فيديو الشرح إن تم إضافته.
+          هذه تمارين بديلة (غير الموجودة في جدولك) مرتبة حسب العضلة، يمكنك استخدامها لإضافة تنوع أو استبدال تمرين عند الحاجة - دون تغيير ترتيب جدولك الأساسي. زر ▶ يفتح فيديو الشرح إن تم إضافته.
         </p>
         <div style="column-count:2;column-gap:16px">${cards}</div>
       </div>`;
@@ -2725,7 +2751,7 @@ function buildPdfHTML(){
       ["⏱️","الراحة بين المجموعات","التزمي بزمن الراحة (${L2.rest}) بين المجموعات للحفاظ على الأداء."],
       ["🎯","الإحماء أولا","ابدئي كل حصة بالإحماء المناسب (تجدينه في صفحة الإحماء) لتقليل خطر الإصابة."],
       ["🔁","الزيادة التدريجية","عند إتمام أعلى عدد تكرارات بسهولة، ارفعي الوزن قليلا في الحصة التالية."],
-      ["🚶‍♀️","النشاط اليومي","أضيفي كارديو بعد المقاومة (تفاصيله في صفحة مستقلة)، واستهدفي 8–10 آلاف خطوة يوميا."],
+      ["🚶‍♀️","النشاط اليومي","أضيفي كارديو بعد المقاومة (تفاصيله في صفحة مستقلة)، واستهدفي 8-10 آلاف خطوة يوميا."],
       ["💧","الماء والتغذية","حافظي على شرب الماء وتغذية متوازنة لدعم الاستشفاء والنتائج."],
       ["🛑","أوقفي عند الألم","التعب الطبيعي مقبول، أما الألم الحاد فإشارة للتوقف ومراجعة الأداء."]
     ];
@@ -2737,7 +2763,7 @@ function buildPdfHTML(){
       </div>`).join("");
     intro=`<div style="page-break-before:always;padding:44px 52px 26px">
       <div style="text-align:center;margin-bottom:8px">
-        <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · قبل أن تبدئي</span>
+        <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | قبل أن تبدئي</span>
       </div>
       <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">تعليمات وملاحظات هامة</h1>
       <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 20px"></div>
@@ -2764,29 +2790,29 @@ function buildPdfHTML(){
 
     cardio=`<div style="page-break-before:always;padding:44px 48px">
       <div style="text-align:center;margin-bottom:8px">
-        <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · بعد التمرين</span>
+        <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | بعد التمرين</span>
       </div>
-      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">الكارديو — دليلك الكامل</h1>
+      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">الكارديو - دليلك الكامل</h1>
       <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 14px"></div>
       <p style="text-align:center;color:#6a7488;font-size:13px;font-weight:600;max-width:580px;margin:0 auto 20px;line-height:1.8">اختاري نوعا واحدا حسب لياقتك ووقتك. الأهم الانتظام، لا الشدة المفرطة. الكارديو بعد الأوزان أو في يوم منفصل.</p>
 
       <div style="max-width:600px;margin:0 auto">
-        <div style="font-family:Cairo;font-weight:800;font-size:15px;color:${orange};margin-bottom:10px">🟢 للمبتدئات — ابدئي هنا</div>
-        ${cardioCard("🚶‍♀️","المشي السريع","20–30 دقيقة","خفيفة–معتدلة","تقدرين تتكلمين وأنت تمشين. على الجهاز أو في الهواء الطلق. ميل بسيط 2–4% يزيد الحرق.")}
-        ${cardioCard("🚴‍♀️","الدراجة الثابتة","15–25 دقيقة","خفيفة–معتدلة","لطيفة على الركبة والمفاصل. مقاومة متوسطة وإيقاع ثابت مريح.")}
+        <div style="font-family:Cairo;font-weight:800;font-size:15px;color:${orange};margin-bottom:10px">🟢 للمبتدئات - ابدئي هنا</div>
+        ${cardioCard("🚶‍♀️","المشي السريع","20-30 دقيقة","خفيفة-معتدلة","تقدرين تتكلمين وأنت تمشين. على الجهاز أو في الهواء الطلق. ميل بسيط 2-4% يزيد الحرق.")}
+        ${cardioCard("🚴‍♀️","الدراجة الثابتة","15-25 دقيقة","خفيفة-معتدلة","لطيفة على الركبة والمفاصل. مقاومة متوسطة وإيقاع ثابت مريح.")}
 
         <div style="font-family:Cairo;font-weight:800;font-size:15px;color:${orange};margin:18px 0 10px">🟡 للمتوسطات</div>
-        ${cardioCard("🏃‍♀️","الجري الخفيف/الهرولة","20–30 دقيقة","معتدلة","تنفس أعمق لكن دون انقطاع. بدلي بين مشي سريع وهرولة لو تعبت.")}
-        ${cardioCard("🎚️","المشي المائل (Incline)","25–35 دقيقة","معتدلة","ميل 6–12% بسرعة مشي. ممتاز لحرق الدهون ويشغل المؤخرة والأرجل.")}
-        ${cardioCard("🎧","الإليبتيكال (Cross Trainer)","20–30 دقيقة","معتدلة","حركة كاملة للجسم بدون ضغط على المفاصل. مقاومة متوسطة.")}
+        ${cardioCard("🏃‍♀️","الجري الخفيف/الهرولة","20-30 دقيقة","معتدلة","تنفس أعمق لكن دون انقطاع. بدلي بين مشي سريع وهرولة لو تعبت.")}
+        ${cardioCard("🎚️","المشي المائل (Incline)","25-35 دقيقة","معتدلة","ميل 6-12% بسرعة مشي. ممتاز لحرق الدهون ويشغل المؤخرة والأرجل.")}
+        ${cardioCard("🎧","الإليبتيكال (Cross Trainer)","20-30 دقيقة","معتدلة","حركة كاملة للجسم بدون ضغط على المفاصل. مقاومة متوسطة.")}
 
-        <div style="font-family:Cairo;font-weight:800;font-size:15px;color:${orange};margin:18px 0 10px">🔴 للمتقدمات — حرق أعلى بوقت أقل</div>
-        ${cardioCard("⚡","تدريب HIIT المتقطع","12–20 دقيقة","عالية","تبادل: 30 ثانية شدة عالية + 60–90 ثانية راحة. كرري 6–10 جولات. مرتين أسبوعيا كحد أقصى.")}
+        <div style="font-family:Cairo;font-weight:800;font-size:15px;color:${orange};margin:18px 0 10px">🔴 للمتقدمات - حرق أعلى بوقت أقل</div>
+        ${cardioCard("⚡","تدريب HIIT المتقطع","12-20 دقيقة","عالية","تبادل: 30 ثانية شدة عالية + 60-90 ثانية راحة. كرري 6-10 جولات. مرتين أسبوعيا كحد أقصى.")}
 
         <div style="page-break-inside:avoid;background:#eef4ff;border:1px solid #c9dcff;border-radius:14px;padding:14px 18px;margin-top:16px;display:flex;gap:10px;align-items:flex-start">
           <span style="font-size:20px;flex:none">👟</span>
           <div style="font-size:12.5px;color:#33476b;font-weight:600;line-height:1.9">
-            <b style="color:${navy}">القاعدة الذهبية:</b> النشاط اليومي (الخطوات) أهم من جلسة كارديو واحدة. استهدفي <b>8–10 آلاف خطوة يوميا</b> — تحرق سعرات أكثر مما تتخيلين على مدار اليوم، وهي الأساس المستدام لحرق الدهون.
+            <b style="color:${navy}">القاعدة الذهبية:</b> النشاط اليومي (الخطوات) أهم من جلسة كارديو واحدة. استهدفي <b>8-10 آلاف خطوة يوميا</b> - تحرق سعرات أكثر مما تتخيلين على مدار اليوم، وهي الأساس المستدام لحرق الدهون.
           </div>
         </div>
         <div style="text-align:center;font-size:11.5px;color:#94a0b4;font-weight:600;margin-top:12px">💡 توقفي عند أي ألم في الصدر أو دوخة، واستشيري طبيبك قبل الكارديو العالي لو عندك حالة صحية.</div>
@@ -2818,16 +2844,16 @@ function buildPdfHTML(){
 
     stretch=`<div style="page-break-before:always;padding:44px 48px">
       <div style="text-align:center;margin-bottom:8px">
-        <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · التبريد</span>
+        <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | التبريد</span>
       </div>
       <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">🧘‍♀️ تمارين المرونة والإطالة</h1>
       <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 14px"></div>
-      <p style="text-align:center;color:#6a7488;font-size:13px;font-weight:600;max-width:580px;margin:0 auto 20px;line-height:1.8">أدي الإطالات بعد التمرين مباشرة والعضلات دافئة. تحسن المرونة، تقلل الشد والألم، وتسرع الاستشفاء. لا تندفعي — إطالة هادئة حتى تشعرين بشد مريح دون ألم.</p>
+      <p style="text-align:center;color:#6a7488;font-size:13px;font-weight:600;max-width:580px;margin:0 auto 20px;line-height:1.8">أدي الإطالات بعد التمرين مباشرة والعضلات دافئة. تحسن المرونة، تقلل الشد والألم، وتسرع الاستشفاء. لا تندفعي - إطالة هادئة حتى تشعرين بشد مريح دون ألم.</p>
       <div style="max-width:600px;margin:0 auto">
         ${stretchSection(STRETCH.upper)}
         ${stretchSection(STRETCH.lower)}
         <div style="page-break-inside:avoid;background:#eef4ff;border:1px solid #c9dcff;border-radius:12px;padding:12px 16px;margin-top:8px;font-size:12px;color:#33476b;font-weight:600;line-height:1.8">
-          💡 اثبتي في كل إطالة 20–30 ثانية دون اهتزاز، وتنفسي بعمق. كرري كل إطالة مرة أو مرتين. لا تطيلي على عضلة مصابة.
+          💡 اثبتي في كل إطالة 20-30 ثانية دون اهتزاز، وتنفسي بعمق. كرري كل إطالة مرة أو مرتين. لا تطيلي على عضلة مصابة.
         </div>
       </div>
     </div>`;
@@ -2849,7 +2875,7 @@ function buildPdfHTML(){
   /* صفحة التصحيح القوامي: تشرح للعميلة لماذا في جدولها تمارين
      لا تشبه بقية التمارين، وأين تجدها بالضبط. بدون هذه الصفحة
      تتجاوزها ظنا أنها حشو. */
-  /* صفحة الروتين التصحيحي — مستقلة عن الجدول.
+  /* صفحة الروتين التصحيحي - مستقلة عن الجدول.
      التوزيع على الأيام كان يخلط التصحيح بالتمارين الأساسية،
      وصفحة واحدة بتكرار واضح أسهل على العميلة. */
   let postureP = "";
@@ -2857,7 +2883,7 @@ function buildPdfHTML(){
   if(__r){
     postureP = `
     <div style="page-break-before:always;padding:44px 52px 26px">
-      <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · روتين منفصل</span></div>
+      <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | روتين منفصل</span></div>
       <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">🧭 روتينك التصحيحي</h1>
       <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 16px"></div>
 
@@ -2880,11 +2906,11 @@ function buildPdfHTML(){
         <b style="font-family:Cairo;color:${navy};font-size:15px">لماذا روتين منفصل؟</b>
         <div style="font-size:13.5px;color:#33476b;font-weight:600;line-height:2.1;margin-top:7px">
           هذه التمارين ليست جزءا من جدول القوة، ولا تحتاج أوزانا ولا تعبا.
-          هدفها تصحيح وضعية جسمك، وتؤدى <b style="color:${navy}">${__r.times}</b> — ${__r.when}.
+          هدفها تصحيح وضعية جسمك، وتؤدى <b style="color:${navy}">${__r.times}</b> - ${__r.when}.
           تجاوزها يعني بقاء المشكلة، ومع الوقت ألما وتقييدا في تمارينك الأساسية.
         </div>
         <div style="font-size:13px;color:#33476b;font-weight:700;margin-top:9px;padding-top:9px;border-top:1px solid #bcd8f5">
-          حالتك: ${__r.conditions.map(c=>c.ico+" "+c.name).join(" · ")}
+          حالتك: ${__r.conditions.map(c=>c.ico+" "+c.name).join(" | ")}
         </div>
       </div>
 
@@ -2908,26 +2934,26 @@ function buildPdfHTML(){
           <b style="font-family:Cairo;color:${navy};font-size:14.5px">${c.ico} ${c.name}</b>
           <div style="font-size:13px;color:#4a5a78;font-weight:600;line-height:2;margin-top:6px">${c.note}</div>
           ${(c.avoidIds||[]).length?`<div style="margin-top:9px;padding-top:9px;border-top:1px solid #eef0f4;font-size:12.5px;color:#8a5a13;font-weight:600;line-height:1.9">
-            <b>مؤجلة من جدولك مؤقتا:</b> ${c.avoidIds.map(id=>{const e=EX.find(x=>x.id===id);return e?e.name:"";}).filter(Boolean).join(" · ")} — تعود بعد تحسن الوضعية.
+            <b>مؤجلة من جدولك مؤقتا:</b> ${c.avoidIds.map(id=>{const e=EX.find(x=>x.id===id);return e?e.name:"";}).filter(Boolean).join(" | ")} - تعود بعد تحسن الوضعية.
           </div>`:""}
-          ${c.medical?`<div style="margin-top:9px;background:#fff7ee;border:1px solid rgba(217,138,31,.3);border-radius:10px;padding:10px 14px;font-size:12.5px;color:#8a5a13;font-weight:700">⚠️ حالة طبية — الروتين داعم لا علاجي، ومتابعة أخصائي العلاج الطبيعي ضرورية.</div>`:""}
+          ${c.medical?`<div style="margin-top:9px;background:#fff7ee;border:1px solid rgba(217,138,31,.3);border-radius:10px;padding:10px 14px;font-size:12.5px;color:#8a5a13;font-weight:700">⚠️ حالة طبية - الروتين داعم لا علاجي، ومتابعة أخصائي العلاج الطبيعي ضرورية.</div>`:""}
         </div>`).join("")}
     </div>`;
   }
 
-  /* صفحة الدورة الشهرية — تثقيفية بحتة.
+  /* صفحة الدورة الشهرية - تثقيفية بحتة.
      لا تغير الجدول ولا التمارين: الأدلة على تعديل التدريب حسب المراحل
      ضعيفة وغير متسقة، والفروق بين امرأة وأخرى أكبر من فروق المراحل.
      فالأنفع أن تتعلم القراءة من جسمها لا أن تتبع تقويما. */
-  /* صفحة «أول أربعة أسابيع» — مثال محسوب لا شرح مجرد.
-     المشتركات يسألن «وش نسوي في البداية؟» رغم وجود الشرح، لأن الشرح
-     يقول «زيدي عند الوصول لأعلى التكرارات» ولا يقول كيف يبدو ذلك بالأرقام.
+  /* صفحة أول أربعة أسابيع - مثال محسوب لا شرح مجرد.
+     المشتركات يسألن وش نسوي في البداية؟» رغم وجود الشرح، لأن الشرح
+     يقول زيدي عند الوصول لأعلى التكرارات ولا يقول كيف يبدو ذلك بالأرقام.
      هنا نأخذ تمرينها هي، بنطاقها هي، ونمشي معها أسبوعا أسبوعا. */
   let startPage = "";
   if(S.plan && S.plan.length && S.plan[0].exercises.length){
     const ex = S.plan[0].exercises.find(e=>e.type==="compound") || S.plan[0].exercises[0];
     const reps = String(ex.reps||"8-12");
-    const rr = reps.match(/(\d+)\s*[-–]\s*(\d+)/);
+    const rr = reps.match(/(\d+)\s*[--]\s*(\d+)/);
     const lo = rr ? +rr[1] : 8, hi = rr ? +rr[2] : 12;
     const sets = ex.sets || 3;
     const isLeg = ["quads","hams","glutes","adductors","calves"].includes(ex.group);
@@ -2950,22 +2976,22 @@ function buildPdfHTML(){
 
     startPage = `
     <div style="page-break-before:always;padding:44px 52px 26px">
-      <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · ابدأ من هنا</span></div>
-      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">🎯 أول أربعة أسابيع — مثال محسوب</h1>
+      <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | ابدأ من هنا</span></div>
+      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">🎯 أول أربعة أسابيع - مثال محسوب</h1>
       <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 16px"></div>
 
       <div style="page-break-inside:avoid;background:#fff7ee;border:1px solid rgba(232,98,44,.3);border-radius:14px;padding:16px 20px;max-width:660px;direction:rtl;text-align:right;word-wrap:break-word;margin:0 auto 16px">
         <b style="font-family:Cairo;color:${navy};font-size:15px">الأسبوع الأول: كيف تعرف وزن البداية؟</b>
         <div style="font-size:13.5px;color:#8a5a13;font-weight:600;line-height:2.1;margin-top:7px">
           لا تخمني. جربي مجموعة واحدة بوزن خفيف جدا وأديها <b>${lo} تكرارات</b>.
-          إن انتهيت وأنت تشعرين أنك تقدرين على <b>4 تكرارات إضافية بسهولة</b> — الوزن خفيف، زيديه.
+          إن انتهيت وأنت تشعرين أنك تقدرين على <b>4 تكرارات إضافية بسهولة</b> - الوزن خفيف، زيديه.
           كرري حتى تصلي لوزن ينتهي عنده ${lo} تكرارات وأنت تشعرين أنك تقدرين على <b>2-3 فقط</b>.
           هذا وزن بدايتك. سجليه واستخدميه في كل المجموعات.
         </div>
       </div>
 
       <div style="page-break-inside:avoid;font-size:13px;color:#6a7488;font-weight:700;text-align:center;margin-bottom:9px">
-        المثال أدناه على تمرينك: <b style="color:${navy}">${ex.name}</b> — ${sets} مجموعات × ${reps} تكرار
+        المثال أدناه على تمرينك: <b style="color:${navy}">${ex.name}</b> - ${sets} مجموعات × ${reps} تكرار
       </div>
 
       <div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:14px;overflow:hidden;max-width:660px;margin:0 auto">
@@ -2979,7 +3005,7 @@ function buildPdfHTML(){
           </tr>
           ${row(1,"البداية",w1,`${sets} × ${lo}`,"ثبتي الوزن وركزي على التكنيك. لا تزيدي شيئا هذا الأسبوع.")}
           ${row(2,"نفس الوزن",w1,`${sets} × ${mid}`,"نفس الوزن، لكن أضيفي تكرارا أو اثنين. الوزن يبقى.")}
-          ${row(3,"وصلت للأعلى",w1,`${sets} × ${hi}`,"أكملت "+hi+" في كل المجموعات — الآن فقط تزيدين الوزن.")}
+          ${row(3,"وصلت للأعلى",w1,`${sets} × ${hi}`,"أكملت "+hi+" في كل المجموعات - الآن فقط تزيدين الوزن.")}
           ${row(4,"زيادة",w1+step,`${sets} × ${lo}`,"زيدي "+step+" كجم وارجعي لأسفل النطاق. تبدأ الدورة من جديد.",true)}
         </table>
       </div>
@@ -2993,7 +3019,7 @@ function buildPdfHTML(){
       </div>
 
       <div style="max-width:660px;margin:16px auto 0">
-        <b style="font-family:Cairo;color:${navy};font-size:15px;display:block;margin-bottom:9px">ماذا لو…</b>
+        <b style="font-family:Cairo;color:${navy};font-size:15px;display:block;margin-bottom:9px">ماذا لو</b>
         ${q("الوزن ثقيل ولا أكملي "+lo+" تكرارات؟",
            "انزلي خطوة واحدة ("+step+" كجم) وأكملي. الوزن الذي يكسر التكنيك لا يبني شيئا.")}
         ${q("أكملت "+hi+" بسهولة من الأسبوع الأول؟",
@@ -3001,14 +3027,14 @@ function buildPdfHTML(){
         ${q("أكملت "+hi+" في مجموعتين فقط والثالثة لا؟",
            "لم تصلي بعد. أعيدي نفس الوزن الأسبوع القادم حتى تكملي "+hi+" في المجموعات كلها.")}
         ${q("توقفت عن التقدم ثلاثة أسابيع؟",
-           "راجعي نومك وأكلك أولا — الثبات غالبا خارج الصالة. ثم جربي أسبوعا بأوزان أخف (تفريغ) وارجعي.")}
+           "راجعي نومك وأكلك أولا - الثبات غالبا خارج الصالة. ثم جربي أسبوعا بأوزان أخف (تفريغ) وارجعي.")}
         ${q("لا توجد أوزان بهذه الدقة عندي؟",
            "زيدي التكرارات بدل الوزن، أو أبطئ النزول إلى 3 ثوان. كلاهما زيادة حقيقية في الحمل.")}
       </div>
 
       <div style="page-break-inside:avoid;text-align:center;margin-top:14px;font-size:12.5px;color:#6a7488;font-weight:600;max-width:600px;margin-inline:auto">
         الأرقام أعلاه مثال توضيحي. وزن بدايتك الحقيقي تحددينه أنت بتجربة الأسبوع الأول،
-        وقد يكون أعلى أو أقل — المهم القاعدة لا الرقم.
+        وقد يكون أعلى أو أقل - المهم القاعدة لا الرقم.
       </div>
     </div>`;
   }
@@ -3021,7 +3047,7 @@ function buildPdfHTML(){
 
     cyclePage = `
     <div style="page-break-before:always;padding:44px 52px 26px">
-      <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT · صفحة توضيحية</span></div>
+      <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | صفحة توضيحية</span></div>
       <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">🌙 التمرين والدورة الشهرية</h1>
       <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 16px"></div>
 
@@ -3033,28 +3059,28 @@ function buildPdfHTML(){
           لم تجد أثرا ثابتا يبرر تغيير الجدول.
           <br><br>
           لذلك جدولك <b style="color:${navy}">لا يتغير</b>. ما يتغير هو قراءتك لجسمك:
-          يوم تشعرين فيه بقوة، ارفعي. ويوم تشعرين فيه بثقل، خففي — بغض النظر عن اليوم من الشهر.
+          يوم تشعرين فيه بقوة، ارفعي. ويوم تشعرين فيه بثقل، خففي - بغض النظر عن اليوم من الشهر.
         </div>
       </div>
 
       <div style="max-width:640px;margin:0 auto">
-        ${card("أثناء الدورة — التمرين مفيد لا ممنوع",
+        ${card("أثناء الدورة - التمرين مفيد لا ممنوع",
           "الحركة الخفيفة تقلل التقلصات وتحسن المزاج أكثر من الراحة التامة. لا داعي لإلغاء التمرين إلا إذا كان الألم شديدا. خففي الوزن أو قللي المجموعات وأكملي.")}
-        ${card("الحديد — أهم نقطة عملية",
+        ${card("الحديد - أهم نقطة عملية",
           "الدورة الغزيرة تستنزف الحديد، ونقصه يسبب تعبا وضيق نفس وضعف أداء يستمر أسابيع. إن شعرت بإرهاق غير مبرر أو لهاث سريع في تمارين كنت تؤدينها بسهولة، اطلبي تحليل الحديد والفيريتين قبل أن تلومي جدولك.")}
         ${card("الانتفاخ وتغير الوزن",
           "زيادة كيلو أو اثنين قبل الدورة ماء لا دهن، وتزول خلال أيام. لا تقيسي وزنك في هذه الفترة ولا تبني عليه قرارا.")}
-        ${card("انقطاع الدورة — علامة تستدعي التوقف والمراجعة",
+        ${card("انقطاع الدورة - علامة تستدعي التوقف والمراجعة",
           "غياب الدورة ثلاثة أشهر مع التدريب المكثف أو الأكل القليل ليس علامة لياقة، بل إشارة إلى أن الجسم لا يجد طاقة كافية. له أثر على العظام والهرمونات على المدى الطويل. راجعي طبيبة نساء، وأخبري مدربتك.")}
         ${card("متى تتوقفين",
-          "ألم شديد لا يسمح بالحركة · نزف غزير جدا · دوخة أو إغماء · ألم مفاجئ غير معتاد. هذه ليست علامات ضعف، بل إشارات تستحق التوقف والمراجعة.")}
+          "ألم شديد لا يسمح بالحركة | نزف غزير جدا | دوخة أو إغماء | ألم مفاجئ غير معتاد. هذه ليست علامات ضعف، بل إشارات تستحق التوقف والمراجعة.")}
       </div>
 
       <div style="page-break-inside:avoid;background:#eef4ff;border:1px solid #c9dcff;border-radius:14px;padding:15px 20px;max-width:640px;direction:rtl;text-align:right;word-wrap:break-word;margin:14px auto 0">
         <b style="font-family:Cairo;color:${navy};font-size:14px">📓 تتبعي شهرين</b>
         <div style="font-size:13px;color:#33476b;font-weight:600;line-height:2.05;margin-top:6px">
-          سجلي في ورقة المتابعة: يوم الدورة · مستوى طاقتك · هل نزلت أوزانك.
-          بعد شهرين سيظهر نمطك أنت — وهذا أنفع من أي جدول عام، لأنه مبني على جسمك لا على متوسط غيرك.
+          سجلي في ورقة المتابعة: يوم الدورة | مستوى طاقتك | هل نزلت أوزانك.
+          بعد شهرين سيظهر نمطك أنت - وهذا أنفع من أي جدول عام، لأنه مبني على جسمك لا على متوسط غيرك.
         </div>
       </div>
     </div>`;
@@ -3067,7 +3093,7 @@ function buildPdfHTML(){
     coachNotes = `
     <div style="page-break-before:always;padding:44px 52px 26px">
       <div style="text-align:center;margin-bottom:26px">
-        <div style="font-family:Cairo;font-weight:800;font-size:12px;color:${orange};letter-spacing:2px">ZAHRAAFIT · من مدربتك</div>
+        <div style="font-family:Cairo;font-weight:800;font-size:12px;color:${orange};letter-spacing:2px">ZAHRAAFIT | من مدربتك</div>
         <h1 style="font-family:Cairo;font-weight:900;font-size:28px;color:${navy};margin:8px 0 6px">📝 ملاحظات خاصة لك</h1>
         <div style="width:70px;height:4px;background:${orange};margin:0 auto;border-radius:3px"></div>
       </div>
@@ -3084,7 +3110,7 @@ function buildPdfHTML(){
   return `<div dir="rtl" style="background:#eef1f7;-webkit-print-color-adjust:exact;print-color-adjust:exact">${__pages}</div>`;
 }
 
-/* تصدير عبر نافذة طباعة نظيفة — مضمون بأي متصفح، بدون مكتبات */
+/* تصدير عبر نافذة طباعة نظيفة - مضمون بأي متصفح، بدون مكتبات */
 function exportViaPrintWindow(){
   const css=`
     @page{ size:A4; margin:0; }
@@ -3103,13 +3129,13 @@ function exportViaPrintWindow(){
   const safeName=(S.client.name||"جدول").replace(/[<>"'&]/g,"");
   const html=`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZahraaFit — ${safeName}</title>
+    <title>ZahraaFit - ${safeName}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>html,body{background:#fff!important;}${css}</style></head><body style="background:#fff">
     <div class="pbar noprint">📄 الجدول جاهز
-      <small>اضغطي الزر، وفي نافذة الطباعة اختاري «حفظ بصيغة PDF» وفعلي «الرسوم الخلفية»</small>
+      <small>اضغطي الزر، وفي نافذة الطباعة اختاري حفظ بصيغة PDF» وفعلي الرسوم الخلفية»</small>
       <button onclick="doPrint()">🖨️ حفظ كـ PDF</button>
       <button class="sec" onclick="window.close()">إغلاق</button></div>
     <div style="height:86px" class="noprint"></div>
@@ -3125,13 +3151,13 @@ function exportViaPrintWindow(){
 
 function exportPDF(){
   if(typeof window.html2pdf==="undefined"){
-    alert("سيتم استخدام طباعة المتصفح. فعلي خيار «الرسوم الخلفية / Background graphics» لظهور الألوان.");
+    alert("سيتم استخدام طباعة المتصفح. فعلي خيار الرسوم الخلفية / Background graphics» لظهور الألوان.");
     window.print(); return;
   }
   const btn=document.querySelector('[data-act="exportpdf"]');
   if(btn){ btn.textContent="⏳ جار  التجهيز..."; btn.disabled=true; }
 
-  // طبقة عرض مرئية فعليا (وراء واجهة معتمة) — تفاديا لمشكلة الصفحات الفارغة
+  // طبقة عرض مرئية فعليا (وراء واجهة معتمة) - تفاديا لمشكلة الصفحات الفارغة
   const overlay=document.createElement("div");
   overlay.style.cssText="position:fixed;inset:0;z-index:9999;background:rgba(15,31,61,.85);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px";
   overlay.innerHTML=`<div style="color:#fff;font-family:Tajawal,sans-serif;font-weight:700;font-size:17px">⏳ جار  إنشاء ملف PDF...</div>`;
@@ -3220,7 +3246,7 @@ function bind(){
     else if(a==="tocard") go(0);
     else if(a==="manual"){ S._back=S.step; go(14); }
     else if(a==="manualexample"){
-      S.manualText = `اليوم الأول — فل بدي A
+      S.manualText = `اليوم الأول - فل بدي A
 سكوات كأسي بالدمبل 3 × 8-12
 رفعة رومانية بالدمبل 3 × 8-12
 تجديف بالدمبل 3 × 10-12
@@ -3228,7 +3254,7 @@ function bind(){
 ضغط الكتف بالدمبل 2 × 10-12
 رفع السمانة 3 × 15-20
 
-اليوم الثاني — فل بدي B
+اليوم الثاني - فل بدي B
 طعنة خلفية 3 × 10
 دفع الورك بالدمبل 3 × 10-15
 ضغط مائل لأعلى 3 × 8-12
@@ -3250,12 +3276,12 @@ function bind(){
     else if(a==="manualbuild"){
       if(!manualParsed) return;
       if(!(S.client && S.client.name)){
-        if(!confirm("بطاقة العميلة فارغة — سيصدر الجدول بلا اسم ولا بيانات.\nهل تريدين المتابعة؟")) return;
+        if(!confirm("بطاقة العميلة فارغة - سيصدر الجدول بلا اسم ولا بيانات.\nهل تريدين المتابعة؟")) return;
       }
       S.plan = buildManualPlan(manualParsed);
       /* التصحيح القوامي يطبق على الجدول اليدوي أيضا: اختيارك للحالة
          لا يجوز أن يضيع لأنك كتبت الجدول بنفسك. يضاف في آخر كل يوم. */
-      /* الروتين التصحيحي مستقل — لا يحقن في الجدول اليدوي أيضا */
+      /* الروتين التصحيحي مستقل - لا يحقن في الجدول اليدوي أيضا */
       S.plan.forEach(d=>{ d.warmup=buildWarmup(d); d.cooldown=buildCooldown(d); });
       const rep = { advice:null, shortfalls:[], fixes:[], volume: volumeReport(S.plan), source:"manual" };
       rep.balance = balanceAudit(S.plan);
@@ -3263,7 +3289,7 @@ function bind(){
       rep.tracking = trackingSheet(S.plan);
       /* الجدول اليدوي يقاس ولا يعدل: النقص يعرض في التقرير لتقرر المدربة */
       rep.volume.forEach(v=>{ if(!v.ok) rep.shortfalls.push({muscle:v.muscle, got:v.effective,
-        target:v.target, direct:v.direct, dmin:v.dmin, fix:"جدولك منفذ حرفيا — هذا قياس لا اعتراض"}); });
+        target:v.target, direct:v.direct, dmin:v.dmin, fix:"جدولك منفذ حرفيا - هذا قياس لا اعتراض"}); });
       S.report = rep;
       S.weekly = computeWeeklyVolume(S.plan);
       go(3);
@@ -3391,7 +3417,7 @@ function resetPlan(){
   S.env="gym"; S.level=1; S.days=4; S.dailyCount=6; S.conditions=[];
   S.minDaily=0; S.maxDaily=8; S.gluteEmphasis=true;
   S.fav=new Set(); S.no=new Set(); S.plan=null;
-  S.posture=[]; S.notes=""; S.dayNotes={};   // تفريغ الجلسة — المحفوظ في المتصفح يبقى
+  S.posture=[]; S.notes=""; S.dayNotes={};   // تفريغ الجلسة - المحفوظ في المتصفح يبقى
 }
 
 /* ============================================================
@@ -3401,10 +3427,10 @@ function resetPlan(){
 
 /* ============================================================
    محرك ZahraaFit v4 + صفحتا الإحماء والإطالة
-   (تعريفات الدوال هنا تلغي القديمة تلقائيا — هذا مقصود)
+   (تعريفات الدوال هنا تلغي القديمة تلقائيا - هذا مقصود)
    ============================================================ */
 /* ============================================================
-   ZahraaFit — محرك v3 (إضافات فوق v2)
+   ZahraaFit - محرك v3 (إضافات فوق v2)
    1) حساب التفعيل الجزئي: التمرين المركب يحتسب لكل عضلة يشغلها
    2) أولوية المؤخرة
    3) حد أدنى للعمل المباشر (لا تغطى عضلة بالتفعيل غير المباشر وحده)
@@ -3526,7 +3552,7 @@ function buildWarmup(day){
     items,
     ramp: firstCompound ? {
       exercise: firstCompound.name,
-      sets: ["٥٠٪ من وزنك × ٨ تكرارات","٧٠٪ × ٥ تكرارات","٨٥٪ × ٣ تكرارات — ثم ابدئي المجموعات الفعلية"],
+      sets: ["٥٠٪ من وزنك × ٨ تكرارات","٧٠٪ × ٥ تكرارات","٨٥٪ × ٣ تكرارات - ثم ابدئي المجموعات الفعلية"],
       note: "المجموعات التصاعدية تؤدى على أول تمرين مركب فقط، ولا تحتسب من مجموعات الجدول."
     } : null
   };
@@ -3551,7 +3577,7 @@ function buildCooldown(day){
 }
 
 /* ---------- 6. تقرير الحجم المحدث ---------- */
-/* التقييم ثلاثي لا ثنائي: «مكتمل/ناقص» لا يفرق بين عضلة عند هدفها بالضبط
+/* التقييم ثلاثي لا ثنائي: مكتمل/ناقص لا يفرق بين عضلة عند هدفها بالضبط
    وأخرى عند ضعفه. المدربة تحتاج تعرف الجرعة لا مجرد نجاح/رسوب. */
 function volumeGrade(eff, target){
   if(eff < target * 0.95) return {label:"خفيف",  color:"#d98a1f", key:"low"};
@@ -3572,11 +3598,11 @@ function volumeReport(plan){
   }).sort((a,b)=>b.effective-a.effective);
 }
 /* ============================================================
-   ZahraaFit — طبقة الجودة v4
+   ZahraaFit - طبقة الجودة v4
    1) التدرج: كتلة 4 أسابيع بتدرج مزدوج وأسبوع تفريغ
    2) تمرين المرساة: المركب الأساسي يتكرر في كل جلسة للعضلة
    3) سقف الحجم في الجلسة الواحدة (منع الحجم الضائع)
-   4) تدقيق التوازن: سحب/دفع · خلفي/أمامي · شغل المؤخرة المباشر
+   4) تدقيق التوازن: سحب/دفع | خلفي/أمامي | شغل المؤخرة المباشر
    5) تنويع نطاق التكرارات بين جلستي العضلة
    ============================================================ */
 
@@ -3588,7 +3614,7 @@ const PROGRESSION = {
   },
   hypertrophy: {
     method:"تدرج مزدوج",
-    rule:"ابقي على نفس الوزن حتى تصلي أعلى رقم في نطاق التكرارات في كل المجموعات. عندها فقط زيدي الوزن ٢.٥–٥٪ وارجعي لأسفل النطاق."
+    rule:"ابقي على نفس الوزن حتى تصلي أعلى رقم في نطاق التكرارات في كل المجموعات. عندها فقط زيدي الوزن ٢.٥-٥٪ وارجعي لأسفل النطاق."
   },
   cutting: {
     method:"تثبيت الوزن وتقليل الراحة",
@@ -3601,10 +3627,10 @@ const PROGRESSION = {
 };
 /* موجة 4 أسابيع: تراكم ثم تفريغ. التفريغ ليس راحة سلبية بل نصف الحجم بنفس الوزن. */
 const WEEK_WAVE = [
-  {w:1, label:"تأسيس", setsMult:1.0,  rpe:"٦–٧", note:"اضبطي التقنية وسجلي أوزان البداية. اتركي ٣–٤ تكرارات في الخزنة."},
-  {w:2, label:"بناء",  setsMult:1.0,  rpe:"٧–٨", note:"نفس أوزان الأسبوع الأول أو أعلى قليلا، وزيدي تكرارا حيث تقدرين."},
-  {w:3, label:"تحميل", setsMult:1.15, rpe:"٨–٩", note:"أثقل أسبوع: مجموعة إضافية على التمارين المركبة، وتكرار أو اثنان من الفشل."},
-  {w:4, label:"تفريغ", setsMult:0.55, rpe:"٥–٦", note:"نصف الحجم بنفس الأوزان. هذا الأسبوع هو الذي يظهر نتائج الثلاثة قبله."}
+  {w:1, label:"تأسيس", setsMult:1.0,  rpe:"٦-٧", note:"اضبطي التقنية وسجلي أوزان البداية. اتركي ٣-٤ تكرارات في الخزنة."},
+  {w:2, label:"بناء",  setsMult:1.0,  rpe:"٧-٨", note:"نفس أوزان الأسبوع الأول أو أعلى قليلا، وزيدي تكرارا حيث تقدرين."},
+  {w:3, label:"تحميل", setsMult:1.15, rpe:"٨-٩", note:"أثقل أسبوع: مجموعة إضافية على التمارين المركبة، وتكرار أو اثنان من الفشل."},
+  {w:4, label:"تفريغ", setsMult:0.55, rpe:"٥-٦", note:"نصف الحجم بنفس الأوزان. هذا الأسبوع هو الذي يظهر نتائج الثلاثة قبله."}
 ];
 function progressionBlock(){
   const p = PROGRESSION[S.goal] || PROGRESSION.hypertrophy;
@@ -3648,10 +3674,10 @@ function trimOvershoot(plan){
 /* الجلسة الأولى للعضلة أثقل، والثانية أعلى تكرارا. هذا يغطي محفزي
    التوتر الميكانيكي والإجهاد الأيضي بدل الاعتماد على نطاق واحد. */
 const REP_SHIFT = {
-  "6–10":  "10–15",  "4–6":   "6–8",
-  "10–12": "12–15",  "8–12":  "12–15",
-  "10–15": "15–20",  "8–10":  "12–15",
-  "12–15": "15–20",  "15–20": "12–15"
+  "6-10":  "10-15",  "4-6":   "6-8",
+  "10-12": "12-15",  "8-12":  "12-15",
+  "10-15": "15-20",  "8-10":  "12-15",
+  "12-15": "15-20",  "15-20": "12-15"
 };
 function shiftReps(reps){ return REP_SHIFT[reps] || reps; }
 
@@ -3669,16 +3695,16 @@ function balanceAudit(plan){
   const ant  = eff.quads;
   const warn = [];
 
-  /* الحد كان 1.15 فأطلق التحذير في 58% من الجداول — ونسبة 1.2:1 طبيعية تماما.
+  /* الحد كان 1.15 فأطلق التحذير في 58% من الجداول - ونسبة 1.2:1 طبيعية تماما.
      تحذير يظهر في أكثر من نصف المخرجات يصير ضجيجا لا إشارة. 1.35 هو الميل الحقيقي. */
   if(push > pull * 1.35) warn.push({
     key:"pushpull",
-    text:`مجموعات الدفع ${push} مقابل ${pull} للسحب. الخلل هنا يسحب الكتفين للأمام مع الوقت — يفضل أن يكون السحب مساويا أو أعلى.`,
+    text:`مجموعات الدفع ${push} مقابل ${pull} للسحب. الخلل هنا يسحب الكتفين للأمام مع الوقت - يفضل أن يكون السحب مساويا أو أعلى.`,
     fix:"أضيفي تمرين سحب أفقي (تجديف أو سحب للوجه)."
   });
   if(pull > push * 1.60) warn.push({
     key:"pullpush",
-    text:`مجموعات السحب ${pull} مقابل ${push} للدفع — الفارق كبير في الاتجاه الآخر.`,
+    text:`مجموعات السحب ${pull} مقابل ${push} للدفع - الفارق كبير في الاتجاه الآخر.`,
     fix:"أضيفي تمرين دفع (ضغط صدر أو ضغط كتف)."
   });
   if(ant > post * 1.30) warn.push({
@@ -3701,7 +3727,7 @@ function balanceAudit(plan){
 
 /* ---------- 5. ورقة متابعة أسبوعية ---------- */
 /* ورقة المتابعة: عمود إضافي عند تفعيل تتبع الدورة.
-   التتبع في يد العميلة — البرنامج يوفر المكان فقط. */
+   التتبع في يد العميلة - البرنامج يوفر المكان فقط. */
 function trackingSheet(plan){
   return plan.map(d=>({
     day:d.title,
@@ -3709,17 +3735,17 @@ function trackingSheet(plan){
   }));
 }
 /* ============================================================
-   ZahraaFit — محرك التوليد v2
+   ZahraaFit - محرك التوليد v2
    القاعدة: الحجم الأسبوعي لكل عضلة هو الأصل.
    عدد التمارين اليومي نتيجة محسوبة، محصورة بين حدين تحددهما المدربة.
    ------------------------------------------------------------
-   يستبدل: SPLIT_SYSTEMS · exCountFor · minSetsFor · MIN_WEEKLY_SETS
-            generate · ensureFullCoverage · ensureMinimumVolume
-   يحتاج في S:  minDaily (افتراضي 4) · maxDaily (افتراضي 8)
+   يستبدل: SPLIT_SYSTEMS | exCountFor | minSetsFor | MIN_WEEKLY_SETS
+            generate | ensureFullCoverage | ensureMinimumVolume
+   يحتاج في S:  minDaily (افتراضي 4) | maxDaily (افتراضي 8)
    ============================================================ */
 
 /* ---------- 1. الحجم الأسبوعي المستهدف لكل عضلة ---------- */
-/* المرجع العملي: 10 مجموعات/أسبوع حد أدنى للنمو، و10–20 هو النطاق المنتج.
+/* المرجع العملي: 10 مجموعات/أسبوع حد أدنى للنمو، و10-20 هو النطاق المنتج.
    المبتدئة تبدأ من الأسفل لأن استجابتها عالية والتعافي أهم من الحجم. */
 /* ثلاث فئات لا فئتين: العضلة المساعدة (سمانة/داخلي/بطن) لا تحتاج حجم
    عضلة رئيسية، وفرضه عليها كان يخنق الأرجل داخل الحد الأقصى اليومي. */
@@ -3734,7 +3760,7 @@ const FOCUS_MULT_ON   = 1.30;   // عضلات منطقة التركيز
 const FOCUS_MULT_OFF  = 0.80;   // البقية تنزل نحو حدها الأدنى ولا تلغى أبدا
 const VOLUME_FLOOR    = { big: 8,  small: 6,  acc: 5  };  // لا ينزل تحته مهما كانت الإعدادات
 const VOLUME_CEIL     = { big: 20, small: 14, acc: 12 };
-const CEIL_OVERRIDE   = { glutes: 24 };   // المؤخرة أولوية أولى — سقفها أعلى  // ولا يتجاوزه — فوقه حجم ضائع
+const CEIL_OVERRIDE   = { glutes: 24 };   // المؤخرة أولوية أولى - سقفها أعلى  // ولا يتجاوزه - فوقه حجم ضائع
 
 function targetWeeklySets(group){
   const base = WEEKLY_SETS_BASE[S.level] || WEEKLY_SETS_BASE[2];
@@ -3754,10 +3780,10 @@ function targetWeeklySets(group){
 /* الخطأ في النسخة السابقة: رقم واحد لكل الجدول. السكوات والسمانة ما ينفع
    ينحطون على نفس النطاق. هنا المركب غير العزل، وحسب الهدف. */
 const SET_SCHEME = {
-  strength:    { compound:{sets:4,reps:"4–6",  rest:"2–3 د"},    isolation:{sets:3,reps:"8–10", rest:"90 ث"} },
-  hypertrophy: { compound:{sets:4,reps:"6–10", rest:"90–120 ث"}, isolation:{sets:3,reps:"10–15",rest:"60–90 ث"} },
-  cutting:     { compound:{sets:3,reps:"10–12",rest:"60 ث"},     isolation:{sets:3,reps:"15–20",rest:"30–45 ث"} },
-  general:     { compound:{sets:3,reps:"8–12", rest:"60–90 ث"},  isolation:{sets:3,reps:"12–15",rest:"45–60 ث"} }
+  strength:    { compound:{sets:4,reps:"4-6",  rest:"2-3 د"},    isolation:{sets:3,reps:"8-10", rest:"90 ث"} },
+  hypertrophy: { compound:{sets:4,reps:"6-10", rest:"90-120 ث"}, isolation:{sets:3,reps:"10-15",rest:"60-90 ث"} },
+  cutting:     { compound:{sets:3,reps:"10-12",rest:"60 ث"},     isolation:{sets:3,reps:"15-20",rest:"30-45 ث"} },
+  general:     { compound:{sets:3,reps:"8-12", rest:"60-90 ث"},  isolation:{sets:3,reps:"12-15",rest:"45-60 ث"} }
 };
 function schemeFor(e){
   const g = SET_SCHEME[S.goal] || SET_SCHEME.hypertrophy;
@@ -3783,7 +3809,7 @@ const PULL  = ["back","biceps"];
 
 const SPLIT_SYSTEMS = {
   ppl:{
-    name:"بوش / بل / ليق", sub:"دفع · سحب · أرجل", emoji:"🔄",
+    name:"بوش / بل / ليق", sub:"دفع | سحب | أرجل", emoji:"🔄",
     days:{
       3:[ PUSH, PULL.concat("abs"), LOWER ],
       4:[ PUSH, PULL.concat("abs"), LOWER,
@@ -3795,7 +3821,7 @@ const SPLIT_SYSTEMS = {
     }
   },
   ul:{
-    name:"علوي / سفلي", sub:"الجزء العلوي · السفلي", emoji:"⬆️",
+    name:"علوي / سفلي", sub:"الجزء العلوي | السفلي", emoji:"⬆️",
     days:{
       2:[ UPPER, LOWER.concat("abs") ],
       3:[ UPPER, LOWER.concat("abs"), UPPER ],
@@ -3846,7 +3872,7 @@ function poolFor(group, danger){
     !e.risk.some(r=>danger.has(r))
   );
 }
-/* ترتيب الأولوية — التصحيح الجوهري:
+/* ترتيب الأولوية - التصحيح الجوهري:
    المركب يفحص قبل نوع المعدة. في النسخة السابقة كانت المعدة أولا،
    فيطلع يوم صدر كامل أجهزة بلا أي وزن حر. */
 function isBandEx(e){ return e.id.startsWith("band") || e.name.includes("شريط") || e.name.includes("باند"); }
@@ -3896,7 +3922,7 @@ function generate(){
      الحجز القديم كان يقلص الجدول بلا سبب ويجعل الناتج غير ثابت. */
   const workCap = maxDaily;
 
-  /* أ) تكرار كل عضلة أسبوعيا — يقرأ من التقسيمة نفسها */
+  /* أ) تكرار كل عضلة أسبوعيا - يقرأ من التقسيمة نفسها */
   const freq = {};
   split.forEach(groups=>groups.forEach(g=>{ freq[g]=(freq[g]||0)+1; }));
 
@@ -3906,7 +3932,7 @@ function generate(){
   const PRIMARY = ["chest","back","quads","hams","glutes"];
   const clamp = (g,n)=>Math.min(4, Math.floor(sessionCapFor(g)/avgSetsPerEx()), Math.max(1, Math.round(n)));
 
-  // ب-1) العضلات الأساسية أولا — هي التي تقود الجلسة
+  // ب-1) العضلات الأساسية أولا - هي التي تقود الجلسة
   PRIMARY.forEach(g=>{
     if(!freq[g]) return;
     perSession[g] = clamp(g, targetWeeklySets(g) / freq[g] / avgSetsPerEx());
@@ -3914,7 +3940,7 @@ function generate(){
 
   /* ب-2) تقدير الحجم غير المباشر القادم من الأساسية، ثم خصمه من حصة المساعدة.
      بدون هذا الخصم يأخذ الكتف والترايسبس حصة كاملة فوق ما يصلهما من تمارين
-     الصدر — فيتضخم الدفع مقابل السحب ويظهر حجم ضائع. */
+     الصدر - فيتضخم الدفع مقابل السحب ويظهر حجم ضائع. */
   const indirect = {};
   PRIMARY.forEach(g=>{
     if(!perSession[g]) return;
@@ -3940,7 +3966,7 @@ function generate(){
   const plan = split.map(groups=>{
     let quotas = groups.map(g=>perSession[g]);
 
-    /* احترام الحد الأقصى — ترتيب القص:
+    /* احترام الحد الأقصى - ترتيب القص:
        (أ) صغيرة فوق 1  (ب) كبيرة فوق 2  (ج) إسقاط عضلة صغيرة تظهر في يوم آخر
        (د) كبيرة إلى 1. هكذا لا تجوع عضلة كبيرة بسبب سمانة أو بطن. */
     let total = quotas.reduce((a,b)=>a+b,0);
@@ -3994,7 +4020,7 @@ function generate(){
       let added=0;
 
       /* تمرين المرساة: المركب الأساسي للعضلة يتكرر في كل جلسة لها.
-         التنويع الكامل بين الجلستين يمنع قياس التقدم — لا تعرفين هل قويت
+         التنويع الكامل بين الجلستين يمنع قياس التقدم - لا تعرفين هل قويت
          إذا كان كل أسبوع تمارين مختلفة. المرساة ثابتة والمساعدات تتنوع. */
       if(freq[g] >= 2 && quotas[gi] >= 2){
         if(!anchors[g]){
@@ -4032,7 +4058,7 @@ function generate(){
     };
   });
 
-  /* د) طبقة التحقق — تقيس الحجم الفعلي وتصلح النقص، وتصارح بما تعذر */
+  /* د) طبقة التحقق - تقيس الحجم الفعلي وتصلح النقص، وتصارح بما تعذر */
   /* التصحيح يحقن قبل ملء الحجم: verifyVolume تملأ الأيام حتى الحد،
      فلو أخر الحقن لما بقي له مكان. المشكلة القوامية أولى من
      المجموعة الإضافية لعضلة وصلت 80% من هدفها أصلا. */
@@ -4064,9 +4090,9 @@ function verifyVolume(plan, danger, used, maxDaily){
     const target = targetWeeklySets(muscle);
     let guard=0;
 
-    /* 1) إضافة تمارين — تصعيد تلقائي على أربع مراحل حتى تغطى العضلة:
+    /* 1) إضافة تمارين - تصعيد تلقائي على أربع مراحل حتى تغطى العضلة:
        أ) يوم يحتوي العضلة وفيه متسع
-       ب) يوم مناسب للطابع (علوي/سفلي) وفيه متسع — ونضيف العضلة لعنوانه
+       ب) يوم مناسب للطابع (علوي/سفلي) وفيه متسع - ونضيف العضلة لعنوانه
        ج) تجاوز الحد الأقصى بتمرينين كحد أقصى بدل ترك العضلة ناقصة
        الفكرة: الحد الأقصى تفضيل، وتغطية العضلة ضرورة. */
     const LOWER_G = ["quads","hams","glutes","adductors","calves"];
@@ -4089,12 +4115,12 @@ function verifyVolume(plan, danger, used, maxDaily){
 
     while(short() && guard++ < 12){
       const pick = pickFor();
-      if(!pick) break;                                  // لا يوجد تمرين متاح — نتوقف بصدق
+      if(!pick) break;                                  // لا يوجد تمرين متاح - نتوقف بصدق
       // أ) يوم يحتوي العضلة وفيه متسع
       let day = plan.filter(d=>d.groups.includes(muscle) && d.exercises.length < maxDaily)
                     .sort((a,b)=>a.exercises.length-b.exercises.length)[0];
       /* ب) يوم مناسب للطابع وفيه متسع.
-         العضلات المساعدة (سمانة/بطن/فخذ داخلي) توضع في أي يوم فيه متسع —
+         العضلات المساعدة (سمانة/بطن/فخذ داخلي) توضع في أي يوم فيه متسع -
          رفع سمانة في يوم علوي لا يتعارض مع شيء، وتركها ناقصة يتعارض. */
       const freePlace = ACCESSORY_GROUPS.includes(muscle);
       if(!day) day = plan.filter(d=>d.exercises.length < maxDaily &&
@@ -4106,7 +4132,7 @@ function verifyVolume(plan, danger, used, maxDaily){
       addTo(day, pick);
     }
 
-    /* 2) رفع مجموعة — موزعة بالتساوي وبحد أقصى +1 فوق الوصفة الأصلية.
+    /* 2) رفع مجموعة - موزعة بالتساوي وبحد أقصى +1 فوق الوصفة الأصلية.
           آخر أداة قبل المصارحة: إذا امتلأت الأيام ولم تعد هناك تمارين متاحة،
           نرفع كثافة الموجود بدل ترك العضلة تحت هدفها. */
     guard = 0;
@@ -4128,7 +4154,7 @@ function verifyVolume(plan, danger, used, maxDaily){
       let fix;
       if(!poolLeft)        fix = "لا توجد تمارين إضافية متاحة لهذه العضلة في هذه البيئة/المستوى";
       else if(allFull)     fix = "ارفعي الحد الأقصى لعدد التمارين اليومي";
-      else if(daysWith<2)  fix = "العضلة تظهر مرة واحدة أسبوعيا — زيدي عدد الأيام";
+      else if(daysWith<2)  fix = "العضلة تظهر مرة واحدة أسبوعيا - زيدي عدد الأيام";
       else                 fix = "زيدي عدد الأيام أو ارفعي الحد الأقصى";
       shortfalls.push({muscle, got, target, direct:direct()[muscle]||0, dmin:directMinFor(muscle), fix});
     }
@@ -4165,12 +4191,12 @@ function verifyVolume(plan, danger, used, maxDaily){
   const once  = freqs.filter(f=>f<=1).length;
   let advice = null;
   if(once >= 6)
-    advice = "أغلب العضلات تظهر مرة واحدة أسبوعيا. التكرار مرتين أسبوعيا يعطي نموا أفضل بنفس الحجم — جربي «فل بدي» بنفس عدد الأيام، أو زيدي يوما.";
+    advice = "أغلب العضلات تظهر مرة واحدة أسبوعيا. التكرار مرتين أسبوعيا يعطي نموا أفضل بنفس الحجم - جربي فل بدي بنفس عدد الأيام، أو زيدي يوما.";
   else if(shortfalls.length){
     const names = shortfalls.map(s=>DAY_NAMES[s.muscle]||s.muscle).join("، ");
     advice = `بعد كل المحاولات التلقائية بقي نقص في: ${names}. ` +
       (plan.length <= 2
-        ? "يومان في الأسبوع لا يتسعان لحجم كل العضلات — أضيفي يوما ثالثا."
+        ? "يومان في الأسبوع لا يتسعان لحجم كل العضلات - أضيفي يوما ثالثا."
         : "ارفعي الحد الأقصى لعدد التمارين اليومي درجة واحدة، أو أضيفي يوما.");
   }
 
@@ -4180,7 +4206,7 @@ function verifyVolume(plan, danger, used, maxDaily){
 }
 
 /* ============================================================
-   ZahraaFit — صفحتا الإحماء والإطالة
+   ZahraaFit - صفحتا الإحماء والإطالة
    التركيب:
    1) في render():  S.step===11 ? screenWarmup() : S.step===12 ? screenFlex() : ""
    2) في topbar():  <button class="ghost-btn" data-act="warmup">🔥 الإحماء</button>
@@ -4201,7 +4227,7 @@ function screenWarmup(){
     <div class="card" style="margin-top:14px">
       <div class="sec-head"><div class="ico">${i+1}</div><div>
         <h2 style="font-size:18px">إحماء ${d.title}</h2>
-        <p>${d.warmup.items.length} حركات · قبل البدء مباشرة</p>
+        <p>${d.warmup.items.length} حركات | قبل البدء مباشرة</p>
       </div></div>
       <div class="note" style="margin:10px 0">${d.warmup.general}</div>
       ${d.warmup.items.map(it=>`
@@ -4224,7 +4250,7 @@ function screenWarmup(){
     <div class="card">
       <div class="sec-head"><div class="ico">🔥</div><div>
         <h2>الإحماء</h2>
-        <p>الإحماء يبنى حسب عضلات كل يوم — لا قالب ثابت. الهدف رفع حرارة العضلة وتفعيلها قبل التحميل، لا إطالتها.</p>
+        <p>الإحماء يبنى حسب عضلات كل يوم - لا قالب ثابت. الهدف رفع حرارة العضلة وتفعيلها قبل التحميل، لا إطالتها.</p>
       </div></div>
       <div class="note" style="margin-top:12px">
         <b>قاعدة مهمة:</b> الإطالة الثابتة الطويلة <u>قبل</u> التمرين تضعف القوة مؤقتا.
@@ -4242,7 +4268,7 @@ function screenWarmup(){
       ${WARM.map(it=>`
         <div class="exrow">
           <div style="flex:1"><b>${gt(it.name)}</b>
-            <small style="display:block;color:var(--muted)">${it.en} · ${it.kind}</small></div>
+            <small style="display:block;color:var(--muted)">${it.en} | ${it.kind}</small></div>
           ${ytEmbedBtn(it.video)}
         </div>`).join("")}
     </div>
@@ -4265,12 +4291,12 @@ function screenFlex(){
     <div class="card" style="margin-top:14px">
       <div class="sec-head"><div class="ico">${i+1}</div><div>
         <h2 style="font-size:18px">إطالة بعد ${d.title}</h2>
-        <p>${d.cooldown.items.length} وضعيات · مباشرة بعد آخر مجموعة</p>
+        <p>${d.cooldown.items.length} وضعيات | مباشرة بعد آخر مجموعة</p>
       </div></div>
       ${d.cooldown.items.map(it=>`
         <div class="exrow">
           <div style="flex:1"><b>${gt(it.name)}</b>
-            <small style="display:block;color:var(--muted)">${FLEX_GROUP_NAMES[it.group]||""} · ${it.en}</small></div>
+            <small style="display:block;color:var(--muted)">${FLEX_GROUP_NAMES[it.group]||""} | ${it.en}</small></div>
           ${ytEmbedBtn(it.video)}
         </div>`).join("")}
       <div class="note" style="margin-top:10px">${d.cooldown.note}</div>
@@ -4283,8 +4309,8 @@ function screenFlex(){
         <p>إطالة مخصصة لعضلات كل يوم، ومكتبة كاملة مقسمة حسب المنطقة.</p>
       </div></div>
       <div class="note" style="margin-top:12px">
-        <b>الجرعة:</b> ٣٠ ثانية لكل وضعية × مرتين لكل جهة، ٣–٤ مرات أسبوعيا.
-        التحسن يظهر خلال ٤–٦ أسابيع. الإحساس المطلوب شد مريح لا ألم — الألم يجعل العضلة تنقبض دفاعيا فتقل الفائدة.
+        <b>الجرعة:</b> ٣٠ ثانية لكل وضعية × مرتين لكل جهة، ٣-٤ مرات أسبوعيا.
+        التحسن يظهر خلال ٤-٦ أسابيع. الإحساس المطلوب شد مريح لا ألم - الألم يجعل العضلة تنقبض دفاعيا فتقل الفائدة.
       </div>
     </div>
 
@@ -4299,7 +4325,7 @@ function screenFlex(){
       ${list.map(it=>`
         <div class="exrow">
           <div style="flex:1"><b>${gt(it.name)}</b>
-            <small style="display:block;color:var(--muted)">${it.en} · ${it.kind}</small></div>
+            <small style="display:block;color:var(--muted)">${it.en} | ${it.kind}</small></div>
           ${ytEmbedBtn(it.video)}
         </div>`).join("")}
     </div>
@@ -4436,13 +4462,13 @@ async function tryFetch(u){
     try{
       const r = await fetch("/api/sheet?url=" + encodeURIComponent(u), {cache:"no-store"});
       if(r.ok){ const t = await r.text(); if(t && t.trim()) return {text:t, via:"وسيط الخادم"}; }
-    }catch(e){ /* الوسيط غير منشور — نكمل مباشرة */ }
+    }catch(e){ /* الوسيط غير منشور - نكمل مباشرة */ }
   }
   const r = await fetch(u, {cache:"no-store"});
   if(!r.ok) throw new Error("الرمز " + r.status);
   const t = await r.text();
   if(!t || !t.trim()) throw new Error("رد فارغ");
-  if(t.trim().startsWith("<")) throw new Error("رجع صفحة HTML لا بيانات — الورقة غير منشورة كـ CSV");
+  if(t.trim().startsWith("<")) throw new Error("رجع صفحة HTML لا بيانات - الورقة غير منشورة كـ CSV");
   return {text:t, via:"مباشر"};
 }
 
@@ -4452,7 +4478,7 @@ async function fetchSubscribers(){
   if(!raw){ subsErr = "الصقي الرابط أولا."; render(); return; }
 
   const cands = sheetCandidates(raw);
-  subsLog.push(`جاري تجربة ${cands.length} صيغة للرابط…`);
+  subsLog.push(`جاري تجربة ${cands.length} صيغة للرابط...`);
   render();
 
   for(const u of cands){
@@ -4479,7 +4505,7 @@ async function fetchSubscribers(){
 
 function loadSubsFromText(txt){
   txt = String(txt||"").trim();
-  /* Google Sheets gviz يغلف الـJSON بنداء دالة — نقشره أولا */
+  /* Google Sheets gviz يغلف الـJSON بنداء دالة - نقشره أولا */
   const gv = txt.match(/setResponse\(([\s\S]*)\)\s*;?\s*$/);
   if(gv){
     const j = JSON.parse(gv[1]);
@@ -4543,7 +4569,7 @@ function screenSubs(){
         <small style="display:block;color:var(--muted)">
           ${[c.age&&c.age+" سنة", c.env&&(ENVS[c.env]||{}).name, c.level&&LEVELS[c.level].name,
              c.days&&c.days+" أيام", c.goal&&(GOALS[c.goal]||{}).name, c.service, c.status]
-            .filter(Boolean).join(" · ") || "بيانات ناقصة — تكمل يدويا"}
+            .filter(Boolean).join(" | ") || "بيانات ناقصة - تكمل يدويا"}
         </small>
         ${c.notes?`<small style="display:block;color:var(--muted);margin-top:2px">📝 ${c.notes.slice(0,110)}</small>`:""}
         ${c.inbody?`<small style="display:block;color:var(--muted)">🧬 INBODY: ${c.inbody.slice(0,60)}</small>`:""}
@@ -4563,7 +4589,7 @@ function screenSubs(){
         <input id="subs-url" value="${S.subsUrl||""}" placeholder="https://docs.google.com/spreadsheets/d/.../pub?output=csv">
       </div>
       <div class="hint">
-        <b>من أين الرابط؟</b> هو نفس شيت «ردود المشتركين» الذي تقرأ منه لوحتك.
+        <b>من أين الرابط؟</b> هو نفس شيت ردود المشتركين الذي تقرأ منه لوحتك.
         من Google Sheets: <b>ملف ← مشاركة ← نشر على الويب</b> ← اختاري الورقة وصيغة
         <b>«قيم مفصولة بفواصل (CSV)»</b> ← انسخي الرابط والصقيه هنا.
         <br>يقبل أيضا روابط <code>gviz</code> ومخرجات Apps Script بصيغة JSON.
@@ -4583,7 +4609,7 @@ function screenSubs(){
           ١. افتحي الشيت ← <b>ملف ← مشاركة ← نشر على الويب</b> ← اختاري الورقة ← <b>CSV</b> ← نشر.<br>
           ٢. الصقي الرابط الناتج هنا (يحتوي على <code>/pub?</code>).<br>
           ٣. لو ظل يمنع: بعد نشر البرنامج على Vercel يعمل وسيط الخادم تلقائيا ويتجاوز المنع.<br>
-          ٤. الحل الفوري دائما: <b>📋 لصق يدوي</b> — افتحي الشيت، حددي الكل، انسخي، والصقي بالأسفل.
+          ٤. الحل الفوري دائما: <b>📋 لصق يدوي</b> - افتحي الشيت، حددي الكل، انسخي، والصقي بالأسفل.
         </div>
       </div>`:""}
 
@@ -4601,7 +4627,7 @@ function screenSubs(){
           <span style="align-self:center;color:var(--muted);font-size:12px">${shown.length} من ${subsRows.length}</span>
         </div>
         <div class="note" style="margin-top:12px">
-          ✅ ${subsRows.length} صف · تعرف على ${found} عمود:
+          ✅ ${subsRows.length} صف | تعرف على ${found} عمود:
           ${Object.keys(subsCols).map(k=>`<code style="background:#fff;padding:1px 6px;border-radius:5px;margin:0 2px">${k}</code>`).join("")}
         </div>
         <div style="margin-top:12px">${list}</div>`:""}
@@ -4626,8 +4652,8 @@ function reportPanel(){
   const P = R.progression;
   const weeks = P.weeks.map(w=>`
     <div style="padding:10px 0;border-bottom:1px solid rgba(0,0,0,.06)">
-      <b>الأسبوع ${w.w} — ${w.label}</b>
-      <small style="display:block;color:var(--muted);margin-top:2px">شدة ${w.rpe} · حجم ${Math.round(w.setsMult*100)}٪ — ${w.note}</small>
+      <b>الأسبوع ${w.w} - ${w.label}</b>
+      <small style="display:block;color:var(--muted);margin-top:2px">شدة ${w.rpe} | حجم ${Math.round(w.setsMult*100)}٪ - ${w.note}</small>
     </div>`).join("");
 
   return `
@@ -4650,20 +4676,20 @@ function reportPanel(){
     </div>` : `<div class="note" style="margin-top:14px">✓ التوازن سليم: نسبة الدفع/السحب والأمامي/الخلفي وشغل المؤخرة المباشر ضمن النطاق.</div>`}
     ${R.shortfalls.length ? `<div class="note" style="margin-top:10px">
       <b>نقص لم يعالج:</b><br>
-      ${R.shortfalls.map(s=>`• ${nm(s.muscle)} ${s.got}/${s.target} — ${s.fix}`).join("<br>")}
+      ${R.shortfalls.map(s=>`• ${nm(s.muscle)} ${s.got}/${s.target} - ${s.fix}`).join("<br>")}
     </div>`:""}
     ${R.fixes && R.fixes.length ? `<div class="note" style="margin-top:10px"><b>🔧 صحح تلقائيا:</b> ${R.fixes.join(" ")}</div>`:""}
     ${R.advice ? `<div class="note" style="margin-top:10px"><b>اقتراح:</b> ${R.advice}</div>`:""}
     <div class="note" style="margin-top:10px;font-size:12.5px">
-      <b>قراءة الجرعة:</b> <span style="color:#d98a1f;font-weight:800">خفيف</span> تحت الهدف · 
-      <span style="color:#1f9d57;font-weight:800">متوسط</span> النطاق المنتج · 
+      <b>قراءة الجرعة:</b> <span style="color:#d98a1f;font-weight:800">خفيف</span> تحت الهدف | 
+      <span style="color:#1f9d57;font-weight:800">متوسط</span> النطاق المنتج | 
       <span style="color:#2563c9;font-weight:800">عالي</span> أعلى من الهدف بمقدار كبير (مقصود في عضلة الأولوية).
     </div>
   </div>
 
   <div class="card" style="margin-top:16px">
     <div class="sec-head"><div class="ico">📈</div><div>
-      <h2 style="font-size:18px">التدرج — كتلة 4 أسابيع</h2>
+      <h2 style="font-size:18px">التدرج - كتلة 4 أسابيع</h2>
       <p>${P.method}</p>
     </div></div>
     <div class="note" style="margin:10px 0">${P.rule}</div>
@@ -4673,7 +4699,7 @@ function reportPanel(){
 }
 
 /* ============================================================
-   ZahraaFit — إضافة v5
+   ZahraaFit - إضافة v5
    1) الحالات القوامية: لا تكتفي بالمنع، بل تفرض تمارين تصحيحية
       وتعدل نسب الحجم (مثال: تقوس الظهر يحتاج سحبا أكثر من دفع)
    2) الإدخال اليدوي: المدربة تكتب الجدول والبرنامج ينفذه حرفيا
@@ -4735,7 +4761,7 @@ const POSTURE = [
   },
   {
     id:"scoliosis", name:"جنف (انحناء جانبي)", ico:"〰️",
-    desc:"انحناء جانبي في العمود الفقري — يحتاج متابعة طبية.",
+    desc:"انحناء جانبي في العمود الفقري - يحتاج متابعة طبية.",
     avoid:["lowerback","shoulder"],
     avoidIds:["deadlift","squat","ohp","bentrow"],          // الحمل المحوري الثقيل
     prescribe:["sup_lowerback_3","deadbug","plank","sideplank","dbrow"],
@@ -4780,7 +4806,7 @@ function postureRatio(group){
   });
   return m;
 }
-/* التمارين التصحيحية المفروضة — تضاف لكل يوم مناسب */
+/* التمارين التصحيحية المفروضة - تضاف لكل يوم مناسب */
 function postureCorrectives(){
   const ids = [];
   postureSelected().forEach(p => (p.prescribe||[]).forEach(id => { if(!ids.includes(id)) ids.push(id); }));
@@ -4847,8 +4873,8 @@ function findExercise(raw){
       }
     }
   }
-  /* المخزن يشمل الدعم والتأهيل أيضا: «شد الذقن» و«ملاك الحائط»
-     و«ضم لوحي الكتف» تمارين حقيقية في المكتبة، وحصر البحث في
+  /* المخزن يشمل الدعم والتأهيل أيضا: شد الذقن وملاك الحائط
+     وضم لوحي الكتف تمارين حقيقية في المكتبة، وحصر البحث في
      EX و FLEX كان يجعلها تبدو غير موجودة. */
   const supPool = [];
   for(const k in SUPPORT){
@@ -4886,7 +4912,7 @@ function findExercise(raw){
 }
 
 /* يحلل نصا كاملا إلى أيام وتمارين.
-   يفهم: عناوين الأيام · «3 × 8-12» بأي صيغة · الشرط والنقاط في أول السطر */
+   يفهم: عناوين الأيام | «3 × 8-12» بأي صيغة | الشرط والنقاط في أول السطر */
 function parseManualPlan(text){
   const lines = String(text||"").split("\n");
   const days = [];
@@ -4897,8 +4923,8 @@ function parseManualPlan(text){
                            /^(full\s*body|fullbody|upper|lower|push|pull|legs)\b/i.test(l) ||
                            /^[■▪●#*]{0,2}\s*(اليوم|يوم)/.test(l);
 
-  /* نمط الوصفة: 4 × 12-15 · 3x10 · 3 × 40 sec — يقبل الفاصلة العربية والإنجليزية */
-  const RX = /(\d+)\s*[x×*]\s*(\d+\s*[-–]\s*\d+|\d+)\s*(?:sec|ثانية|ث)?/gi;
+  /* نمط الوصفة: 4 × 12-15 | 3x10 | 3 × 40 sec - يقبل الفاصلة العربية والإنجليزية */
+  const RX = /(\d+)\s*[x×*]\s*(\d+\s*[--]\s*\d+|\d+)\s*(?:sec|ثانية|ث)?/gi;
 
   /* يقسم سطرا يحوي عدة تمارين إلى قطع: كل قطعة تنتهي عند وصفتها.
      السبب: كثير من الجداول تكتب اليوم كله في سطر واحد، وقراءة
@@ -4919,19 +4945,19 @@ function parseManualPlan(text){
 
   function addRow(chunk, m){
     let sets = null, reps = null;
-    if(m){ sets = +m[1]; reps = String(m[2]).replace(/\s/g,"").replace("–","-"); }
+    if(m){ sets = +m[1]; reps = String(m[2]).replace(/\s/g,"").replace("-","-"); }
     else {
       const a = chunk.match(/(\d+)\s*(?:مجموعات?|جولات|sets?)/);
-      const b = chunk.match(/(\d+\s*[-–]\s*\d+|\d+)\s*(?:تكرار|عدة|reps?)/);
+      const b = chunk.match(/(\d+\s*[--]\s*\d+|\d+)\s*(?:تكرار|عدة|reps?)/);
       if(a) sets = +a[1];
-      if(b) reps = b[1].replace(/\s/g,"").replace("–","-");
+      if(b) reps = b[1].replace(/\s/g,"").replace("-","-");
     }
     let name = chunk
       .replace(RX, " ")
       .replace(/\(.*?\)/g," ")
       .replace(/\d+\s*(?:مجموعات?|جولات|تكرار|عدة|sets?|reps?|sec|ثانية|ث)\b/gi," ")
       .replace(/لكل\s*(جهة|رجل|ذراع|جانب|ساق)/g," ")
-      .replace(/^[\s*\-–—•·.]+|[\s*\-–—•·.:：]+$/g,"")
+      .replace(/^[\s*\---•|.]+|[\s*\---•|.:：]+$/g,"")
       .replace(/\s+/g," ")
       .trim();
     if(!name) return;
@@ -4941,7 +4967,7 @@ function parseManualPlan(text){
   }
 
   lines.forEach(raw => {
-    let l = raw.replace(/^[\s*\-–—•·.]+/,"").trim();
+    let l = raw.replace(/^[\s*\---•|.]+/,"").trim();
     if(!l) return;
 
     const hasRx = new RegExp(RX.source, "i").test(l);
@@ -4957,7 +4983,7 @@ function parseManualPlan(text){
   return { days: days.filter(d => d.rows.length), unmatched };
 }
 
-/* يبني الجدول من النص المحلل — بلا أي تعديل من المحرك */
+/* يبني الجدول من النص المحلل - بلا أي تعديل من المحرك */
 function buildManualPlan(parsed){
   const seen = {};
   const plan = parsed.days.map(d => {
@@ -4985,7 +5011,7 @@ let manualParsed = null, manualErr = "";
 
 function screenManual(){
   const p = manualParsed;
-  const example = `اليوم الأول — فل بدي A
+  const example = `اليوم الأول - فل بدي A
 سكوات كأسي بالدمبل 3 × 8-12
 رفعة رومانية بالدمبل 3 × 8-12
 تجديف بالدمبل 3 × 10-12
@@ -4993,7 +5019,7 @@ function screenManual(){
 ضغط الكتف بالدمبل 2 × 10-12
 رفع السمانة 3 × 15-20
 
-اليوم الثاني — فل بدي B
+اليوم الثاني - فل بدي B
 طعنة خلفية 3 × 10
 دفع الورك بالدمبل 3 × 10-15
 ضغط مائل لأعلى 3 × 8-12
@@ -5005,7 +5031,7 @@ function screenManual(){
     <div class="card">
       <div class="sec-head"><div class="ico">✍️</div><div>
         <h2>اكتبي الجدول بنفسك</h2>
-        <p>الصقي جدولك كما هو، والبرنامج ينفذه حرفيا — نفس التمارين ونفس الترتيب ونفس المجموعات والتكرارات. لا محرك ولا ذكاء يعدل عليه.</p>
+        <p>الصقي جدولك كما هو، والبرنامج ينفذه حرفيا - نفس التمارين ونفس الترتيب ونفس المجموعات والتكرارات. لا محرك ولا ذكاء يعدل عليه.</p>
       </div></div>
 
       ${!(S.client&&S.client.name)?`
@@ -5016,8 +5042,8 @@ function screenManual(){
           <div style="margin-top:9px"><button class="btn line" data-act="tocard">← بطاقة العميلة</button></div>
         </div>`:`
         <div class="note" style="margin-top:12px;background:#eef7f0;border-color:#bfe0ca;color:#1f6b3f">
-          ✅ سيصدر الجدول باسم <b>${S.client.name}</b>${S.client.age?` · ${S.client.age} سنة`:""}${S.client.gender==="male"?" · ذكر":" · أنثى"}
-          ${(S.posture||[]).length?` · مع ${(S.posture||[]).length} حالة قوامية`:""}
+          ✅ سيصدر الجدول باسم <b>${S.client.name}</b>${S.client.age?` | ${S.client.age} سنة`:""}${S.client.gender==="male"?" | ذكر":" | أنثى"}
+          ${(S.posture||[]).length?` | مع ${(S.posture||[]).length} حالة قوامية`:""}
         </div>`}
 
       <div class="note" style="margin-top:12px">
@@ -5066,7 +5092,7 @@ function screenManual(){
                   ${r.ex.en?`<small style="display:block;color:var(--muted)">${r.ex.en}</small>`:""}
                 </div>
                 <div style="color:var(--muted);font-weight:800;font-size:13px">
-                  ${r.sets||"—"} × ${r.reps||"—"}
+                  ${r.sets||"-"} × ${r.reps||"-"}
                 </div>
               </div>`).join("")}
           </div>`).join("")}
@@ -5109,7 +5135,7 @@ function postureCard(){
   <div class="card" style="margin-top:16px;border-right:5px solid #2563c9">
     <div class="sec-head"><div class="ico">🧭</div><div>
       <h2 style="font-size:18px">الروتين التصحيحي</h2>
-      <p>منفصل عن الجدول — ${r.times} · ${r.mins}</p>
+      <p>منفصل عن الجدول - ${r.times} | ${r.mins}</p>
     </div></div>
 
     <div class="note" style="margin-top:10px;background:#e8f3ff;border-color:#bcd8f5;color:#1e5fa8">

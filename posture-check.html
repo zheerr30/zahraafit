@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تقييم القوام والانفصال العضلي | ZahraaFit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0B2E6B;
+  --orange:#F26539;
+  --bg:#F5F7FB;
+  --card:#FFFFFF;
+  --line:#E3E8F2;
+  --text:#16213A;
+  --muted:#63708C;
+  --green:#1E8A5F;
+  --red:#C8392B;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Cairo',system-ui,-apple-system,'Segoe UI',sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.75;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 80px}
+
+header{
+  background:linear-gradient(135deg,var(--navy) 0%,#123f8f 100%);
+  color:#fff;padding:36px 16px 30px;text-align:center;
+}
+header .logo{font-weight:800;font-size:15px;letter-spacing:.5px;opacity:.85}
+header h1{font-size:26px;font-weight:800;margin:8px 0 6px}
+header p{font-size:15px;opacity:.9;max-width:520px;margin:0 auto}
+
+.note{
+  background:#F0F4FC;border:1px solid #D3DEF3;border-radius:14px;
+  padding:14px 16px;margin:22px 0 12px;font-size:14.5px;color:#25406F;
+}
+.note b{color:var(--navy)}
+
+.warn{
+  background:#FFF4EF;border:2px solid var(--orange);border-radius:14px;
+  padding:16px 18px;margin:12px 0 22px;font-size:15px;color:#8A3A1E;
+}
+.warn b{display:block;color:var(--orange);font-size:16.5px;margin-bottom:4px}
+
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:22px;margin:18px 0;box-shadow:0 2px 10px rgba(11,46,107,.04);
+}
+.card h2{
+  font-size:19px;font-weight:800;color:var(--navy);
+  display:flex;align-items:center;gap:10px;margin-bottom:6px;
+}
+.card h2 .num{
+  background:var(--orange);color:#fff;width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:15px;flex:0 0 30px;
+}
+.card > .sub{color:var(--muted);font-size:14px;margin-bottom:16px}
+
+.howto{
+  background:#F0F4FC;border-right:4px solid var(--navy);border-radius:10px;
+  padding:14px 16px;margin:10px 0 18px;font-size:14.5px;
+}
+.howto b{color:var(--navy)}
+.howto ol{margin:8px 20px 0 0}
+.howto li{margin-bottom:5px}
+
+.q{margin-bottom:20px}
+.q > label.qt{display:block;font-weight:700;font-size:15.5px;margin-bottom:9px}
+.q .hint{display:block;font-weight:400;color:var(--muted);font-size:13.5px;margin-top:2px}
+
+.opts{display:flex;flex-direction:column;gap:8px}
+.opts.row{flex-direction:row;flex-wrap:wrap}
+.opt{
+  display:flex;align-items:center;gap:9px;border:1.5px solid var(--line);
+  border-radius:12px;padding:11px 13px;cursor:pointer;font-size:14.5px;
+  background:#fff;transition:.15s;flex:1 1 auto;
+}
+.opt:hover{border-color:#C3D0E8}
+.opt input{accent-color:var(--orange);width:18px;height:18px;flex:0 0 18px}
+.opt.sel{border-color:var(--orange);background:#FFF6F2}
+
+input[type=text]{
+  width:100%;border:1.5px solid var(--line);border-radius:12px;
+  padding:12px 14px;font-family:inherit;font-size:15px;background:#fff;
+}
+input[type=text]:focus{outline:none;border-color:var(--orange)}
+
+.hidden{display:none}
+
+.btn{
+  display:block;width:100%;border:none;border-radius:14px;padding:16px;
+  font-family:inherit;font-size:17px;font-weight:800;cursor:pointer;
+  background:var(--orange);color:#fff;margin-top:10px;
+}
+.btn:active{transform:scale(.99)}
+.btn.navy{background:var(--navy)}
+.btn.ghost{background:#fff;color:var(--navy);border:1.5px solid var(--navy)}
+.btn.sm{font-size:15px;padding:13px}
+
+#err{
+  background:#FDECEA;border:1px solid #F5C2BC;color:var(--red);
+  border-radius:12px;padding:12px 14px;margin-top:14px;font-size:14.5px;
+}
+
+.res-head{
+  background:var(--navy);color:#fff;border-radius:18px;padding:24px 22px;text-align:center;margin-top:20px;
+}
+.res-head h2{font-size:22px;font-weight:800;margin-bottom:4px}
+.res-head p{opacity:.9;font-size:14.5px}
+
+.alertbox{border-radius:14px;padding:16px 18px;margin:14px 0;font-size:15px}
+.alertbox.red{background:#FDECEA;border:1.5px solid #F0A79E;color:#7A211A}
+.alertbox.amber{background:#FFF8E8;border:1.5px solid #F0D79B;color:#7A5410}
+.alertbox.green{background:#EAF6F0;border:1.5px solid #A5D8BF;color:#14603F}
+.alertbox b{display:block;margin-bottom:4px;font-size:16px}
+
+.flag{
+  border:1px solid var(--line);border-right:5px solid var(--orange);
+  border-radius:12px;padding:13px 15px;margin-bottom:10px;background:#fff;
+}
+.flag.high{border-right-color:var(--red)}
+.flag .ttl{font-weight:800;font-size:15.5px;color:var(--navy)}
+.flag .pri{
+  font-size:12px;font-weight:700;padding:2px 9px;border-radius:20px;
+  background:#FFF0EA;color:var(--orange);margin-right:8px;
+}
+.flag.high .pri{background:#FDECEA;color:var(--red)}
+.flag .why{color:var(--muted);font-size:13.5px;margin-top:4px}
+
+.step{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px;font-size:15px}
+.step .n{
+  background:var(--navy);color:#fff;width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex:0 0 26px;margin-top:3px;
+}
+
+pre.report{
+  background:#0F1E3D;color:#DDE6F7;border-radius:14px;padding:16px;
+  font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;
+  white-space:pre-wrap;line-height:1.7;direction:rtl;text-align:right;max-height:340px;overflow:auto;
+}
+footer{text-align:center;color:var(--muted);font-size:13px;padding:26px 16px 10px}
+@media print{.btn,#formArea,footer{display:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">ZahraaFit</div>
+  <h1>تقييم القوام والانفصال العضلي</h1>
+  <p>فحص ذاتي بسيط قبل تجهيز الجدول، عشان نعرف اذا فيه حاجة لتمارين دعم وتاهيل تنضاف مع الجدول</p>
+</header>
+
+<div class="wrap">
+
+  <div class="note">
+    <b>قبل البداية:</b> الفحص ياخذ ٥ دقايق، ويحتاج مرآة وحائط فاضي ولبس مريح يبين شكل الجسم. الاجابة بصدق مهمة، ما فيه اجابة غلط، الهدف ضبط الجدول على الوضع الحالي.
+  </div>
+
+  <div class="warn">
+    <b>مهم جدا</b>
+    بنهاية الفحص بتطلع نتيجة جاهزة. لازم نسخ النتيجة ولصقها في رابط المعلومات مع باقي بياناتك.
+    بدون النتيجة في رابط المعلومات ما راح يتم تجهيز الجدول.
+  </div>
+
+  <div id="formArea">
+
+    <!-- 1 -->
+    <div class="card">
+      <h2><span class="num">١</span> البيانات</h2>
+      <div class="q">
+        <label class="qt" for="name">الاسم</label>
+        <input type="text" id="name" placeholder="الاسم كامل">
+      </div>
+      <div class="q" data-q="sex">
+        <label class="qt">الجنس</label>
+        <div class="opts row">
+          <label class="opt"><input type="radio" name="sex" value="f"> انثى</label>
+          <label class="opt"><input type="radio" name="sex" value="m"> ذكر</label>
+        </div>
+      </div>
+
+      <div id="femaleBox" class="hidden">
+        <div class="q" data-q="preg">
+          <label class="qt">هل فيه حمل حاليا؟</label>
+          <div class="opts row">
+            <label class="opt"><input type="radio" name="preg" value="no"> لا</label>
+            <label class="opt"><input type="radio" name="preg" value="yes"> نعم</label>
+          </div>
+        </div>
+        <div class="q" data-q="birth">
+          <label class="qt">هل فيه ولادة سابقة؟</label>
+          <div class="opts row">
+            <label class="opt"><input type="radio" name="birth" value="no"> لا</label>
+            <label class="opt"><input type="radio" name="birth" value="yes"> نعم</label>
+          </div>
+        </div>
+        <div id="birthBox" class="hidden">
+          <div class="q" data-q="since">
+            <label class="qt">كم صار على اخر ولادة؟</label>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="since" value="lt6w"> اقل من ٦ اسابيع</label>
+              <label class="opt"><input type="radio" name="since" value="6w6m"> من ٦ اسابيع الى ٦ شهور</label>
+              <label class="opt"><input type="radio" name="since" value="6m2y"> من ٦ شهور الى سنتين</label>
+              <label class="opt"><input type="radio" name="since" value="gt2y"> اكثر من سنتين</label>
+            </div>
+          </div>
+          <div class="q" data-q="btype">
+            <label class="qt">نوع الولادة الاخيرة</label>
+            <div class="opts row">
+              <label class="opt"><input type="radio" name="btype" value="normal"> طبيعية</label>
+              <label class="opt"><input type="radio" name="btype" value="cs"> قيصرية</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="card" id="drCard">
+      <h2><span class="num">٢</span> فحص الانفصال العضلي</h2>
+      <div class="sub">قياس الفجوة بين عضلات البطن. شائع بعد الحمل، وممكن يصير لاي شخص مع زيادة وزن سريعة او ضغط متكرر على البطن</div>
+      <div class="howto">
+        <b>طريقة الفحص:</b>
+        <ol>
+          <li>الاستلقاء على الظهر، مع ثني الركب ووضع القدمين على الارض.</li>
+          <li>وضع اصابع اليد بالعرض على البطن، واطراف الاصابع تشير باتجاه القدمين.</li>
+          <li>رفع الراس والكتوف قليلا عن الارض، والذقن بعيدة عن الصدر.</li>
+          <li>مع بقاء الراس مرفوع، تحسس الفجوة بين العضلتين وكم اصبع تدخل فيها.</li>
+          <li>تكرار القياس في ثلاث اماكن: فوق السرة، عند السرة، تحت السرة.</li>
+        </ol>
+      </div>
+      <div class="q" data-q="dr_above">
+        <label class="qt">الفجوة فوق السرة<span class="hint">تقريبا على بعد ٥ سم فوق السرة</span></label>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="dr_above" value="0"> اقل من اصبع</label>
+          <label class="opt"><input type="radio" name="dr_above" value="1"> اصبع الى اصبعين</label>
+          <label class="opt"><input type="radio" name="dr_above" value="2"> اصبعين الى ثلاثة</label>
+          <label class="opt"><input type="radio" name="dr_above" value="3"> اكثر من ثلاثة اصابع</label>
+          <label class="opt"><input type="radio" name="dr_above" value="x"> ما قدرت احدد</label>
+        </div>
+      </div>
+      <div class="q" data-q="dr_at">
+        <label class="qt">الفجوة عند السرة</label>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="dr_at" value="0"> اقل من اصبع</label>
+          <label class="opt"><input type="radio" name="dr_at" value="1"> اصبع الى اصبعين</label>
+          <label class="opt"><input type="radio" name="dr_at" value="2"> اصبعين الى ثلاثة</label>
+          <label class="opt"><input type="radio" name="dr_at" value="3"> اكثر من ثلاثة اصابع</label>
+          <label class="opt"><input type="radio" name="dr_at" value="x"> ما قدرت احدد</label>
+        </div>
+      </div>
+      <div class="q" data-q="dr_below">
+        <label class="qt">الفجوة تحت السرة</label>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="dr_below" value="0"> اقل من اصبع</label>
+          <label class="opt"><input type="radio" name="dr_below" value="1"> اصبع الى اصبعين</label>
+          <label class="opt"><input type="radio" name="dr_below" value="2"> اصبعين الى ثلاثة</label>
+          <label class="opt"><input type="radio" name="dr_below" value="3"> اكثر من ثلاثة اصابع</label>
+          <label class="opt"><input type="radio" name="dr_below" value="x"> ما قدرت احدد</label>
+        </div>
+      </div>
+      <div class="q" data-q="dr_depth">
+        <label class="qt">عند الضغط بالاصبع داخل الفجوة، وش الاحساس؟</label>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="dr_depth" value="firm"> قاع صلب ومشدود، الاصبع ما ينزل</label>
+          <label class="opt"><input type="radio" name="dr_depth" value="soft"> لين، الاصبع ينزل بسهولة</label>
+          <label class="opt"><input type="radio" name="dr_depth" value="x"> ما ادري</label>
+        </div>
+      </div>
+      <div class="q" data-q="dr_cone">
+        <label class="qt">مع رفع الراس، يطلع بروز طولي بارز في نص البطن؟<span class="hint">شكله يشبه هرم صغير او خط مرتفع من فوق لتحت</span></label>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="dr_cone" value="yes"> نعم واضح</label>
+          <label class="opt"><input type="radio" name="dr_cone" value="no"> لا</label>
+          <label class="opt"><input type="radio" name="dr_cone" value="x"> ما لاحظت</label>
+        </div>
+      </div>
+      <div class="q">
+        <label class="qt">فيه اي من هذي؟<span class="hint">اختيار كل اللي ينطبق</span></label>
+        <div class="opts">
+          <label class="opt"><input type="checkbox" name="sym" value="leak"> تسريب بول عند العطس او الضحك او النط</label>
+          <label class="opt"><input type="checkbox" name="sym" value="heavy"> احساس ثقل او ضغط لتحت في منطقة الحوض</label>
+          <label class="opt"><input type="checkbox" name="sym" value="bloat"> انتفاخ البطن يزيد كثير اخر اليوم</label>
+          <label class="opt"><input type="checkbox" name="sym" value="hernia"> انتفاخ او كتلة مؤلمة قريبة من السرة</label>
+          <label class="opt"><input type="checkbox" name="sym" value="none"> ما فيه شي من هذي</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="card">
+      <h2><span class="num">٣</span> فحص القوام</h2>
+      <div class="sub">وقفة طبيعية امام المرآة، وبعدها الظهر على الحائط</div>
+      <div class="howto">
+        <b>اختبار الحائط:</b>
+        <ol>
+          <li>الوقوف والظهر على الحائط، والكعبين على بعد شبر تقريبا من الحائط.</li>
+          <li>المؤخرة واعلى الظهر ملاصقين للحائط، والكتوف مرتاحة بشكل طبيعي.</li>
+          <li>بدون تعديل الوقفة عشان الاختبار، تكون الوقفة العادية.</li>
+        </ol>
+      </div>
+      <div class="q" data-q="head">
+        <label class="qt">بوضعية الحائط، هل مؤخرة الراس تلمس الحائط؟</label>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="head" value="ok"> تلمس بسهولة والذقن مرتاحة</label>
+          <label class="opt"><input type="radio" name="head" value="mid"> تلمس بس لازم رفع الذقن لفوق</label>
+          <label class="opt"><input type="radio" name="head" value="bad"> ما تلمس، فيه مسافة واضحة</label>
+        </div>
+      </div>
+      <div class="q" data-q="lumbar">
+        <label class="qt">المسافة بين اسفل الظهر والحائط، بقياس كف اليد</label>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="lumbar" value="flat"> بالكاد يمر الكف او ما يمر</label>
+          <label class="opt"><input type="radio" name="lumbar" value="ok"> يمر الكف بشكل مريح</label>
+          <label class="opt"><input type="radio" name="lumbar" value="deep"> يمر الكف وزيادة، فيه فراغ كبير</label>
+        </div>
+      </div>
+      <div class="q" data-q="sh_level">
+        <label class="qt">امام المرآة، الكتفين بنفس المستوى؟</label>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="sh_level" value="ok"> نفس المستوى</label>
+          <label class="opt"><input type="radio" name="sh_level" value="off"> فيه كتف اعلى من الثاني بشكل ملاحظ</label>
+        </div>
+      </div>
+      <div class="q" data-q="hip_level">
+        <label class="qt">باليدين على عظام الحوض من الجانبين، هل هي بنفس المستوى؟</label>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="hip_level" value="ok"> نفس المستوى</label>
+          <label class="opt"><input type="radio" name="hip_level" value="off"> واحد اعلى من الثاني</label>
+        </div>
+      </div>
+      <div class="q" data-q="hands">
+        <label class="qt">بوقفة مرتاحة واليدين على الجنب، وين تتجه الكفوف؟</label>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="hands" value="ok"> الابهام للامام والكف على جنب الجسم</label>
+          <label class="opt"><input type="radio" name="hands" value="bad"> ظهر الكف للامام والكتوف مايلة للداخل</label>
+        </div>
+      </div>
+      <div class="q" data-q="knees">
+        <label class="qt">بوقفة والقدمين متلاصقة، شكل الركب؟</label>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="knees" value="ok"> الركب والكعبين يتلامسون مع بعض</label>
+          <label class="opt"><input type="radio" name="knees" value="valgus"> الركب تتلامس والكعبين متباعدة</label>
+          <label class="opt"><input type="radio" name="knees" value="varus"> الركب متباعدة وفيه فراغ بينها</label>
+        </div>
+      </div>
+      <div class="q" data-q="foot">
+        <label class="qt">قوس القدم من الداخل<span class="hint">اسهل طريقة: بل القدم والوقوف على ارض جافة وملاحظة الاثر</span></label>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="foot" value="ok"> واضح، فيه فراغ في نص الاثر</label>
+          <label class="opt"><input type="radio" name="foot" value="flat"> مسطح، الاثر كامل بدون فراغ</label>
+          <label class="opt"><input type="radio" name="foot" value="x"> ما ادري</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="card">
+      <h2><span class="num">٤</span> اختبارات الحركة</h2>
+      <div class="sub">اربع حركات بسيطة، تنعمل امام المرآة او بتصوير مقطع قصير</div>
+      <div class="howto">
+        <b>حركة السكوات:</b> الوقوف والقدمين بعرض الكتفين، والنزول لين يصير الفخذ موازي للارض تقريبا، مع ملاحظة وش يصير بالجسم.
+      </div>
+      <div class="q">
+        <label class="qt">وش يصير بالجسم اثناء نزول السكوات؟<span class="hint">اختيار كل اللي ينطبق</span></label>
+        <div class="opts">
+          <label class="opt"><input type="checkbox" name="sq" value="heel"> الكعب يرتفع عن الارض</label>
+          <label class="opt"><input type="checkbox" name="sq" value="knee_in"> الركب تميل للداخل</label>
+          <label class="opt"><input type="checkbox" name="sq" value="back"> الظهر يتقوس او يتدور بالاسفل</label>
+          <label class="opt"><input type="checkbox" name="sq" value="lean"> الجسم يميل للامام كثير</label>
+          <label class="opt"><input type="checkbox" name="sq" value="none"> ما فيه شي من هذي</label>
+        </div>
+      </div>
+      <div class="q" data-q="balance">
+        <label class="qt">وقوف على رجل وحدة ٢٠ ثانية والعيون مفتوحة</label>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="balance" value="ok"> ثابت وسهل</label>
+          <label class="opt"><input type="radio" name="balance" value="mid"> فيه اهتزاز بس اكملت</label>
+          <label class="opt"><input type="radio" name="balance" value="bad"> ما قدرت اكمل او فيه فرق كبير بين الرجلين</label>
+        </div>
+      </div>
+      <div class="q" data-q="shoulder">
+        <label class="qt">الظهر على الحائط، ورفع الذراعين فوق الراس للاعلى</label>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="shoulder" value="ok"> الذراعين توصل الحائط والظهر ثابت</label>
+          <label class="opt"><input type="radio" name="shoulder" value="mid"> توصل بس اسفل الظهر يتقوس عن الحائط</label>
+          <label class="opt"><input type="radio" name="shoulder" value="bad"> ما توصل الحائط</label>
+        </div>
+      </div>
+      <div class="q" data-q="toe">
+        <label class="qt">بوقفة والركب مستقيمة، محاولة لمس اصابع القدم</label>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="toe" value="ok"> اوصل لاصابع القدم او ابعد</label>
+          <label class="opt"><input type="radio" name="toe" value="mid"> اوصل لحد الكاحل تقريبا</label>
+          <label class="opt"><input type="radio" name="toe" value="bad"> اوصل لحد الركبة او الساق بس</label>
+        </div>
+      </div>
+      <div class="q" data-q="plank">
+        <label class="qt">بلانك على المرفقين، كم مدة الثبات باداء صحيح؟</label>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="plank" value="ok"> اكثر من ٤٥ ثانية</label>
+          <label class="opt"><input type="radio" name="plank" value="mid"> من ٢٠ الى ٤٥ ثانية</label>
+          <label class="opt"><input type="radio" name="plank" value="bad"> اقل من ٢٠ ثانية او ما اقدر</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="card">
+      <h2><span class="num">٥</span> الالم والاصابات</h2>
+      <div class="q">
+        <label class="qt">فيه مكان يوجع بشكل متكرر؟<span class="hint">اختيار كل اللي ينطبق</span></label>
+        <div class="opts">
+          <label class="opt"><input type="checkbox" name="pain" value="neck"> الرقبة</label>
+          <label class="opt"><input type="checkbox" name="pain" value="shoulder"> الكتف</label>
+          <label class="opt"><input type="checkbox" name="pain" value="back"> اسفل الظهر</label>
+          <label class="opt"><input type="checkbox" name="pain" value="knee"> الركبة</label>
+          <label class="opt"><input type="checkbox" name="pain" value="wrist"> الرسغ</label>
+          <label class="opt"><input type="checkbox" name="pain" value="ankle"> الكاحل</label>
+          <label class="opt"><input type="checkbox" name="pain" value="none"> ما فيه الم</label>
+        </div>
+      </div>
+      <div class="q">
+        <label class="qt">فيه تشخيص طبي او عملية سابقة؟<span class="hint">اختياري</span></label>
+        <input type="text" id="med" placeholder="مثال: انزلاق غضروفي، عملية رباط صليبي، قيصرية قبل سنة">
+      </div>
+    </div>
+
+    <button class="btn" id="submitBtn">اظهار النتيجة</button>
+    <div id="err" class="hidden"></div>
+  </div>
+
+  <!-- النتيجة -->
+  <div id="result" class="hidden">
+    <div class="res-head">
+      <h2>خلص التقييم</h2>
+      <p id="resName"></p>
+    </div>
+
+    <div class="warn">
+      <b>باقي خطوة وحدة</b>
+      النتيجة ما توصل تلقائيا. لازم نسخ النتيجة ولصقها في رابط المعلومات مع باقي البيانات.
+      بدونها ما راح يتم تجهيز الجدول.
+    </div>
+
+    <div id="resBody"></div>
+
+    <div class="card">
+      <h2 style="font-size:17px">ارسال النتيجة</h2>
+      <div class="sub">الخطوات بالترتيب</div>
+      <div class="step"><span class="n">١</span><span>نسخ النتيجة من الزر البرتقالي تحت.</span></div>
+      <div class="step"><span class="n">٢</span><span>فتح رابط المعلومات ولصق النتيجة في خانة نتيجة تقييم القوام.</span></div>
+      <div class="step"><span class="n">٣</span><span>ارسال رابط المعلومات بشكل كامل.</span></div>
+
+      <button class="btn" id="copyBtn">نسخ النتيجة</button>
+      <button class="btn navy hidden" id="infoBtn">فتح رابط المعلومات</button>
+      <button class="btn ghost sm" id="waBtn">او ارسالها عبر واتساب</button>
+
+      <details style="margin-top:16px">
+        <summary style="cursor:pointer;color:var(--muted);font-size:14px">عرض النص الكامل للنتيجة</summary>
+        <pre class="report" id="reportText"></pre>
+      </details>
+    </div>
+    <button class="btn ghost sm" id="againBtn">اعادة التقييم</button>
+  </div>
+
+  <footer>
+    هذا التقييم للاسترشاد فقط وما يغني عن استشارة الطبيب او اخصائي العلاج الطبيعي.<br>
+    ZahraaFit
+  </footer>
+</div>
+
+<script>
+/* ===================================================================
+   اعدادات سريعة، عدلي السطرين هذي بس
+
+   1) رقم الواتساب بصيغة الدولة بدون + وبدون اصفار
+   2) رابط المعلومات، اذا خليتيه فاضي بيختفي الزر
+   =================================================================== */
+var COACH_WHATSAPP = "966537249498";
+var INFO_FORM_URL  = "";
+/* =================================================================== */
+
+var $ = function(s){ return document.querySelector(s); };
+var $$ = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+
+function val(name){
+  var el = document.querySelector('input[name="'+name+'"]:checked');
+  return el ? el.value : null;
+}
+function multi(name){
+  return $$('input[name="'+name+'"]:checked').map(function(e){ return e.value; });
+}
+
+document.addEventListener('change', function(e){
+  var inp = e.target;
+  if(inp.type === 'radio'){
+    $$('input[name="'+inp.name+'"]').forEach(function(o){ o.closest('.opt').classList.remove('sel'); });
+    inp.closest('.opt').classList.add('sel');
+  }
+  if(inp.type === 'checkbox'){
+    inp.closest('.opt').classList.toggle('sel', inp.checked);
+    if(inp.value === 'none' && inp.checked){
+      $$('input[name="'+inp.name+'"]').forEach(function(o){
+        if(o.value !== 'none'){ o.checked = false; o.closest('.opt').classList.remove('sel'); }
+      });
+    } else if(inp.checked){
+      var n = document.querySelector('input[name="'+inp.name+'"][value="none"]');
+      if(n){ n.checked = false; n.closest('.opt').classList.remove('sel'); }
+    }
+  }
+  if(inp.name === 'sex'){
+    var isF = inp.value === 'f';
+    $('#femaleBox').classList.toggle('hidden', !isF);
+    if(!isF){
+      $$('input[name="preg"], input[name="birth"], input[name="since"], input[name="btype"]').forEach(function(o){
+        o.checked = false; o.closest('.opt').classList.remove('sel');
+      });
+      $('#birthBox').classList.add('hidden');
+      $('#drCard').classList.remove('hidden');
+    }
+  }
+  if(inp.name === 'birth'){
+    $('#birthBox').classList.toggle('hidden', inp.value !== 'yes');
+  }
+  if(inp.name === 'preg'){
+    $('#drCard').classList.toggle('hidden', inp.value === 'yes');
+  }
+});
+
+var REQUIRED = [
+  ['sex','الجنس'],
+  ['head','اختبار الحائط والراس'],
+  ['lumbar','المسافة تحت اسفل الظهر'],
+  ['sh_level','مستوى الكتفين'],
+  ['hip_level','مستوى الحوض'],
+  ['hands','اتجاه الكفوف'],
+  ['knees','شكل الركب'],
+  ['balance','الوقوف على رجل وحدة'],
+  ['shoulder','رفع الذراعين على الحائط'],
+  ['toe','لمس اصابع القدم'],
+  ['plank','البلانك']
+];
+
+function num(v){
+  if(v === null || v === 'x') return null;
+  return parseInt(v,10);
+}
+
+function analyze(){
+  var d = {
+    name: $('#name').value.trim(),
+    med: $('#med').value.trim(),
+    sex: val('sex'),
+    preg: val('preg'), birth: val('birth'), since: val('since'), btype: val('btype'),
+    above: val('dr_above'), at: val('dr_at'), below: val('dr_below'),
+    depth: val('dr_depth'), cone: val('dr_cone'), sym: multi('sym'),
+    head: val('head'), lumbar: val('lumbar'), sh: val('sh_level'), hip: val('hip_level'),
+    hands: val('hands'), knees: val('knees'), foot: val('foot'),
+    sq: multi('sq'), balance: val('balance'), shoulder: val('shoulder'),
+    toe: val('toe'), plank: val('plank'), pain: multi('pain')
+  };
+
+  var flags = {};
+  function flag(key, title, why, high){
+    if(!flags[key]) flags[key] = { title: title, why: [], high: false };
+    if(flags[key].why.indexOf(why) === -1) flags[key].why.push(why);
+    if(high) flags[key].high = true;
+  }
+
+  var reds = [], cautions = [];
+
+  var gaps = [num(d.above), num(d.at), num(d.below)].filter(function(v){ return v !== null; });
+  var maxGap = gaps.length ? Math.max.apply(null, gaps) : null;
+  var drLevel = 'none';
+
+  if(d.preg === 'yes'){
+    drLevel = 'na';
+    cautions.push('حمل حالي، فحص الانفصال ما ينطبق. الجدول لازم يكون جدول حمل مع تصريح الطبيب.');
+  } else {
+    if(maxGap !== null && maxGap >= 2){
+      drLevel = maxGap >= 3 ? 'high' : 'mid';
+      flag('dr','الانفصال العضلي','فجوة ' + (maxGap >= 3 ? 'اكثر من ٣ اصابع' : 'من اصبعين الى ثلاثة'), maxGap >= 3);
+    } else if(maxGap === 1){
+      if(d.depth === 'soft' || d.cone === 'yes'){
+        drLevel = 'mid';
+        flag('dr','الانفصال العضلي','فجوة اصبع الى اصبعين مع ضعف بالنسيج او بروز مخروطي', false);
+      } else {
+        drLevel = 'light';
+      }
+    }
+    if(d.cone === 'yes'){
+      flag('dr','الانفصال العضلي','بروز مخروطي واضح عند رفع الراس', true);
+      if(drLevel === 'none' || drLevel === 'light') drLevel = 'mid';
+    }
+    if(d.depth === 'soft'){
+      flag('dr','الانفصال العضلي','قاع الفجوة لين، النسيج ضعيف', false);
+    }
+    if(maxGap === null){
+      cautions.push('ما تحدد قياس الفجوة، يفضل اعادة القياس بمكالمة قصيرة.');
+    }
+  }
+
+  if(d.sym.indexOf('hernia') > -1){
+    reds.push('انتفاخ او كتلة مؤلمة قرب السرة، تحتاج مراجعة طبيب قبل اي تمرين بطن، احتمال فتق سري.');
+  }
+  if(d.sym.indexOf('leak') > -1){
+    flag('core','تقوية الكور','تسريب بول، ضعف بقاع الحوض', false);
+    cautions.push('تسريب بول، منع القفز والنط والجري بالمرحلة الاولى، والبداية بتمارين تنفس وقاع حوض.');
+  }
+  if(d.sym.indexOf('heavy') > -1){
+    cautions.push('احساس ثقل بالحوض، منع الاوزان الثقيلة فوق الراس والحبس التنفسي، ويفضل تقييم قاع حوض.');
+  }
+  if(d.since === 'lt6w'){
+    reds.push('اقل من ٦ اسابيع على الولادة، لازم تصريح الطبيب قبل اي جدول، والبداية تنفس ومشي خفيف بس.');
+  }
+  if(d.btype === 'cs' && (d.since === 'lt6w' || d.since === '6w6m')){
+    cautions.push('ولادة قيصرية حديثة، تدرج اطول بتمارين البطن، ومنع الشد المباشر على منطقة الجرح.');
+  }
+
+  if(d.plank === 'bad') flag('core','تقوية الكور','ثبات ضعيف بالبلانك', false);
+  else if(d.plank === 'mid') flag('core','تقوية الكور','ثبات متوسط بالبلانك', false);
+  if(d.lumbar === 'deep') flag('core','تقوية الكور','تقوس زائد باسفل الظهر وميلان الحوض للامام', false);
+  if(drLevel === 'mid' || drLevel === 'high') flag('core','تقوية الكور','مرتبط بالانفصال العضلي', drLevel === 'high');
+
+  if(d.pain.indexOf('back') > -1) flag('back','دعم اسفل الظهر','الم متكرر باسفل الظهر', true);
+  if(d.lumbar === 'deep') flag('back','دعم اسفل الظهر','تقوس زائد باسفل الظهر', false);
+  if(d.hip === 'off') flag('back','دعم اسفل الظهر','عدم تناسق بمستوى الحوض', false);
+  if(d.sq.indexOf('back') > -1) flag('back','دعم اسفل الظهر','تدور اسفل الظهر بالسكوات', false);
+  if(d.toe === 'bad') flag('back','دعم اسفل الظهر','شد واضح بالسلسلة الخلفية', false);
+
+  if(d.pain.indexOf('shoulder') > -1) flag('shoulder','دعم الكتف','الم متكرر بالكتف', true);
+  if(d.hands === 'bad') flag('shoulder','دعم الكتف','الكتوف مايلة للداخل', false);
+  if(d.shoulder === 'bad') flag('shoulder','دعم الكتف','محدودية برفع الذراعين فوق الراس', true);
+  else if(d.shoulder === 'mid') flag('shoulder','دعم الكتف','رفع الذراعين يعوض بتقوس اسفل الظهر', false);
+  if(d.sh === 'off') flag('shoulder','دعم الكتف','عدم تناسق بمستوى الكتفين', false);
+
+  if(d.pain.indexOf('neck') > -1) flag('neck','دعم الرقبة','الم متكرر بالرقبة', true);
+  if(d.head === 'bad') flag('neck','دعم الرقبة','تقدم واضح بالراس، مؤخرة الراس ما تلمس الحائط', true);
+  else if(d.head === 'mid') flag('neck','دعم الرقبة','تقدم بسيط بالراس', false);
+
+  if(d.pain.indexOf('knee') > -1) flag('knee','دعم الركبة','الم متكرر بالركبة', true);
+  if(d.sq.indexOf('knee_in') > -1) flag('knee','دعم الركبة','الركب تميل للداخل بالسكوات', true);
+  if(d.knees === 'valgus') flag('knee','دعم الركبة','شكل الركب متقارب', false);
+  if(d.knees === 'varus') flag('knee','دعم الركبة','شكل الركب متباعد', false);
+  if(d.balance === 'bad') flag('knee','دعم الركبة','توازن ضعيف على رجل وحدة', false);
+  if(d.foot === 'flat') flag('knee','دعم الركبة','تسطح بقوس القدم', false);
+  if(d.sq.indexOf('heel') > -1) flag('knee','دعم الركبة','الكعب يرتفع بالسكوات، محدودية بالكاحل', false);
+  if(d.pain.indexOf('ankle') > -1) flag('knee','دعم الركبة','الم متكرر بالكاحل', false);
+
+  if(d.pain.indexOf('wrist') > -1) flag('wrist','دعم الرسغ','الم متكرر بالرسغ', true);
+
+  var order = ['dr','core','back','shoulder','neck','knee','wrist'];
+  var list = order.filter(function(k){ return flags[k]; }).map(function(k){ return flags[k]; });
+
+  if(drLevel === 'high' || drLevel === 'mid'){
+    cautions.push('منع الكرنش والجلوس الكامل ورفع الرجلين المزدوج والالتواءات القوية والبلانك الكامل بالمرحلة الاولى.');
+  }
+  if(d.shoulder === 'bad'){
+    cautions.push('منع الضغط فوق الراس بالمرحلة الاولى لحد ما تتحسن حركة الكتف.');
+  }
+  if(d.pain.indexOf('back') > -1){
+    cautions.push('منع الديدليفت الثقيل والانحناء بحمل حتى يتحسن الوضع.');
+  }
+
+  return { d:d, list:list, reds:reds, cautions:cautions, drLevel:drLevel, maxGap:maxGap };
+}
+
+function drText(l){
+  if(l === 'high') return 'واضح، اكثر من ٣ اصابع';
+  if(l === 'mid') return 'متوسط';
+  if(l === 'light') return 'بسيط جدا وضمن الطبيعي';
+  if(l === 'na') return 'غير مطبق، حمل حالي';
+  return 'ما فيه انفصال';
+}
+
+function buildReport(r){
+  var d = r.d, t = [];
+  t.push('نتيجة تقييم القوام والانفصال العضلي');
+  t.push('الاسم: ' + (d.name || 'بدون اسم'));
+  t.push('الجنس: ' + (d.sex === 'f' ? 'انثى' : 'ذكر'));
+  t.push('التاريخ: ' + new Date().toLocaleDateString('ar-EG'));
+  t.push('');
+
+  if(d.sex === 'f'){
+    t.push('الحالة: ' + (d.preg === 'yes' ? 'حمل حالي' : (d.birth === 'yes' ? 'بعد ولادة' : 'ما فيه ولادة سابقة')));
+    if(d.birth === 'yes' && d.preg !== 'yes'){
+      var s = {lt6w:'اقل من ٦ اسابيع','6w6m':'٦ اسابيع الى ٦ شهور','6m2y':'٦ شهور الى سنتين',gt2y:'اكثر من سنتين'};
+      t.push('اخر ولادة: ' + (s[d.since] || 'غير محدد') + ' | ' + (d.btype === 'cs' ? 'قيصرية' : 'طبيعية'));
+    }
+  }
+
+  if(d.preg !== 'yes'){
+    t.push('الانفصال العضلي: ' + drText(r.drLevel) + (r.maxGap !== null ? ' (اكبر فجوة: ' + ['اقل من اصبع','اصبع الى اصبعين','اصبعين الى ثلاثة','اكثر من ٣ اصابع'][r.maxGap] + ')' : ' (ما تحدد القياس)'));
+    t.push('قاع الفجوة: ' + (d.depth === 'soft' ? 'لين' : d.depth === 'firm' ? 'صلب' : 'غير محدد') + ' | بروز مخروطي: ' + (d.cone === 'yes' ? 'نعم' : d.cone === 'no' ? 'لا' : 'غير محدد'));
+  }
+  t.push('');
+
+  if(r.reds.length){
+    t.push('تنبيهات حمراء:');
+    r.reds.forEach(function(x){ t.push('- ' + x); });
+    t.push('');
+  }
+
+  t.push('مجموعات الدعم والتاهيل المطلوبة:');
+  if(!r.list.length){
+    t.push('- ما فيه، القوام سليم ولا يحتاج تمارين دعم');
+  } else {
+    r.list.forEach(function(f){
+      t.push('- ' + f.title + ' [' + (f.high ? 'اولوية عالية' : 'اولوية متوسطة') + ']');
+      f.why.forEach(function(w){ t.push('   * ' + w); });
+    });
+  }
+  t.push('');
+
+  if(r.cautions.length){
+    t.push('محاذير على الجدول:');
+    r.cautions.forEach(function(x){ t.push('- ' + x); });
+    t.push('');
+  }
+
+  t.push('تفاصيل الاجابات:');
+  var map = {
+    head:{ok:'الراس تلمس الحائط بسهولة',mid:'تلمس مع رفع الذقن',bad:'ما تلمس'},
+    lumbar:{flat:'مسافة قليلة اسفل الظهر',ok:'مسافة طبيعية',deep:'مسافة كبيرة، تقوس زائد'},
+    sh_level:{ok:'الكتفين متناسقة',off:'كتف اعلى من الثاني'},
+    hip_level:{ok:'الحوض متناسق',off:'حوض مايل'},
+    hands:{ok:'وضع الكتف طبيعي',bad:'كتوف مدورة للداخل'},
+    knees:{ok:'الركب طبيعية',valgus:'ركب متقاربة',varus:'ركب متباعدة'},
+    foot:{ok:'قوس القدم طبيعي',flat:'قدم مسطحة',x:'غير محدد'},
+    balance:{ok:'توازن جيد',mid:'توازن متوسط',bad:'توازن ضعيف'},
+    shoulder:{ok:'حركة كتف جيدة',mid:'تعويض باسفل الظهر',bad:'حركة كتف محدودة'},
+    toe:{ok:'مرونة جيدة',mid:'مرونة متوسطة',bad:'مرونة ضعيفة'},
+    plank:{ok:'اكثر من ٤٥ ثانية',mid:'٢٠ الى ٤٥ ثانية',bad:'اقل من ٢٠ ثانية'}
+  };
+  t.push('- اختبار الحائط: ' + map.head[d.head]);
+  t.push('- اسفل الظهر: ' + map.lumbar[d.lumbar]);
+  t.push('- الكتفين: ' + map.sh_level[d.sh] + ' | الحوض: ' + map.hip_level[d.hip]);
+  t.push('- وضع الكتف: ' + map.hands[d.hands]);
+  t.push('- الركب: ' + map.knees[d.knees] + ' | القدم: ' + map.foot[d.foot || 'x']);
+  t.push('- السكوات: ' + (d.sq.length && d.sq.indexOf('none') === -1 ? d.sq.map(function(v){
+      return {heel:'كعب يرتفع',knee_in:'ركب للداخل',back:'تدور اسفل الظهر',lean:'ميلان للامام'}[v];
+    }).join(' + ') : 'نظيف'));
+  t.push('- التوازن: ' + map.balance[d.balance]);
+  t.push('- حركة الكتف: ' + map.shoulder[d.shoulder] + ' | المرونة: ' + map.toe[d.toe]);
+  t.push('- البلانك: ' + map.plank[d.plank]);
+  var painMap = {neck:'رقبة',shoulder:'كتف',back:'اسفل الظهر',knee:'ركبة',wrist:'رسغ',ankle:'كاحل'};
+  t.push('- الالم: ' + (d.pain.length && d.pain.indexOf('none') === -1 ? d.pain.map(function(v){ return painMap[v]; }).join('، ') : 'ما فيه'));
+  var symMap = {leak:'تسريب بول',heavy:'ثقل بالحوض',bloat:'انتفاخ اخر اليوم',hernia:'كتلة مؤلمة قرب السرة'};
+  t.push('- اعراض مرافقة: ' + (d.sym.length && d.sym.indexOf('none') === -1 ? d.sym.map(function(v){ return symMap[v]; }).join('، ') : 'ما فيه'));
+  if(d.med) t.push('- تشخيص او عملية: ' + d.med);
+
+  return t.join('\n');
+}
+
+function buildClient(r){
+  var h = '', d = r.d;
+
+  if(r.reds.length){
+    h += '<div class="alertbox red"><b>وقفة مهمة قبل البداية</b>' + r.reds.join('<br>') + '</div>';
+  }
+
+  if(d.preg !== 'yes'){
+    if(r.drLevel === 'none' || r.drLevel === 'light'){
+      h += '<div class="alertbox green"><b>عضلات البطن بوضع طبيعي</b>ما فيه انفصال يحتاج برنامج خاص، والجدول العادي مناسب بدون تعديل.</div>';
+    } else if(r.drLevel === 'mid'){
+      h += '<div class="alertbox amber"><b>فيه انفصال متوسط بعضلات البطن</b>هذا شي شائع جدا وقابل للتحسن. بينضاف تمارين خاصة تشد المنطقة بالتدريج، وبتتاجل شوي تمارين البطن التقليدية.</div>';
+    } else {
+      h += '<div class="alertbox red"><b>فيه انفصال واضح بعضلات البطن</b>ما يستدعي القلق، بس نحتاج نبدا ببرنامج تاهيل قبل التمارين العادية. بنتواصل معك ونشرح الخطة.</div>';
+    }
+  }
+
+  if(!r.list.length){
+    h += '<div class="card"><h2 style="font-size:17px">وضع القوام ممتاز</h2><div class="sub">ما طلع شي يحتاج تمارين دعم، الجدول بينجهز على طول.</div></div>';
+  } else {
+    h += '<div class="card"><h2 style="font-size:17px">نقاط بنشتغل عليها</h2><div class="sub">هذي مو مشاكل، هذي مناطق بنقويها ضمن الجدول</div>';
+    r.list.forEach(function(f){
+      h += '<div class="flag' + (f.high ? ' high' : '') + '"><span class="ttl">' + f.title + '</span>'
+         + '<span class="pri">' + (f.high ? 'اولوية عالية' : 'اولوية متوسطة') + '</span>'
+         + '<div class="why">' + f.why.join('، ') + '</div></div>';
+    });
+    h += '</div>';
+  }
+
+  return h;
+}
+
+$('#submitBtn').addEventListener('click', function(){
+  var missing = [];
+  REQUIRED.forEach(function(pair){
+    if(!val(pair[0])) missing.push(pair[1]);
+  });
+  if(val('sex') === 'f'){
+    if(!val('preg')) missing.push('الحمل الحالي');
+    if(!val('birth')) missing.push('الولادة السابقة');
+    if(val('birth') === 'yes'){
+      if(!val('since')) missing.push('مدة اخر ولادة');
+      if(!val('btype')) missing.push('نوع الولادة');
+    }
+  }
+  if(val('preg') !== 'yes'){
+    if(!val('dr_above')) missing.push('الفجوة فوق السرة');
+    if(!val('dr_at')) missing.push('الفجوة عند السرة');
+    if(!val('dr_below')) missing.push('الفجوة تحت السرة');
+    if(!val('dr_depth')) missing.push('شكل قاع الفجوة');
+    if(!val('dr_cone')) missing.push('البروز المخروطي');
+  }
+
+  var err = $('#err');
+  if(missing.length){
+    err.classList.remove('hidden');
+    err.innerHTML = 'ناقص: ' + missing.slice(0,5).join('، ') + (missing.length > 5 ? ' وغيرها' : '');
+    err.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  err.classList.add('hidden');
+
+  var r = analyze();
+  window.__report = buildReport(r);
+  $('#resName').textContent = r.d.name ? ('نتيجة ' + r.d.name) : 'هذي النتيجة';
+  $('#resBody').innerHTML = buildClient(r);
+  $('#reportText').textContent = window.__report;
+  if(INFO_FORM_URL && INFO_FORM_URL.indexOf('http') === 0){
+    $('#infoBtn').classList.remove('hidden');
+  }
+  $('#formArea').classList.add('hidden');
+  $('#result').classList.remove('hidden');
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
+function copyReport(cb){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(window.__report).then(function(){ cb(true); }).catch(function(){ cb(false); });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = window.__report;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    var ok = false;
+    try{ ok = document.execCommand('copy'); }catch(e){ ok = false; }
+    document.body.removeChild(ta);
+    cb(ok);
+  }
+}
+
+$('#copyBtn').addEventListener('click', function(){
+  var b = this;
+  copyReport(function(ok){
+    b.textContent = ok ? 'تم النسخ، الصقها في رابط المعلومات' : 'ما نجح النسخ، انسخ النص من الاسفل';
+    setTimeout(function(){ b.textContent = 'نسخ النتيجة'; }, 3000);
+  });
+});
+
+$('#infoBtn').addEventListener('click', function(){
+  copyReport(function(){ window.open(INFO_FORM_URL, '_blank'); });
+});
+
+$('#waBtn').addEventListener('click', function(){
+  window.open('https://wa.me/' + COACH_WHATSAPP + '?text=' + encodeURIComponent(window.__report), '_blank');
+});
+
+$('#againBtn').addEventListener('click', function(){ location.reload(); });
+</script>
+</body>
+</html>

@@ -138,6 +138,11 @@ input[type=text]:focus{outline:none;border-color:var(--orange)}
   display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex:0 0 26px;margin-top:3px;
 }
 
+.shortbox{
+  background:#F0F4FC;border:1.5px dashed #A9BEE4;border-radius:12px;
+  padding:14px 16px;margin:14px 0 4px;font-size:14px;line-height:1.9;
+  white-space:pre-wrap;color:#1B3670;
+}
 pre.report{
   background:#0F1E3D;color:#DDE6F7;border-radius:14px;padding:16px;
   font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;
@@ -162,9 +167,9 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:26px 16px 10p
   </div>
 
   <div class="warn">
-    <b>مهم جدا</b>
-    بنهاية الفحص بتطلع نتيجة جاهزة. لازم نسخ النتيجة ولصقها في رابط المعلومات مع باقي بياناتك.
-    بدون النتيجة في رابط المعلومات ما راح يتم تجهيز الجدول.
+    <b>معلومة قبل البداية</b>
+    الفحص اختياري، بس نتيجته تساعدنا نضبط الجدول بدقة اكبر.
+    بنهايته بتطلع نتيجة جاهزة، انسخها والصقها في نموذج المعلومات مع باقي بياناتك.
   </div>
 
   <div id="formArea">
@@ -224,6 +229,12 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:26px 16px 10p
     <div class="card" id="drCard">
       <h2><span class="num">٢</span> فحص الانفصال العضلي</h2>
       <div class="sub">قياس الفجوة بين عضلات البطن. شائع بعد الحمل، وممكن يصير لاي شخص مع زيادة وزن سريعة او ضغط متكرر على البطن</div>
+
+      <label class="opt" style="margin-bottom:16px;border-style:dashed">
+        <input type="checkbox" id="drSkip"> ما سويت هذا الفحص او ما ينطبق علي، تخطي القسم
+      </label>
+
+      <div id="drInner">
       <div class="howto">
         <b>طريقة الفحص:</b>
         <ol>
@@ -237,6 +248,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:26px 16px 10p
       <div class="q" data-q="dr_above">
         <label class="qt">الفجوة فوق السرة<span class="hint">تقريبا على بعد ٥ سم فوق السرة</span></label>
         <div class="opts">
+          <label class="opt"><input type="radio" name="dr_above" value="none"> لا يوجد فجوة</label>
           <label class="opt"><input type="radio" name="dr_above" value="0"> اقل من اصبع</label>
           <label class="opt"><input type="radio" name="dr_above" value="1"> اصبع الى اصبعين</label>
           <label class="opt"><input type="radio" name="dr_above" value="2"> اصبعين الى ثلاثة</label>
@@ -247,6 +259,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:26px 16px 10p
       <div class="q" data-q="dr_at">
         <label class="qt">الفجوة عند السرة</label>
         <div class="opts">
+          <label class="opt"><input type="radio" name="dr_at" value="none"> لا يوجد فجوة</label>
           <label class="opt"><input type="radio" name="dr_at" value="0"> اقل من اصبع</label>
           <label class="opt"><input type="radio" name="dr_at" value="1"> اصبع الى اصبعين</label>
           <label class="opt"><input type="radio" name="dr_at" value="2"> اصبعين الى ثلاثة</label>
@@ -257,6 +270,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:26px 16px 10p
       <div class="q" data-q="dr_below">
         <label class="qt">الفجوة تحت السرة</label>
         <div class="opts">
+          <label class="opt"><input type="radio" name="dr_below" value="none"> لا يوجد فجوة</label>
           <label class="opt"><input type="radio" name="dr_below" value="0"> اقل من اصبع</label>
           <label class="opt"><input type="radio" name="dr_below" value="1"> اصبع الى اصبعين</label>
           <label class="opt"><input type="radio" name="dr_below" value="2"> اصبعين الى ثلاثة</label>
@@ -289,6 +303,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:26px 16px 10p
           <label class="opt"><input type="checkbox" name="sym" value="hernia"> انتفاخ او كتلة مؤلمة قريبة من السرة</label>
           <label class="opt"><input type="checkbox" name="sym" value="none"> ما فيه شي من هذي</label>
         </div>
+      </div>
       </div>
     </div>
 
@@ -425,9 +440,15 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:26px 16px 10p
           <label class="opt"><input type="checkbox" name="pain" value="none"> ما فيه الم</label>
         </div>
       </div>
-      <div class="q">
-        <label class="qt">فيه تشخيص طبي او عملية سابقة؟<span class="hint">اختياري</span></label>
-        <input type="text" id="med" placeholder="مثال: انزلاق غضروفي، عملية رباط صليبي، قيصرية قبل سنة">
+      <div class="q" data-q="hasmed">
+        <label class="qt">فيه تشخيص طبي او عملية سابقة؟</label>
+        <div class="opts row">
+          <label class="opt"><input type="radio" name="hasmed" value="no"> لا يوجد</label>
+          <label class="opt"><input type="radio" name="hasmed" value="yes"> نعم، فيه</label>
+        </div>
+        <div id="medBox" class="hidden" style="margin-top:10px">
+          <input type="text" id="med" placeholder="مثال: انزلاق غضروفي، عملية رباط صليبي، قيصرية قبل سنة">
+        </div>
       </div>
     </div>
 
@@ -444,8 +465,8 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:26px 16px 10p
 
     <div class="warn">
       <b>باقي خطوة وحدة</b>
-      النتيجة ما توصل تلقائيا. لازم نسخ النتيجة ولصقها في رابط المعلومات مع باقي البيانات.
-      بدونها ما راح يتم تجهيز الجدول.
+      النتيجة ما توصل تلقائيا. انسخ النتيجة والصقها في نموذج المعلومات مع باقي البيانات،
+      عشان تنضاف لجدولك. اذا ما انلصقت بالنموذج ما راح تدخل بحساب الجدول.
     </div>
 
     <div id="resBody"></div>
@@ -454,15 +475,16 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:26px 16px 10p
       <h2 style="font-size:17px">ارسال النتيجة</h2>
       <div class="sub">الخطوات بالترتيب</div>
       <div class="step"><span class="n">١</span><span>نسخ النتيجة من الزر البرتقالي تحت.</span></div>
-      <div class="step"><span class="n">٢</span><span>فتح رابط المعلومات ولصق النتيجة في خانة نتيجة تقييم القوام.</span></div>
-      <div class="step"><span class="n">٣</span><span>ارسال رابط المعلومات بشكل كامل.</span></div>
+      <div class="step"><span class="n">٢</span><span>فتح نموذج المعلومات ولصق النتيجة في خانة الملاحظات.</span></div>
+      <div class="step"><span class="n">٣</span><span>اكمال باقي بيانات النموذج وارساله مرة وحدة.</span></div>
+
+      <div class="shortbox" id="shortText"></div>
 
       <button class="btn" id="copyBtn">نسخ النتيجة</button>
-      <button class="btn navy hidden" id="infoBtn">فتح رابط المعلومات</button>
-      <button class="btn ghost sm" id="waBtn">او ارسالها عبر واتساب</button>
+      <button class="btn navy hidden" id="infoBtn">نسخ وفتح نموذج المعلومات</button>
 
       <details style="margin-top:16px">
-        <summary style="cursor:pointer;color:var(--muted);font-size:14px">عرض النص الكامل للنتيجة</summary>
+        <summary style="cursor:pointer;color:var(--muted);font-size:14px">عرض التفاصيل الكاملة</summary>
         <pre class="report" id="reportText"></pre>
       </details>
     </div>
@@ -477,13 +499,10 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:26px 16px 10p
 
 <script>
 /* ===================================================================
-   اعدادات سريعة، عدلي السطرين هذي بس
-
-   1) رقم الواتساب بصيغة الدولة بدون + وبدون اصفار
-   2) رابط المعلومات، اذا خليتيه فاضي بيختفي الزر
+   اعداد سريع، رابط نموذج المعلومات
+   اذا خليتيه فاضي بيختفي الزر الازرق
    =================================================================== */
-var COACH_WHATSAPP = "966537249498";
-var INFO_FORM_URL  = "";
+var INFO_FORM_URL = "https://forms.gle/1wbCaeSYjkAWoimP6";
 /* =================================================================== */
 
 var $ = function(s){ return document.querySelector(s); };
@@ -531,7 +550,18 @@ document.addEventListener('change', function(e){
   if(inp.name === 'preg'){
     $('#drCard').classList.toggle('hidden', inp.value === 'yes');
   }
+  if(inp.id === 'drSkip'){
+    $('#drInner').classList.toggle('hidden', inp.checked);
+  }
+  if(inp.name === 'hasmed'){
+    $('#medBox').classList.toggle('hidden', inp.value !== 'yes');
+    if(inp.value !== 'yes') $('#med').value = '';
+  }
 });
+
+function drSkipped(){
+  return $('#drSkip').checked || val('preg') === 'yes';
+}
 
 var REQUIRED = [
   ['sex','الجنس'],
@@ -549,13 +579,15 @@ var REQUIRED = [
 
 function num(v){
   if(v === null || v === 'x') return null;
+  if(v === 'none') return 0;
   return parseInt(v,10);
 }
 
 function analyze(){
   var d = {
     name: $('#name').value.trim(),
-    med: $('#med').value.trim(),
+    med: val('hasmed') === 'yes' ? $('#med').value.trim() : '',
+    skip: drSkipped(),
     sex: val('sex'),
     preg: val('preg'), birth: val('birth'), since: val('since'), btype: val('btype'),
     above: val('dr_above'), at: val('dr_at'), below: val('dr_below'),
@@ -573,7 +605,9 @@ function analyze(){
     if(high) flags[key].high = true;
   }
 
-  var reds = [], cautions = [];
+  var reds = [], cautions = [], shorts = [];
+  function caution(long, brief){ cautions.push(long); if(brief && shorts.indexOf(brief) === -1) shorts.push(brief); }
+  function red(long, brief){ reds.push(long); if(brief && shorts.indexOf(brief) === -1) shorts.push(brief); }
 
   var gaps = [num(d.above), num(d.at), num(d.below)].filter(function(v){ return v !== null; });
   var maxGap = gaps.length ? Math.max.apply(null, gaps) : null;
@@ -581,7 +615,10 @@ function analyze(){
 
   if(d.preg === 'yes'){
     drLevel = 'na';
-    cautions.push('حمل حالي، فحص الانفصال ما ينطبق. الجدول لازم يكون جدول حمل مع تصريح الطبيب.');
+    caution('حمل حالي، فحص الانفصال ما ينطبق. الجدول لازم يكون جدول حمل مع تصريح الطبيب.', 'جدول حمل بتصريح طبيب');
+  } else if(d.skip){
+    drLevel = 'skip';
+    caution('فحص الانفصال ما تم، يفضل التاكد منه قبل اضافة تمارين البطن.', 'فحص الانفصال ما تم');
   } else {
     if(maxGap !== null && maxGap >= 2){
       drLevel = maxGap >= 3 ? 'high' : 'mid';
@@ -602,25 +639,25 @@ function analyze(){
       flag('dr','الانفصال العضلي','قاع الفجوة لين، النسيج ضعيف', false);
     }
     if(maxGap === null){
-      cautions.push('ما تحدد قياس الفجوة، يفضل اعادة القياس بمكالمة قصيرة.');
+      caution('ما تحدد قياس الفجوة، يفضل اعادة القياس بمكالمة قصيرة.', 'قياس الفجوة ما تحدد');
     }
   }
 
   if(d.sym.indexOf('hernia') > -1){
-    reds.push('انتفاخ او كتلة مؤلمة قرب السرة، تحتاج مراجعة طبيب قبل اي تمرين بطن، احتمال فتق سري.');
+    red('انتفاخ او كتلة مؤلمة قرب السرة، تحتاج مراجعة طبيب قبل اي تمرين بطن، احتمال فتق سري.', 'كتلة مؤلمة قرب السرة، مراجعة طبيب');
   }
   if(d.sym.indexOf('leak') > -1){
     flag('core','تقوية الكور','تسريب بول، ضعف بقاع الحوض', false);
-    cautions.push('تسريب بول، منع القفز والنط والجري بالمرحلة الاولى، والبداية بتمارين تنفس وقاع حوض.');
+    caution('تسريب بول، منع القفز والنط والجري بالمرحلة الاولى، والبداية بتمارين تنفس وقاع حوض.', 'تسريب بول، لا قفز');
   }
   if(d.sym.indexOf('heavy') > -1){
-    cautions.push('احساس ثقل بالحوض، منع الاوزان الثقيلة فوق الراس والحبس التنفسي، ويفضل تقييم قاع حوض.');
+    caution('احساس ثقل بالحوض، منع الاوزان الثقيلة فوق الراس والحبس التنفسي، ويفضل تقييم قاع حوض.', 'ثقل بالحوض، لا اوزان فوق الراس');
   }
   if(d.since === 'lt6w'){
-    reds.push('اقل من ٦ اسابيع على الولادة، لازم تصريح الطبيب قبل اي جدول، والبداية تنفس ومشي خفيف بس.');
+    red('اقل من ٦ اسابيع على الولادة، لازم تصريح الطبيب قبل اي جدول، والبداية تنفس ومشي خفيف بس.', 'اقل من ٦ اسابيع ولادة، تصريح طبيب');
   }
   if(d.btype === 'cs' && (d.since === 'lt6w' || d.since === '6w6m')){
-    cautions.push('ولادة قيصرية حديثة، تدرج اطول بتمارين البطن، ومنع الشد المباشر على منطقة الجرح.');
+    caution('ولادة قيصرية حديثة، تدرج اطول بتمارين البطن، ومنع الشد المباشر على منطقة الجرح.', 'قيصرية حديثة، تدرج بالبطن');
   }
 
   if(d.plank === 'bad') flag('core','تقوية الكور','ثبات ضعيف بالبلانك', false);
@@ -659,16 +696,16 @@ function analyze(){
   var list = order.filter(function(k){ return flags[k]; }).map(function(k){ return flags[k]; });
 
   if(drLevel === 'high' || drLevel === 'mid'){
-    cautions.push('منع الكرنش والجلوس الكامل ورفع الرجلين المزدوج والالتواءات القوية والبلانك الكامل بالمرحلة الاولى.');
+    caution('منع الكرنش والجلوس الكامل ورفع الرجلين المزدوج والالتواءات القوية والبلانك الكامل بالمرحلة الاولى.', 'لا كرنش ولا بلانك كامل');
   }
   if(d.shoulder === 'bad'){
-    cautions.push('منع الضغط فوق الراس بالمرحلة الاولى لحد ما تتحسن حركة الكتف.');
+    caution('منع الضغط فوق الراس بالمرحلة الاولى لحد ما تتحسن حركة الكتف.', 'لا ضغط فوق الراس');
   }
   if(d.pain.indexOf('back') > -1){
-    cautions.push('منع الديدليفت الثقيل والانحناء بحمل حتى يتحسن الوضع.');
+    caution('منع الديدليفت الثقيل والانحناء بحمل حتى يتحسن الوضع.', 'لا ديدليفت ثقيل');
   }
 
-  return { d:d, list:list, reds:reds, cautions:cautions, drLevel:drLevel, maxGap:maxGap };
+  return { d:d, list:list, reds:reds, cautions:cautions, shorts:shorts, drLevel:drLevel, maxGap:maxGap };
 }
 
 function drText(l){
@@ -676,7 +713,44 @@ function drText(l){
   if(l === 'mid') return 'متوسط';
   if(l === 'light') return 'بسيط جدا وضمن الطبيعي';
   if(l === 'na') return 'غير مطبق، حمل حالي';
+  if(l === 'skip') return 'ما تم الفحص';
   return 'ما فيه انفصال';
+}
+
+function buildShort(r){
+  var d = r.d, L = [];
+
+  var who = [];
+  if(d.name) who.push(d.name);
+  who.push(d.sex === 'f' ? 'انثى' : 'ذكر');
+  if(d.sex === 'f'){
+    if(d.preg === 'yes') who.push('حمل حالي');
+    else if(d.birth === 'yes'){
+      var s = {lt6w:'ولادة قبل اقل من ٦ اسابيع','6w6m':'ولادة قبل ٦ اسابيع الى ٦ شهور','6m2y':'ولادة قبل ٦ شهور الى سنتين',gt2y:'ولادة قبل اكثر من سنتين'};
+      who.push((s[d.since] || 'بعد ولادة') + (d.btype === 'cs' ? ' قيصرية' : ''));
+    }
+  }
+  who.push('انفصال عضلي: ' + drText(r.drLevel));
+  L.push('تقييم القوام: ' + who.join(' | '));
+
+  if(!r.list.length){
+    L.push('الدعم المطلوب: ما فيه، القوام سليم');
+  } else {
+    L.push('الدعم المطلوب: ' + r.list.map(function(f){
+      return f.title + (f.high ? ' (عالي)' : '');
+    }).join('، '));
+  }
+
+  var painMap = {neck:'رقبة',shoulder:'كتف',back:'اسفل الظهر',knee:'ركبة',wrist:'رسغ',ankle:'كاحل'};
+  var last = [];
+  if(d.pain.length && d.pain.indexOf('none') === -1){
+    last.push('الم: ' + d.pain.map(function(v){ return painMap[v]; }).join('، '));
+  }
+  if(r.shorts.length) last.push(r.shorts.join('، '));
+  if(d.med) last.push(d.med);
+  L.push('تنبيهات: ' + (last.length ? last.join(' | ') : 'ما فيه'));
+
+  return L.join('\n');
 }
 
 function buildReport(r){
@@ -695,8 +769,12 @@ function buildReport(r){
     }
   }
 
-  if(d.preg !== 'yes'){
-    t.push('الانفصال العضلي: ' + drText(r.drLevel) + (r.maxGap !== null ? ' (اكبر فجوة: ' + ['اقل من اصبع','اصبع الى اصبعين','اصبعين الى ثلاثة','اكثر من ٣ اصابع'][r.maxGap] + ')' : ' (ما تحدد القياس)'));
+  if(d.preg === 'yes'){
+    t.push('الانفصال العضلي: غير مطبق، حمل حالي');
+  } else if(d.skip){
+    t.push('الانفصال العضلي: ما تم الفحص');
+  } else {
+    t.push('الانفصال العضلي: ' + drText(r.drLevel) + (r.maxGap !== null ? ' (اكبر فجوة: ' + ['اقل من اصبع او ما فيه','اصبع الى اصبعين','اصبعين الى ثلاثة','اكثر من ٣ اصابع'][r.maxGap] + ')' : ' (ما تحدد القياس)'));
     t.push('قاع الفجوة: ' + (d.depth === 'soft' ? 'لين' : d.depth === 'firm' ? 'صلب' : 'غير محدد') + ' | بروز مخروطي: ' + (d.cone === 'yes' ? 'نعم' : d.cone === 'no' ? 'لا' : 'غير محدد'));
   }
   t.push('');
@@ -753,7 +831,7 @@ function buildReport(r){
   t.push('- الالم: ' + (d.pain.length && d.pain.indexOf('none') === -1 ? d.pain.map(function(v){ return painMap[v]; }).join('، ') : 'ما فيه'));
   var symMap = {leak:'تسريب بول',heavy:'ثقل بالحوض',bloat:'انتفاخ اخر اليوم',hernia:'كتلة مؤلمة قرب السرة'};
   t.push('- اعراض مرافقة: ' + (d.sym.length && d.sym.indexOf('none') === -1 ? d.sym.map(function(v){ return symMap[v]; }).join('، ') : 'ما فيه'));
-  if(d.med) t.push('- تشخيص او عملية: ' + d.med);
+  t.push('- تشخيص او عملية: ' + (d.med || 'لا يوجد'));
 
   return t.join('\n');
 }
@@ -765,7 +843,9 @@ function buildClient(r){
     h += '<div class="alertbox red"><b>وقفة مهمة قبل البداية</b>' + r.reds.join('<br>') + '</div>';
   }
 
-  if(d.preg !== 'yes'){
+  if(d.skip && d.preg !== 'yes'){
+    h += '<div class="alertbox amber"><b>فحص الانفصال ما تم</b>ما فيه مشكلة، بس نتيجته تساعد كثير بضبط تمارين البطن. تقدر تسويه لاحق وترسل النتيجة.</div>';
+  } else if(d.preg !== 'yes'){
     if(r.drLevel === 'none' || r.drLevel === 'light'){
       h += '<div class="alertbox green"><b>عضلات البطن بوضع طبيعي</b>ما فيه انفصال يحتاج برنامج خاص، والجدول العادي مناسب بدون تعديل.</div>';
     } else if(r.drLevel === 'mid'){
@@ -803,13 +883,14 @@ $('#submitBtn').addEventListener('click', function(){
       if(!val('btype')) missing.push('نوع الولادة');
     }
   }
-  if(val('preg') !== 'yes'){
+  if(!drSkipped()){
     if(!val('dr_above')) missing.push('الفجوة فوق السرة');
     if(!val('dr_at')) missing.push('الفجوة عند السرة');
     if(!val('dr_below')) missing.push('الفجوة تحت السرة');
     if(!val('dr_depth')) missing.push('شكل قاع الفجوة');
     if(!val('dr_cone')) missing.push('البروز المخروطي');
   }
+  if(!val('hasmed')) missing.push('التشخيص الطبي');
 
   var err = $('#err');
   if(missing.length){
@@ -821,10 +902,12 @@ $('#submitBtn').addEventListener('click', function(){
   err.classList.add('hidden');
 
   var r = analyze();
-  window.__report = buildReport(r);
+  window.__short = buildShort(r);
+  window.__full = buildReport(r);
   $('#resName').textContent = r.d.name ? ('نتيجة ' + r.d.name) : 'هذي النتيجة';
   $('#resBody').innerHTML = buildClient(r);
-  $('#reportText').textContent = window.__report;
+  $('#shortText').textContent = window.__short;
+  $('#reportText').textContent = window.__full;
   if(INFO_FORM_URL && INFO_FORM_URL.indexOf('http') === 0){
     $('#infoBtn').classList.remove('hidden');
   }
@@ -834,11 +917,12 @@ $('#submitBtn').addEventListener('click', function(){
 });
 
 function copyReport(cb){
+  var txt = window.__short;
   if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(window.__report).then(function(){ cb(true); }).catch(function(){ cb(false); });
+    navigator.clipboard.writeText(txt).then(function(){ cb(true); }).catch(function(){ cb(false); });
   } else {
     var ta = document.createElement('textarea');
-    ta.value = window.__report;
+    ta.value = txt;
     ta.style.position = 'fixed'; ta.style.opacity = '0';
     document.body.appendChild(ta); ta.select();
     var ok = false;
@@ -851,17 +935,13 @@ function copyReport(cb){
 $('#copyBtn').addEventListener('click', function(){
   var b = this;
   copyReport(function(ok){
-    b.textContent = ok ? 'تم النسخ، الصقها في رابط المعلومات' : 'ما نجح النسخ، انسخ النص من الاسفل';
+    b.textContent = ok ? 'تم النسخ، الصقها في نموذج المعلومات' : 'ما نجح النسخ، انسخ النص من الاسفل';
     setTimeout(function(){ b.textContent = 'نسخ النتيجة'; }, 3000);
   });
 });
 
 $('#infoBtn').addEventListener('click', function(){
   copyReport(function(){ window.open(INFO_FORM_URL, '_blank'); });
-});
-
-$('#waBtn').addEventListener('click', function(){
-  window.open('https://wa.me/' + COACH_WHATSAPP + '?text=' + encodeURIComponent(window.__report), '_blank');
 });
 
 $('#againBtn').addEventListener('click', function(){ location.reload(); });

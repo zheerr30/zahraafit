@@ -1418,6 +1418,7 @@ function screenPlan(){
       <button class="btn line" data-act="to2">→ تعديل التمارين</button>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
         <button class="btn line" data-act="editvideos">🔗 روابط الفيديو</button>
+        <button class="btn line" data-act="exporttrack">📊 ملف متابعة (Excel)</button>
         <button class="btn dark" data-act="generate">↻ إعادة توليد</button>
         <button class="btn primary" data-act="exportprint">⬇️ حفظ كـ PDF</button>
       </div>
@@ -2301,6 +2302,54 @@ function saveImages(){
 }
 /* ملف إعدادات محمول: يحمل الصور والروابط بين الأجهزة دون خادم.
    صدريه من جهاز واستورديه في الآخر - أبسط حل يعمل حتى بلا إنترنت. */
+/* ============================================================
+   تصدير ملف متابعة CSV
+   يفتح مباشرة في جوجل شيت أو إكسل. صفوف التمارين جاهزة وأعمدة
+   الأسابيع فارغة، مع ورقة قياسات - فتسجل المشتركة رقميا لا ورقيا.
+   ============================================================ */
+function exportTracking(){
+  if(!S.plan || !S.plan.length){ alert("ولدي الجدول أولا."); return; }
+  const q = s => `"${String(s==null?"":s).replace(/"/g,'""')}"`;
+  const L = [];
+  const name = (S.client && S.client.name) || "المشترك";
+
+  L.push([q("ZahraaFit - ملف متابعة"), q(name)].join(","));
+  L.push([q("التاريخ"), q(new Date().toLocaleDateString("ar-SA"))].join(","));
+  L.push("");
+
+  L.push([q("سجل الأوزان")].join(","));
+  L.push([q("اليوم"),q("التمرين"),q("المجموعات"),q("التكرارات"),
+          q("أسبوع 1"),q("أسبوع 2"),q("أسبوع 3"),q("أسبوع 4"),
+          q("أسبوع 5"),q("أسبوع 6"),q("أسبوع 7"),q("أسبوع 8"),q("ملاحظات")].join(","));
+  S.plan.forEach((d,i)=>{
+    d.exercises.forEach(e=>{
+      L.push([q("اليوم "+(i+1)), q(e.name), q(e.sets), q(e.reps),
+              "","","","","","","","",""].join(","));
+    });
+  });
+  L.push("");
+
+  L.push([q("القياسات - كل أسبوعين")].join(","));
+  L.push([q("القياس"),q("البداية"),q("أسبوع 2"),q("أسبوع 4"),q("أسبوع 6"),
+          q("أسبوع 8"),q("أسبوع 10"),q("أسبوع 12")].join(","));
+  ["الوزن (كجم)","محيط الخصر (سم)","محيط البطن (سم)","محيط الأرداف (سم)",
+   "محيط الفخذ (سم)","محيط الذراع (سم)","محيط الصدر (سم)","نسبة الدهون %"]
+   .forEach(m=>L.push([q(m),"","","","","","",""].join(",")));
+  L.push("");
+
+  L.push([q("سجل الحصص")].join(","));
+  L.push([q("التاريخ"),q("اليوم"),q("تم؟"),q("مستوى الطاقة 1-5"),
+          q("النوم (ساعات)"),q("ملاحظات")].join(","));
+  for(let i=0;i<12;i++) L.push(["","","","","",""].join(","));
+
+  const blob = new Blob(["\uFEFF"+L.join("\n")], {type:"text/csv;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `ZahraaFit_متابعة_${String(name).replace(/\s+/g,"_")}.csv`;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+}
+
 function exportSettings(){
   const data = { v:4, exportedAt:new Date().toISOString(), images:S.images, videoLinks };
   const blob = new Blob([JSON.stringify(data)], {type:"application/json"});
@@ -3131,7 +3180,8 @@ function buildPdfHTML(){
             ${it.tip?`<div style="font-size:11.5px;color:#6a7488;font-weight:600;line-height:1.8;margin-top:2px">${it.tip}</div>`:""}
             ${where(it.id)?`<div style="font-size:11px;color:#1f6b3f;font-weight:700;margin-top:2px">في ${where(it.id)}</div>`:""}
           </td>
-          <td style="width:86px;padding:12px 8px;text-align:center;vertical-align:middle;border-bottom:1px solid #f0f2f6;font-family:Cairo;font-weight:900;font-size:13.5px;color:#1f9d57;white-space:nowrap">${it.sets} × ${it.reps}</td>
+          <td style="width:80px;padding:12px 6px;text-align:center;vertical-align:middle;border-bottom:1px solid #f0f2f6;font-family:Cairo;font-weight:900;font-size:13.5px;color:#1f9d57;white-space:nowrap">${it.sets} × ${it.reps}</td>
+          <td style="width:72px;padding:12px 10px 12px 6px;text-align:center;vertical-align:middle;border-bottom:1px solid #f0f2f6">${it.video?`<a href="${it.video}" style="display:inline-block;background:#ff0000;color:#fff;font-family:Cairo;font-weight:800;font-size:11px;padding:6px 13px;border-radius:18px;text-decoration:none;white-space:nowrap">&#9654; فيديو</a>`:""}</td>
         </tr>`).join("")}
       </table>
     </div>`;
@@ -3185,6 +3235,7 @@ function buildPdfHTML(){
             <div style="text-align:center;flex:none;min-width:74px">
               <div style="font-family:Cairo;font-weight:900;font-size:14px;color:#2563c9">${it.sets} × ${it.reps}</div>
             </div>
+            ${it.video?`<a href="${it.video}" style="flex:none;display:inline-block;background:#ff0000;color:#fff;font-family:Cairo;font-weight:800;font-size:11px;padding:6px 13px;border-radius:18px;text-decoration:none;white-space:nowrap">&#9654; فيديو</a>`:""}
           </div>`).join("")}
       </div>
 
@@ -3561,6 +3612,7 @@ function bind(){
       try{ loadSubsFromText(el?el.value:""); }
       catch(e){ subsErr="تعذر التحليل: "+e.message; render(); }
     }
+    else if(a==="exporttrack") exportTracking();
     else if(a==="exportsettings") exportSettings();
     else if(a==="warmup"){ S._back=S.step; go(11); }
     else if(a==="flex"){ S._back=S.step; go(12); }

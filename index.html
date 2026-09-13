@@ -469,31 +469,70 @@ const EX = [
   {id:"reverselunge",name:"طعنة خلفية",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:["knee"],tip:"اخطي للخلف وانزلي حتى تصير الركبتان بزاوية قائمة، والوزن على الرجل الأمامية.",type:"compound",pattern:"legs",video:"https://youtu.be/RZKXLMxPF_I",en:"Reverse Lunge"},
   {id:"inclinepush",name:"ضغط مائل لأعلى (اليدان مرتفعتان)",group:"chest",muscle:"chest",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"يداك على كرسي أو طاولة والجسم بخط مستقيم - كل ما ارتفعت اليدان صار أسهل.",type:"compound",pattern:"push",video:"https://youtu.be/49jfZ_z7-us",en:"Incline Push-Up"},
 
-  {id:"kneepush",name:"ضغط على الركبتين",group:"chest",muscle:"chest",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"من وضع الركبتين، حافظي على استقامة الجذع من الركبة للكتف.",type:"compound",pattern:"push",video:"https://www.youtube.com/watch?v=lFR1GWy1Dcs",en:"Knee Push-Up"},
-  {id:"negpush",name:"ضغط سلبي بطيء",group:"chest",muscle:"chest",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"انزلي ببطء في 4 ثوان ثم ارجعي بأي طريقة. أفضل تدرج نحو الضغط الكامل.",type:"compound",pattern:"push",video:"https://www.youtube.com/watch?v=otG1M7Xl64I",en:"Negative Push-Up"},
-  {id:"archerpush",name:"ضغط الأرشر",group:"chest",muscle:"chest",env:["gym","home","bodyweight"],level:2,risk:["wrist"],tip:"مدي ذراعا للجانب واضغطي بالأخرى - تدرج نحو الضغط بذراع واحدة.",type:"compound",pattern:"push",video:"https://www.youtube.com/watch?v=OVRBYrjszy4",en:"Archer Push-Up"},
-  {id:"tablerow",name:"تجديف تحت الطاولة",group:"back",muscle:"upperback",env:["home","bodyweight"],level:1,risk:[],tip:"استلقي تحت طاولة ثابتة واسحبي صدرك نحوها والجسم مستقيم.",type:"compound",pattern:"pull",video:"https://www.youtube.com/watch?v=6NTruShwwKk",en:"Table / Australian Row"},
-  {id:"doorrow",name:"تجديف ثابت على إطار الباب",group:"back",muscle:"upperback",env:["home","bodyweight"],level:1,risk:[],tip:"امسكي إطار الباب واتكئي للخلف ثم اسحبي نفسك.",type:"compound",pattern:"pull",video:"https://www.youtube.com/watch?v=n5MbUcLIpRQ",en:"Isometric Doorway Row"},
-  {id:"scappull",name:"سحب لوحي الكتف معلقا",group:"back",muscle:"upperback",env:["gym","bodyweight"],level:2,risk:[],tip:"معلقة على البار، اسحبي لوحي كتفك لأسفل دون ثني المرفق.",type:"compound",pattern:"pull",video:"https://www.youtube.com/watch?v=-ZIpSoTRsuE",en:"Scapular Pull-Up"},
-  {id:"selflateral",name:"رفرفة جانبية بمقاومة ذاتية",group:"shoulders",muscle:"frontdelt",env:["gym","home","bodyweight"],level:1,risk:["shoulder"],tip:"قاومي بيدك الأخرى أثناء رفع الذراع للجانب.",type:"compound",pattern:"push",video:"https://www.youtube.com/watch?v=7UJ_ZN05Vfs",en:"Self-Resisted Lateral Raise"},
-  {id:"elevpike",name:"ضغط بايك على سطح مرتفع",group:"shoulders",muscle:"frontdelt",env:["gym","home","bodyweight"],level:2,risk:["shoulder"],tip:"قدماك على سطح مرتفع والورك عال، انزلي برأسك بين يديك.",type:"compound",pattern:"push",video:"https://www.youtube.com/watch?v=Pzth0n3oWBQ",en:"Elevated Pike Push-Up"},
-  {id:"bearcrawl",name:"زحف الدب",group:"shoulders",muscle:"frontdelt",env:["gym","home","bodyweight"],level:2,risk:["shoulder"],tip:"ازحفي والركبة على بعد شبر من الأرض والظهر مستقيم.",type:"compound",pattern:"push",video:"https://www.youtube.com/watch?v=U3Y58Kyw7Xw",en:"Bear Crawl"},
-  {id:"walltri",name:"ضغط الترايسبس على الحائط",group:"triceps",muscle:"triceps",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"يداك على الحائط بقبضة ضيقة، اثني المرفقين وادفعي.",type:"isolation",pattern:"push",video:"https://www.youtube.com/watch?v=6dAXX9ipvj4",en:"Wall Triceps Push-Up"},
-  {id:"kneeclosepush",name:"ضغط قبضة ضيقة على الركبتين",group:"triceps",muscle:"triceps",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"ضغط على الركبتين واليدان قريبتان والمرفقان ملاصقان للجسم.",type:"isolation",pattern:"push",video:"https://www.youtube.com/watch?v=cExlq_fU4tc",en:"Knee Close-Grip Push-Up"},
-  {id:"bwskull",name:"تمديد الترايسبس على الأرض",group:"triceps",muscle:"triceps",env:["gym","home","bodyweight"],level:2,risk:["wrist"],tip:"من وضع الركوع أو الوقوف على سطح، اثني المرفقين فقط.",type:"isolation",pattern:"push",video:"https://www.youtube.com/watch?v=hl86OCmYZG4",en:"Bodyweight Floor Triceps Extension"},
-  {id:"chairsquat",name:"سكوات على الكرسي",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:["knee"],tip:"انزلي حتى تلمسي الكرسي بخفة ثم انهضي دون ارتخاء كامل.",type:"compound",pattern:"legs",video:"https://www.youtube.com/watch?v=rvpC9QkTc3Y",en:"Chair / Box Squat to Stand"},
-  {id:"splitsquat",name:"سكوات سبليت ثابت",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:["knee"],tip:"قدم أمام وقدم خلف ثابتتان، انزلي عموديا لا للأمام.",type:"compound",pattern:"legs",video:"https://www.youtube.com/watch?v=REflwhg0jNs",en:"Bodyweight Split Squat"},
-  {id:"temposquat",name:"سكوات بطيء (تيمبو)",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:["knee"],tip:"انزلي في 3 ثوان واثبتي ثانية ثم اصعدي. البطء يزيد الحمل.",type:"compound",pattern:"legs",video:"https://www.youtube.com/watch?v=HjKa7I_maY8",en:"Tempo Bodyweight Squat"},
-  {id:"slgbridge",name:"جسر المؤخرة بساق واحدة",group:"hams",muscle:"hamstrings",env:["gym","home","bodyweight"],level:1,risk:["lowerback"],tip:"جسر بساق واحدة والكعب قريب من المؤخرة، اعصري في الأعلى.",type:"isolation",pattern:"legs",video:"https://www.youtube.com/watch?v=nat5dN0Kuao",en:"Single-Leg Glute Bridge"},
-  {id:"bridgemarch",name:"مسير جسر المؤخرة",group:"hams",muscle:"hamstrings",env:["gym","home","bodyweight"],level:1,risk:["lowerback"],tip:"من وضع الجسر، ارفعي ركبة ثم الأخرى بالتناوب مع ثبات الحوض.",type:"isolation",pattern:"legs",video:"https://www.youtube.com/watch?v=RESEoAnLEmk",en:"Glute Bridge March"},
-  {id:"towelcurl",name:"ثني الفخذ الخلفي بالمنشفة",group:"hams",muscle:"hamstrings",env:["gym","home","bodyweight"],level:2,risk:["lowerback"],tip:"منشفة تحت الكعبين على أرض ملساء، مدي وارجعي والحوض مرفوع.",type:"isolation",pattern:"legs",video:"https://www.youtube.com/watch?v=cWSsWpuxmYM",en:"Towel / Sliding Hamstring Curl"},
-  {id:"hamwalkout",name:"مشي الجسر للأمام",group:"hams",muscle:"hamstrings",env:["gym","home","bodyweight"],level:2,risk:["lowerback"],tip:"من الجسر، امشي بقدميك للأمام تدريجيا مع بقاء الحوض عاليا.",type:"isolation",pattern:"legs",video:"https://www.youtube.com/watch?v=ucvakYAHzWw",en:"Hamstring Walkout"},
-  {id:"revhyper",name:"تمديد الورك المعكوس على المقعد",group:"hams",muscle:"hamstrings",env:["gym","home","bodyweight"],level:2,risk:["lowerback"],tip:"جذعك على المقعد وساقاك حرتان، ارفعيهما لمستوى الجسم.",type:"isolation",pattern:"legs",video:"https://www.youtube.com/watch?v=CxnHZ3Oy3YQ",en:"Bench Reverse Hyperextension"},
-  {id:"adductsqueeze",name:"عصر الوسادة بين الركبتين",group:"adductors",muscle:"adductors",env:["gym","home","bodyweight"],level:1,risk:[],tip:"وسادة بين الركبتين، اعصري 10 ثوان واسترخي دون أن تسقط.",type:"isolation",pattern:"legs",video:"https://www.youtube.com/watch?v=_ZE5oF1qaWo",en:"Isometric Adductor Squeeze"},
-  {id:"slidelunge",name:"طعنة جانبية منزلقة",group:"adductors",muscle:"adductors",env:["gym","home","bodyweight"],level:2,risk:[],tip:"انزلقي بساق للجانب مع بقاء الأخرى ممدودة.",type:"isolation",pattern:"legs",video:"https://www.youtube.com/watch?v=jV41XYrGW6U",en:"Sliding Lateral Lunge"},
-  {id:"clamshell",name:"المحارة",group:"glutes",muscle:"glutes",env:["gym","home","bodyweight"],level:1,risk:[],tip:"مستلقية على الجنب والركبتان مثنيتان، افتحي الركبة العليا.",type:"compound",pattern:"legs",video:"https://www.youtube.com/watch?v=EG5_gXcfozw",en:"Clamshell"},
-  {id:"stepcalf",name:"رفع السمانة على درجة",group:"calves",muscle:"calves",env:["gym","home","bodyweight"],level:1,risk:[],tip:"كعبك خارج الدرجة، انزلي لأقصى مدى ثم ارفعي لأعلى نقطة.",type:"isolation",pattern:"legs",video:"https://www.youtube.com/watch?v=rbvyXV1uHhY",en:"Calf Raise on Step"},
-  {id:"tiptoewalk",name:"المشي على أطراف الأصابع",group:"calves",muscle:"calves",env:["gym","home","bodyweight"],level:1,risk:[],tip:"امشي على أطراف أصابعك مسافة 20 مترا أو 30 ثانية.",type:"isolation",pattern:"legs",video:"https://www.youtube.com/watch?v=D71EAOKlob4",en:"Tiptoe Walk"}
+  {id:"kneepush",name:"ضغط على الركبتين",group:"chest",muscle:"chest",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"من وضع الركبتين، حافظي على استقامة الجذع من الركبة للكتف.",type:"compound",pattern:"push",video:"https://youtu.be/zVnlzUV7a2w",en:"Knee Push-Up"},
+  {id:"negpush",name:"ضغط سلبي بطيء",group:"chest",muscle:"chest",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"انزلي ببطء في 4 ثوان ثم ارجعي بأي طريقة. أفضل تدرج نحو الضغط الكامل.",type:"compound",pattern:"push",video:"https://youtu.be/dK0FbJvPCug",en:"Negative Push-Up"},
+  {id:"archerpush",name:"ضغط الأرشر",group:"chest",muscle:"chest",env:["gym","home","bodyweight"],level:2,risk:["wrist"],tip:"مدي ذراعا للجانب واضغطي بالأخرى - تدرج نحو الضغط بذراع واحدة.",type:"compound",pattern:"push",video:"https://youtu.be/A0r8ploEnZY",en:"Archer Push-Up"},
+  {id:"tablerow",name:"تجديف تحت الطاولة",group:"back",muscle:"upperback",env:["home","bodyweight"],level:1,risk:[],tip:"استلقي تحت طاولة ثابتة واسحبي صدرك نحوها والجسم مستقيم.",type:"compound",pattern:"pull",video:"https://youtu.be/6NTruShwwKk",en:"Table Inverted Row"},
+  {id:"doorrow",name:"تجديف ثابت على إطار الباب",group:"back",muscle:"upperback",env:["home","bodyweight"],level:1,risk:[],tip:"امسكي إطار الباب واتكئي للخلف ثم اسحبي نفسك.",type:"compound",pattern:"pull",video:"https://youtu.be/KH1qPoZ4Klw",en:"Door Frame Row"},
+  {id:"ytwraise_back",name:"رفعات Y-T-W مستلقية على البطن",group:"back",muscle:"upperback",env:["gym","home","bodyweight"],level:1,risk:[],tip:"منبطحة، ارفعي ذراعيك على شكل Y ثم T ثم W مع إبهام لأعلى.",type:"isolation",pattern:"pull",video:"https://youtu.be/LSy6R7j3PDc",en:"Prone Y-T-W Raise"},
+  {id:"scappull",name:"سحب لوحي الكتف معلقا",group:"back",muscle:"upperback",env:["gym","bodyweight"],level:2,risk:[],tip:"معلقة على البار، اسحبي لوحي كتفك لأسفل دون ثني المرفق.",type:"compound",pattern:"pull",video:"https://youtu.be/1I9JZz8iNFA",en:"Scapular Pull-Up"},
+  {id:"selflateral",name:"رفرفة جانبية بمقاومة ذاتية",group:"shoulders",muscle:"frontdelt",env:["gym","home","bodyweight"],level:1,risk:["shoulder"],tip:"قاومي بيدك الأخرى أثناء رفع الذراع للجانب.",type:"isolation",pattern:"push",video:"https://youtu.be/7UJ_ZN05Vfs",en:"Self-Resisted Lateral Raise"},
+  {id:"bearcrawl",name:"زحف الدب",group:"shoulders",muscle:"frontdelt",env:["gym","home","bodyweight"],level:2,risk:["shoulder"],tip:"ازحفي والركبة على بعد شبر من الأرض والظهر مستقيم.",type:"isolation",pattern:"core",video:"https://youtu.be/U3Y58Kyw7Xw",en:"Bear Crawl"},
+  {id:"walltri",name:"ضغط الترايسبس على الحائط",group:"triceps",muscle:"triceps",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"يداك على الحائط بقبضة ضيقة، اثني المرفقين وادفعي.",type:"compound",pattern:"push",video:"https://youtu.be/PxtPjBXrtY8",en:"Wall Triceps Press"},
+  {id:"kneeclosepush",name:"ضغط قبضة ضيقة على الركبتين",group:"triceps",muscle:"triceps",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"ضغط على الركبتين واليدان قريبتان والمرفقان ملاصقان للجسم.",type:"compound",pattern:"push",video:"https://youtu.be/5afQUU8VllM",en:"Close-Grip Knee Push-Up"},
+  {id:"bwskull",name:"تمديد الترايسبس على الأرض",group:"triceps",muscle:"triceps",env:["gym","home","bodyweight"],level:2,risk:["wrist"],tip:"من وضع الركوع، اثني المرفقين فقط والجذع ثابت.",type:"isolation",pattern:"push",video:"https://youtu.be/hl86OCmYZG4",en:"Bodyweight Skull Crusher"},
+  {id:"chairsquat",name:"سكوات على الكرسي",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:["knee"],tip:"انزلي حتى تلمسي الكرسي بخفة ثم انهضي دون ارتخاء كامل.",type:"compound",pattern:"legs",video:"https://youtu.be/Z20XNb0VdEk",en:"Chair Squat"},
+  {id:"splitsquat",name:"سكوات سبليت ثابت",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:["knee"],tip:"قدم أمام وقدم خلف ثابتتان، انزلي عموديا لا للأمام.",type:"compound",pattern:"legs",video:"https://youtu.be/2xklZsB6bcI",en:"Static Split Squat"},
+  {id:"temposquat",name:"سكوات بطيء (تيمبو)",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:["knee"],tip:"انزلي في 3 ثوان واثبتي ثانية ثم اصعدي. البطء يزيد الحمل.",type:"compound",pattern:"legs",video:"https://youtu.be/HjKa7I_maY8",en:"Tempo Squat"},
+  {id:"slgbridge",name:"جسر المؤخرة بساق واحدة",group:"hams",muscle:"hamstrings",env:["gym","home","bodyweight"],level:1,risk:["lowerback"],tip:"جسر بساق واحدة والكعب قريب من المؤخرة، اعصري في الأعلى.",type:"compound",pattern:"legs",video:"https://youtu.be/VUl8R0kn6v4",en:"Single-Leg Glute Bridge"},
+  {id:"hamwalkout",name:"مشي الجسر للأمام",group:"hams",muscle:"hamstrings",env:["gym","home","bodyweight"],level:2,risk:["lowerback"],tip:"من الجسر، امشي بقدميك للأمام تدريجيا مع بقاء الحوض عاليا.",type:"isolation",pattern:"legs",video:"https://youtu.be/6yeyt5mUo94",en:"Bridge Walkout"},
+  {id:"revhyper",name:"تمديد الورك المعكوس على المقعد",group:"hams",muscle:"hamstrings",env:["gym","home","bodyweight"],level:2,risk:["lowerback"],tip:"جذعك على المقعد وساقاك حرتان، ارفعيهما لمستوى الجسم.",type:"compound",pattern:"legs",video:"https://youtu.be/X8tky2EUVVY",en:"Reverse Hyperextension"},
+  {id:"slidelunge",name:"طعنة جانبية منزلقة",group:"adductors",muscle:"adductors",env:["gym","home","bodyweight"],level:2,risk:[],tip:"انزلقي بساق للجانب مع بقاء الأخرى ممدودة.",type:"compound",pattern:"legs",video:"https://youtu.be/z1JTyLIYHoo",en:"Sliding Side Lunge"},
+  {id:"clamshell",name:"المحارة",group:"glutes",muscle:"glutes",env:["gym","home","bodyweight"],level:1,risk:[],tip:"مستلقية على الجنب والركبتان مثنيتان، افتحي الركبة العليا.",type:"isolation",pattern:"legs",video:"https://youtu.be/60bOHs_51MI",en:"Clamshell"},
+  {id:"stepcalf",name:"رفع السمانة على درجة",group:"calves",muscle:"calves",env:["gym","home","bodyweight"],level:1,risk:[],tip:"كعبك خارج الدرجة، انزلي لأقصى مدى ثم ارفعي لأعلى نقطة.",type:"isolation",pattern:"legs",video:"https://youtu.be/NPWkc5-6qD0",en:"Calf Raise on Step"},
+  {id:"tiptoewalk",name:"المشي على أطراف الأصابع",group:"calves",muscle:"calves",env:["gym","home","bodyweight"],level:1,risk:[],tip:"امشي على أطراف أصابعك مسافة 20 مترا أو 30 ثانية.",type:"isolation",pattern:"legs",video:"https://youtu.be/c_I-ui3PCrc",en:"Tiptoe Walk"},
+
+  /* تمارين الدعم والتأهيل - تدخل الجدول كبقية التمارين */
+  {id:"sup_knee_0",name:"تمديد الركبة جالسة (تقوية الفخذ الأمامي)",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:[],tip:"تمديد الركبة جالسة (تقوية الفخذ الأمامي).",type:"isolation",pattern:"legs",video:"https://youtu.be/MuDHSzyb8Go",en:"",support:"دعم الركبة",supType:"تقوية"},
+  {id:"sup_knee_1",name:"رفع الساق المستقيمة",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:[],tip:"افردي ركبتك ببطء وأنت جالسة على كرسي واثبتي ثانيتين. 3×12.",type:"isolation",pattern:"legs",video:"https://youtu.be/U4L_6JEv9Jg",en:"",support:"دعم الركبة",supType:"تقوية"},
+  {id:"sup_knee_2",name:"جسر المؤخرة",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:[],tip:"استلقي وارفعي الساق ممدودة 30 سم دون ثني الركبة. 3×10 لكل ساق.",type:"isolation",pattern:"legs",video:"https://youtu.be/YRqoIM0u0PY",en:"",support:"دعم الركبة",supType:"تقوية"},
+  {id:"sup_knee_3",name:"انزلاق الظهر على الحائط",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ادفعي وركك لأعلى من وضع الاستلقاء لتقوية الداعمات. 3×12.",type:"isolation",pattern:"legs",video:"https://youtu.be/xhbpQ80JiUQ",en:"",support:"دعم الركبة",supType:"تقوية"},
+  {id:"sup_knee_4",name:"إطالة الفخذ الخلفي مستلقية",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:[],tip:"انزلي للنصف فقط مسندة ظهرك بالحائط دون ألم. 3×10.",type:"isolation",pattern:"legs",video:"https://youtu.be/Il1L75v6gq0",en:"",support:"دعم الركبة",supType:"إطالة"},
+  {id:"sup_knee_5",name:"رفع السمانة واقفة",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:[],tip:"استلقي وارفعي ساقك المستقيمة بمساعدة منشفة حول القدم. ثبات 20 ثانية.",type:"isolation",pattern:"legs",video:"https://youtu.be/k8ipHzKeAkQ",en:"",support:"دعم الركبة",supType:"تقوية"},
+  {id:"sup_lowerback_0",name:"إمالة الحوض الخلفية",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"إمالة الحوض الخلفية.",type:"isolation",pattern:"core",video:"https://youtu.be/44s2-4rEjoo",en:"",support:"دعم أسفل الظهر",supType:"تقوية"},
+  {id:"sup_lowerback_1",name:"القطة البقرة",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"استلقي واضغطي أسفل ظهرك للأرض بشد بطنك. 3×12.",type:"isolation",pattern:"core",video:"https://youtu.be/LIVJZZyZ2qM",en:"",support:"دعم أسفل الظهر",supType:"مرونة"},
+  {id:"sup_lowerback_2",name:"الكلب الطائر",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"قوسي ظهرك لأعلى وأسفل برفق على وضع الزحف. 10 مرات.",type:"isolation",pattern:"core",video:"https://youtu.be/ZdAHe9_HeEw",en:"",support:"دعم أسفل الظهر",supType:"تقوية"},
+  {id:"sup_lowerback_3",name:"بلانك على الركبتين",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"مدي ذراعا وساقا معاكسة مع ثبات الجذع. 3×8 لكل جهة.",type:"isolation",pattern:"core",video:"https://youtu.be/iDSHokfXqyA",en:"",support:"دعم أسفل الظهر",supType:"تقوية"},
+  {id:"sup_lowerback_4",name:"سحب الركبة للصدر",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ثبات بطن خفيف دون ضغط على أسفل الظهر. 3×20 ثانية.",type:"isolation",pattern:"core",video:"https://youtu.be/Yd9wY25koVk",en:"",support:"دعم أسفل الظهر",supType:"إطالة"},
+  {id:"sup_lowerback_5",name:"جسر المؤخرة",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"اسحبي ركبتك نحو صدرك برفق وأنت مستلقية. ثبات 20 ثانية لكل ساق.",type:"isolation",pattern:"core",video:"https://youtu.be/YRqoIM0u0PY",en:"",support:"دعم أسفل الظهر",supType:"تقوية"},
+  {id:"sup_shoulder_0",name:"دوران خارجي بالشريط",group:"shoulders",muscle:"reardelt",env:["gym","home","bodyweight"],level:1,risk:[],tip:"دوران خارجي بالشريط.",type:"isolation",pattern:"pull",video:"https://youtu.be/_UvmPNGtlPM",en:"",support:"دعم الكتف",supType:"تقوية"},
+  {id:"sup_shoulder_1",name:"دوران داخلي بالشريط",group:"shoulders",muscle:"reardelt",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ثبتي مرفقك بجانبك ولفي ساعدك للخارج ضد شريط خفيف. 3×12.",type:"isolation",pattern:"pull",video:"https://youtu.be/N3P7rp7bCYc",en:"",support:"دعم الكتف",supType:"تقوية"},
+  {id:"sup_shoulder_2",name:"رفع الذراع في مستوى اللوح",group:"shoulders",muscle:"reardelt",env:["gym","home","bodyweight"],level:1,risk:[],tip:"نفس الوضع لكن لف الساعد للداخل. 3×12.",type:"isolation",pattern:"pull",video:"https://youtu.be/XOAIGRH90RY",en:"",support:"دعم الكتف",supType:"تقوية"},
+  {id:"sup_shoulder_3",name:"ملاك الحائط",group:"shoulders",muscle:"reardelt",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ارفعي ذراعك لمستوى الكتف بوزن خفيف جدا أو بدون. 3×10.",type:"isolation",pattern:"pull",video:"https://youtu.be/1UU4VvklQ44",en:"",support:"دعم الكتف",supType:"مرونة"},
+  {id:"sup_shoulder_4",name:"ضم لوحي الكتف",group:"shoulders",muscle:"reardelt",env:["gym","home","bodyweight"],level:1,risk:[],tip:"حركي ذراعيك صعودا ونزولا ملاصقة للحائط. 3×10.",type:"isolation",pattern:"pull",video:"https://youtu.be/QN1oZVMMRjE",en:"",support:"دعم الكتف",supType:"تقوية"},
+  {id:"sup_shoulder_5",name:"إطالة الكتف المتقاطعة",group:"shoulders",muscle:"reardelt",env:["gym","home","bodyweight"],level:1,risk:[],tip:"اسحبي لوحي كتفك للخلف وللأسفل واثبتي. 3×12.",type:"isolation",pattern:"pull",video:"https://youtube.com/shorts/aIq0fLi8iak",en:"",support:"دعم الكتف",supType:"إطالة"},
+  {id:"sup_weakcore_0",name:"بلانك على الساعدين",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"بلانك على الساعدين.",type:"isolation",pattern:"core",video:"https://youtu.be/pvIjsG5Svck",en:"",support:"تقوية الكور",supType:"تقوية"},
+  {id:"sup_weakcore_1",name:"الخنفساء",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ابدئي بـ15 ثانية وزيدي تدريجيا. 3 مجموعات.",type:"isolation",pattern:"core",video:"https://youtu.be/GbSC02oU3To",en:"",support:"تقوية الكور",supType:"تقوية"},
+  {id:"sup_weakcore_2",name:"إمالة الحوض",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"مدي ذراعا وساقا معاكسة مع إلصاق ظهرك بالأرض. 3×10.",type:"isolation",pattern:"core",video:"https://youtu.be/TWuR_U9ddcc",en:"",support:"تقوية الكور",supType:"تقوية"},
+  {id:"sup_weakcore_3",name:"بلانك جانبي على الركبة",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"تنشيط عضلات البطن العميقة. 3×12.",type:"isolation",pattern:"core",video:"https://youtu.be/N_s9em1xTqU",en:"",support:"تقوية الكور",supType:"تقوية"},
+  {id:"sup_weakcore_4",name:"الكلب الطائر",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ثبات جانبي خفيف لتقوية الخصر. 3×15 ثانية لكل جهة.",type:"isolation",pattern:"core",video:"https://youtu.be/ZdAHe9_HeEw",en:"",support:"تقوية الكور",supType:"تقوية"},
+  {id:"sup_weakcore_5",name:"جسر المؤخرة مع شد البطن",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ثبات وتوازن للجذع. 3×8 لكل جهة.",type:"isolation",pattern:"core",video:"https://youtu.be/J_2ImNPjxtc",en:"",support:"تقوية الكور",supType:"تقوية"},
+  {id:"sup_wrist_0",name:"إطالة قابضات الرسغ",group:"biceps",muscle:"biceps",env:["gym","home","bodyweight"],level:1,risk:[],tip:"إطالة قابضات الرسغ.",type:"isolation",pattern:"pull",video:"https://youtu.be/i-JV2PsFzWA",en:"",support:"دعم الرسغ",supType:"إطالة"},
+  {id:"sup_wrist_1",name:"إطالة باسطات الرسغ",group:"biceps",muscle:"biceps",env:["gym","home","bodyweight"],level:1,risk:[],tip:"مدي ذراعك واسحبي أصابعك للأسفل برفق. 20 ثانية لكل يد.",type:"isolation",pattern:"pull",video:"https://youtu.be/80Y3HHMgo6w",en:"",support:"دعم الرسغ",supType:"إطالة"},
+  {id:"sup_wrist_2",name:"تدوير الرسغ",group:"biceps",muscle:"biceps",env:["gym","home","bodyweight"],level:1,risk:[],tip:"اسحبي أصابعك للأعلى برفق. 20 ثانية لكل يد.",type:"isolation",pattern:"pull",video:"https://youtu.be/wRSk1_C6yOM",en:"",support:"دعم الرسغ",supType:"مرونة"},
+  {id:"sup_wrist_3",name:"عصر كرة اليد",group:"biceps",muscle:"biceps",env:["gym","home","bodyweight"],level:1,risk:[],tip:"لفي رسغك بدوائر بطيئة. 10 لكل اتجاه.",type:"isolation",pattern:"pull",video:"https://youtu.be/8h0tSMxLNG4",en:"",support:"دعم الرسغ",supType:"تقوية"},
+  {id:"sup_wrist_4",name:"ثني وبسط الرسغ بوزن خفيف",group:"biceps",muscle:"biceps",env:["gym","home","bodyweight"],level:1,risk:[],tip:"اقبضي يدك ثم افرديها بالكامل. 3×15.",type:"isolation",pattern:"pull",video:"https://youtu.be/UcwgCTkVvIQ",en:"",support:"دعم الرسغ",supType:"تقوية"},
+  {id:"sup_neck_0",name:"إطالة الترابيس العلوية",group:"back",muscle:"upperback",env:["gym","home","bodyweight"],level:1,risk:[],tip:"إطالة الترابيس العلوية.",type:"isolation",pattern:"pull",video:"https://youtu.be/-r0eoFS7_5Q",en:"",support:"دعم الرقبة",supType:"إطالة"},
+  {id:"sup_neck_1",name:"تدوير الرقبة البطيء",group:"back",muscle:"upperback",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ميلي رأسك نحو كتفك برفق. 15 ثانية لكل جهة.",type:"isolation",pattern:"pull",video:"https://youtu.be/UbHEH6t_OJQ",en:"",support:"دعم الرقبة",supType:"مرونة"},
+  {id:"sup_neck_2",name:"شد الذقن للداخل",group:"back",muscle:"upperback",env:["gym","home","bodyweight"],level:1,risk:[],tip:"لفي رأسك ببطء نحو كل كتف. 10 مرات.",type:"isolation",pattern:"pull",video:"https://youtu.be/7rnlAVhAK-8",en:"",support:"دعم الرقبة",supType:"تقوية"},
+  {id:"sup_neck_3",name:"إطالة الرافعة اللوحية",group:"back",muscle:"upperback",env:["gym","home","bodyweight"],level:1,risk:[],tip:"sup_shoulder_5",type:"isolation",pattern:"pull",video:"https://youtu.be/GSoXPJRnR6E",en:"",support:"دعم الرقبة",supType:"إطالة"},
+  {id:"sup_neck_4",name:"تدوير الكتفين",group:"back",muscle:"upperback",env:["gym","home","bodyweight"],level:1,risk:[],tip:"أنزلي ذقنك نحو صدرك برفق. ثبات 15 ثانية.",type:"isolation",pattern:"pull",video:"https://youtu.be/XbzY45Z5DE8",en:"",support:"دعم الرقبة",supType:"استرخاء"},
+  {id:"sup_diastasis_0",name:"التنفس الحجابي",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"التنفس الحجابي.",type:"isolation",pattern:"core",video:"https://youtu.be/TPGUgXWBY4Y",en:"",support:"الانفصال العضلي",supType:"تنفس"},
+  {id:"sup_diastasis_1",name:"إمالة الحوض الخلفية",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"استلقي وضعي يدك على بطنك. شهيق عميق من الأنف حتى يرتفع بطنك، ثم زفير ببطء مع سحب البطن للداخل. 5 دقائق يوميا.",type:"isolation",pattern:"core",video:"https://youtu.be/-AWtsAzHBp4",en:"",support:"الانفصال العضلي",supType:"تقوية"},
+  {id:"sup_diastasis_2",name:"جسر المؤخرة",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"استلقي مع ثني الركبتين. اضغطي أسفل ظهرك للأرض بشد البطن وإمالة الحوض لأعلى ببطء. 3×10.",type:"isolation",pattern:"core",video:"https://youtu.be/YRqoIM0u0PY",en:"",support:"الانفصال العضلي",supType:"تقوية"},
+  {id:"sup_diastasis_3",name:"الكلب الطائر",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ارفعي الحوض ببطء مع شد البطن دون تقويس أسفل الظهر. 3×12.",type:"isolation",pattern:"core",video:"https://youtu.be/ZdAHe9_HeEw",en:"",support:"الانفصال العضلي",supType:"تقوية"},
+  {id:"sup_diastasis_4",name:"المحارة",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"من وضع اليدين والركبتين، مدي ذراعا وساقا معاكسة بشكل مستقيم وثبتي مع شد الجذع. 3×10 لكل جهة.",type:"isolation",pattern:"core",video:"https://youtu.be/DAAjOdwZdks",en:"",support:"الانفصال العضلي",supType:"تقوية"},
+  {id:"sup_diastasis_5",name:"تفعيل العضلة المستعرضة (شد البطن العميق)",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"نامي على جنبك بركبتين مثنيتين 45°، وارفعي الركبة العليا دون تحريك الحوض (بشريط مقاومة إن توفر). 3×12 لكل جهة.",type:"isolation",pattern:"core",video:"https://youtu.be/SAgwDAPK8L8",en:"",support:"الانفصال العضلي",supType:"تقوية"}
 ];
 
 /* ===== مكتبة الإطالة والمرونة - معرفات مطابقة لمكتبة التمارين ===== */
@@ -926,7 +965,7 @@ const S = {
    الصياغة حسب جنس العميل
    النصوص الموجهة للعميل مكتوبة بصيغة المؤنث لأن أغلب المشتركات إناث.
    عند اختيار ذكر تحول آليا. القاموس صريح لا اشتقاقي، لأن حذف
-   الياء الأخيرة يفسد كلمات مثل كرسي ولوحي والخلفي».
+   الياء الأخيرة يفسد كلمات مثل كرسي ولوحي والخلفي.
    ============================================================ */
 const GT_VERBS = {
   "أبقي":"أبق","أمسكي":"أمسك","أنزلي":"أنزل","اثني":"اثن","اجمعي":"اجمع","اخطي":"اخط",
@@ -946,14 +985,14 @@ const GT_VERBS = {
   "زيديه":"زده","أديها":"أدها","سجليه":"سجله","استخدميه":"استخدمه","أعيدي":"أعد",
   "أكملي":"أكمل","تكملي":"تكمل","تصلي":"تصل","تنتظري":"تنتظر","أبطئي":"أبطئ",
   "تزيدي":"تزيد","تزيدين":"تزيد","تحددينه":"تحدده","انتهيت":"انتهيت","توقفت":"توقفت",
-  "تخمني":"تخمن","راجعي":"راجع","أنت":"أنت","ثبتي":"ثبت","ركزي":"ركز","اضغطي":"اضغط","استلقي":"استلق","اجلسي":"اجلس"
+  "تخمني":"تخمن","قيسي":"قس","سجلي":"سجل","اطبعي":"اطبع","راجعي":"راجع","أنت":"أنت","ثبتي":"ثبت","ركزي":"ركز","اضغطي":"اضغط","استلقي":"استلق","اجلسي":"اجلس"
 };
 const GT_WORDS = {
   "مستلقية":"مستلقيا","جالسة":"جالسا","واقفة":"واقفا","منبطحة":"منبطحا","ممدودة":"ممدودة",
   "تشعرين":"تشعر","تقدرين":"تقدر","تزيدين":"تزيد","تحتاجين":"تحتاج","ترسمين":"ترسم",
   "تتوقفين":"تتوقف","تهدمين":"تهدم","تتحملين":"تتحمل","ستشعرين":"ستشعر","تلاحظين":"تلاحظ",
   "تستطيعين":"تستطيع","تبدئين":"تبدأ","أنت":"أنت","نفسك":"نفسك","جسمك":"جسمك",
-  /* صيغ النهي: لا تتأرجحي» → «لا تتأرجح» */
+  /* صيغ النهي: لا تتأرجحي → لا تتأرجح */
   "تتأرجحي":"تتأرجح","تتحركي":"تتحرك","تندفعي":"تندفع","تتركي":"تترك","تعتمدي":"تعتمد",
   "تقتصري":"تقتصر","تكفي":"تكف","تبني":"تبن","تنسي":"تنس","تستعجلي":"تستعجل",
   "تفرطي":"تفرط","تحبسي":"تحبس","تميلي":"تمل","تقفلي":"تقفل","تهملي":"تهمل","تقارني":"تقارن","تتجاوزيه":"تتجاوزه","تتجاوزي":"تتجاوز","تتركيها":"تتركها",
@@ -974,7 +1013,7 @@ function gtRegex(){
   /* نسمح بواو أو فاء ملتصقة قبل الفعل (واعصري وفارفعي) ونعيدها كما هي،
      وإلا فاتت أكثر من نصف الحالات. */
   /* البنية: [واو/فاء ملتصقة] + الفعل + [ضمير ملتصق]
-     «واسحبيه» = و + اسحبي + ه ← «واسحبه. بدون الضمير تفوت حالات كثيرة. */
+     واسحبيه = و + اسحبي + ه ← واسحبه. بدون الضمير تفوت حالات كثيرة. */
   /* السوابق: واو وفاء ولام الجر والباء والكاف - للمشتركة وبالعميلة
      كانت تفوت لأن التعبير يقبل الواو والفاء فقط. */
   __gtRe = new RegExp("(^|[^\\u0621-\\u064A])([وف]?(?:لل|بال|كال|ال|ل|ب|ك)?)(" + keys.join("|") +
@@ -1174,7 +1213,7 @@ function screenSetup(){
             <span class="emoji">${d}</span><b>${d} أيام</b>
           </div>`).join("")}
       </div>
-      <!-- محدد عدد التمارين في اليوم أزيل: المحرك يحسبه من الحجم الأسبوعي،
+      <!-- محدد «عدد التمارين في اليوم» أزيل: المحرك يحسبه من الحجم الأسبوعي،
            وبقاؤه كان يوهم بأنه يؤثر وهو لا يؤثر. الحدان أعلاه هما التحكم الفعلي. -->
 
       <span class="eyebrow" style="display:block;margin-top:24px">الحالات الصحية <span style="color:var(--muted);font-weight:600">(اختياري)</span></span>
@@ -1267,14 +1306,14 @@ function notesCard(){
     <div class="field" style="margin-top:10px">
       <label>ملاحظات عامة</label>
       <textarea id="cl-notes" rows="5" style="line-height:2"
-        placeholder="مثال: ابدئي بأوزان خفيفة أول أسبوعين | راقبي ألم الركبة اليمنى في السكوات وقللي المدى إن زاد | صوري نفسك في الرفعة الرومانية وأرسلي المقطع.">${(S.notes||"").replace(/</g,"&lt;")}</textarea>
+        placeholder="مثال: ابدئي بأوزان خفيفة أول أسبوعين · راقبي ألم الركبة اليمنى في السكوات وقللي المدى إن زاد · صوري نفسك في الرفعة الرومانية وأرسلي المقطع.">${(S.notes||"").replace(/</g,"&lt;")}</textarea>
     </div>
 
     ${(S.plan||[]).map((d,i)=>`
       <div class="field" style="margin-top:8px">
         <label style="font-size:12.5px">ملاحظة على ${d.title}</label>
         <input id="cl-note-${i}" value="${((S.dayNotes||{})[i]||"").replace(/"/g,'&quot;')}"
-               placeholder="اختياري - تنبيه خاص بهذا اليوم">
+               placeholder="اختياري — تنبيه خاص بهذا اليوم">
       </div>`).join("")}
 
     <div class="actions" style="margin-top:12px">
@@ -1342,7 +1381,7 @@ function screenPlan(){
         <div class="day-top">
           <div class="num">${i+1}</div>
           <div><b>اليوم ${i+1} - ${day.title}</b>
-          <small>${day.exercises.length} تمارين | وصف كل تمرين بجانبه</small></div>
+          <small>${day.exercises.length} تمارين | وصفة كل تمرين مبينة بجانبه</small></div>
         </div>
         ${((S.dayNotes||{})[i]||"").trim()?`
           <div style="background:#fff7ee;border-right:4px solid var(--orange);padding:11px 16px;font-size:13.5px;color:#8a5a13;font-weight:700;line-height:1.9">
@@ -1352,8 +1391,8 @@ function screenPlan(){
           <div class="ex-row">
             <div class="pic">${imgPic(e.muscle)}</div>
             <div class="body">
-              ${e.en?`<b style="direction:ltr;display:block;text-align:right;letter-spacing:.2px">${e.en}</b>`:""}
-              <div style="font-size:13.5px;color:#3d4d68;font-weight:700;margin-top:2px">${gt(e.name)}</div>
+              <b>${gt(e.name)}</b>
+              ${e.en?`<div style="font-size:11.5px;color:var(--muted);font-weight:700;letter-spacing:.2px;margin-top:1px">${e.en}</div>`:""}
               <div class="tip"><span class="i">💡</span> ${gt(e.tip)}</div>
             </div>
             <div class="sets">
@@ -1392,6 +1431,7 @@ function screenPlan(){
         <div style="white-space:pre-wrap;font-size:14.5px;line-height:2.1;color:#33476b;font-weight:600;margin-top:8px">${(S.notes||"").replace(/</g,"&lt;")}</div>
       </div>`:""}
     ${notesCard()}
+    ${supportCard()}
     ${postureCard()}
     ${reportPanel()}
     <div class="note">كل تمرين مربوط بصورة عضلته تلقائيا | الـ PDF يحتوي غلافا + الجدول + الإحماء + الدليل التثقيفي.</div>
@@ -1427,7 +1467,7 @@ function screenImages(){
       <div style="background:#eef4ff;border:1px solid #c9dcff;border-radius:14px;padding:14px 16px;margin-bottom:18px;font-size:13px;color:#33476b;font-weight:600;line-height:1.9">
         <b>📱 الفتح من أي جهاز:</b> الصور المرفوعة هنا تحفظ في متصفح هذا الجهاز فقط.
         لتظهر على كل جهاز، ضعي الصور كملفات في مجلد <code style="background:#fff;padding:1px 6px;border-radius:5px">img/</code> بجانب البرنامج على الخادم
-        بأسماء المفاتيح (<code style="background:#fff;padding:1px 6px;border-radius:5px">chest.png</code>، <code style="background:#fff;padding:1px 6px;border-radius:5px">glutes.png</code>، <code style="background:#fff;padding:1px 6px;border-radius:5px">logo.png</code> ...)
+        بأسماء المفاتيح (<code style="background:#fff;padding:1px 6px;border-radius:5px">chest.png</code>، <code style="background:#fff;padding:1px 6px;border-radius:5px">glutes.png</code>، <code style="background:#fff;padding:1px 6px;border-radius:5px">logo.png</code> …)
         - البرنامج يلتقطها تلقائيا.<br>
         أو استخدمي التصدير والاستيراد أدناه لنقل كل شيء بملف واحد.
         <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
@@ -1646,6 +1686,84 @@ function buildCorrectiveRoutine(){
 
 /* لم تعد تحقن في الأيام - تبقى للتوافق فقط */
 function injectCorrectives(plan, maxDaily){ return; }
+
+/* ============================================================
+   تمارين الدعم تدخل الجدول
+   الحالة الصحية المختارة تدخل تمارين دعمها في الأيام، بجرعة
+   واضحة (مجموعات وتكرارات) وتكرار أسبوعي محدد - بدل أن تبقى
+   تنبيها نصيا لا تعرف المشتركة كم مرة تؤديه.
+   ============================================================ */
+const SUPPORT_MAP = {
+  knee:"دعم الركبة", lowerback:"دعم أسفل الظهر", shoulder:"دعم الكتف",
+  weakcore:"تقوية الكور", wrist:"دعم الرسغ", neck:"دعم الرقبة",
+  diastasis:"الانفصال العضلي"
+};
+/* الجرعة: نوع التمرين يحدد المجموعات والتكرارات */
+const SUP_DOSE = {
+  "تقوية": {sets:3, reps:"12-15"},
+  "إطالة": {sets:2, reps:"30 ثانية"},
+  "مرونة": {sets:2, reps:"10 مرات"},
+  "استرخاء":{sets:2, reps:"30 ثانية"},
+  "تنفس":  {sets:3, reps:"8 أنفاس"}
+};
+const SUP_FREQ = {
+  knee:"كل يوم تمرين + يومين إضافيين", lowerback:"يوميا",
+  shoulder:"كل يوم تمرين", weakcore:"كل يوم تمرين",
+  wrist:"يوميا - دقيقتان تكفي", neck:"يوميا - كل ساعتين أمام الشاشة",
+  diastasis:"يوميا"
+};
+function supportSelected(){
+  return (S.conditions||[]).map(c=>SUPPORT_MAP[c]).filter(Boolean);
+}
+/* روتين الدعم: مستقل ومجرع، ويدخل الجدول أيضا */
+function buildSupportRoutine(){
+  const grps = supportSelected();
+  if(!grps.length) return null;
+  const items = [];
+  grps.forEach(g=>{
+    EX.filter(e=>e.support===g).forEach(e=>{
+      if(items.some(x=>x.id===e.id)) return;
+      const d = SUP_DOSE[e.supType] || {sets:3, reps:"12-15"};
+      items.push({id:e.id, name:e.name, tip:e.tip, muscle:e.muscle,
+        sets:d.sets, reps:d.reps, video:videoLinks[e.id]||e.video||"",
+        forGroup:g, kind:e.supType});
+    });
+  });
+  const conds = (S.conditions||[]).filter(c=>SUPPORT_MAP[c]);
+  const daily = conds.some(c=>(SUP_FREQ[c]||"").includes("يوميا"));
+  return {
+    items, groups:grps,
+    times: daily ? "يوميا" : "كل يوم تمرين",
+    detail: conds.map(c=>({name:SUPPORT_MAP[c], freq:SUP_FREQ[c]||"كل يوم تمرين"})),
+    mins: items.length<=6 ? "6-8 دقائق" : "10-12 دقيقة"
+  };
+}
+
+/* تمارين الدعم توزع على الأيام في آخر كل يوم، بحد أقصى تمرينين
+   لليوم حتى لا تطغى على التمرين الأساسي. الحد الأقصى محترم. */
+function injectSupport(plan, maxDaily){
+  const r = (typeof buildSupportRoutine === "function") ? buildSupportRoutine() : null;
+  if(!r || !r.items.length || !plan.length) return;
+  const inPlan = new Set();
+  plan.forEach(d=>d.exercises.forEach(e=>inPlan.add(e.id)));
+  let di=0, perDay={};
+  r.items.forEach(it=>{
+    if(inPlan.has(it.id)) return;
+    let day=null;
+    for(let k=0;k<plan.length;k++){
+      const c=plan[(di+k)%plan.length], idx=(di+k)%plan.length;
+      if(c.exercises.length < maxDaily && (perDay[idx]||0) < 2){
+        day=c; perDay[idx]=(perDay[idx]||0)+1; di=(idx+1)%plan.length; break;
+      }
+    }
+    if(!day) return;
+    const ex = EX.find(e=>e.id===it.id);
+    if(!ex) return;
+    day.exercises.push(Object.assign({}, ex, {sets:it.sets, reps:it.reps,
+      rest:"45 ث", baseSets:it.sets, video:it.video, isSupport:true}));
+    inPlan.add(it.id);
+  });
+}
 
 function generate(){
   const danger=dangerSet();
@@ -2419,8 +2537,8 @@ function buildPdfHTML(){
       rows+=`<tr style="page-break-inside:avoid">
         <td style="width:84px;padding:9px 8px;vertical-align:middle">${pic}</td>
         <td style="padding:9px 6px;vertical-align:middle">
-          ${e.en?`<div style="font-family:Cairo;font-weight:800;font-size:14px;color:${navy};direction:ltr;text-align:right;letter-spacing:.2px">${e.en}</div>`:""}
-          <div style="font-family:Cairo;font-weight:700;font-size:13.5px;color:#3d4d68;margin-top:2px">${e.name}</div>
+          <div style="font-family:Cairo;font-weight:700;font-size:14.5px;color:${navy}">${e.name}</div>
+          ${e.en?`<div style="font-size:10.5px;color:#8a94a8;font-weight:700;letter-spacing:.3px;direction:ltr;text-align:right;margin-top:1px">${e.en}</div>`:""}
           <div style="font-size:12px;color:#6a7488;font-weight:600;margin-top:2px">💡 ${e.tip}</div>
         </td>
         <td style="width:60px;text-align:center;vertical-align:middle">
@@ -2440,7 +2558,7 @@ function buildPdfHTML(){
         <tr><td style="padding:18px 22px">
           <span style="display:inline-grid;place-items:center;width:40px;height:40px;border-radius:11px;background:${orange};font-family:Cairo;font-weight:900;font-size:18px;color:#fff;vertical-align:middle">${i+1}</span>
           <span style="font-family:Cairo;font-weight:900;font-size:18px;color:#fff;margin-right:12px;vertical-align:middle">اليوم ${i+1} - ${day.title}</span>
-          <div style="color:#b9c5dd;font-weight:600;font-size:12px;margin-top:4px">${day.exercises.length} تمارين | وصف كل تمرين بجانبه</div>
+          <div style="color:#b9c5dd;font-weight:600;font-size:12px;margin-top:4px">${day.exercises.length} تمارين | وصفة كل تمرين بجانبه</div>
         </td></tr>
         ${((S.dayNotes||{})[i]||"").trim()?`
         <tr><td style="padding:0">
@@ -2878,6 +2996,147 @@ function buildPdfHTML(){
   /* صفحة الروتين التصحيحي - مستقلة عن الجدول.
      التوزيع على الأيام كان يخلط التصحيح بالتمارين الأساسية،
      وصفحة واحدة بتكرار واضح أسهل على العميلة. */
+  /* صفحة الدعم والتأهيل: تمارينها مدمجة في الجدول، وهذي الصفحة
+     تجمعها بجرعتها وتكرارها الأسبوعي في مكان واحد. */
+  /* ============================================================
+     أوراق المتابعة - كانت تبنى في الكود ولا تطبع إطلاقا.
+     ورقتان: سجل الأوزان لكل يوم (4 أسابيع)، وجدول القياسات.
+     ============================================================ */
+  let trackP = "";
+  if(S.plan && S.plan.length){
+    const wkHead = `<td style="width:52px;padding:7px 3px;background:${navy};color:#fff;font-family:Cairo;font-weight:800;font-size:10.5px;text-align:center">أسبوع</td>`;
+    const dayPages = S.plan.map((d,di)=>{
+      const rows = d.exercises.map(e=>`
+        <tr style="page-break-inside:avoid">
+          <td style="padding:9px 10px;border-bottom:1px solid #eef0f4;direction:rtl;text-align:right">
+            <div style="font-family:Cairo;font-weight:800;font-size:12.5px;color:${navy}">${e.name}</div>
+            <div style="font-size:10px;color:#8a94a8;font-weight:700">${e.sets} × ${e.reps}</div>
+          </td>
+          ${[1,2,3,4].map(()=>`<td style="width:52px;border-bottom:1px solid #eef0f4;border-right:1px solid #eef0f4;background:#fcfcfd"></td>`).join("")}
+        </tr>`).join("");
+      return `
+      <div style="page-break-inside:avoid;margin-bottom:18px">
+        <div style="font-family:Cairo;font-weight:900;font-size:15px;color:${navy};margin-bottom:7px;direction:rtl;text-align:right">
+          <span style="display:inline-block;width:23px;height:23px;line-height:23px;border-radius:7px;background:${orange};color:#fff;font-size:12px;text-align:center;margin-left:7px">${di+1}</span>${d.title}
+        </div>
+        <table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #e3e7ee;border-radius:11px;overflow:hidden">
+          <tr>
+            <td style="padding:7px 10px;background:${navy};color:#fff;font-family:Cairo;font-weight:800;font-size:11px;direction:rtl;text-align:right">التمرين</td>
+            ${[1,2,3,4].map(w=>`<td style="width:52px;padding:7px 3px;background:${navy};color:#fff;font-family:Cairo;font-weight:800;font-size:10.5px;text-align:center;border-right:1px solid rgba(255,255,255,.15)">أسبوع ${w}</td>`).join("")}
+          </tr>
+          ${rows}
+        </table>
+      </div>`;
+    }).join("");
+
+    const measureRow = (label,hint) => `
+      <tr style="page-break-inside:avoid">
+        <td style="padding:10px 12px;border-bottom:1px solid #eef0f4;direction:rtl;text-align:right">
+          <div style="font-family:Cairo;font-weight:800;font-size:13px;color:${navy}">${label}</div>
+          ${hint?`<div style="font-size:10.5px;color:#8a94a8;font-weight:600">${hint}</div>`:""}
+        </td>
+        ${[1,2,3,4].map(()=>`<td style="width:62px;border-bottom:1px solid #eef0f4;border-right:1px solid #eef0f4;background:#fcfcfd;height:34px"></td>`).join("")}
+      </tr>`;
+
+    trackP = `
+    <div style="page-break-before:always;padding:44px 46px 26px">
+      <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | اطبعي هذه الصفحة</span></div>
+      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:27px;color:${navy};text-align:center;margin-bottom:6px">📋 سجل الأوزان</h1>
+      <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 14px"></div>
+      <div style="page-break-inside:avoid;background:#fff7ee;border:1px solid rgba(232,98,44,.3);border-radius:13px;padding:13px 18px;max-width:660px;direction:rtl;text-align:right;margin:0 auto 16px;font-size:12.5px;color:#8a5a13;font-weight:600;line-height:1.95">
+        سجلي الوزن الذي استخدمته في كل أسبوع. هذا السجل هو الدليل الوحيد على تقدمك -
+        الشعور بالتحسن يخدع، والأرقام لا تخدع. وبدونه لا تعرفين متى تزيدين الوزن.
+      </div>
+      ${dayPages}
+    </div>
+
+    <div style="page-break-before:always;padding:44px 46px 26px">
+      <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | كل أسبوعين</span></div>
+      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:27px;color:${navy};text-align:center;margin-bottom:6px">📏 جدول القياسات</h1>
+      <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 14px"></div>
+
+      <div style="page-break-inside:avoid;background:#eef4ff;border:1px solid #c9dcff;border-radius:13px;padding:14px 18px;max-width:660px;direction:rtl;text-align:right;margin:0 auto 16px;font-size:13px;color:#33476b;font-weight:600;line-height:2">
+        <b style="color:${navy}">متى وكيف؟</b> صباحا قبل الأكل، وبنفس الملابس في كل مرة، وبعد دخول الحمام.
+        قيسي كل أسبوعين لا كل يوم - التغير اليومي ماء لا دهن.
+        <div style="margin-top:8px;padding-top:8px;border-top:1px solid #c9dcff">
+          <b style="color:${navy}">الأهم من الوزن:</b> المحيطات. قد يثبت الوزن وينزل محيط الخصر -
+          وهذا يعني أنك تبنين عضلا وتخسرين دهنا في الوقت نفسه.
+        </div>
+      </div>
+
+      <table style="width:100%;max-width:660px;margin:0 auto;border-collapse:collapse;background:#fff;border:1px solid #e3e7ee;border-radius:12px;overflow:hidden">
+        <tr>
+          <td style="padding:9px 12px;background:${navy};color:#fff;font-family:Cairo;font-weight:800;font-size:12px;direction:rtl;text-align:right">القياس</td>
+          ${["البداية","أسبوع 2","أسبوع 4","أسبوع 6"].map(t=>`<td style="width:62px;padding:9px 3px;background:${navy};color:#fff;font-family:Cairo;font-weight:800;font-size:10.5px;text-align:center;border-right:1px solid rgba(255,255,255,.15)">${t}</td>`).join("")}
+        </tr>
+        ${measureRow("الوزن (كجم)","صباحا قبل الأكل")}
+        ${measureRow("محيط الخصر (سم)","أضيق نقطة فوق السرة")}
+        ${measureRow("محيط البطن (سم)","عند السرة")}
+        ${measureRow("محيط الأرداف (سم)","أوسع نقطة")}
+        ${measureRow("محيط الفخذ (سم)","أعلى نقطة في الفخذ")}
+        ${measureRow("محيط الذراع (سم)","منتصف العضد مسترخيا")}
+        ${measureRow("محيط الصدر (سم)","")}
+        ${measureRow("نسبة الدهون %","إن توفر جهاز قياس")}
+      </table>
+
+      <div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:12px;padding:14px 18px;max-width:660px;direction:rtl;text-align:right;margin:16px auto 0">
+        <b style="font-family:Cairo;color:${navy};font-size:13.5px">📷 صور المتابعة</b>
+        <div style="font-size:12.5px;color:#4a5a78;font-weight:600;line-height:1.95;margin-top:5px">
+          صورة من الأمام والجانب والخلف، كل أربعة أسابيع. نفس الإضاءة ونفس المكان ونفس الملابس.
+          الصور تظهر ما لا يظهره الميزان.
+        </div>
+        <table style="width:100%;border-collapse:collapse;margin-top:10px">
+          <tr>
+            ${["البداية","أسبوع 4","أسبوع 8","أسبوع 12"].map(t=>`<td style="width:25%;padding:4px"><div style="border:1.5px dashed #d5dae3;border-radius:10px;height:52px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#8a94a8;font-weight:700">${t}</div></td>`).join("")}
+          </tr>
+        </table>
+      </div>
+    </div>`;
+  }
+
+  let supportP = "";
+  const __sr = (typeof buildSupportRoutine === "function") ? buildSupportRoutine() : null;
+  if(__sr && S.plan){
+    const where = id => { const o=[]; S.plan.forEach((d,i)=>{ if(d.exercises.some(e=>e.id===id)) o.push("اليوم "+(i+1)); }); return o.join(" و"); };
+    supportP = `
+    <div style="page-break-before:always;padding:44px 52px 26px">
+      <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | دعم وتأهيل</span></div>
+      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">🩹 تمارين الدعم والتأهيل</h1>
+      <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 16px"></div>
+
+      <table style="margin:0 auto 16px;border-collapse:separate;border-spacing:8px"><tr>
+        <td style="background:#fff;border:1px solid #e3e7ee;border-radius:12px;padding:11px 20px;text-align:center;white-space:nowrap"><div style="font-family:Cairo;font-weight:900;font-size:16px;color:#1f9d57">${__sr.times}</div><div style="font-size:11px;color:#6a7488;font-weight:700">التكرار</div></td>
+        <td style="background:#fff;border:1px solid #e3e7ee;border-radius:12px;padding:11px 20px;text-align:center;white-space:nowrap"><div style="font-family:Cairo;font-weight:900;font-size:16px;color:#1f9d57">${__sr.mins}</div><div style="font-size:11px;color:#6a7488;font-weight:700">المدة</div></td>
+        <td style="background:#fff;border:1px solid #e3e7ee;border-radius:12px;padding:11px 20px;text-align:center;white-space:nowrap"><div style="font-family:Cairo;font-weight:900;font-size:16px;color:#1f9d57">${__sr.items.length}</div><div style="font-size:11px;color:#6a7488;font-weight:700">تمارين</div></td>
+      </tr></table>
+
+      <div style="page-break-inside:avoid;background:#eef7f0;border:1px solid #bfe0ca;border-radius:14px;padding:16px 20px;max-width:640px;direction:rtl;text-align:right;word-wrap:break-word;margin:0 auto 16px">
+        <b style="font-family:Cairo;color:${navy};font-size:15px">هذه التمارين جزء من جدولك</b>
+        <div style="font-size:13.5px;color:#1f6b3f;font-weight:600;line-height:2.1;margin-top:7px">
+          تجدينها موزعة داخل أيام التمرين، وليست إضافية. هدفها تقوية المنطقة الضعيفة
+          أو المصابة حتى تتحمل التمارين الأساسية بأمان.
+          <div style="margin-top:9px;padding-top:9px;border-top:1px solid #bfe0ca">
+            ${__sr.detail.map(d=>`<b style="color:${navy}">${d.name}:</b> ${d.freq}`).join("<br>")}
+          </div>
+        </div>
+      </div>
+
+      <table style="width:100%;max-width:640px;margin:0 auto;border-collapse:collapse;background:#fff;border:1px solid #e3e7ee;border-radius:14px;overflow:hidden">
+        ${__sr.items.map((it,n)=>`
+        <tr style="page-break-inside:avoid">
+          <td style="width:34px;padding:12px 8px;text-align:center;vertical-align:middle;border-bottom:1px solid #f0f2f6"><span style="display:inline-block;width:25px;height:25px;line-height:25px;border-radius:8px;background:#eef7f0;color:#1f6b3f;font-family:Cairo;font-weight:900;font-size:12px">${n+1}</span></td>
+          <td style="width:60px;padding:9px 4px;text-align:center;vertical-align:middle;border-bottom:1px solid #f0f2f6">${pdfMuscleBox(it.muscle,46)}</td>
+          <td style="padding:12px 10px;vertical-align:middle;border-bottom:1px solid #f0f2f6;direction:rtl;text-align:right">
+            <div style="font-family:Cairo;font-weight:800;font-size:14px;color:${navy}">${it.name}</div>
+            ${it.tip?`<div style="font-size:11.5px;color:#6a7488;font-weight:600;line-height:1.8;margin-top:2px">${it.tip}</div>`:""}
+            ${where(it.id)?`<div style="font-size:11px;color:#1f6b3f;font-weight:700;margin-top:2px">في ${where(it.id)}</div>`:""}
+          </td>
+          <td style="width:86px;padding:12px 8px;text-align:center;vertical-align:middle;border-bottom:1px solid #f0f2f6;font-family:Cairo;font-weight:900;font-size:13.5px;color:#1f9d57;white-space:nowrap">${it.sets} × ${it.reps}</td>
+        </tr>`).join("")}
+      </table>
+    </div>`;
+  }
+
   let postureP = "";
   const __r = (typeof buildCorrectiveRoutine === "function") ? buildCorrectiveRoutine() : null;
   if(__r){
@@ -2946,7 +3205,7 @@ function buildPdfHTML(){
      ضعيفة وغير متسقة، والفروق بين امرأة وأخرى أكبر من فروق المراحل.
      فالأنفع أن تتعلم القراءة من جسمها لا أن تتبع تقويما. */
   /* صفحة أول أربعة أسابيع - مثال محسوب لا شرح مجرد.
-     المشتركات يسألن وش نسوي في البداية؟» رغم وجود الشرح، لأن الشرح
+     المشتركات يسألن وش نسوي في البداية؟ رغم وجود الشرح، لأن الشرح
      يقول زيدي عند الوصول لأعلى التكرارات ولا يقول كيف يبدو ذلك بالأرقام.
      هنا نأخذ تمرينها هي، بنطاقها هي، ونمشي معها أسبوعا أسبوعا. */
   let startPage = "";
@@ -3019,7 +3278,7 @@ function buildPdfHTML(){
       </div>
 
       <div style="max-width:660px;margin:16px auto 0">
-        <b style="font-family:Cairo;color:${navy};font-size:15px;display:block;margin-bottom:9px">ماذا لو</b>
+        <b style="font-family:Cairo;color:${navy};font-size:15px;display:block;margin-bottom:9px">ماذا لو…</b>
         ${q("الوزن ثقيل ولا أكملي "+lo+" تكرارات؟",
            "انزلي خطوة واحدة ("+step+" كجم) وأكملي. الوزن الذي يكسر التكنيك لا يبني شيئا.")}
         ${q("أكملت "+hi+" بسهولة من الأسبوع الأول؟",
@@ -3105,7 +3364,7 @@ function buildPdfHTML(){
   }
 
 
-  const __pages = gt([pdfMuscleCSS(), cover, intro, coachNotes, body, startPage, postureP, cyclePage, disc, warmup, stretch, cardio, support, library, edu, rights]
+  const __pages = gt([pdfMuscleCSS(), cover, intro, coachNotes, body, startPage, trackP, supportP, postureP, cyclePage, disc, warmup, stretch, cardio, support, library, edu, rights]
          .filter(Boolean).join("\n"));
   return `<div dir="rtl" style="background:#eef1f7;-webkit-print-color-adjust:exact;print-color-adjust:exact">${__pages}</div>`;
 }
@@ -3135,7 +3394,7 @@ function exportViaPrintWindow(){
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>html,body{background:#fff!important;}${css}</style></head><body style="background:#fff">
     <div class="pbar noprint">📄 الجدول جاهز
-      <small>اضغطي الزر، وفي نافذة الطباعة اختاري حفظ بصيغة PDF» وفعلي الرسوم الخلفية»</small>
+      <small>اضغطي الزر، وفي نافذة الطباعة اختاري حفظ بصيغة PDF وفعلي الرسوم الخلفية</small>
       <button onclick="doPrint()">🖨️ حفظ كـ PDF</button>
       <button class="sec" onclick="window.close()">إغلاق</button></div>
     <div style="height:86px" class="noprint"></div>
@@ -3151,7 +3410,7 @@ function exportViaPrintWindow(){
 
 function exportPDF(){
   if(typeof window.html2pdf==="undefined"){
-    alert("سيتم استخدام طباعة المتصفح. فعلي خيار الرسوم الخلفية / Background graphics» لظهور الألوان.");
+    alert("سيتم استخدام طباعة المتصفح. فعلي خيار الرسوم الخلفية / Background graphics لظهور الألوان.");
     window.print(); return;
   }
   const btn=document.querySelector('[data-act="exportpdf"]');
@@ -3656,7 +3915,7 @@ function trimOvershoot(plan){
     const {eff, dir} = volumeOf(plan);
     let best = null;
     plan.forEach(d=>d.exercises.forEach(e=>{
-      if(e.type === "compound" || e.corrective) return;       // المركب والتصحيحي لا يحذفان
+      if(e.type === "compound" || e.corrective || e.isSupport) return;       // المركب والتصحيحي لا يحذفان
       const t = targetWeeklySets(e.group);
       if(eff[e.group] < t * 1.45) return;                     // لم تتجاوز بما يكفي
       if(dir[e.group] - e.sets < directMinFor(e.group)) return; // لا نكسر الحد المباشر
@@ -3727,7 +3986,7 @@ function balanceAudit(plan){
 
 /* ---------- 5. ورقة متابعة أسبوعية ---------- */
 /* ورقة المتابعة: عمود إضافي عند تفعيل تتبع الدورة.
-   التتبع في يد العميلة - البرنامج يوفر المكان فقط. */
+   التتبع في يد العميلة — البرنامج يوفر المكان فقط. */
 function trackingSheet(plan){
   return plan.map(d=>({
     day:d.title,
@@ -3920,7 +4179,11 @@ function generate(){
 
   /* الروتين التصحيحي صار مستقلا عن الجدول، فلا حاجة لحجز مقاعد له.
      الحجز القديم كان يقلص الجدول بلا سبب ويجعل الناتج غير ثابت. */
-  const workCap = maxDaily;
+  /* حجز مقاعد لتمارين الدعم: بدونه تمتلئ الأيام قبل وصولها.
+     تمرينان لليوم كحد أقصى، والحد الأقصى الكلي يبقى محترما. */
+  const __sup = (typeof buildSupportRoutine === "function") ? buildSupportRoutine() : null;
+  const __supPerDay = __sup ? Math.min(2, Math.ceil(__sup.items.length / Math.max(1, S.days))) : 0;
+  const workCap = Math.max(3, maxDaily - __supPerDay);
 
   /* أ) تكرار كل عضلة أسبوعيا - يقرأ من التقسيمة نفسها */
   const freq = {};
@@ -4064,6 +4327,8 @@ function generate(){
      المجموعة الإضافية لعضلة وصلت 80% من هدفها أصلا. */
   injectCorrectives(plan, maxDaily);
   plan.forEach(d=>d.exercises.forEach(e=>used.add(e.id)));
+  injectSupport(plan, maxDaily);
+  plan.forEach(d=>d.exercises.forEach(e=>used.add(e.id)));
   const report = verifyVolume(plan, danger, used, maxDaily);
   trimOvershoot(plan);
   plan.forEach(d=>{ d.warmup = buildWarmup(d); d.cooldown = buildCooldown(d); });
@@ -4115,7 +4380,7 @@ function verifyVolume(plan, danger, used, maxDaily){
 
     while(short() && guard++ < 12){
       const pick = pickFor();
-      if(!pick) break;                                  // لا يوجد تمرين متاح - نتوقف بصدق
+      if(!pick) break;                                  // لا يوجد تمرين متاح — نتوقف بصدق
       // أ) يوم يحتوي العضلة وفيه متسع
       let day = plan.filter(d=>d.groups.includes(muscle) && d.exercises.length < maxDaily)
                     .sort((a,b)=>a.exercises.length-b.exercises.length)[0];
@@ -4154,7 +4419,7 @@ function verifyVolume(plan, danger, used, maxDaily){
       let fix;
       if(!poolLeft)        fix = "لا توجد تمارين إضافية متاحة لهذه العضلة في هذه البيئة/المستوى";
       else if(allFull)     fix = "ارفعي الحد الأقصى لعدد التمارين اليومي";
-      else if(daysWith<2)  fix = "العضلة تظهر مرة واحدة أسبوعيا - زيدي عدد الأيام";
+      else if(daysWith<2)  fix = "العضلة تظهر مرة واحدة أسبوعيا — زيدي عدد الأيام";
       else                 fix = "زيدي عدد الأيام أو ارفعي الحد الأقصى";
       shortfalls.push({muscle, got, target, direct:direct()[muscle]||0, dmin:directMinFor(muscle), fix});
     }
@@ -4196,7 +4461,7 @@ function verifyVolume(plan, danger, used, maxDaily){
     const names = shortfalls.map(s=>DAY_NAMES[s.muscle]||s.muscle).join("، ");
     advice = `بعد كل المحاولات التلقائية بقي نقص في: ${names}. ` +
       (plan.length <= 2
-        ? "يومان في الأسبوع لا يتسعان لحجم كل العضلات - أضيفي يوما ثالثا."
+        ? "يومان في الأسبوع لا يتسعان لحجم كل العضلات — أضيفي يوما ثالثا."
         : "ارفعي الحد الأقصى لعدد التمارين اليومي درجة واحدة، أو أضيفي يوما.");
   }
 
@@ -4240,7 +4505,7 @@ function screenWarmup(){
         </div>`).join("")}
       ${d.warmup.ramp ? `
         <div style="page-break-inside:avoid;background:var(--orange-soft);border:1px solid rgba(232,98,44,.25);border-radius:14px;padding:14px;margin-top:12px">
-          <b style="display:block;margin-bottom:8px">🎯 مجموعات تصاعدية على «${d.warmup.ramp.exercise}»</b>
+          <b style="display:block;margin-bottom:8px">🎯 مجموعات تصاعدية على ${d.warmup.ramp.exercise}</b>
           ${d.warmup.ramp.sets.map(s=>`<div style="padding:4px 0">• ${s}</div>`).join("")}
           <small style="display:block;color:var(--muted);margin-top:8px">${d.warmup.ramp.note}</small>
         </div>` : ""}
@@ -4468,7 +4733,7 @@ async function tryFetch(u){
   if(!r.ok) throw new Error("الرمز " + r.status);
   const t = await r.text();
   if(!t || !t.trim()) throw new Error("رد فارغ");
-  if(t.trim().startsWith("<")) throw new Error("رجع صفحة HTML لا بيانات - الورقة غير منشورة كـ CSV");
+  if(t.trim().startsWith("<")) throw new Error("رجع صفحة HTML لا بيانات — الورقة غير منشورة كـ CSV");
   return {text:t, via:"مباشر"};
 }
 
@@ -4478,7 +4743,7 @@ async function fetchSubscribers(){
   if(!raw){ subsErr = "الصقي الرابط أولا."; render(); return; }
 
   const cands = sheetCandidates(raw);
-  subsLog.push(`جاري تجربة ${cands.length} صيغة للرابط...`);
+  subsLog.push(`جاري تجربة ${cands.length} صيغة للرابط…`);
   render();
 
   for(const u of cands){
@@ -4505,7 +4770,7 @@ async function fetchSubscribers(){
 
 function loadSubsFromText(txt){
   txt = String(txt||"").trim();
-  /* Google Sheets gviz يغلف الـJSON بنداء دالة - نقشره أولا */
+  /* Google Sheets gviz يغلف الـJSON بنداء دالة — نقشره أولا */
   const gv = txt.match(/setResponse\(([\s\S]*)\)\s*;?\s*$/);
   if(gv){
     const j = JSON.parse(gv[1]);
@@ -4591,7 +4856,7 @@ function screenSubs(){
       <div class="hint">
         <b>من أين الرابط؟</b> هو نفس شيت ردود المشتركين الذي تقرأ منه لوحتك.
         من Google Sheets: <b>ملف ← مشاركة ← نشر على الويب</b> ← اختاري الورقة وصيغة
-        <b>«قيم مفصولة بفواصل (CSV)»</b> ← انسخي الرابط والصقيه هنا.
+        <b>قيم مفصولة بفواصل (CSV)</b> ← انسخي الرابط والصقيه هنا.
         <br>يقبل أيضا روابط <code>gviz</code> ومخرجات Apps Script بصيغة JSON.
       </div>
       <div class="actions" style="margin-top:12px">
@@ -4912,7 +5177,7 @@ function findExercise(raw){
 }
 
 /* يحلل نصا كاملا إلى أيام وتمارين.
-   يفهم: عناوين الأيام | «3 × 8-12» بأي صيغة | الشرط والنقاط في أول السطر */
+   يفهم: عناوين الأيام | 3 × 8-12 بأي صيغة | الشرط والنقاط في أول السطر */
 function parseManualPlan(text){
   const lines = String(text||"").split("\n");
   const days = [];
@@ -5128,6 +5393,32 @@ function postureChips(){
 }
 
 /* بطاقة التصحيح القوامي في شاشة الجدول والـPDF */
+function supportCard(){
+  const r = buildSupportRoutine();
+  if(!r) return "";
+  return `
+  <div class="card" style="margin-top:16px;border-right:5px solid #1f9d57">
+    <div class="sec-head"><div class="ico">🩹</div><div>
+      <h2 style="font-size:18px">تمارين الدعم والتأهيل</h2>
+      <p>مدمجة في جدولك | ${r.times} | ${r.mins}</p>
+    </div></div>
+    <div class="note" style="margin-top:10px;background:#eef7f0;border-color:#bfe0ca;color:#1f6b3f">
+      ${r.detail.map(d=>`<b>${d.name}:</b> ${d.freq}`).join("<br>")}
+    </div>
+    ${r.items.map((it,n)=>`
+      <div class="exrow">
+        <div style="width:26px;height:26px;border-radius:8px;background:#eef7f0;color:#1f6b3f;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;flex:none">${n+1}</div>
+        <div style="flex:1;margin-right:10px">
+          <b>${gt(it.name)}</b>
+          ${it.tip?`<small style="display:block;color:var(--muted);margin-top:2px;line-height:1.7">${gt(it.tip)}</small>`:""}
+          <small style="display:block;color:#1f6b3f;font-weight:700;margin-top:2px">${it.forGroup} | ${it.kind}</small>
+        </div>
+        <div style="color:var(--muted);font-weight:800;font-size:13px;flex:none">${it.sets} × ${it.reps}</div>
+        ${it.video?`<a class="pchip" href="${it.video}" target="_blank" rel="noopener">▶</a>`:""}
+      </div>`).join("")}
+  </div>`;
+}
+
 function postureCard(){
   const r = buildCorrectiveRoutine();
   if(!r) return "";

@@ -1381,7 +1381,7 @@ function screenPlan(){
         <div class="day-top">
           <div class="num">${i+1}</div>
           <div><b>اليوم ${i+1} - ${day.title}</b>
-          <small>${day.exercises.length} تمارين | وصفة كل تمرين مبينة بجانبه</small></div>
+          <small>${day.exercises.length} تمارين | وصف كل تمرين بجانبه</small></div>
         </div>
         ${((S.dayNotes||{})[i]||"").trim()?`
           <div style="background:#fff7ee;border-right:4px solid var(--orange);padding:11px 16px;font-size:13.5px;color:#8a5a13;font-weight:700;line-height:1.9">
@@ -1418,7 +1418,7 @@ function screenPlan(){
       <button class="btn line" data-act="to2">→ تعديل التمارين</button>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
         <button class="btn line" data-act="editvideos">🔗 روابط الفيديو</button>
-        <button class="btn line" data-act="exporttrack">📊 ملف متابعة (Excel)</button>
+        <button class="btn line" data-act="exporttrack">📊 نسخة الملف (احتياطي)</button>
         <button class="btn dark" data-act="generate">↻ إعادة توليد</button>
         <button class="btn primary" data-act="exportprint">⬇️ حفظ كـ PDF</button>
       </div>
@@ -1553,7 +1553,7 @@ function screenVideos(){
       supRows+=row(`sup_${cid}_${i}`,it[1],condNames[cid]||sup.name);
     });
   });
-  if(supRows) sections+=sectionBox("🩹 تمارين الدعم والتأهيل",supCount,supRows);
+  if(supRows) sections+=sectionBox("تمارين الدعم والتأهيل",supCount,supRows);
 
   return `<div class="app"><div class="screen on">
     <div class="card">
@@ -2178,7 +2178,7 @@ async function generateAI(){
     if(!data.plan || !Array.isArray(data.plan)) throw new Error("ناتج غير متوقع من الذكاء");
 
     /* جدول الذكاء ينفذ كما هو: نفس التمارين وبنفس الترتيب.
-       المحرك يضيف الوصفة والإحماء والإطالة والتقرير فقط، ولا يعيد الترتيب.
+       المحرك يضيف الالوصف والإحماء والإطالة والتقرير فقط، ولا يعيد الترتيب.
        إعادة الترتيب كانت تلغي أي تسلسل تطلبه المدربة في نص الطلب. */
     const exById = Object.fromEntries(EX.map(e=>[e.id,e]));
     const used = new Set();
@@ -2194,7 +2194,7 @@ async function generateAI(){
         exercises: list.map((e,i)=>{
           const sch = schemeFor(e);
           /* إن حدد الذكاء مجموعات أو تكرارات (لأن المدربة كتبتها في طلبها)
-             فهي الأولى، ووصفة المحرك تستخدم فقط لما لا يحدد شيء.
+             فهي الأولى، ووصف المحرك يستخدم فقط لما لا يحدد شيء.
              استبدال أرقام المدربة بوصفتي كان يفرغ طلبها من معناه. */
           const req = (day.prescriptions || [])[i] || {};
           if(req.sets) sch.sets = Math.min(6, Math.max(1, parseInt(req.sets,10) || sch.sets));
@@ -2307,47 +2307,66 @@ function saveImages(){
    يفتح مباشرة في جوجل شيت أو إكسل. صفوف التمارين جاهزة وأعمدة
    الأسابيع فارغة، مع ورقة قياسات - فتسجل المشتركة رقميا لا ورقيا.
    ============================================================ */
-function exportTracking(){
-  if(!S.plan || !S.plan.length){ alert("ولدي الجدول أولا."); return; }
+/* نص ملف المتابعة - يستخدم للتنزيل وللتضمين في الـPDF */
+function trackingCSV(){
   const q = s => `"${String(s==null?"":s).replace(/"/g,'""')}"`;
+  const male = S.client && S.client.gender === "male";
   const L = [];
-  const name = (S.client && S.client.name) || "المشترك";
-
-  L.push([q("ZahraaFit - ملف متابعة"), q(name)].join(","));
-  L.push([q("التاريخ"), q(new Date().toLocaleDateString("ar-SA"))].join(","));
+  const name = (S.client && S.client.name) || "";
+  L.push([q("ملف متابعتي - ZahraaFit")].join(","));
+  L.push([q("الاسم"), q(name)].join(","));
+  L.push([q(male?"تاريخ البداية (املأه)":"تاريخ البداية (املأيه)"), q("")].join(","));
   L.push("");
-
+  L.push([q(male?"اكتب الوزن الذي استخدمته في كل أسبوع. عمود الفرق يحسب تلقائيا.":"اكتبي الوزن الذي استخدمتيه في كل أسبوع. عمود الفرق يحسب تلقائيا.")].join(","));
+  L.push("");
   L.push([q("سجل الأوزان")].join(","));
   L.push([q("اليوم"),q("التمرين"),q("المجموعات"),q("التكرارات"),
           q("أسبوع 1"),q("أسبوع 2"),q("أسبوع 3"),q("أسبوع 4"),
-          q("أسبوع 5"),q("أسبوع 6"),q("أسبوع 7"),q("أسبوع 8"),q("ملاحظات")].join(","));
-  S.plan.forEach((d,i)=>{
+          q("أسبوع 5"),q("أسبوع 6"),q("أسبوع 7"),q("أسبوع 8"),
+          q("الفرق (كجم)"),q("ملاحظات")].join(","));
+  let row = L.length + 1;
+  (S.plan||[]).forEach((d,i)=>{
     d.exercises.forEach(e=>{
+      const r = row;
       L.push([q("اليوم "+(i+1)), q(e.name), q(e.sets), q(e.reps),
-              "","","","","","","","",""].join(","));
+              "","","","","","","","",
+              q(`=IFERROR(MAX(E${r}:L${r})-INDEX(E${r}:L${r};MATCH(TRUE;E${r}:L${r}<>"";0));"")`),
+              ""].join(","));
+      row++;
     });
   });
   L.push("");
-
-  L.push([q("القياسات - كل أسبوعين")].join(","));
+  L.push([q("قياساتي - كل أسبوعين")].join(","));
   L.push([q("القياس"),q("البداية"),q("أسبوع 2"),q("أسبوع 4"),q("أسبوع 6"),
-          q("أسبوع 8"),q("أسبوع 10"),q("أسبوع 12")].join(","));
+          q("أسبوع 8"),q("أسبوع 10"),q("أسبوع 12"),q("الفرق")].join(","));
+  let mrow = L.length + 1;
   ["الوزن (كجم)","محيط الخصر (سم)","محيط البطن (سم)","محيط الأرداف (سم)",
-   "محيط الفخذ (سم)","محيط الذراع (سم)","محيط الصدر (سم)","نسبة الدهون %"]
-   .forEach(m=>L.push([q(m),"","","","","","",""].join(",")));
+   "محيط الفخذ (سم)","محيط الذراع (سم)","محيط الصدر (سم)","نسبة الدهون %"].forEach(m=>{
+    const r = mrow;
+    L.push([q(m),"","","","","","","",
+            q(`=IFERROR(IF(COUNT(B${r}:H${r})<2;"";LOOKUP(9^9;B${r}:H${r})-B${r});"")`)].join(","));
+    mrow++;
+  });
   L.push("");
+  L.push([q(male?"المحيطات أهم من الوزن. قد يثبت وزنك وينزل خصرك - هذا يعني أنك تبني عضلا وتخسر دهنا.":"المحيطات أهم من الوزن. قد يثبت وزنك وينزل خصرك - هذا يعني أنك تبنين عضلا وتخسرين دهنا.")].join(","));
+  L.push("");
+  L.push([q("سجل حصصي")].join(","));
+  L.push([q("التاريخ"),q("اليوم"),q("تم؟"),q("الطاقة 1-5"),q("النوم (ساعات)"),q("ملاحظات")].join(","));
+  for(let i=0;i<24;i++) L.push(["","","","","",""].join(","));
+  L.push("");
+  L.push([q("عدد الحصص المنجزة"), q('=COUNTIF(C:C;"نعم")')].join(","));
+  return "\uFEFF"+L.join("\n");
+}
 
-  L.push([q("سجل الحصص")].join(","));
-  L.push([q("التاريخ"),q("اليوم"),q("تم؟"),q("مستوى الطاقة 1-5"),
-          q("النوم (ساعات)"),q("ملاحظات")].join(","));
-  for(let i=0;i<12;i++) L.push(["","","","","",""].join(","));
-
-  const blob = new Blob(["\uFEFF"+L.join("\n")], {type:"text/csv;charset=utf-8"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = `ZahraaFit_متابعة_${String(name).replace(/\s+/g,"_")}.csv`;
+function exportTracking(){
+  if(!S.plan || !S.plan.length){ alert("ولدي الجدول أولا."); return; }
+  const name=(S.client&&S.client.name)||"ZahraaFit";
+  const blob=new Blob([trackingCSV()],{type:"text/csv;charset=utf-8"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=`متابعتي_${String(name).replace(/\s+/g,"_")}.csv`;
   a.click();
-  setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+  setTimeout(()=>URL.revokeObjectURL(a.href),2000);
 }
 
 function exportSettings(){
@@ -2500,6 +2519,11 @@ function pdfMuscleCSS(){
     tr{page-break-inside:avoid}
     h1,h2,h3{page-break-after:avoid}
     *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    /* قواعد كروم وسفاري - القديمة لا تكفيهما */
+    table{break-inside:auto}
+    tr{break-inside:avoid;page-break-inside:avoid}
+    p,div,li,td{orphans:4;widows:4}
+    h1,h2,h3,b,strong{break-after:avoid;page-break-after:avoid}
     /* منع انقطاع سطر أو سطرين وحدهما في صفحة (يتيم/أرملة).
        سفاري يعتمد الصيغة الحديثة break-* لا القديمة، فنكتب الاثنتين. */
     p,div,li,td{orphans:3;widows:3}
@@ -2523,6 +2547,23 @@ function pdfMuscleBox(muscle, size){
              : `<div class="mi" style="${sz}display:flex;align-items:center;justify-content:center;font-size:10px;color:#8294b8;text-align:center;padding:3px">${(MUSCLES[muscle]||"")}</div>`;
 }
 function buildPdfHTML(){
+  /* الرقم يمرر صراحة: الأقسام تبنى بترتيب مختلف عن ظهورها،
+     فالعداد التلقائي يعطي أرقاما عشوائية. */
+  const secHead = (title, sub, num) => {
+    return `
+    <div style="page-break-inside:avoid;page-break-after:avoid;max-width:660px;margin:0 auto 22px;background:#fff;border:1px solid #dfe4ee;border-right:5px solid ${orange};border-radius:12px;padding:16px 20px">
+      <table style="width:100%;border-collapse:collapse"><tr>
+        <td style="width:58px;vertical-align:middle">
+          ${num?`<div style="width:46px;height:46px;border-radius:11px;background:${navy};color:#fff;font-family:Cairo;font-weight:900;font-size:20px;line-height:46px;text-align:center">${String(num).padStart(2,"0")}</div>`:""}
+        </td>
+        <td style="vertical-align:middle;direction:rtl;text-align:right;padding-right:6px">
+          <div style="font-family:Cairo;font-weight:900;font-size:22px;color:${navy};letter-spacing:.2px">${title}</div>
+          <div style="font-size:12.5px;color:#6a7488;font-weight:700;margin-top:3px">${sub}</div>
+        </td>
+      </tr></table>
+    </div>`;
+  };
+
   const c=S.client, L=loadParams();
   const today=new Date().toLocaleDateString('ar-SA-u-nu-latn',{year:'numeric',month:'long',day:'numeric'});
   const navy="#0f1f3d", navy2="#16294b", navy3="#1f3661", orange="#e8622c", orange2="#ff7a3d";
@@ -2607,7 +2648,7 @@ function buildPdfHTML(){
         <tr><td style="padding:18px 22px">
           <span style="display:inline-grid;place-items:center;width:40px;height:40px;border-radius:11px;background:${orange};font-family:Cairo;font-weight:900;font-size:18px;color:#fff;vertical-align:middle">${i+1}</span>
           <span style="font-family:Cairo;font-weight:900;font-size:18px;color:#fff;margin-right:12px;vertical-align:middle">اليوم ${i+1} - ${day.title}</span>
-          <div style="color:#b9c5dd;font-weight:600;font-size:12px;margin-top:4px">${day.exercises.length} تمارين | وصفة كل تمرين بجانبه</div>
+          <div style="color:#b9c5dd;font-weight:600;font-size:12px;margin-top:4px">${day.exercises.length} تمارين | وصف كل تمرين بجانبه</div>
         </td></tr>
         ${((S.dayNotes||{})[i]||"").trim()?`
         <tr><td style="padding:0">
@@ -2664,9 +2705,7 @@ function buildPdfHTML(){
   const topMuscle = RV && RV.length ? (grpNames[RV[0].muscle]||RV[0].muscle) : "";
 
   const summary = `<div style="page-break-before:always;padding:44px 52px 26px">
-    <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | صفحة توضيحية</span></div>
-    <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">📊 كيف وزع جهدك في الأسبوع</h1>
-    <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 16px"></div>
+    ${secHead(`كيف وزع جهدك في الأسبوع`,`صفحة توضيحية`,9)}
 
     <div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:14px;padding:16px 20px;max-width:640px;direction:rtl;text-align:right;word-wrap:break-word;overflow-wrap:break-word;margin:0 auto 18px">
       <b style="font-family:Cairo;color:${navy};font-size:15px">ما معنى هذه الصفحة؟</b>
@@ -2743,11 +2782,7 @@ function buildPdfHTML(){
   let warmup="";
   if(S.includeEdu){
   warmup=`<div style="page-break-before:always;padding:44px 52px 26px">
-    <div style="text-align:center;margin-bottom:8px">
-      <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | قبل التمرين</span>
-    </div>
-    <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">الإحماء</h1>
-    <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 18px"></div>
+    ${secHead(`الإحماء`,`قبل التمرين`,10)}
     <p style="page-break-inside:avoid;page-break-after:avoid;text-align:center;color:#6a7488;font-size:14.5px;font-weight:600;max-width:560px;margin:0 auto 26px;line-height:1.9">الإحماء 5-10 دقائق قبل كل تمرين يقلل خطر الإصابة ويرفع كفاءة الأداء. اختاري القسم المناسب ليومك.</p>
     <table style="width:100%;border-collapse:separate;border-spacing:12px"><tr>
       <td style="width:50%;vertical-align:top">${warmCol(WARMUP.upper)}</td>
@@ -2775,11 +2810,7 @@ function buildPdfHTML(){
           ${vbtn}
         </div>`;}).join("");
       support+=`<div style="page-break-before:always;padding:44px 52px 26px">
-        <div style="text-align:center;margin-bottom:8px">
-          <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | دعم وتأهيل</span>
-        </div>
-        <h1 style="font-family:Cairo;font-weight:900;font-size:29px;color:${navy};text-align:center;margin-bottom:6px">${sup.ico} ${sup.name}</h1>
-        <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 16px"></div>
+        ${secHead(`${sup.name}`,`دعم وتأهيل`)}
         <p style="text-align:center;color:#6a7488;font-size:14px;font-weight:600;max-width:560px;margin:0 auto 22px;line-height:1.9">${sup.intro}</p>
         <div style="page-break-inside:avoid;background:#fff;border:1px solid #f0d9cf;border-radius:16px;padding:10px 20px 16px;max-width:600px;margin:0 auto">${items}</div>
         <div style="page-break-inside:avoid;display:flex;gap:10px;align-items:flex-start;background:#fff7ee;border:1px solid rgba(217,138,31,.3);border-radius:12px;padding:13px 16px;font-size:12.5px;color:#8a5a13;font-weight:600;margin:18px auto 0;max-width:600px">
@@ -2800,11 +2831,7 @@ function buildPdfHTML(){
           <div style="font-size:14px;line-height:1.85;color:#445">${b.p}</div>
         </div>`).join("");
       edu+=`<div style="page-break-before:always;padding:44px 52px 26px">
-        <div style="text-align:center;margin-bottom:8px">
-          <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | دليل تثقيفي</span>
-        </div>
-        <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">${pg.title}</h1>
-        <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 18px"></div>
+        ${secHead(`${pg.title}`,`دليل تثقيفي`, idx===0?14:null)}
         <p style="page-break-inside:avoid;page-break-after:avoid;text-align:center;color:#6a7488;font-size:14.5px;font-weight:600;max-width:560px;margin:0 auto 26px;line-height:1.9">${pg.intro}</p>
         ${blocks}
       </div>`;
@@ -2821,7 +2848,7 @@ function buildPdfHTML(){
       quads:"فخذ أمامي",hams:"فخذ خلفي",adductors:"فخذ داخلي",glutes:"المؤخرة",calves:"السمانة",abs:"البطن"
     };
 
-    let cards="";
+    let cardsArr=[];
     Object.entries(groupNames).forEach(([g,gname])=>{
       // البدائل فقط: متاحة للبيئة والمستوى، غير خطرة، وليست في الجدول
       const list = EX.filter(e=>
@@ -2846,26 +2873,26 @@ function buildPdfHTML(){
           ${vid}
         </div>`;
       }).join("");
-      cards+=`<div style="break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:14px;overflow:hidden;margin-bottom:13px">
+      cardsArr.push(`<div style="break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:14px;overflow:hidden;margin-bottom:13px">
         <div style="background:linear-gradient(90deg,${navy},${navy2});padding:10px 15px;display:flex;justify-content:space-between;align-items:center">
           <span style="font-family:Cairo;font-weight:800;font-size:14.5px;color:#fff">${gname}</span>
           <span style="font-size:10.5px;color:#b9c5dd;font-weight:600">${list.length} بديل</span>
         </div>
         <div style="padding:5px 13px 9px">${rows}</div>
-      </div>`;
+      </div>`);
     });
 
-    if(cards){
+    const cards = cardsArr;
+    if(cards.length){
       library=`<div style="page-break-before:always;padding:44px 52px 26px">
-        <div style="text-align:center;margin-bottom:8px">
-          <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | بدائل التمارين</span>
-        </div>
-        <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">مكتبة التمارين الإضافية</h1>
-        <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 18px"></div>
+        <div style="break-inside:avoid;page-break-inside:avoid">
+        ${secHead(`مكتبة التمارين الإضافية`,`بدائل التمارين`,13)}
         <p style="text-align:center;color:#6a7488;font-size:14px;font-weight:600;max-width:580px;margin:0 auto 24px;line-height:1.9">
           هذه تمارين بديلة (غير الموجودة في جدولك) مرتبة حسب العضلة، يمكنك استخدامها لإضافة تنوع أو استبدال تمرين عند الحاجة - دون تغيير ترتيب جدولك الأساسي. زر ▶ يفتح فيديو الشرح إن تم إضافته.
         </p>
-        <div style="column-count:2;column-gap:16px">${cards}</div>
+        ${cards[0]||""}
+        </div>
+        <div style="column-count:2;column-gap:16px">${cards.slice(1).join("")}</div>
       </div>`;
     }
   }
@@ -2929,11 +2956,7 @@ function buildPdfHTML(){
         <div style="font-size:13px;color:#56627a;font-weight:600;line-height:1.7">${n[2].replace('${S.days}',S.days).replace('${L2.rest}',L2.rest)}</div></div>
       </div>`).join("");
     intro=`<div style="page-break-before:always;padding:44px 52px 26px">
-      <div style="text-align:center;margin-bottom:8px">
-        <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | قبل أن تبدئي</span>
-      </div>
-      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">تعليمات وملاحظات هامة</h1>
-      <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 20px"></div>
+      ${secHead(`تعليمات وملاحظات هامة`,`قبل أن تبدئي`,1)}
       <div style="column-count:2;column-gap:16px">${cards2}</div>
     </div>`;
   }
@@ -2956,11 +2979,7 @@ function buildPdfHTML(){
       </div>`;
 
     cardio=`<div style="page-break-before:always;padding:44px 48px">
-      <div style="text-align:center;margin-bottom:8px">
-        <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | بعد التمرين</span>
-      </div>
-      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">الكارديو - دليلك الكامل</h1>
-      <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 14px"></div>
+      ${secHead(`الكارديو - دليلك الكامل`,`بعد التمرين`,12)}
       <p style="text-align:center;color:#6a7488;font-size:13px;font-weight:600;max-width:580px;margin:0 auto 20px;line-height:1.8">اختاري نوعا واحدا حسب لياقتك ووقتك. الأهم الانتظام، لا الشدة المفرطة. الكارديو بعد الأوزان أو في يوم منفصل.</p>
 
       <div style="max-width:600px;margin:0 auto">
@@ -2981,8 +3000,8 @@ function buildPdfHTML(){
           <div style="font-size:12.5px;color:#33476b;font-weight:600;line-height:1.9">
             <b style="color:${navy}">القاعدة الذهبية:</b> النشاط اليومي (الخطوات) أهم من جلسة كارديو واحدة. استهدفي <b>8-10 آلاف خطوة يوميا</b> - تحرق سعرات أكثر مما تتخيلين على مدار اليوم، وهي الأساس المستدام لحرق الدهون.
           </div>
+          <div style="text-align:center;font-size:11.5px;color:#94a0b4;font-weight:600;margin-top:13px;padding-top:11px;border-top:1px solid rgba(0,0,0,.07)">💡 توقفي عند أي ألم في الصدر أو دوخة، واستشيري طبيبك قبل الكارديو العالي لو عندك حالة صحية.</div>
         </div>
-        <div style="text-align:center;font-size:11.5px;color:#94a0b4;font-weight:600;margin-top:12px">💡 توقفي عند أي ألم في الصدر أو دوخة، واستشيري طبيبك قبل الكارديو العالي لو عندك حالة صحية.</div>
       </div>
     </div>`;
   }
@@ -3010,17 +3029,14 @@ function buildPdfHTML(){
       </div>`;
 
     stretch=`<div style="page-break-before:always;padding:44px 48px">
-      <div style="text-align:center;margin-bottom:8px">
-        <span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | التبريد</span>
-      </div>
-      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:30px;color:${navy};text-align:center;margin-bottom:6px">🧘‍♀️ تمارين المرونة والإطالة</h1>
-      <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 14px"></div>
+      ${secHead(`تمارين المرونة والإطالة`,`التبريد`,11)}
       <p style="text-align:center;color:#6a7488;font-size:13px;font-weight:600;max-width:580px;margin:0 auto 20px;line-height:1.8">أدي الإطالات بعد التمرين مباشرة والعضلات دافئة. تحسن المرونة، تقلل الشد والألم، وتسرع الاستشفاء. لا تندفعي - إطالة هادئة حتى تشعرين بشد مريح دون ألم.</p>
       <div style="max-width:600px;margin:0 auto">
         ${stretchSection(STRETCH.upper)}
-        ${stretchSection(STRETCH.lower)}
+        <div style="break-inside:avoid;page-break-inside:avoid">${stretchSection(STRETCH.lower)}
         <div style="page-break-inside:avoid;background:#eef4ff;border:1px solid #c9dcff;border-radius:12px;padding:12px 16px;margin-top:8px;font-size:12px;color:#33476b;font-weight:600;line-height:1.8">
           💡 اثبتي في كل إطالة 20-30 ثانية دون اهتزاز، وتنفسي بعمق. كرري كل إطالة مرة أو مرتين. لا تطيلي على عضلة مصابة.
+        </div>
         </div>
       </div>
     </div>`;
@@ -3051,94 +3067,95 @@ function buildPdfHTML(){
      أوراق المتابعة - كانت تبنى في الكود ولا تطبع إطلاقا.
      ورقتان: سجل الأوزان لكل يوم (4 أسابيع)، وجدول القياسات.
      ============================================================ */
-  let trackP = "";
-  if(S.plan && S.plan.length){
-    const wkHead = `<td style="width:52px;padding:7px 3px;background:${navy};color:#fff;font-family:Cairo;font-weight:800;font-size:10.5px;text-align:center">أسبوع</td>`;
-    const dayPages = S.plan.map((d,di)=>{
-      const rows = d.exercises.map(e=>`
+  /* ============================================================
+     فواصل الأقسام والفهرس
+     كل قسم يبدأ بغلاف ملون يميزه، والفهرس في البداية يوضح المحتويات.
+     ============================================================ */
+  /* ترويسة قسم: رقم القسم بخط كبير خفيف، والعنوان بجانبه، وخط فاصل.
+     بلا إيموجي وبلا صفحة مهدرة - تيبوغرافيا فقط. */
+
+  /* الفهرس: يبنى من الأقسام الموجودة فعلا في هذا الجدول */
+  const toc = [];
+  toc.push(["تعليمات وملاحظات هامة","اقرأها قبل أول حصة"]);
+  if((S.notes||"").trim()) toc.push(["ملاحظات مدربتك","توجيهات خاصة بك"]);
+  toc.push(["جدول التمارين",`${S.plan.length} أيام تدريب`]);
+  toc.push(["أول أربعة أسابيع","كيف تبدأ وكيف تزيد الوزن"]);
+  if(typeof buildSupportRoutine==="function" && buildSupportRoutine()) toc.push(["الدعم والتأهيل","تمارين حالتك الصحية"]);
+  if(typeof buildCorrectiveRoutine==="function" && buildCorrectiveRoutine()) toc.push(["الروتين التصحيحي","تصحيح وضعية الجسم"]);
+  if(S.cycle && S.client && S.client.gender!=="male") toc.push(["الدورة الشهرية","التمرين والدورة"]);
+  toc.push(["ملف متابعتك","حمله وسجل فيه تقدمك"]);
+  toc.push(["الحجم الأسبوعي","كيف وزع جهدك"]);
+  toc.push(["الإحماء","قبل كل حصة"]);
+  toc.push(["المرونة والإطالة","بعد كل حصة"]);
+  toc.push(["الكارديو","دليلك الكامل"]);
+  toc.push(["مكتبة التمارين البديلة","بدائل عند الحاجة"]);
+  if(S.includeEdu) toc.push(["الدليل التثقيفي","كل ما تحتاج معرفته"]);
+
+  const tocPage = `
+    <div style="page-break-before:always;padding:58px 58px 26px">
+      <div style="max-width:560px;margin:0 auto 30px;direction:rtl;text-align:right">
+        <div style="font-family:Cairo;font-weight:900;font-size:11.5px;color:${orange};letter-spacing:3px">ZAHRAAFIT</div>
+        <div style="font-family:Cairo;font-weight:900;font-size:34px;color:${navy};margin-top:6px;letter-spacing:-.3px">المحتويات</div>
+        <div style="width:54px;height:3px;background:${orange};border-radius:2px;margin-top:11px"></div>
+      </div>
+      <table style="width:100%;max-width:560px;margin:0 auto;border-collapse:collapse">
+        ${toc.map(([t,s],i)=>`
         <tr style="page-break-inside:avoid">
-          <td style="padding:9px 10px;border-bottom:1px solid #eef0f4;direction:rtl;text-align:right">
-            <div style="font-family:Cairo;font-weight:800;font-size:12.5px;color:${navy}">${e.name}</div>
-            <div style="font-size:10px;color:#8a94a8;font-weight:700">${e.sets} × ${e.reps}</div>
+          <td style="width:46px;padding:14px 0;vertical-align:top;font-family:Cairo;font-weight:900;font-size:15px;color:#c3cbd8;border-bottom:1px solid #e7eaf0">${String(i+1).padStart(2,"0")}</td>
+          <td style="padding:14px 8px;vertical-align:top;border-bottom:1px solid #e7eaf0;direction:rtl;text-align:right">
+            <div style="font-family:Cairo;font-weight:800;font-size:15.5px;color:${navy}">${t}</div>
+            <div style="font-size:12px;color:#8a94a8;font-weight:600;margin-top:2px">${s}</div>
           </td>
-          ${[1,2,3,4].map(()=>`<td style="width:52px;border-bottom:1px solid #eef0f4;border-right:1px solid #eef0f4;background:#fcfcfd"></td>`).join("")}
-        </tr>`).join("");
-      return `
-      <div style="page-break-inside:avoid;margin-bottom:18px">
-        <div style="font-family:Cairo;font-weight:900;font-size:15px;color:${navy};margin-bottom:7px;direction:rtl;text-align:right">
-          <span style="display:inline-block;width:23px;height:23px;line-height:23px;border-radius:7px;background:${orange};color:#fff;font-size:12px;text-align:center;margin-left:7px">${di+1}</span>${d.title}
-        </div>
-        <table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #e3e7ee;border-radius:11px;overflow:hidden">
-          <tr>
-            <td style="padding:7px 10px;background:${navy};color:#fff;font-family:Cairo;font-weight:800;font-size:11px;direction:rtl;text-align:right">التمرين</td>
-            ${[1,2,3,4].map(w=>`<td style="width:52px;padding:7px 3px;background:${navy};color:#fff;font-family:Cairo;font-weight:800;font-size:10.5px;text-align:center;border-right:1px solid rgba(255,255,255,.15)">أسبوع ${w}</td>`).join("")}
-          </tr>
-          ${rows}
-        </table>
-      </div>`;
-    }).join("");
-
-    const measureRow = (label,hint) => `
-      <tr style="page-break-inside:avoid">
-        <td style="padding:10px 12px;border-bottom:1px solid #eef0f4;direction:rtl;text-align:right">
-          <div style="font-family:Cairo;font-weight:800;font-size:13px;color:${navy}">${label}</div>
-          ${hint?`<div style="font-size:10.5px;color:#8a94a8;font-weight:600">${hint}</div>`:""}
-        </td>
-        ${[1,2,3,4].map(()=>`<td style="width:62px;border-bottom:1px solid #eef0f4;border-right:1px solid #eef0f4;background:#fcfcfd;height:34px"></td>`).join("")}
-      </tr>`;
-
-    trackP = `
-    <div style="page-break-before:always;padding:44px 46px 26px">
-      <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | اطبعي هذه الصفحة</span></div>
-      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:27px;color:${navy};text-align:center;margin-bottom:6px">📋 سجل الأوزان</h1>
-      <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 14px"></div>
-      <div style="page-break-inside:avoid;background:#fff7ee;border:1px solid rgba(232,98,44,.3);border-radius:13px;padding:13px 18px;max-width:660px;direction:rtl;text-align:right;margin:0 auto 16px;font-size:12.5px;color:#8a5a13;font-weight:600;line-height:1.95">
-        سجلي الوزن الذي استخدمته في كل أسبوع. هذا السجل هو الدليل الوحيد على تقدمك -
-        الشعور بالتحسن يخدع، والأرقام لا تخدع. وبدونه لا تعرفين متى تزيدين الوزن.
-      </div>
-      ${dayPages}
-    </div>
-
-    <div style="page-break-before:always;padding:44px 46px 26px">
-      <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | كل أسبوعين</span></div>
-      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:27px;color:${navy};text-align:center;margin-bottom:6px">📏 جدول القياسات</h1>
-      <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 14px"></div>
-
-      <div style="page-break-inside:avoid;background:#eef4ff;border:1px solid #c9dcff;border-radius:13px;padding:14px 18px;max-width:660px;direction:rtl;text-align:right;margin:0 auto 16px;font-size:13px;color:#33476b;font-weight:600;line-height:2">
-        <b style="color:${navy}">متى وكيف؟</b> صباحا قبل الأكل، وبنفس الملابس في كل مرة، وبعد دخول الحمام.
-        قيسي كل أسبوعين لا كل يوم - التغير اليومي ماء لا دهن.
-        <div style="margin-top:8px;padding-top:8px;border-top:1px solid #c9dcff">
-          <b style="color:${navy}">الأهم من الوزن:</b> المحيطات. قد يثبت الوزن وينزل محيط الخصر -
-          وهذا يعني أنك تبنين عضلا وتخسرين دهنا في الوقت نفسه.
-        </div>
-      </div>
-
-      <table style="width:100%;max-width:660px;margin:0 auto;border-collapse:collapse;background:#fff;border:1px solid #e3e7ee;border-radius:12px;overflow:hidden">
-        <tr>
-          <td style="padding:9px 12px;background:${navy};color:#fff;font-family:Cairo;font-weight:800;font-size:12px;direction:rtl;text-align:right">القياس</td>
-          ${["البداية","أسبوع 2","أسبوع 4","أسبوع 6"].map(t=>`<td style="width:62px;padding:9px 3px;background:${navy};color:#fff;font-family:Cairo;font-weight:800;font-size:10.5px;text-align:center;border-right:1px solid rgba(255,255,255,.15)">${t}</td>`).join("")}
-        </tr>
-        ${measureRow("الوزن (كجم)","صباحا قبل الأكل")}
-        ${measureRow("محيط الخصر (سم)","أضيق نقطة فوق السرة")}
-        ${measureRow("محيط البطن (سم)","عند السرة")}
-        ${measureRow("محيط الأرداف (سم)","أوسع نقطة")}
-        ${measureRow("محيط الفخذ (سم)","أعلى نقطة في الفخذ")}
-        ${measureRow("محيط الذراع (سم)","منتصف العضد مسترخيا")}
-        ${measureRow("محيط الصدر (سم)","")}
-        ${measureRow("نسبة الدهون %","إن توفر جهاز قياس")}
+        </tr>`).join("")}
       </table>
+    </div>`;
 
-      <div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:12px;padding:14px 18px;max-width:660px;direction:rtl;text-align:right;margin:16px auto 0">
-        <b style="font-family:Cairo;color:${navy};font-size:13.5px">📷 صور المتابعة</b>
-        <div style="font-size:12.5px;color:#4a5a78;font-weight:600;line-height:1.95;margin-top:5px">
-          صورة من الأمام والجانب والخلف، كل أربعة أسابيع. نفس الإضاءة ونفس المكان ونفس الملابس.
-          الصور تظهر ما لا يظهره الميزان.
-        </div>
-        <table style="width:100%;border-collapse:collapse;margin-top:10px">
-          <tr>
-            ${["البداية","أسبوع 4","أسبوع 8","أسبوع 12"].map(t=>`<td style="width:25%;padding:4px"><div style="border:1.5px dashed #d5dae3;border-radius:10px;height:52px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#8a94a8;font-weight:700">${t}</div></td>`).join("")}
-          </tr>
+  /* صفحة ملف المتابعة - الملف مضمن كرابط data داخل الـPDF نفسه. */
+  let trackP = "";
+  if(S.plan && S.plan.length && typeof trackingCSV === "function"){
+    let dataUrl = "";
+    try{
+      const csv = trackingCSV();
+      const bytes = new TextEncoder().encode(csv);
+      let bin = "";
+      bytes.forEach(b => bin += String.fromCharCode(b));
+      dataUrl = "data:text/csv;charset=utf-8;base64," + btoa(bin);
+    }catch(e){ dataUrl = ""; }
+    const fname = `متابعتي_${String((S.client&&S.client.name)||"ZahraaFit").replace(/\s+/g,"_")}.csv`;
+    trackP = `
+    <div style="page-break-before:always;padding:52px 52px 26px">
+      ${secHead("ملف متابعتك","حمله وسجل فيه تقدمك",8)}
+      ${dataUrl?`
+      <div style="page-break-inside:avoid;text-align:center;margin-bottom:22px">
+        <a href="${dataUrl}" download="${fname}" style="display:inline-block;background:${orange};color:#fff;font-family:Cairo;font-weight:900;font-size:16px;padding:15px 38px;border-radius:9px;text-decoration:none">
+          تحميل ملف المتابعة
+        </a>
+        <div style="font-size:11.5px;color:#a0a8b8;font-weight:600;margin-top:8px">${fname}</div>
+      </div>`:""}
+      <div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:10px;padding:20px 24px;max-width:620px;direction:rtl;text-align:right;margin:0 auto 14px">
+        <div style="font-family:Cairo;font-weight:800;font-size:14px;color:${navy};margin-bottom:10px">كيف تفتحه</div>
+        <table style="width:100%;border-collapse:collapse">
+          ${[["افتح الملف بعد تحميله على جهازك"],
+             ["ادخل drive.google.com واسحب الملف إليه"],
+             ["اضغط عليه مرتين ثم: فتح باستخدام - جداول بيانات Google"],
+             ["صار على حسابك - يفتح من الجوال ويحفظ تلقائيا"]].map((r,i)=>`
+          <tr><td style="width:26px;padding:6px 0;vertical-align:top;font-family:Cairo;font-weight:900;font-size:13px;color:${orange}">${i+1}</td>
+          <td style="padding:6px 0;font-size:13.5px;color:#4a5a78;font-weight:600;line-height:1.9">${r[0]}</td></tr>`).join("")}
         </table>
+        <div style="font-size:12px;color:#a0a8b8;font-weight:600;margin-top:11px;padding-top:11px;border-top:1px solid #eef0f4">
+          أو افتحه ببرنامج Excel أو Numbers مباشرة.
+        </div>
+      </div>
+      <div style="page-break-inside:avoid;background:#f7f9fc;border:1px solid #e3e7ee;border-radius:10px;padding:18px 24px;max-width:620px;direction:rtl;text-align:right;margin:0 auto">
+        <div style="font-family:Cairo;font-weight:800;font-size:14px;color:${navy};margin-bottom:8px">محتوياته</div>
+        <div style="font-size:13px;color:#4a5a78;font-weight:600;line-height:2.1">
+          <b style="color:${navy}">سجل الأوزان</b> - تمارينك جاهزة، تكتب وزن كل أسبوع وعمود الفرق يحسب تلقائيا.<br>
+          <b style="color:${navy}">القياسات</b> - ثمانية قياسات كل أسبوعين، والفرق عن البداية يظهر وحده.<br>
+          <b style="color:${navy}">سجل الحصص</b> - التاريخ ومستوى الطاقة والنوم، وعداد الحصص المنجزة.
+        </div>
+        <div style="font-size:12.5px;color:#4a5a78;font-weight:700;margin-top:11px;padding-top:11px;border-top:1px solid #e3e7ee">
+          سجل فيه بانتظام. بعد شهرين سترى نمطك بوضوح، وهذا أنفع من أي إحساس.
+        </div>
       </div>
     </div>`;
   }
@@ -3149,9 +3166,7 @@ function buildPdfHTML(){
     const where = id => { const o=[]; S.plan.forEach((d,i)=>{ if(d.exercises.some(e=>e.id===id)) o.push("اليوم "+(i+1)); }); return o.join(" و"); };
     supportP = `
     <div style="page-break-before:always;padding:44px 52px 26px">
-      <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | دعم وتأهيل</span></div>
-      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">🩹 تمارين الدعم والتأهيل</h1>
-      <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 16px"></div>
+      ${secHead(`تمارين الدعم والتأهيل`,`دعم وتأهيل`,5)}
 
       <table style="margin:0 auto 16px;border-collapse:separate;border-spacing:8px"><tr>
         <td style="background:#fff;border:1px solid #e3e7ee;border-radius:12px;padding:11px 20px;text-align:center;white-space:nowrap"><div style="font-family:Cairo;font-weight:900;font-size:16px;color:#1f9d57">${__sr.times}</div><div style="font-size:11px;color:#6a7488;font-weight:700">التكرار</div></td>
@@ -3170,8 +3185,9 @@ function buildPdfHTML(){
         </div>
       </div>
 
-      <table style="width:100%;max-width:640px;margin:0 auto;border-collapse:collapse;background:#fff;border:1px solid #e3e7ee;border-radius:14px;overflow:hidden">
-        ${__sr.items.map((it,n)=>`
+      ${[0,8,16,24].filter(s=>s<__sr.items.length).map(start=>`
+      <table style="width:100%;max-width:640px;margin:0 auto 10px;border-collapse:collapse;background:#fff;border:1px solid #e3e7ee;border-radius:14px;overflow:hidden;break-inside:avoid;page-break-inside:avoid">
+        ${__sr.items.slice(start,start+8).map((it,n)=>`
         <tr style="page-break-inside:avoid">
           <td style="width:34px;padding:12px 8px;text-align:center;vertical-align:middle;border-bottom:1px solid #f0f2f6"><span style="display:inline-block;width:25px;height:25px;line-height:25px;border-radius:8px;background:#eef7f0;color:#1f6b3f;font-family:Cairo;font-weight:900;font-size:12px">${n+1}</span></td>
           <td style="width:60px;padding:9px 4px;text-align:center;vertical-align:middle;border-bottom:1px solid #f0f2f6">${pdfMuscleBox(it.muscle,46)}</td>
@@ -3183,7 +3199,7 @@ function buildPdfHTML(){
           <td style="width:80px;padding:12px 6px;text-align:center;vertical-align:middle;border-bottom:1px solid #f0f2f6;font-family:Cairo;font-weight:900;font-size:13.5px;color:#1f9d57;white-space:nowrap">${it.sets} × ${it.reps}</td>
           <td style="width:72px;padding:12px 10px 12px 6px;text-align:center;vertical-align:middle;border-bottom:1px solid #f0f2f6">${it.video?`<a href="${it.video}" style="display:inline-block;background:#ff0000;color:#fff;font-family:Cairo;font-weight:800;font-size:11px;padding:6px 13px;border-radius:18px;text-decoration:none;white-space:nowrap">&#9654; فيديو</a>`:""}</td>
         </tr>`).join("")}
-      </table>
+      </table>`).join("")}
     </div>`;
   }
 
@@ -3192,9 +3208,7 @@ function buildPdfHTML(){
   if(__r){
     postureP = `
     <div style="page-break-before:always;padding:44px 52px 26px">
-      <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | روتين منفصل</span></div>
-      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">🧭 روتينك التصحيحي</h1>
-      <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 16px"></div>
+      ${secHead(`روتينك التصحيحي`,`روتين منفصل`,6)}
 
       <div style="page-break-inside:avoid;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;max-width:640px;margin:0 auto 16px">
         <div style="background:#fff;border:1px solid #e3e7ee;border-radius:12px;padding:12px 20px;text-align:center;min-width:130px">
@@ -3239,9 +3253,10 @@ function buildPdfHTML(){
           </div>`).join("")}
       </div>
 
+      <div style="break-inside:avoid;page-break-inside:avoid">
       ${__r.conditions.map(c=>`
-        <div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:12px;padding:14px 20px;max-width:640px;direction:rtl;text-align:right;word-wrap:break-word;margin:14px auto 0">
-          <b style="font-family:Cairo;color:${navy};font-size:14.5px">${c.ico} ${c.name}</b>
+        <div style="page-break-inside:avoid;break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:12px;padding:14px 20px;max-width:640px;direction:rtl;text-align:right;word-wrap:break-word;margin:14px auto 0">
+          <b style="font-family:Cairo;color:${navy};font-size:14.5px">${c.name}</b>
           <div style="font-size:13px;color:#4a5a78;font-weight:600;line-height:2;margin-top:6px">${c.note}</div>
           ${(c.avoidIds||[]).length?`<div style="margin-top:9px;padding-top:9px;border-top:1px solid #eef0f4;font-size:12.5px;color:#8a5a13;font-weight:600;line-height:1.9">
             <b>مؤجلة من جدولك مؤقتا:</b> ${c.avoidIds.map(id=>{const e=EX.find(x=>x.id===id);return e?e.name:"";}).filter(Boolean).join(" | ")} - تعود بعد تحسن الوضعية.
@@ -3286,9 +3301,7 @@ function buildPdfHTML(){
 
     startPage = `
     <div style="page-break-before:always;padding:44px 52px 26px">
-      <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | ابدأ من هنا</span></div>
-      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">🎯 أول أربعة أسابيع - مثال محسوب</h1>
-      <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 16px"></div>
+      ${secHead(`أول أربعة أسابيع - مثال محسوب`,`ابدأ من هنا`,4)}
 
       <div style="page-break-inside:avoid;background:#fff7ee;border:1px solid rgba(232,98,44,.3);border-radius:14px;padding:16px 20px;max-width:660px;direction:rtl;text-align:right;word-wrap:break-word;margin:0 auto 16px">
         <b style="font-family:Cairo;color:${navy};font-size:15px">الأسبوع الأول: كيف تعرف وزن البداية؟</b>
@@ -3357,9 +3370,7 @@ function buildPdfHTML(){
 
     cyclePage = `
     <div style="page-break-before:always;padding:44px 52px 26px">
-      <div style="text-align:center;margin-bottom:8px"><span style="font-family:Cairo;font-weight:900;font-size:13px;color:${orange};letter-spacing:2px">ZAHRAAFIT | صفحة توضيحية</span></div>
-      <h1 style="page-break-after:avoid;font-family:Cairo;font-weight:900;font-size:28px;color:${navy};text-align:center;margin-bottom:6px">🌙 التمرين والدورة الشهرية</h1>
-      <div style="width:90px;height:4px;background:${orange};border-radius:4px;margin:0 auto 16px"></div>
+      ${secHead(`التمرين والدورة الشهرية`,`صفحة توضيحية`,7)}
 
       <div style="page-break-inside:avoid;background:#f6f0ff;border:1px solid #ddd0f5;border-radius:14px;padding:16px 20px;max-width:640px;direction:rtl;text-align:right;word-wrap:break-word;margin:0 auto 16px">
         <b style="font-family:Cairo;color:${navy};font-size:15px">القاعدة الأولى: جسمك لا التقويم</b>
@@ -3402,20 +3413,27 @@ function buildPdfHTML(){
   if(__n){
     coachNotes = `
     <div style="page-break-before:always;padding:44px 52px 26px">
-      <div style="text-align:center;margin-bottom:26px">
-        <div style="font-family:Cairo;font-weight:800;font-size:12px;color:${orange};letter-spacing:2px">ZAHRAAFIT | من مدربتك</div>
-        <h1 style="font-family:Cairo;font-weight:900;font-size:28px;color:${navy};margin:8px 0 6px">📝 ملاحظات خاصة لك</h1>
-        <div style="width:70px;height:4px;background:${orange};margin:0 auto;border-radius:3px"></div>
-      </div>
+      ${secHead("ملاحظات خاصة لك","من مدربتك",2)}
       ${__n?`<div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-right:5px solid ${orange};border-radius:14px;padding:20px 24px;margin-bottom:16px;font-size:15px;line-height:2.1;color:#33476b;white-space:pre-wrap">${__n.replace(/</g,"&lt;")}</div>`:""}
-      ${__dn.length?`<div style="direction:rtl;text-align:right;font-size:12.5px;color:#6a7488;font-weight:600;margin-top:6px">
+      ${__dn.length?`<div style="direction:rtl;text-align:right;font-size:12.5px;color:#6a7488;font-weight:600;margin-top:10px">
         ملاحظات الأيام تجدينها مكتوبة أعلى كل يوم في الجدول.
       </div>`:""}
+      <div style="page-break-inside:avoid;background:#f7f9fc;border:1px solid #e3e7ee;border-radius:10px;padding:18px 22px;max-width:620px;direction:rtl;text-align:right;margin:18px auto 0">
+        <div style="font-family:Cairo;font-weight:800;font-size:14px;color:${navy};margin-bottom:8px">قبل أن تبدأ</div>
+        <div style="font-size:13px;color:#4a5a78;font-weight:600;line-height:2.1">
+          اقرأ التعليمات في الصفحة التالية قبل أول حصة. فيها ما يوفر عليك أخطاء الشهر الأول:
+          كيف تختار وزن البداية، ومتى تزيده، وكم ترتاح بين المجموعات، ومتى تتوقف.
+        </div>
+        <div style="font-size:12.5px;color:#4a5a78;font-weight:700;margin-top:11px;padding-top:11px;border-top:1px solid #e3e7ee">
+          وإن أشكل عليك شيء في أي تمرين، راسلني قبل أن تجتهد بنفسك.
+        </div>
+      </div>
     </div>`;
   }
 
 
-  const __pages = gt([pdfMuscleCSS(), cover, intro, coachNotes, body, startPage, trackP, supportP, postureP, cyclePage, disc, warmup, stretch, cardio, support, library, edu, rights]
+  const __pages = gt([pdfMuscleCSS(), cover, tocPage, intro, coachNotes,
+    body, startPage, supportP, postureP, cyclePage, trackP, disc, warmup, stretch, cardio, support, library, edu, rights]
          .filter(Boolean).join("\n"));
   return `<div dir="rtl" style="background:#eef1f7;-webkit-print-color-adjust:exact;print-color-adjust:exact">${__pages}</div>`;
 }
@@ -4449,7 +4467,7 @@ function verifyVolume(plan, danger, used, maxDaily){
       addTo(day, pick);
     }
 
-    /* 2) رفع مجموعة - موزعة بالتساوي وبحد أقصى +1 فوق الوصفة الأصلية.
+    /* 2) رفع مجموعة - موزعة بالتساوي وبحد أقصى +1 فوق الالأصلية.
           آخر أداة قبل المصارحة: إذا امتلأت الأيام ولم تعد هناك تمارين متاحة،
           نرفع كثافة الموجود بدل ترك العضلة تحت هدفها. */
     guard = 0;
@@ -5240,7 +5258,7 @@ function parseManualPlan(text){
                            /^(full\s*body|fullbody|upper|lower|push|pull|legs)\b/i.test(l) ||
                            /^[■▪●#*]{0,2}\s*(اليوم|يوم)/.test(l);
 
-  /* نمط الوصفة: 4 × 12-15 | 3x10 | 3 × 40 sec - يقبل الفاصلة العربية والإنجليزية */
+  /* نمط النمط الوصف: 4 × 12-15 | 3x10 | 3 × 40 sec - يقبل الفاصلة العربية والإنجليزية */
   const RX = /(\d+)\s*[x×*]\s*(\d+\s*[--]\s*\d+|\d+)\s*(?:sec|ثانية|ث)?/gi;
 
   /* يقسم سطرا يحوي عدة تمارين إلى قطع: كل قطعة تنتهي عند وصفتها.

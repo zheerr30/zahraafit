@@ -947,6 +947,7 @@ const S = {
   flexTab:null,
   subsUrl:"", subsFilter:"workout",
   posture:[], manualText:"",
+  sheetTemplateUrl:"https://docs.google.com/spreadsheets/d/1SjiNAkaC1rRWgqRcsSkUkarMfJJ9TGR9CMF80x-Fphs/edit?usp=sharing",   // قالب المتابعة - مدفون فلا يحتاج إدخالا
   cycle:false,   // صفحة الدورة الشهرية - اختيارية، لا تغير الجدول
   notes:"", dayNotes:{},   // ملاحظات المدربة - لا يمسها التوليد
   goal:"hypertrophy",
@@ -1431,6 +1432,25 @@ function screenPlan(){
         </div></div>
         <div style="white-space:pre-wrap;font-size:14.5px;line-height:2.1;color:#33476b;font-weight:600;margin-top:8px">${(S.notes||"").replace(/</g,"&lt;")}</div>
       </div>`:""}
+    <div class="card no-print" style="margin-top:16px">
+      <div class="sec-head"><div class="ico">📊</div><div>
+        <h2 style="font-size:18px">رابط ملف المتابعة</h2>
+        <p>قالب واحد على درايفك - يظهر في PDF كل المشتركين</p>
+      </div></div>
+      <div class="field" style="margin-top:10px">
+        <label>رابط القالب على Google Sheets</label>
+        <input id="tpl-url" value="${(S.sheetTemplateUrl||"").replace(/"/g,'&quot;')}"
+          placeholder="https://docs.google.com/spreadsheets/d/..../edit" dir="ltr" style="text-align:left">
+      </div>
+      <div class="hint">
+        ارفعي ملف <b>ZahraaFit_ملف_المتابعة.xlsx</b> على درايفك، افتحيه بجداول بيانات Google،
+        ثم غيري <b>مشاركة</b> إلى <b>أي شخص لديه الرابط - مشاهد</b>، وانسخي الرابط هنا.
+        البرنامج يحوله تلقائيا لرابط نسخ.
+      </div>
+      <div class="actions" style="margin-top:12px">
+        <button class="btn primary" data-act="savetpl">حفظ الرابط</button>
+      </div>
+    </div>
     ${notesCard()}
     ${supportCard()}
     ${postureCard()}
@@ -2291,6 +2311,7 @@ function seedLibraryVideos(){
 function loadStored(){
   try{
     const su=localStorage.getItem("zf_subs_url"); if(su) S.subsUrl=su;
+    const tu=localStorage.getItem("zf_sheet_tpl"); if(tu) S.sheetTemplateUrl=tu;
     const im=localStorage.getItem("zf_images"); if(im) S.images=JSON.parse(im);
     const vl=localStorage.getItem("zf_videos"); if(vl) videoLinks=JSON.parse(vl);
   }catch(e){}
@@ -3114,50 +3135,51 @@ function buildPdfHTML(){
     </div>`;
 
   /* صفحة ملف المتابعة - الملف مضمن كرابط data داخل الـPDF نفسه. */
+  /* صفحة ملف المتابعة: رابط نسخ لقالب جوجل شيت.
+     روابط data محجوبة في قارئات الـPDF لأسباب أمنية، فالرابط العادي
+     هو الوحيد الذي يعمل عند المشترك. */
   let trackP = "";
-  if(S.plan && S.plan.length && typeof trackingCSV === "function"){
-    let dataUrl = "";
-    try{
-      const csv = trackingCSV();
-      const bytes = new TextEncoder().encode(csv);
-      let bin = "";
-      bytes.forEach(b => bin += String.fromCharCode(b));
-      dataUrl = "data:text/csv;charset=utf-8;base64," + btoa(bin);
-    }catch(e){ dataUrl = ""; }
-    const fname = `متابعتي_${String((S.client&&S.client.name)||"ZahraaFit").replace(/\s+/g,"_")}.csv`;
+  if(S.plan && S.plan.length){
+    let url = (S.sheetTemplateUrl||"").trim();
+    if(url){
+      url = url.replace(/\/(edit|view|copy)(\?[^#]*)?(#.*)?$/,"/copy");
+      if(!/\/copy$/.test(url)) url = url.replace(/\/$/,"") + "/copy";
+    }
     trackP = `
     <div style="page-break-before:always;padding:52px 52px 26px">
       ${secHead("ملف متابعتك","حمله وسجل فيه تقدمك",8)}
-      ${dataUrl?`
+      ${url?`
       <div style="page-break-inside:avoid;text-align:center;margin-bottom:22px">
-        <a href="${dataUrl}" download="${fname}" style="display:inline-block;background:${orange};color:#fff;font-family:Cairo;font-weight:900;font-size:16px;padding:15px 38px;border-radius:9px;text-decoration:none">
-          تحميل ملف المتابعة
+        <a href="${url}" style="display:inline-block;background:${orange};color:#fff;font-family:Cairo;font-weight:900;font-size:16px;padding:15px 38px;border-radius:9px;text-decoration:none">
+          افتح ملف المتابعة
         </a>
-        <div style="font-size:11.5px;color:#a0a8b8;font-weight:600;margin-top:8px">${fname}</div>
-      </div>`:""}
+        <div style="font-size:11.5px;color:#a0a8b8;font-weight:600;margin-top:8px">يفتح في جداول بيانات Google</div>
+      </div>`:`
+      <div style="page-break-inside:avoid;background:#fff7ee;border:1px solid rgba(232,98,44,.3);border-radius:10px;padding:16px 20px;max-width:620px;direction:rtl;text-align:right;margin:0 auto 16px;font-size:13px;color:#8a5a13;font-weight:600;line-height:1.95">
+        رابط ملف المتابعة غير مضبوط. اطلبه من مدربتك.
+      </div>`}
+
       <div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:10px;padding:20px 24px;max-width:620px;direction:rtl;text-align:right;margin:0 auto 14px">
-        <div style="font-family:Cairo;font-weight:800;font-size:14px;color:${navy};margin-bottom:10px">كيف تفتحه</div>
+        <div style="font-family:Cairo;font-weight:800;font-size:14px;color:${navy};margin-bottom:10px">كيف تستخدمه</div>
         <table style="width:100%;border-collapse:collapse">
-          ${[["افتح الملف بعد تحميله على جهازك"],
-             ["ادخل drive.google.com واسحب الملف إليه"],
-             ["اضغط عليه مرتين ثم: فتح باستخدام - جداول بيانات Google"],
-             ["صار على حسابك - يفتح من الجوال ويحفظ تلقائيا"]].map((r,i)=>`
-          <tr><td style="width:26px;padding:6px 0;vertical-align:top;font-family:Cairo;font-weight:900;font-size:13px;color:${orange}">${i+1}</td>
-          <td style="padding:6px 0;font-size:13.5px;color:#4a5a78;font-weight:600;line-height:1.9">${r[0]}</td></tr>`).join("")}
+          ${[["اضغط الزر أعلاه - يطلب منك إنشاء نسخة"],
+             ["اضغط إنشاء نسخة - تصير النسخة في حسابك أنت"],
+             ["اكتب أسماء تمارينك من جدولك في ورقة سجل الأوزان مرة واحدة"],
+             ["سجل بعد كل حصة - يحفظ تلقائيا ويفتح من جوالك"]].map((r,i)=>`
+          <tr><td style="width:26px;padding:7px 0;vertical-align:top;font-family:Cairo;font-weight:900;font-size:13px;color:${orange}">${i+1}</td>
+          <td style="padding:7px 0;font-size:13.5px;color:#4a5a78;font-weight:600;line-height:1.9">${r[0]}</td></tr>`).join("")}
         </table>
-        <div style="font-size:12px;color:#a0a8b8;font-weight:600;margin-top:11px;padding-top:11px;border-top:1px solid #eef0f4">
-          أو افتحه ببرنامج Excel أو Numbers مباشرة.
-        </div>
       </div>
+
       <div style="page-break-inside:avoid;background:#f7f9fc;border:1px solid #e3e7ee;border-radius:10px;padding:18px 24px;max-width:620px;direction:rtl;text-align:right;margin:0 auto">
-        <div style="font-family:Cairo;font-weight:800;font-size:14px;color:${navy};margin-bottom:8px">محتوياته</div>
+        <div style="font-family:Cairo;font-weight:800;font-size:14px;color:${navy};margin-bottom:8px">أوراقه الثلاث</div>
         <div style="font-size:13px;color:#4a5a78;font-weight:600;line-height:2.1">
-          <b style="color:${navy}">سجل الأوزان</b> - تمارينك جاهزة، تكتب وزن كل أسبوع وعمود الفرق يحسب تلقائيا.<br>
+          <b style="color:${navy}">سجل الأوزان</b> - وزن كل أسبوع، وعمود الفرق يحسب الزيادة تلقائيا.<br>
           <b style="color:${navy}">القياسات</b> - ثمانية قياسات كل أسبوعين، والفرق عن البداية يظهر وحده.<br>
-          <b style="color:${navy}">سجل الحصص</b> - التاريخ ومستوى الطاقة والنوم، وعداد الحصص المنجزة.
+          <b style="color:${navy}">سجل الحصص</b> - التاريخ والطاقة والنوم، وعداد الحصص المنجزة.
         </div>
         <div style="font-size:12.5px;color:#4a5a78;font-weight:700;margin-top:11px;padding-top:11px;border-top:1px solid #e3e7ee">
-          سجل فيه بانتظام. بعد شهرين سترى نمطك بوضوح، وهذا أنفع من أي إحساس.
+          سجل بانتظام. بعد شهرين سترى نمطك بوضوح، وهذا أنفع من أي إحساس.
         </div>
       </div>
     </div>`;
@@ -3556,6 +3578,13 @@ function bind(){
     else if(a==="toggleedu"){ S.includeEdu=!S.includeEdu; render(); }
     else if(a==="exportpdf") exportPDF();
     else if(a==="restart"){ if(confirm("بدء جدول جديد؟ ستحذف اختياراتك الحالية (الصور تبقى محفوظة).")){ resetPlan(); go(-1);} }
+    else if(a==="savetpl"){
+      const el=document.getElementById("tpl-url");
+      S.sheetTemplateUrl = el ? el.value.trim() : "";
+      try{ localStorage.setItem("zf_sheet_tpl", S.sheetTemplateUrl); }catch(e){}
+      alert(S.sheetTemplateUrl ? "حفظ الرابط. سيظهر في PDF كل المشتركين." : "أزيل الرابط.");
+      render();
+    }
     else if(a==="savenotes"){
       const el=document.getElementById("cl-notes");
       S.notes = el ? el.value : (S.notes||"");

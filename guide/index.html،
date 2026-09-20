@@ -1,0 +1,1350 @@
+
+MacBook Air الزهراء, Connected
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Subscriber guide · HTML
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="only light">
+<title>دليل المشترك | ZahraaFit</title>
+<meta name="description" content="دليل المشترك في ZahraaFit: إجابات لكل الأسئلة عن الجدول الغذائي، الطبخ والأوزان، الأكل برا، التمرين، وحساب السعرات في التطبيقات.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B2E6B;
+    --navy-dark:#08142C;
+    --orange:#F26539;
+    --orange-light:#FFF1EC;
+    --bg:#F7F8FB;
+    --card:#FFFFFF;
+    --text:#1B2233;
+    --muted:#5B6478;
+    --line:#E3E7EF;
+    --radius:16px;
+    color-scheme: only light;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-padding-top:90px;background:var(--bg)}
+  body{
+    font-family:'Cairo',system-ui,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.9;
+    font-size:17px;
+    -webkit-text-size-adjust:100%;
+  }
+  a{color:var(--navy)}
+  img{max-width:100%}
+ 
+  /* الهيدر */
+  .hero{
+    background:linear-gradient(135deg,var(--navy-dark) 0%,var(--navy) 100%);
+    color:#fff;
+    padding:56px 20px 44px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;inset:auto -80px -120px auto;
+    width:320px;height:320px;border-radius:50%;
+    background:var(--orange);opacity:.18;
+  }
+  .hero .brand{
+    display:inline-block;
+    font-weight:800;letter-spacing:.5px;
+    font-size:15px;color:#fff;opacity:.9;
+    margin-bottom:14px;
+    border:1px solid rgba(255,255,255,.3);
+    padding:4px 16px;border-radius:999px;
+  }
+  .hero h1{font-size:clamp(28px,5vw,44px);font-weight:800;line-height:1.3;margin-bottom:10px}
+  .hero p{max-width:640px;margin:0 auto;font-size:17px;opacity:.92}
+  .hero .tag{margin-top:18px;color:var(--orange);font-weight:700;letter-spacing:1px}
+ 
+  /* شريط الأقسام */
+  .nav{
+    position:sticky;top:0;z-index:20;
+    background:rgba(255,255,255,.96);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:1040px;margin:0 auto;padding:10px 14px;
+    display:flex;gap:8px;overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .nav-inner::-webkit-scrollbar{display:none}
+  .nav a{
+    white-space:nowrap;text-decoration:none;
+    font-size:14px;font-weight:700;
+    color:var(--navy);
+    background:#EEF2FA;border-radius:999px;
+    padding:6px 14px;
+  }
+  .nav a:hover{background:var(--orange);color:#fff}
+ 
+  .wrap{max-width:1040px;margin:0 auto;padding:28px 16px 60px}
+ 
+  /* البحث */
+  .search{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px;
+    box-shadow:0 4px 18px rgba(11,46,107,.06);
+    margin-bottom:28px;
+  }
+  .search label{font-weight:700;display:block;margin-bottom:8px;color:var(--navy)}
+  .search input{
+    width:100%;font-family:inherit;font-size:17px;
+    padding:12px 16px;border:2px solid var(--line);
+    border-radius:12px;outline:none;background:#fff;color:var(--text);
+  }
+  .search input:focus{border-color:var(--orange)}
+  .search .hint{font-size:14px;color:var(--muted);margin-top:8px}
+  .no-results{display:none;text-align:center;color:var(--muted);padding:30px 0}
+ 
+  /* الأقسام */
+  .section{margin-bottom:44px}
+  .section-head{
+    display:flex;align-items:center;gap:12px;
+    margin-bottom:16px;
+  }
+  .section-head .num{
+    width:42px;height:42px;border-radius:12px;flex-shrink:0;
+    background:var(--orange);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:18px;
+  }
+  .section-head h2{font-size:24px;color:var(--navy);font-weight:800;line-height:1.3}
+  .section-intro{color:var(--muted);margin-bottom:14px;font-size:16px}
+ 
+  .rule{
+    background:var(--navy);color:#fff;
+    border-radius:var(--radius);
+    padding:18px 20px;margin-bottom:16px;
+    border-right:6px solid var(--orange);
+  }
+  .rule strong{color:#FFD9CC}
+ 
+  /* الأسئلة */
+  details{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    margin-bottom:10px;
+    overflow:hidden;
+    transition:box-shadow .2s;
+  }
+  details[open]{box-shadow:0 6px 20px rgba(11,46,107,.08);border-color:#C9D3E8}
+  summary{
+    cursor:pointer;list-style:none;
+    padding:14px 18px;
+    font-weight:700;font-size:17px;color:var(--navy);
+    display:flex;align-items:center;gap:12px;
+    user-select:none;
+  }
+  summary::-webkit-details-marker{display:none}
+  summary::before{
+    content:"+";
+    width:28px;height:28px;border-radius:8px;flex-shrink:0;
+    background:var(--orange-light);color:var(--orange);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:20px;line-height:1;
+  }
+  details[open] summary::before{content:"−";background:var(--orange);color:#fff}
+  .answer{padding:0 18px 18px 18px;color:var(--text);border-top:1px dashed var(--line);padding-top:12px}
+  .answer p{margin-bottom:10px}
+  .answer p:last-child{margin-bottom:0}
+  .answer ul,.answer ol{padding-right:22px;margin-bottom:10px}
+  .answer li{margin-bottom:4px}
+  .answer .tip{
+    background:var(--orange-light);border-right:4px solid var(--orange);
+    padding:10px 14px;border-radius:10px;margin:10px 0;font-size:15.5px;
+  }
+  .answer .steps{counter-reset:s;padding-right:0;list-style:none}
+  .answer .steps li{
+    counter-increment:s;position:relative;
+    padding-right:40px;margin-bottom:10px;
+  }
+  .answer .steps li::before{
+    content:counter(s);
+    position:absolute;right:0;top:4px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--navy);color:#fff;
+    font-size:14px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;
+  }
+ 
+  /* الجداول */
+  .tbl{width:100%;border-collapse:collapse;margin:10px 0;font-size:15.5px;background:#fff}
+  .tbl th,.tbl td{border:1px solid var(--line);padding:9px 12px;text-align:right;vertical-align:top}
+  .tbl th{background:#EEF2FA;color:var(--navy);font-weight:700}
+  .tbl tr:nth-child(even) td{background:#FAFBFD}
+  .tbl-wrap{overflow-x:auto}
+ 
+  .formula{
+    background:#0B2E6B;color:#fff;border-radius:12px;
+    padding:14px 18px;margin:12px 0;
+    font-weight:700;font-size:17px;text-align:center;
+    direction:rtl;
+  }
+ 
+  /* الخاتمة */
+  .contact{
+    background:linear-gradient(135deg,var(--navy) 0%,var(--navy-dark) 100%);
+    color:#fff;border-radius:var(--radius);
+    padding:28px 22px;text-align:center;
+  }
+  .contact h2{font-size:22px;margin-bottom:10px}
+  .contact p{opacity:.92;max-width:600px;margin:0 auto 8px}
+  .contact .btn{
+    display:inline-block;margin-top:14px;
+    background:var(--orange);color:#fff;text-decoration:none;
+    font-weight:800;padding:11px 26px;border-radius:999px;
+  }
+  footer{text-align:center;color:var(--muted);font-size:14px;padding:22px 16px 30px}
+ 
+  .top{
+    position:fixed;bottom:20px;left:20px;z-index:30;
+    width:46px;height:46px;border-radius:50%;
+    background:var(--orange);color:#fff;border:none;
+    font-size:22px;font-weight:800;cursor:pointer;
+    box-shadow:0 6px 18px rgba(242,101,57,.4);
+    display:none;
+  }
+ 
+  @media print{
+    .nav,.search,.top{display:none!important}
+    details{break-inside:avoid}
+    details:not([open]) .answer{display:block}
+    summary::before{display:none}
+    body{font-size:13px;background:#fff}
+  }
+</style>
+</head>
+<body>
+ 
+<header class="hero">
+  <div class="brand">ZahraaFit</div>
+  <h1>دليل المشترك</h1>
+  <p>كل الأسئلة اللي تجي في بالك وأنت تبدأ مع جدولك الغذائي وجدول تمارينك، مجموعة هنا بإجابات واضحة ومباشرة. اقرأه مرة كاملة من البداية، وارجع له كل ما احتجت.</p>
+  <div class="tag">قوة • توازن • بساطة</div>
+</header>
+ 
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#start">ابدأ هنا</a>
+    <a href="#basics">الأساسيات</a>
+    <a href="#cooking">الطبخ والأوزان</a>
+    <a href="#swaps">البدائل</a>
+    <a href="#outside">الأكل برا</a>
+    <a href="#hunger">الجوع والوزن</a>
+    <a href="#measure">القياسات والصور</a>
+    <a href="#workout">التمرين</a>
+    <a href="#special">رمضان وحالات خاصة</a>
+    <a href="#apps">حساب السعرات</a>
+    <a href="#tables">جداول مرجعية</a>
+    <a href="#mindset">الالتزام</a>
+    <a href="#subscription">الاشتراك</a>
+    <a href="#contact">التواصل</a>
+  </div>
+</nav>
+ 
+<main class="wrap">
+ 
+  <div class="search">
+    <label for="q">ابحث عن سؤالك</label>
+    <input id="q" type="search" placeholder="مثال: البصل، مطعم، فاتني تمرين، بديل الأرز..." autocomplete="off">
+    <div class="hint">اكتب كلمة من سؤالك وبتطلع لك كل الإجابات اللي تخصها.</div>
+  </div>
+  <div class="no-results" id="noResults">ما لقينا سؤال يطابق بحثك. جرب كلمة ثانية، أو ارسل سؤالك للمدربة.</div>
+ 
+  <!-- ================= ابدأ هنا ================= -->
+  <section class="section" id="start">
+    <div class="section-head"><div class="num">1</div><h2>ابدأ هنا: أول أسبوع مع الجدول</h2></div>
+    <p class="section-intro">استلمت جدولك؟ هذي الخطوات بالترتيب. لا تبدأ الأكل قبل ما تخلصها.</p>
+ 
+    <details open>
+      <summary>خطوات أول 3 أيام</summary>
+      <div class="answer">
+        <ol class="steps">
+          <li><strong>اقرأ الجدول كامل مرة وحدة</strong> من الغلاف إلى آخر صفحة، مو بس صفحة الوجبات. صفحة التعليمات فيها إجابات لأغلب أسئلتك.</li>
+          <li><strong>اشتري ميزان مطبخ رقمي</strong> إذا ما عندك، وشريط قياس (متر خياطة).</li>
+          <li><strong>خذ قياساتك وصورك وسجل وزنك</strong> قبل أول يوم (شرحه في قسم القياسات والصور). هذي نقطة البداية اللي بتقارن فيها بعدين.</li>
+          <li><strong>اكتب قائمة مشتريات</strong> من مكونات الجدول لأسبوع كامل، واشتريها مرة وحدة.</li>
+          <li><strong>حضر أكل يومين أو ثلاثة مقدما</strong> (بروتين مطبوخ، أرز مطبوخ، خضار مقطعة) وحطها في علب في الثلاجة. أكبر سبب لترك الجدول هو "ما عندي أكل جاهز".</li>
+          <li><strong>حدد أيام تمرينك</strong> في الأسبوع وحطها في تقويم جوالك كموعد ثابت.</li>
+          <li><strong>احفظ رابط هذا الدليل</strong> في جوالك، وارجع له قبل ما تسأل.</li>
+        </ol>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>وش أتوقع في أول أسبوع؟</summary>
+      <div class="answer">
+        <p>جوع خفيف بين الوجبات، رغبة في الحلا، وشوية تعب في التمرين. كل هذا طبيعي ويخف من الأسبوع الثاني. الميزان أغلب الأحيان ينزل بسرعة أول أسبوع (سوائل)، وبعدها يبطئ، وهذا هو الطبيعي، مو علامة إن الجدول وقف.</p>
+        <p>لا تحكم على الجدول قبل 3 أسابيع كاملة من الالتزام.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>وش الأدوات اللي أحتاجها؟</summary>
+      <div class="answer">
+        <ul>
+          <li>ميزان مطبخ رقمي (ضروري)</li>
+          <li>ميزان جسم (يفضل نفس الميزان طول الاشتراك)</li>
+          <li>شريط قياس</li>
+          <li>علب حفظ أكل بأحجام مختلفة</li>
+          <li>قارورة ماء كبيرة تكون معك طول اليوم</li>
+          <li>تطبيق حساب سعرات (اختياري، شرحه في قسم حساب السعرات)</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+ 
+  <!-- ================= الأساسيات ================= -->
+  <section class="section" id="basics">
+    <div class="section-head"><div class="num">2</div><h2>أساسيات الجدول الغذائي</h2></div>
+    <p class="section-intro">اقرأ هذا القسم قبل أي شي. أغلب الأسئلة تنحل لما تفهم هالقواعد الأساسية.</p>
+ 
+    <div class="rule">
+      <strong>القاعدة الذهبية:</strong> كل الأوزان في جدولك مكتوبة للأكل وهو <strong>نيء (قبل الطبخ)</strong>. الدجاج، اللحم، السمك، الأرز، المكرونة، الشوفان، كلها توزن قبل ما تنطبخ.
+    </div>
+ 
+    <details>
+      <summary>هل لازم أشتري ميزان أكل؟</summary>
+      <div class="answer">
+        <p>نعم، ميزان المطبخ الرقمي أهم أداة عندك، وسعره بسيط ومتوفر في أي محل أدوات منزلية أو أونلاين. بدون ميزان الكميات كلها بتكون تخمين، والتخمين هو أكثر سبب يخلي النتائج تتأخر.</p>
+        <p>أول أسبوعين وزن كل شي. بعدها عينك بتتعود على الكميات وتقدر تقدرها بدون ميزان في المواقف اللي ما يكون فيه ميزان متوفر.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>الأوزان في الجدول نيئة ولا مطبوخة؟</summary>
+      <div class="answer">
+        <p>نيئة دائما. يعني إذا مكتوب 150 جرام دجاج، توزن الدجاج وهو نيء قبل الطبخ. بعد الطبخ بيخف وزنه لأنه يفقد ماء، وهذا طبيعي، ما تحتاج تعيد الوزن.</p>
+        <p>نفس الشي الأرز: 60 جرام أرز نيء بيصير تقريبا 180 جرام بعد الطبخ. لو وزنته مطبوخ بتاخذ ثلث الكمية المطلوبة فقط.</p>
+        <div class="tip">إذا اضطريت توزن مطبوخ، شوف جدول التحويل في قسم "جداول مرجعية" في آخر الصفحة.</div>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>هل أقدر أغير ترتيب الوجبات أو وقتها؟</summary>
+      <div class="answer">
+        <p>نعم. المهم إنك تاكل كل الوجبات خلال يومك، مو وقتها بالضبط. تقدر تاكل الغداء الساعة 3 أو الساعة 5، وتقدر تبدل السناك مع العشاء إذا يناسبك.</p>
+        <p>اللي ما ينفع: تحذف وجبة كاملة، أو تدمج وجبتين في وجبة وحدة بشكل يومي، لأن هذا يخلي الجوع يتراكم وتاكل زيادة.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>هل لازم آكل كل الوجبات حتى لو مو جوعان؟</summary>
+      <div class="answer">
+        <p>حاول قدر الإمكان. الجدول محسوب على مجموع السعرات والبروتين في اليوم، وإذا حذفت وجبة بتنقص عن اللي جسمك يحتاجه، وغالبا بتجوع في وقت ثاني وتعوض بشي مو محسوب.</p>
+        <p>إذا صار معك ذا الشي بشكل متكرر (مو جوعان أبدا وما تقدر تكمل)، بلغ المدربة عشان تعدل حجم الوجبات، ما تحذفها من نفسك.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>الماء، كم أشرب؟</summary>
+      <div class="answer">
+        <p>حد أدنى 2 إلى 3 لتر في اليوم، وأكثر في الأيام الحارة وأيام التمرين. الشاي والقهوة بدون سكر ما تحسب ضد الماء، بس لا تعتمد عليها بديل.</p>
+        <p>علامة بسيطة: لون البول فاتح يعني شربك كافي.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>الملح والبهارات والليمون والخل، تحسب؟</summary>
+      <div class="answer">
+        <p>لا. الملح، الفلفل، الكمون، الكركم، البابريكا، القرفة، الليمون، الخل، الثوم والزنجبيل الطازج بكميات الطبخ العادية، كلها استخدمها براحتك بدون حساب.</p>
+        <p>اللي يحسب: أي شي فيه زيت أو سكر أو دقيق. مثل الصوصات الجاهزة، الكاتشب، المايونيز، صوص الباربكيو، الطحينة، صوص الترياكي.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>الزيت في الطبخ، أحسبه؟</summary>
+      <div class="answer">
+        <p>نعم، الزيت من أكثر الأشياء اللي تخرب الحساب لأنه صغير الحجم وعالي السعرات:</p>
+        <ul>
+          <li>ملعقة صغيرة زيت (5 مل) = تقريبا 45 سعرة</li>
+          <li>ملعقة كبيرة زيت (15 مل) = تقريبا 120 سعرة</li>
+        </ul>
+        <p>إذا جدولك فيه زيت مكتوب، التزم بالكمية. إذا ما فيه زيت مكتوب، استخدم بخاخ الزيت أو ملعقة صغيرة واحدة كحد أقصى للوجبة، أو اطبخ بدون زيت (شوي، فرن، سلق، مقلاة غير لاصقة).</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>القهوة والشاي، مسموحة؟</summary>
+      <div class="answer">
+        <p>القهوة العربية، القهوة السادة، الأمريكانو، الإسبريسو، الشاي بدون سكر، كلها مسموحة وما تحتاج تحسبها (سعراتها تقريبا صفر).</p>
+        <p>اللي يحسب: الحليب، الكريمة، السكر، والسيرب. كوب لاتيه متوسط بحليب كامل الدسم فيه 150 إلى 200 سعرة، وهذا يعادل سناك كامل. شوف قسم "الأكل برا" لتفاصيل المقهى.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>أقدر أستخدم محليات صناعية (ستيفيا، سكرالوز)؟</summary>
+      <div class="answer">
+        <p>نعم بكميات معقولة. المشروبات الدايت والمحليات بدون سعرات ما تأثر على الجدول. بس انتبه إن بعض الناس تزيد عندهم الرغبة بالحلا لما يستخدمونها كثير، إذا لاحظت هذا الشي قلل منها.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>الجدول عام ولا علاجي؟</summary>
+      <div class="answer">
+        <p>الجداول في ZahraaFit جداول تغذية عامة لتحسين الجسم والصحة، وهي ليست جداول علاجية. إذا عندك حالة صحية تحتاج بروتوكول خاص (سكري، ضغط، غدة، حساسيات شديدة)، لازم تكون بلغت المدربة في الملاحظات قبل الجدول، وفي بعض الحالات تحتاج خدمة التغذية العلاجية المنفصلة.</p>
+      </div>
+    </details>
+  </section>
+ 
+  <!-- ================= 2 الطبخ ================= -->
+  <section class="section" id="cooking">
+    <div class="section-head"><div class="num">3</div><h2>الطبخ والمطبخ</h2></div>
+    <p class="section-intro">الجدول يعطيك المكونات والكميات، وطريقة الطبخ لك أنت. هنا كل التفاصيل الصغيرة اللي تحير المبتدئ.</p>
+ 
+    <div class="rule">
+      <strong>المبدأ:</strong> أنت حر في طريقة الطبخ (شوي، فرن، سلق، بخار، مقلاة). اللي يهم: تلتزم بالكميات النيئة، وتحسب أي زيت أو صوص تضيفه.
+    </div>
+ 
+    <details>
+      <summary>هل أطبخ البصل؟ وهل أحسبه؟</summary>
+      <div class="answer">
+        <p>اطبخه كيف ما تحب، وهذا ما يفرق أبدا في الجدول. نيء في السلطة، أو مقلي بشوية زيت، أو مع الدجاج في المقلاة، كلها تمام.</p>
+        <p>وبخصوص الحساب: بصلة صغيرة أو نصف بصلة للطبخ ما تحتاج تحسبها، سعراتها بسيطة جدا (بصلة متوسطة كاملة تقريبا 40 سعرة). اللي تحسبه هو الزيت اللي تقلي فيه البصل، مو البصل نفسه.</p>
+        <div class="tip">نفس الكلام ينطبق على الثوم، الطماطم، الفلفل، الكزبرة، البقدونس، وكل الخضار الورقية والخفيفة المستخدمة في الطبخ.</div>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>أطبخ الدجاج قبل ما أوزنه ولا بعد؟</summary>
+      <div class="answer">
+        <p>توزنه <strong>قبل</strong> الطبخ وهو نيء، ثم تطبخه. بعد الطبخ بيصغر حجمه ويخف وزنه (150 جرام نيء يصير تقريبا 105 إلى 110 جرام مطبوخ)، وهذا طبيعي لأنه فقد ماء فقط، والبروتين والسعرات نفسها.</p>
+        <p>مثال عملي: جدولك يقول 150 جرام صدر دجاج. تطلع الصدر من الثلاجة، تحطه على الميزان نيء، تقص لين يوصل 150 جرام، وتطبخه. خلاص.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>طبخت كمية كبيرة من الدجاج مرة وحدة (تحضير أسبوعي)، كيف أوزن حصتي؟</summary>
+      <div class="answer">
+        <p>هذي أفضل طريقة توفر وقتك، وطريقتها:</p>
+        <ol class="steps">
+          <li>وزن الدجاج كله نيء قبل الطبخ. مثلا 1000 جرام.</li>
+          <li>اطبخه، ثم وزنه كله مطبوخ. مثلا طلع 700 جرام.</li>
+          <li>اقسم: 700 ÷ 1000 = 0.7. يعني كل 1 جرام نيء صار 0.7 جرام مطبوخ.</li>
+          <li>حصتك 150 جرام نيء = 150 × 0.7 = 105 جرام مطبوخ. وزن 105 جرام من المطبوخ في كل وجبة.</li>
+        </ol>
+        <div class="tip">إذا ما تبي تحسب، استخدم القاعدة التقريبية: الدجاج واللحم المطبوخ = وزن النيء × 0.7</div>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>وزنت الأرز وهو مطبوخ، كيف أعرف كم يعادل نيء؟</summary>
+      <div class="answer">
+        <p>الأرز يمتص ماء ويصير وزنه تقريبا ثلاثة أضعاف. يعني:</p>
+        <ul>
+          <li>50 جرام أرز نيء = تقريبا 150 جرام مطبوخ</li>
+          <li>60 جرام أرز نيء = تقريبا 180 جرام مطبوخ</li>
+          <li>80 جرام أرز نيء = تقريبا 240 جرام مطبوخ</li>
+        </ul>
+        <p>المكرونة تصير تقريبا ضعفين ونص (60 جرام نيء = 150 جرام مطبوخ). الشوفان مع الماء أو الحليب يصير الحساب على الشوفان الجاف فقط.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>أوزن الدجاج بالعظم ولا بدون؟</summary>
+      <div class="answer">
+        <p>بدون عظم وبدون جلد. الوزن في الجدول للحم الصافي اللي بتاكله. إذا عندك أفخاذ بالعظم، الأسهل تشتري مسحب (صدر أو فخذ مسحب) عشان الوزن يطلع مضبوط.</p>
+        <p>إذا اضطريت توزن بالعظم: تقريبا 30% من الوزن عظم، يعني 200 جرام فخذ بالعظم = تقريبا 140 جرام لحم.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>البيض، أوزنه ولا أعده؟</summary>
+      <div class="answer">
+        <p>عده. البيضة في الجدول تعني بيضة متوسطة (تقريبا 50 جرام بدون القشر، 70 سعرة). إذا مكتوب "بياض بيض" بس، افصل الصفار وخذ البياض فقط (بياض بيضة تقريبا 17 سعرة).</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>الخضار، أوزنها؟ وهل مسموح أزيد منها؟</summary>
+      <div class="answer">
+        <p>الخضار الخضراء والورقية (خس، خيار، جرجير، سبانخ، بروكلي، كوسا، فلفل، طماطم، خضار الطبخ) تقدر تاكل منها بحرية وما تحتاج تدقق في وزنها، سعراتها منخفضة جدا وتساعدك على الشبع.</p>
+        <p>الخضار النشوية (بطاطس، بطاطا حلوة، ذرة، بازلاء) هذي تحسب وتوزن لأنها كربوهيدرات.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>الفواكه، أوزنها بالقشر ولا بدون؟</summary>
+      <div class="answer">
+        <p>بدون قشر وبدون بذور لكل شي ما ينأكل قشره (موز، برتقال، مانجو، بطيخ). التفاح والخوخ والعنب والفراولة توزن كما هي لأنك تاكلها بالقشر.</p>
+        <p>إذا مكتوب "موزة" أو "تفاحة" بدون وزن، المقصود حبة متوسطة الحجم.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>الخبز، كيف أعرف الحصة الصحيحة؟</summary>
+      <div class="answer">
+        <p>اقرأ الوزن على غلاف الخبز. الجدول يحدد الوزن (مثلا "60 جرام خبز توست بر" = شريحتين غالبا). أنواع الخبز تختلف كثير، فالأفضل توزن أول مرة وتعرف كم شريحة تعادل الوزن المطلوب.</p>
+        <p>خبز الصامولي الصغير تقريبا 60 إلى 70 جرام، خبز التميس ثقيل جدا (الرغيف الكامل يوصل 400 سعرة وأكثر)، فانتبه له.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>ما عندي مكون من الجدول اليوم، وش أسوي؟</summary>
+      <div class="answer">
+        <p>بدله بمكون من نفس المجموعة وبنفس الوزن. بروتين بدل بروتين، كارب بدل كارب، دهون بدل دهون. القسم الجاي "البدائل" فيه جدول كامل.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>أقدر أطبخ المكونات مع بعض في طبخة وحدة (كبسة، مندي، معكرونة بالصوص)؟</summary>
+      <div class="answer">
+        <p>أكيد، طالما نفس المكونات ونفس الكميات. مثلا وجبتك 150 جرام دجاج + 60 جرام أرز + خضار، تقدر تسويها كبسة صغيرة بالكميات نفسها. الشرط الوحيد: تحسب الزيت، وتتجنب إضافات مثل السمن الزايد أو الصوصات الجاهزة الثقيلة.</p>
+      </div>
+    </details>
+  </section>
+ 
+  <!-- ================= 3 البدائل ================= -->
+  <section class="section" id="swaps">
+    <div class="section-head"><div class="num">4</div><h2>البدائل: وش أبدل بوش</h2></div>
+    <p class="section-intro">القاعدة: بدل المكون بمكون من نفس المجموعة. البروتين بروتين، والكارب كارب، والدهون دهون.</p>
+ 
+    <details open>
+      <summary>جدول البدائل السريع</summary>
+      <div class="answer">
+        <div class="tbl-wrap">
+        <table class="tbl">
+          <tr><th>المجموعة</th><th>البدائل (بنفس الوزن النيء إلا إذا مكتوب غير كذا)</th></tr>
+          <tr><td>صدر دجاج</td><td>فخذ دجاج مسحب بدون جلد، سمك أبيض (هامور، فيليه)، تونة بالماء، لحم غنم أو بقر قليل الدهن، روبيان، ديك رومي</td></tr>
+          <tr><td>سلمون</td><td>سردين، ماكريل، أو صدر دجاج + ملعقة صغيرة زيت زيتون (لأن السلمون فيه دهون)</td></tr>
+          <tr><td>بيض</td><td>بيضتين = 100 جرام صدر دجاج نيء تقريبا من ناحية البروتين، أو 150 جرام زبادي يوناني</td></tr>
+          <tr><td>أرز (نيء)</td><td>نفس الوزن من: مكرونة، برغل، كينوا، فريكة، شوفان. أو ضعف ونص الوزن من البطاطس النيئة (60 جرام أرز = 150 جرام بطاطس). أو خبز بنفس الوزن تقريبا</td></tr>
+          <tr><td>خبز توست</td><td>خبز بر، صامولي، تورتيلا، بنفس الوزن بالجرام</td></tr>
+          <tr><td>شوفان</td><td>نفس الوزن من الأرز أو المكرونة أو حبوب الإفطار الكاملة بدون سكر</td></tr>
+          <tr><td>زبادي يوناني</td><td>لبنة قليلة الدسم، جبن قريش، سكوب بروتين مع ماء</td></tr>
+          <tr><td>حليب</td><td>حليب لوز أو شوفان (سعراته أقل، فانتبه)، أو زبادي بنفس الوزن</td></tr>
+          <tr><td>زيت زيتون (ملعقة صغيرة)</td><td>ربع حبة أفوكادو، 8 جرام مكسرات، ملعقة صغيرة زبدة فول سوداني</td></tr>
+          <tr><td>مكسرات</td><td>نفس الوزن من أي نوع (لوز، كاجو، جوز، فستق)، أو زبدة فول سوداني بنفس الوزن</td></tr>
+          <tr><td>فاكهة</td><td>أي فاكهة بنفس الوزن، ما عدا المانجو والعنب والتمر (أعلى سكر، خذ ثلثين الكمية)</td></tr>
+          <tr><td>تمر</td><td>حبتين تمر = موزة صغيرة = تفاحة متوسطة تقريبا</td></tr>
+        </table>
+        </div>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>ما أحب الشوفان، وش أستبدله؟</summary>
+      <div class="answer">
+        <p>نفس الوزن من الأرز أو المكرونة أو خبز البر، أو حبوب إفطار كاملة بدون سكر. وإذا الشوفان مكتوب في فطورك، بدله بسندويتش بنفس كمية الخبز والبروتين، أهم شي البروتين يبقى موجود.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>ما أحب السمك أو ما أحب الدجاج</summary>
+      <div class="answer">
+        <p>بدله بأي بروتين من الجدول أعلاه بنفس الوزن. الأفضل تكتب هالشي في الملاحظات قبل الجدول عشان يطلع لك جدول ملائم من البداية. الجدول ينبنى على اللي تكتبه في الملاحظات، وأي شي ما ذكرته ما بيظهر في الجدول.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>أقدر أبدل السناك بشي ثاني (شوكولاتة، حلا، تشيبس)؟</summary>
+      <div class="answer">
+        <p>تقدر بشرط تحسب السعرات وتخليها نفس سعرات السناك الأصلي. مثلا سناك 200 سعرة تقدر تبدله بقطعة شوكولاتة داكنة 30 جرام (تقريبا 170 سعرة) أو كيس تشيبس صغير مخبوز.</p>
+        <p>بس لا تخليها عادة يومية. السناك في الجدول محسوب عشان يعطيك بروتين أو ألياف تشبعك، والحلا يعطيك سعرات بدون شبع.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>وش الفرق بين "بديل" و"إضافة"؟</summary>
+      <div class="answer">
+        <p>البديل يحل مكان شي موجود في الجدول (تشيل الأرز وتحط بطاطس). الإضافة شي جديد فوق الجدول (تاكل الجدول كامل وفوقه لاتيه وكوكيز). البديل ما يأثر، الإضافة تأثر، وكل إضافة لازم تكون محسوبة ومعروفة.</p>
+      </div>
+    </details>
+  </section>
+ 
+  <!-- ================= 4 الأكل برا ================= -->
+  <section class="section" id="outside">
+    <div class="section-head"><div class="num">5</div><h2>الأكل برا: مطعم، مقهى، عزيمة، سفر</h2></div>
+    <p class="section-intro">الطلعات جزء من الحياة وما تخرب النتائج. اللي يخربها هو "خلاص اليوم راح، أكل اللي أبي".</p>
+ 
+    <div class="rule">
+      <strong>الترتيب الصحيح لأي وجبة برا:</strong> بروتين مشوي أولا، خضار أو سلطة ثانيا، كارب بكمية معقولة ثالثا، والصوصات على جنب.
+    </div>
+ 
+    <details>
+      <summary>طلعت مطعم، وش أطلب؟</summary>
+      <div class="answer">
+        <p>اطلب وجبة تشبه وجبتك في الجدول قدر الإمكان:</p>
+        <ul>
+          <li><strong>البروتين:</strong> دجاج مشوي، ستيك، سمك مشوي، شيش طاووق، كباب. تجنب المقلي والمتبل بالكريمة.</li>
+          <li><strong>الكارب:</strong> أرز أبيض، بطاطس مشوية أو مسلوقة، خبز. خذ تقريبا نفس كمية جدولك (كف يد مقفول من الأرز المطبوخ تقريبا 100 جرام).</li>
+          <li><strong>الخضار:</strong> سلطة أو خضار سوتيه، وخل الصوص على جنب.</li>
+          <li><strong>الشرب:</strong> ماء أو مشروب دايت.</li>
+        </ul>
+        <p>ما تحتاج تحسب بالضبط. الوجبة الجاية ترجع لجدولك عادي، ما تعوض ولا تحذف.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>هذي الوجبة تحسب من وجبات جدولي ولا فوقه؟</summary>
+      <div class="answer">
+        <p>تحسب مكان الوجبة اللي كان المفروض تاكلها في هذا الوقت. يعني إذا تغديت في المطعم، ما تاكل غداء الجدول كمان. الباقي من يومك (السناك والعشاء) زي ما هو.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>طلعت مقهى، وش أطلب؟</summary>
+      <div class="answer">
+        <p>أرقام تقريبية تساعدك تختار:</p>
+        <div class="tbl-wrap">
+        <table class="tbl">
+          <tr><th>المشروب (حجم متوسط)</th><th>السعرات تقريبا</th><th>التقييم</th></tr>
+          <tr><td>أمريكانو، إسبريسو، قهوة سوداء، شاي بدون سكر، قهوة عربية</td><td>0 إلى 10</td><td>اشرب براحتك</td></tr>
+          <tr><td>كورتادو، فلات وايت صغير</td><td>60 إلى 100</td><td>ممتاز</td></tr>
+          <tr><td>كابتشينو، لاتيه بحليب قليل الدسم</td><td>100 إلى 150</td><td>جيد، يعادل نص سناك</td></tr>
+          <tr><td>لاتيه بحليب كامل الدسم</td><td>180 إلى 220</td><td>يعادل سناك كامل</td></tr>
+          <tr><td>سبانش لاتيه، آيس كراميل ماكياتو، لاتيه بسيرب</td><td>250 إلى 400</td><td>يعادل وجبة خفيفة كاملة</td></tr>
+          <tr><td>فرابتشينو، مشروبات بالكريمة</td><td>350 إلى 550</td><td>يعادل وجبة رئيسية</td></tr>
+          <tr><td>ماتشا لاتيه</td><td>150 إلى 250</td><td>حسب الحليب والسكر</td></tr>
+        </table>
+        </div>
+        <p>الأكل في المقهى أثقل من المشروبات: كرواسون سادة 280 إلى 350 سعرة، كوكيز كبير 300 إلى 450، قطعة كيك أو تشيز كيك 400 إلى 600، كيكة سان سبستيان 450 إلى 550.</p>
+        <div class="tip">حيلة ممتازة: اطلب المشروب بحليب قليل الدسم، حجم صغير، وسيرب نص كمية أو بدون. هذا يوفر لك 100 إلى 200 سعرة بدون ما تحس بفرق.</div>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>إذا أخذت لاتيه أو حلا في المقهى، وش أشيل من جدولي؟</summary>
+      <div class="answer">
+        <p>شيل السناك. المشروب أو الحلا يحل مكان سناك اليوم. إذا أخذت الاثنين (مشروب + حلا)، شيل السناك وقلل الكارب في وجبتك الجاية للنص. ولا تشيل البروتين أبدا.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>عندي عزيمة أو مناسبة عائلية</summary>
+      <div class="answer">
+        <ol class="steps">
+          <li>لا تروح جوعان. كل وجباتك العادية قبلها، ولا تجمع سعرات "عشان العزيمة".</li>
+          <li>ابدأ بالبروتين والسلطة، وبعدها الأرز والكارب بكمية كف يد.</li>
+          <li>الحلا: خذ قطعة وحدة صغيرة إذا تبي، ولا تصير "تجريب" من كل نوع.</li>
+          <li>ثاني يوم ارجع للجدول من أول وجبة، بدون تعويض ولا تجويع.</li>
+        </ol>
+        <p>عزيمة وحدة في الأسبوع ما تخرب شي. اللي يخرب هو ثلاث عزايم مع "خلاص الأسبوع راح".</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>مسافر أسبوع، كيف ألتزم؟</summary>
+      <div class="answer">
+        <p>في السفر الهدف "الحفاظ" مو "التقدم". ثلاث قواعد بس:</p>
+        <ul>
+          <li>بروتين في كل وجبة (بيض في الفطور، دجاج أو لحم أو سمك في الغداء والعشاء).</li>
+          <li>وجبتين رئيسية ووجبة حرة صغيرة في اليوم، بدل ما تاكل طول اليوم.</li>
+          <li>مشي كثير، وماء كثير.</li>
+        </ul>
+        <p>لما ترجع، ارجع للجدول مباشرة. أي زيادة وزن بعد السفر أغلبها احتباس سوائل وملح وتروح خلال أسبوع.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>أكلت زيادة أمس، هل أقلل اليوم أو أصوم؟</summary>
+      <div class="answer">
+        <p>لا. لا تقلل ولا تصوم ولا تسوي كارديو عقاب. ارجع لجدولك العادي كأن شي ما صار. التعويض بالتجويع يسبب جوع شديد في اليوم اللي بعده وتدخل في دائرة (أكل زيادة، تجويع، أكل زيادة) وهذي أسوأ من الوجبة نفسها.</p>
+        <p>وجبة وحدة زيادة ما تخرب أسبوع كامل من الالتزام. أسبوع كامل من التذبذب هو اللي يخرب.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>الوجبة الحرة (Cheat meal)، مسموحة؟</summary>
+      <div class="answer">
+        <p>إذا جدولك فيه وجبة حرة، التزم بشروطها المكتوبة في الجدول (عددها ووقتها). وإذا ما فيه، التزم بالجدول واسأل المدربة، لأن هذا يعتمد على هدفك ومرحلتك. الوجبة الحرة معناها وجبة وحدة، مو يوم كامل.</p>
+      </div>
+    </details>
+  </section>
+ 
+  <!-- ================= 5 الجوع والوزن ================= -->
+  <section class="section" id="hunger">
+    <div class="section-head"><div class="num">6</div><h2>الجوع، الرغبة بالحلا، والميزان</h2></div>
+ 
+    <details>
+      <summary>أحس بجوع، طبيعي؟</summary>
+      <div class="answer">
+        <p>جوع خفيف قبل الوجبة بشوي طبيعي وعلامة إن الجسم يستخدم مخزونه. الجوع اللي مو طبيعي: جوع شديد مستمر طول اليوم، دوخة، عصبية، أو ما تقدر تنام من الجوع.</p>
+        <p>قبل ما تبلغ المدربة، تأكد من ثلاث أشياء: تشرب ماء كافي؟ تاكل كل وجباتك ولا تحذف؟ تنام 7 ساعات على الأقل؟ إذا كل شي تمام والجوع مستمر أكثر من أسبوع، بلغ المدربة.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>أشتهي حلا كثير، وش أسوي؟</summary>
+      <div class="answer">
+        <ul>
+          <li>أول شي: اشرب كوب ماء وانتظر 10 دقايق. كثير من الرغبة تروح.</li>
+          <li>لا تحذف الكارب من وجباتك، حذف الكارب أكبر سبب للرغبة بالحلا.</li>
+          <li>خل عندك خيار جاهز: حبتين تمر، مربع شوكولاتة داكنة، زبادي مع قرفة، فاكهة.</li>
+          <li>النوم القليل يزيد الرغبة بالسكر بشكل واضح.</li>
+        </ul>
+        <p>الرغبة بالحلا عادة تخف كثير بعد أول أسبوعين إلى ثلاثة أسابيع من الالتزام.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>متى وكيف أوزن نفسي؟</summary>
+      <div class="answer">
+        <ul>
+          <li>الصباح، بعد الحمام، قبل الأكل والشرب، بنفس الملابس، نفس الميزان.</li>
+          <li>وزن نفسك يوميا أو 3 مرات في الأسبوع، وخذ <strong>المعدل الأسبوعي</strong>. لا تقارن يوم بيوم أبدا.</li>
+          <li>الرقم الأهم هو المقاسات والصور كل أسبوعين، مو الميزان لحاله.</li>
+        </ul>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>الوزن زاد فجأة كيلو أو اثنين، ليش؟</summary>
+      <div class="answer">
+        <p>هذا احتباس سوائل وليس دهون، ومستحيل تكون كسبت كيلو دهون في يوم (تحتاج تاكل فوق 7000 سعرة زيادة). الأسباب الشائعة:</p>
+        <ul>
+          <li>وجبة فيها ملح كثير أو كارب كثير في اليوم السابق</li>
+          <li>الدورة الشهرية (قبلها بأسبوع وأثناءها، الزيادة تصل 1 إلى 3 كيلو وتروح بعدها)</li>
+          <li>تمرين جديد أو قوي (العضلات تحتفظ بماء للتعافي)</li>
+          <li>قلة نوم أو توتر</li>
+          <li>إمساك</li>
+        </ul>
+        <p>استمر على الجدول أسبوع كامل وشوف المعدل، بترجع.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>الوزن ثابت من أسبوعين، معناها الجدول ما يشتغل؟</summary>
+      <div class="answer">
+        <p>راجع أولا: تلتزم 100% ولا 80%؟ توزن الأكل ولا تقدر؟ تحسب الزيت والصوصات والمشروبات؟ تمشي وتتحرك خلال اليوم؟ تنام كويس؟ إذا كل هذا تمام والوزن والمقاسات ثابتة أسبوعين إلى ثلاثة أسابيع كاملة، هذا وقت التعديل، وأرسل قياساتك وصورك للمدربة عشان تعدل الجدول. الثبات مرحلة طبيعية في أي رحلة، مو فشل.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>وقت الدورة الشهرية، أغير شي؟</summary>
+      <div class="answer">
+        <p>استمري على نفس الجدول. الجوع والرغبة بالحلا يزيدون بشكل طبيعي في هذي الأيام، والوزن يزيد من السوائل. مسموح تزيدين الكارب شوي في الوجبات إذا حسيتي بتعب، وتخففين شدة التمرين بدون ما توقفينه، والمشي ممتاز للتقلصات. إذا جدولك فيه جدول خاص لأيام الدورة، اتبعيه.</p>
+      </div>
+    </details>
+  </section>
+ 
+  <!-- ================= القياسات والصور ================= -->
+  <section class="section" id="measure">
+    <div class="section-head"><div class="num">7</div><h2>القياسات والصور</h2></div>
+    <p class="section-intro">القياسات والصور أصدق من الميزان. خذها بطريقة صحيحة وثابتة عشان المقارنة تكون حقيقية.</p>
+ 
+    <details open>
+      <summary>كيف آخذ قياساتي؟</summary>
+      <div class="answer">
+        <p>الصباح، قبل الأكل، بشريط قياس (متر خياطة)، على الجلد مباشرة أو فوق ملابس خفيفة جدا. الشريط يكون ملامس للجسم بدون شد. خذ كل قياس مرتين وسجل الرقم:</p>
+        <div class="tbl-wrap">
+        <table class="tbl">
+          <tr><th>القياس</th><th>مكانه بالضبط</th></tr>
+          <tr><td>الصدر</td><td>على أعرض نقطة، والشريط مستوي من الخلف</td></tr>
+          <tr><td>الخصر</td><td>على أضيق نقطة، تقريبا فوق السرة بإصبعين، بدون ما تشفط بطنك</td></tr>
+          <tr><td>البطن</td><td>على مستوى السرة بالضبط</td></tr>
+          <tr><td>الأرداف</td><td>على أعرض نقطة والقدمين مع بعض</td></tr>
+          <tr><td>الفخذ</td><td>على أعرض نقطة في أعلى الفخذ، الرجل اليمين دائما</td></tr>
+          <tr><td>الذراع</td><td>على أعرض نقطة في العضد، الذراع مرخية على جنبك، اليمين دائما</td></tr>
+        </table>
+        </div>
+        <div class="tip">كل أسبوعين مرة. مو كل يوم. المقاسات تحتاج وقت عشان تتغير.</div>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>كيف أصور صور المتابعة؟</summary>
+      <div class="answer">
+        <ul>
+          <li><strong>نفس المكان ونفس الإضاءة</strong> كل مرة (يفضل إضاءة طبيعية من النهار، وخلفية سادة).</li>
+          <li><strong>نفس الملابس:</strong> ملابس رياضية ضيقة أو ما يظهر شكل الجسم، مو ملابس واسعة.</li>
+          <li><strong>ثلاث زوايا:</strong> من الأمام، من الجنب، ومن الخلف. الجسم مستقيم والذراعين على الجنب بشكل طبيعي.</li>
+          <li><strong>نفس الوقت:</strong> الصباح قبل الأكل.</li>
+          <li>خل أحد يصورك، أو حط الجوال على طاولة بارتفاع الخصر واستخدم المؤقت.</li>
+          <li>ما تحتاج تظهر وجهك، والصور خاصة بينك وبين المدربة.</li>
+        </ul>
+        <p>صور المقارنة بعد شهرين هي أكثر شي بيخليك تكمل، حتى لو الميزان ما تحرك كثير.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>وش أرسل للمدربة في المتابعة؟</summary>
+      <div class="answer">
+        <p>في رسالة وحدة مرتبة:</p>
+        <ul>
+          <li>معدل وزنك للأسبوع (مو وزن يوم واحد)</li>
+          <li>القياسات (الخصر والأرداف على الأقل)</li>
+          <li>الصور الثلاث</li>
+          <li>نسبة التزامك بالأكل والتمرين بصراحة (مثلا: الأكل 90%، التمرين 3 من 4)</li>
+          <li>أي ملاحظة: جوع، تعب، ألم، مناسبة جاية</li>
+        </ul>
+        <p>كل ما كانت معلوماتك أوضح، كان التعديل أدق.</p>
+      </div>
+    </details>
+  </section>
+ 
+  <!-- ================= التمرين ================= -->
+  <section class="section" id="workout">
+    <div class="section-head"><div class="num">8</div><h2>التمرين</h2></div>
+    <p class="section-intro">جدول التمرين مبني على ترتيب أيام، مو على أيام الأسبوع. افهم هالنقطة وأغلب الأسئلة تنحل.</p>
+ 
+    <div class="rule">
+      <strong>القاعدة:</strong> فاتك يوم؟ ما تعيد ولا تعوض. تكمل من اليوم اللي بعده في الجدول، كأنه ما صار شي.
+    </div>
+ 
+    <details>
+      <summary>ما رحت التمرين أمس، اليوم أكمل ولا أعيد من جديد؟</summary>
+      <div class="answer">
+        <p>تكمل من اليوم اللي وقفت عنده. مثال: جدولك (يوم 1: أرجل، يوم 2: ظهر، يوم 3: صدر). تمرنت يوم 1، وفاتك يوم 2. اليوم تسوي يوم 2 (ظهر)، وبكرة يوم 3. الجدول ينزاح يوم، وما فيه أي مشكلة.</p>
+        <p>لا تعيد الأسبوع من أوله، ولا تجمع يومين في يوم واحد. اليوم اللي فات، فات.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>فاتني أسبوع كامل (سفر، مرض، ظروف)</summary>
+      <div class="answer">
+        <p>ارجع لنفس الجدول من اليوم اللي وقفت عنده، بس أول أسبوع خفف الأوزان تقريبا 10 إلى 20% عشان العضلات ترجع تتعود، وثاني أسبوع ترجع لأوزانك الطبيعية. أسبوع راحة ما يضيع مجهودك، القوة ترجع بسرعة.</p>
+        <p>إذا فاتك أكثر من 3 أسابيع، بلغ المدربة عشان تعدل الجدول.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>لازم أتمرن في أيام محددة من الأسبوع؟</summary>
+      <div class="answer">
+        <p>لا. المهم عدد الأيام في الأسبوع وترتيبها. لو جدولك 4 أيام، تقدر تسويها (سبت، أحد، ثلاثاء، أربعاء) أو (أحد، اثنين، أربعاء، خميس)، براحتك. حاول ما تسوي أكثر من 3 أيام متتالية بدون راحة.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>كيف أعرف الوزن المناسب لكل تمرين؟</summary>
+      <div class="answer">
+        <p>القاعدة: آخر تكرارين في المجموعة لازم يكونون صعبين لكن تقدر تكملهم بشكل صحيح. مثال: إذا التمرين 3 × 10:</p>
+        <ul>
+          <li>خلصت 10 تكرارات بسهولة وتقدر تسوي 15؟ الوزن خفيف، زد.</li>
+          <li>ما قدرت توصل 8؟ الوزن ثقيل، نقص.</li>
+          <li>وصلت 10 وآخر تكرارين كانوا صعبين؟ هذا الوزن الصحيح.</li>
+        </ul>
+        <p>أول أسبوع خله أسبوع تجربة للأوزان، وسجل أوزانك في الجوال عشان ترجع لها.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>متى أزيد الوزن؟</summary>
+      <div class="answer">
+        <p>لما تقدر تسوي كل المجموعات بأعلى تكرار مكتوب وبشكل صحيح مرتين متتاليتين، زد الوزن أقل زيادة ممكنة (1 إلى 2.5 كيلو). هذا اسمه التدرج، وهو أهم شي في التمرين.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>كم أرتاح بين المجموعات؟</summary>
+      <div class="answer">
+        <p>إذا ما فيه وقت مكتوب في الجدول: التمارين الكبيرة (سكوات، ديدلفت، بنش، سحب) 90 ثانية إلى دقيقتين. التمارين الصغيرة (بايسبس، ترايسبس، أكتاف جانبي، بطن) 45 إلى 60 ثانية. الراحة الطويلة جدا (5 دقايق وأنت في الجوال) تبرد جسمك وتطول الجلسة.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>الإحماء ضروري؟ وكيف أسويه؟</summary>
+      <div class="answer">
+        <p>ضروري ويحميك من الإصابة. 5 دقايق مشي أو دراجة، ثم مجموعة أو مجموعتين خفيفة من أول تمرين بوزن خفيف جدا (نص وزنك المعتاد أو أقل). بعدها ابدأ المجموعات الفعلية.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>الجهاز مشغول أو مو موجود في ناديي</summary>
+      <div class="answer">
+        <p>بدله بتمرين لنفس العضلة بأي أداة متوفرة. مثال: سحب أرضي بالكيبل مشغول؟ سوي سحب بالدمبل أو بالبار. جهاز الليق برس مو موجود؟ سوي سكوات بالدمبل أو لنجز. المهم تشتغل على نفس العضلة بنفس عدد المجموعات والتكرارات، ما تحذف التمرين.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>أحس بألم في العضلات ثاني يوم، طبيعي؟</summary>
+      <div class="answer">
+        <p>طبيعي جدا خصوصا أول أسبوعين أو بعد تمرين جديد، اسمه ألم العضلات المتأخر، ويروح خلال يومين إلى ثلاثة. المشي والماء والنوم يساعدون، وتقدر تتمرن عليه بشكل طبيعي.</p>
+        <p>الألم اللي مو طبيعي: ألم حاد في مفصل (ركبة، كتف، أسفل الظهر)، ألم في جهة وحدة فقط، أو ألم يزيد مع الحركة. هذا وقف التمرين اللي يسببه وبلغ المدربة.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>الكارديو، متى أسويه ومع التمرين ولا يوم ثاني؟</summary>
+      <div class="answer">
+        <p>إذا جدولك فيه كارديو محدد، اتبعه. إذا ما فيه، الأفضل مشي يومي 8 إلى 10 آلاف خطوة موزعة على اليوم، وهذا أفضل من كارديو مكثف. إذا تبي تسوي كارديو في نفس يوم الحديد، سويه بعد الحديد مو قبله، عشان طاقتك تكون للأوزان.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>أتمرن على معدة فاضية ولا بعد أكل؟</summary>
+      <div class="answer">
+        <p>الأفضل وجبة فيها كارب وبروتين قبل التمرين بساعة إلى ساعتين (مثل سندويتش أو شوفان أو أرز ودجاج). إذا تمرينك الصبح بدري وما تقدر تاكل، موزة أو تمرتين قبل التمرين بنص ساعة تكفي. وبعد التمرين كل وجبتك الجاية من الجدول خلال ساعة إلى ساعتين، ما تحتاج شي خاص.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>هل أحتاج بروتين باودر؟</summary>
+      <div class="answer">
+        <p>لا، إلا إذا مكتوب في جدولك. البروتين باودر مجرد أكل مريح، مو ضروري ولا سحري. إذا صعب عليك توصل لبروتينك من الأكل، بلغ المدربة وتقدر تضيفه لك كبديل لوجبة أو سناك.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>تمرين النادي ولا البيت؟</summary>
+      <div class="answer">
+        <p>اللي تقدر تلتزم فيه. جدولك مبني على البيئة اللي حددتها في الاشتراك (نادي أو بيت). إذا تغيرت بيئتك (مثلا سافرت وما فيه نادي)، بلغ المدربة عشان تعطيك بديل مؤقت.</p>
+      </div>
+    </details>
+  </section>
+ 
+  <!-- ================= رمضان وحالات خاصة ================= -->
+  <section class="section" id="special">
+    <div class="section-head"><div class="num">9</div><h2>رمضان وحالات خاصة</h2></div>
+ 
+    <details open>
+      <summary>رمضان: كيف أوزع جدولي بين الفطور والسحور؟</summary>
+      <div class="answer">
+        <p>نفس الجدول ونفس الكميات، بس توزعها على فترة الإفطار بدل اليوم كامل:</p>
+        <div class="tbl-wrap">
+        <table class="tbl">
+          <tr><th>الوقت</th><th>وش تاكل من الجدول</th></tr>
+          <tr><td>الإفطار (المغرب)</td><td>تمرتين إلى ثلاث + ماء أو شوربة خفيفة، ثم بعد الصلاة الوجبة الرئيسية الأولى (الغداء في جدولك)</td></tr>
+          <tr><td>بعد التراويح</td><td>السناك (أو السناكين) من الجدول</td></tr>
+          <tr><td>السحور</td><td>الوجبة الرئيسية الثانية (العشاء أو الفطور في جدولك)، وخلها فيها بروتين وكارب بطيء مثل الشوفان أو خبز البر وبيض</td></tr>
+        </table>
+        </div>
+        <ul>
+          <li>الماء: 2 إلى 3 لتر موزعة من المغرب إلى الفجر، مو مرة وحدة.</li>
+          <li>التمر يحسب: كل حبة تقريبا 20 إلى 25 سعرة، 3 حبات تعادل نص سناك.</li>
+          <li>السمبوسة واللقيمات والمشروبات الرمضانية هي اللي تخرب رمضان، مو الصيام. شوف سعراتها في جدول الأكل السعودي تحت.</li>
+          <li>الوزن في رمضان غالبا يثبت أو ينزل بطيء وهذا ممتاز، الهدف الحفاظ على العضل والالتزام.</li>
+        </ul>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>رمضان: التمرين قبل الفطور ولا بعده؟</summary>
+      <div class="answer">
+        <p>الأفضل بعد الفطور بساعتين إلى ثلاث (بعد التراويح مثلا)، لأن عندك طاقة وماء. إذا هذا الوقت ما يناسبك، تقدر تتمرن قبل الفطور بساعة بشرط تكون الجلسة أقصر وأخف (أوزان أقل 20% تقريبا) وتفطر مباشرة بعدها.</p>
+        <p>ما ينفع: كارديو قوي أو تمرين ثقيل وسط النهار وأنت صايم.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>الصيام المتقطع، أقدر أدمجه مع الجدول؟</summary>
+      <div class="answer">
+        <p>تقدر، بشرط تاكل كل وجبات الجدول داخل فترة الأكل (مثلا من 12 الظهر إلى 8 المساء)، ما تحذف منها. الصيام المتقطع مجرد توقيت، مو سحر، والنتيجة تجي من السعرات نفسها. إذا لاحظت إنك ما تقدر تاكل كل الوجبات في الفترة، وقفه والتزم بالجدول العادي.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>الحمل والرضاعة</summary>
+      <div class="answer">
+        <p>الجدول العام ما يناسب فترة الحمل، والحامل ما يصير لها جدول تنشيف أو عجز سعرات. إذا اكتشفتي حمل خلال الاشتراك، وقفي الجدول وبلغي المدربة فورا.</p>
+        <p>الرضاعة تحتاج سعرات أعلى (تقريبا 300 إلى 500 سعرة زيادة) وما ينفع فيها عجز كبير، ولازم تكوني كاتبة "مرضعة" في الملاحظات قبل الجدول عشان يكون محسوب على هذا الأساس. إذا ما كتبتيها، بلغي المدربة الحين.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>عندي حالة صحية (سكري، ضغط، غدة، كولسترول، تكيس)</summary>
+      <div class="answer">
+        <p>لازم تكون مكتوبة في الملاحظات قبل الجدول. الجداول العامة مو علاجية، وبعض الحالات تحتاج خدمة التغذية العلاجية المنفصلة. إذا عندك أدوية، استمر عليها ولا توقفها أبدا بسبب الجدول، واستشر طبيبك في أي تغيير.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>مريض (زكام، إنفلونزا)، أكمل؟</summary>
+      <div class="answer">
+        <p>الأكل: كمل الجدول قدر الإمكان، وإذا ما لك نفس ركز على البروتين والسوائل والشوربة. التمرين: وقفه لين تتعافى، الجسم يحتاج طاقته للشفاء. لما ترجع، كمل الجدول من اليوم اللي وقفت عنده بأوزان أخف أول أسبوع.</p>
+      </div>
+    </details>
+  </section>
+ 
+  <!-- ================= التطبيقات ================= -->
+  <section class="section" id="apps">
+    <div class="section-head"><div class="num">10</div><h2>كيف تحسب سعرات وجباتك في التطبيقات</h2></div>
+    <p class="section-intro">كل تطبيقات حساب السعرات تشتغل بنفس الفكرة: تبحث عن الأكل، تختار الكمية بالجرام، والتطبيق يطلع لك السعرات. الشرح هنا على MyFitnessPal لأنه الأشهر، ونفس الخطوات في Yazio وFatSecret وغيرها.</p>
+ 
+    <div class="rule">
+      <strong>ليش تتعلم هذا؟</strong> عشان لما تاكل شي مو في الجدول، تعرف كم سعرة فيه وتعرف وش تبدله. هذي المهارة اللي تخليك مستقل وما تحتاج تسأل عن كل لقمة.
+    </div>
+ 
+    <details open>
+      <summary>أول مرة: تجهيز التطبيق (MyFitnessPal)</summary>
+      <div class="answer">
+        <ol class="steps">
+          <li>حمل التطبيق من App Store أو Google Play (النسخة المجانية تكفي).</li>
+          <li>سجل حساب وأدخل بياناتك (الوزن، الطول، العمر).</li>
+          <li>التطبيق بيقترح عليك سعرات يومية. <strong>تجاهلها</strong> وحط سعرات جدولك: من الإعدادات (Goals) غير "Daily Calories" لرقم جدولك.</li>
+          <li>من نفس المكان تقدر تحط أهداف البروتين والكارب والدهون بنسب مطابقة لجدولك.</li>
+          <li>غير وحدة القياس إلى جرام (Grams) وكيلو من الإعدادات إذا كانت بالباوند.</li>
+        </ol>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>تسجيل وجبة خطوة بخطوة</summary>
+      <div class="answer">
+        <ol class="steps">
+          <li>افتح Diary (اليوميات) واختر الوجبة (Breakfast, Lunch, Dinner, Snacks).</li>
+          <li>اضغط Add Food وابحث عن المكون بالإنجليزي غالبا أدق: مثلا "chicken breast raw".</li>
+          <li>اختر نتيجة عليها علامة صح خضراء (Verified)، هذي بيانات موثوقة. تجنب النتائج اللي أرقامها غريبة أو اسمها مكتوب بشكل عشوائي.</li>
+          <li>غير الحصة (Serving Size) إلى جرام (100 g أو 1 g) واكتب الوزن اللي وزنته على الميزان.</li>
+          <li>اضغط إضافة، وكرر لكل مكون في الوجبة: الدجاج، الأرز، الزيت، الخضار.</li>
+        </ol>
+        <div class="tip">اكتب كلمة raw (نيء) أو cooked (مطبوخ) في البحث حسب اللي وزنته. الفرق كبير: 100 جرام أرز نيء = 360 سعرة، و100 جرام أرز مطبوخ = 130 سعرة.</div>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>مسح الباركود</summary>
+      <div class="answer">
+        <p>أي منتج له غلاف (زبادي، خبز، حليب، بروتين بار، حبوب إفطار)، اضغط أيقونة الباركود في التطبيق وصور الباركود اللي على الغلاف. بيطلع لك المنتج مباشرة وتكتب الكمية. أسرع طريقة وأدق طريقة.</p>
+        <p>إذا ما لقى المنتج، اقرأ الجدول الغذائي على الغلاف وسجله يدوي (شرحه تحت).</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>كيف أحسب طبخة كاملة (كبسة، مكرونة، شوربة)؟</summary>
+      <div class="answer">
+        <p>لا تبحث عن "كبسة" في التطبيق، لأن كل بيت يطبخها بطريقة. الطريقة الصحيحة: تحسب المكونات.</p>
+        <ol class="steps">
+          <li>في التطبيق: Recipes ثم Create Recipe (أو "وصفة جديدة").</li>
+          <li>أضف كل مكون بوزنه النيء: 500 جرام دجاج، 300 جرام أرز نيء، ملعقتين كبار زيت، بصلة، طماطم.</li>
+          <li>اكتب عدد الحصص (Servings). مثلا الطبخة تكفي 4 أشخاص، اكتب 4.</li>
+          <li>احفظ الوصفة. كل حصة بتطلع لك بسعراتها، وتقدر تضيفها لأي وجبة بضغطة.</li>
+        </ol>
+        <div class="tip">للدقة الأعلى: بعد الطبخ وزن الطبخة كاملة (مثلا 1600 جرام) واعتبر كل 100 جرام حصة، بعدها وزن اللي في صحنك واحسب. بس الطريقة الأولى كافية لأغلب الناس.</div>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>الأكل من مطعم، كيف أسجله؟</summary>
+      <div class="answer">
+        <p>المطاعم الكبيرة (ماكدونالدز، البيك، صب واي، ستاربكس) موجودة في التطبيق بالاسم. ابحث عن اسم المطعم واسم الوجبة.</p>
+        <p>المطاعم الصغيرة أو الأكل البيتي في العزايم: سجل المكونات تقديريا. مثلا "صحن مندي": 150 جرام دجاج مطبوخ + 200 جرام أرز مطبوخ + ملعقة زيت. التقدير التقريبي أفضل بكثير من عدم التسجيل.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>كيف أحسب بدون تطبيق (يدوي)؟</summary>
+      <div class="answer">
+        <p>كل الحسبة تعتمد على ثلاث أرقام فقط:</p>
+        <div class="formula">1 جرام بروتين = 4 سعرات &nbsp;|&nbsp; 1 جرام كارب = 4 سعرات &nbsp;|&nbsp; 1 جرام دهون = 9 سعرات</div>
+        <p><strong>مثال:</strong> وجبة فيها 30 جرام بروتين، 50 جرام كارب، 10 جرام دهون:</p>
+        <p>(30 × 4) + (50 × 4) + (10 × 9) = 120 + 200 + 90 = <strong>410 سعرة</strong></p>
+        <p><strong>وحساب الحصة من الجدول الغذائي على أي منتج:</strong></p>
+        <div class="formula">السعرات في حصتك = (السعرات لكل 100 جرام × الوزن اللي أكلته) ÷ 100</div>
+        <p>مثال: زبادي مكتوب عليه 60 سعرة لكل 100 جرام، وأكلت 170 جرام: (60 × 170) ÷ 100 = <strong>102 سعرة</strong>.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>كيف أقرأ الجدول الغذائي على الغلاف؟</summary>
+      <div class="answer">
+        <ul>
+          <li>أول شي شوف <strong>"لكل 100 جرام"</strong> ولا <strong>"لكل حصة"</strong>. الحصة (Serving) في الغلاف أحيانا صغيرة جدا (مثلا 30 جرام) وأنت تاكل ضعفها.</li>
+          <li><strong>Energy / الطاقة:</strong> السعرات (kcal). تجاهل رقم kJ.</li>
+          <li><strong>Protein / بروتين:</strong> الأهم لك.</li>
+          <li><strong>Carbohydrate / كربوهيدرات:</strong> وتحته "of which sugars / منها سكريات".</li>
+          <li><strong>Fat / دهون:</strong> وتحته الدهون المشبعة.</li>
+        </ul>
+        <p>انتبه لمنتجات مكتوب عليها "خالي من السكر" أو "دايت"، أحيانا سعراتها مثل العادي أو أعلى بسبب الدهون. الرقم اللي يهمك هو السعرات والبروتين، مو الكلام التسويقي.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>هل لازم أسجل كل يوم في التطبيق؟</summary>
+      <div class="answer">
+        <p>لا. إذا تلتزم بجدولك، ما تحتاج تسجل، الجدول محسوب مسبقا. التطبيق تستخدمه في حالتين فقط: لما تاكل شي خارج الجدول وتبي تعرف كم سعرة، أو لما تبي تتعلم أول أسبوعين كم فيه سعرات في الأكل اللي حولك. بعدها بتصير خبير وتقدر بدون تطبيق.</p>
+      </div>
+    </details>
+  </section>
+ 
+  <!-- ================= 8 جداول مرجعية ================= -->
+  <section class="section" id="tables">
+    <div class="section-head"><div class="num">11</div><h2>جداول مرجعية سريعة</h2></div>
+ 
+    <details open>
+      <summary>تحويل الوزن من نيء إلى مطبوخ</summary>
+      <div class="answer">
+        <div class="tbl-wrap">
+        <table class="tbl">
+          <tr><th>المكون</th><th>100 جرام نيء يصير تقريبا</th><th>القاعدة</th></tr>
+          <tr><td>صدر دجاج</td><td>70 جرام مطبوخ</td><td>نيء × 0.7</td></tr>
+          <tr><td>لحم بقر أو غنم</td><td>70 جرام مطبوخ</td><td>نيء × 0.7</td></tr>
+          <tr><td>سمك</td><td>75 جرام مطبوخ</td><td>نيء × 0.75</td></tr>
+          <tr><td>روبيان</td><td>75 جرام مطبوخ</td><td>نيء × 0.75</td></tr>
+          <tr><td>أرز</td><td>300 جرام مطبوخ</td><td>نيء × 3</td></tr>
+          <tr><td>مكرونة</td><td>250 جرام مطبوخ</td><td>نيء × 2.5</td></tr>
+          <tr><td>شوفان (مع ماء)</td><td>يحسب على الجاف فقط</td><td>احسب الشوفان الجاف</td></tr>
+          <tr><td>بطاطس (مسلوق أو فرن)</td><td>تقريبا نفس الوزن</td><td>نيء × 1</td></tr>
+          <tr><td>عدس وبقوليات جافة</td><td>250 جرام مطبوخ</td><td>نيء × 2.5</td></tr>
+        </table>
+        </div>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>المقاييس المنزلية (لما ما فيه ميزان)</summary>
+      <div class="answer">
+        <div class="tbl-wrap">
+        <table class="tbl">
+          <tr><th>المقياس</th><th>يعادل تقريبا</th></tr>
+          <tr><td>كف يد (بدون الأصابع)</td><td>100 إلى 120 جرام دجاج أو لحم نيء</td></tr>
+          <tr><td>قبضة يد مقفولة</td><td>100 جرام أرز مطبوخ (تقريبا 35 جرام نيء)</td></tr>
+          <tr><td>ملعقة كبيرة زيت</td><td>15 مل = 120 سعرة</td></tr>
+          <tr><td>ملعقة صغيرة زيت</td><td>5 مل = 45 سعرة</td></tr>
+          <tr><td>ملعقة كبيرة زبدة فول سوداني</td><td>16 جرام = 95 سعرة</td></tr>
+          <tr><td>كوب حليب</td><td>240 مل = 120 إلى 150 سعرة حسب الدسم</td></tr>
+          <tr><td>ملعقة كبيرة سكر أو عسل</td><td>50 إلى 65 سعرة</td></tr>
+          <tr><td>حبة تمر</td><td>20 إلى 25 سعرة</td></tr>
+          <tr><td>شريحة توست</td><td>28 إلى 35 جرام = 70 إلى 90 سعرة</td></tr>
+          <tr><td>بيضة متوسطة</td><td>50 جرام = 70 سعرة</td></tr>
+        </table>
+        </div>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>سعرات أشهر الأطعمة لكل 100 جرام (نيء إلا إذا مكتوب)</summary>
+      <div class="answer">
+        <div class="tbl-wrap">
+        <table class="tbl">
+          <tr><th>الطعام</th><th>سعرات</th><th>بروتين</th><th>كارب</th><th>دهون</th></tr>
+          <tr><td>صدر دجاج بدون جلد</td><td>120</td><td>23</td><td>0</td><td>2.5</td></tr>
+          <tr><td>فخذ دجاج بدون جلد</td><td>145</td><td>19</td><td>0</td><td>7</td></tr>
+          <tr><td>لحم بقر قليل الدهن</td><td>150</td><td>21</td><td>0</td><td>7</td></tr>
+          <tr><td>سلمون</td><td>200</td><td>20</td><td>0</td><td>13</td></tr>
+          <tr><td>هامور أو سمك أبيض</td><td>90</td><td>19</td><td>0</td><td>1</td></tr>
+          <tr><td>تونة بالماء (مصفاة)</td><td>110</td><td>25</td><td>0</td><td>1</td></tr>
+          <tr><td>بيضة كاملة (حبة)</td><td>70</td><td>6</td><td>0.5</td><td>5</td></tr>
+          <tr><td>أرز أبيض نيء</td><td>360</td><td>7</td><td>79</td><td>0.6</td></tr>
+          <tr><td>أرز أبيض مطبوخ</td><td>130</td><td>2.7</td><td>28</td><td>0.3</td></tr>
+          <tr><td>مكرونة نيئة</td><td>355</td><td>13</td><td>72</td><td>1.5</td></tr>
+          <tr><td>شوفان جاف</td><td>375</td><td>13</td><td>66</td><td>7</td></tr>
+          <tr><td>بطاطس نيء</td><td>77</td><td>2</td><td>17</td><td>0.1</td></tr>
+          <tr><td>بطاطا حلوة نيئة</td><td>86</td><td>1.6</td><td>20</td><td>0.1</td></tr>
+          <tr><td>خبز توست بر</td><td>250</td><td>10</td><td>45</td><td>3.5</td></tr>
+          <tr><td>زبادي يوناني قليل الدسم</td><td>60</td><td>10</td><td>4</td><td>0.5</td></tr>
+          <tr><td>حليب قليل الدسم</td><td>50</td><td>3.4</td><td>5</td><td>1.5</td></tr>
+          <tr><td>جبن قريش</td><td>98</td><td>11</td><td>3.5</td><td>4.3</td></tr>
+          <tr><td>موز</td><td>89</td><td>1</td><td>23</td><td>0.3</td></tr>
+          <tr><td>تفاح</td><td>52</td><td>0.3</td><td>14</td><td>0.2</td></tr>
+          <tr><td>تمر</td><td>280</td><td>2</td><td>75</td><td>0.4</td></tr>
+          <tr><td>أفوكادو</td><td>160</td><td>2</td><td>9</td><td>15</td></tr>
+          <tr><td>لوز</td><td>580</td><td>21</td><td>22</td><td>50</td></tr>
+          <tr><td>زبدة فول سوداني</td><td>590</td><td>25</td><td>20</td><td>50</td></tr>
+          <tr><td>زيت زيتون</td><td>884</td><td>0</td><td>0</td><td>100</td></tr>
+          <tr><td>خضار ورقية وخيار وطماطم</td><td>15 إلى 25</td><td>1</td><td>3</td><td>0</td></tr>
+        </table>
+        </div>
+        <p style="font-size:14px;color:var(--muted)">الأرقام تقريبية ومبنية على قواعد بيانات الأغذية العالمية، وقد تختلف قليلا حسب النوع والمنتج.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>سعرات الأكل السعودي والشعبي (تقديري لكل حصة)</summary>
+      <div class="answer">
+        <p>هذي الأكلات ما تلقاها بدقة في التطبيقات لأن كل بيت يطبخها بطريقته. الأرقام تقديرية لحصة شخص واحد عادية، وتفيدك عشان تعرف وش تبدل بوش:</p>
+        <div class="tbl-wrap">
+        <table class="tbl">
+          <tr><th>الأكلة</th><th>الحصة</th><th>السعرات تقريبا</th><th>تعادل من جدولك</th></tr>
+          <tr><td>كبسة دجاج</td><td>صحن (كوب ونص أرز + قطعة دجاج)</td><td>650 إلى 800</td><td>وجبة رئيسية ونص</td></tr>
+          <tr><td>مندي أو مظبي دجاج</td><td>صحن (كوب ونص أرز + ربع دجاجة)</td><td>700 إلى 850</td><td>وجبة رئيسية ونص</td></tr>
+          <tr><td>مندي لحم</td><td>صحن</td><td>800 إلى 950</td><td>وجبتين</td></tr>
+          <tr><td>جريش</td><td>كوب كبير (250 جرام)</td><td>350 إلى 400</td><td>وجبة رئيسية</td></tr>
+          <tr><td>مرقوق أو مطازيز</td><td>صحن متوسط</td><td>450 إلى 550</td><td>وجبة رئيسية</td></tr>
+          <tr><td>سليق</td><td>صحن متوسط</td><td>500 إلى 600</td><td>وجبة رئيسية</td></tr>
+          <tr><td>مقلوبة</td><td>صحن متوسط</td><td>500 إلى 600</td><td>وجبة رئيسية</td></tr>
+          <tr><td>شاورما دجاج</td><td>ساندويتش صامولي</td><td>350 إلى 450</td><td>وجبة رئيسية</td></tr>
+          <tr><td>شاورما دجاج</td><td>عربي (لفة كبيرة)</td><td>500 إلى 650</td><td>وجبة رئيسية ونص</td></tr>
+          <tr><td>بروست</td><td>قطعتين بدون أرز</td><td>500 إلى 600</td><td>وجبة رئيسية</td></tr>
+          <tr><td>بروست مع أرز</td><td>وجبة كاملة</td><td>850 إلى 1000</td><td>وجبتين</td></tr>
+          <tr><td>مطبق لحم</td><td>حبة</td><td>400 إلى 500</td><td>وجبة رئيسية</td></tr>
+          <tr><td>فول</td><td>صحن بدون خبز</td><td>250 إلى 350</td><td>وجبة خفيفة إلى رئيسية</td></tr>
+          <tr><td>تميس</td><td>رغيف كامل</td><td>400 إلى 500</td><td>وجبة رئيسية</td></tr>
+          <tr><td>كبدة</td><td>صحن بدون خبز</td><td>250 إلى 350</td><td>وجبة رئيسية (بروتين ممتاز)</td></tr>
+          <tr><td>شكشوكة</td><td>بيضتين مع طماطم</td><td>220 إلى 280</td><td>فطور</td></tr>
+          <tr><td>سمبوسة لحم أو جبن (مقلية)</td><td>حبة</td><td>90 إلى 130</td><td>3 حبات = سناك</td></tr>
+          <tr><td>لقيمات</td><td>5 حبات بالشيرة</td><td>250 إلى 300</td><td>سناك ونص</td></tr>
+          <tr><td>كنافة أو بسبوسة</td><td>قطعة متوسطة</td><td>350 إلى 450</td><td>وجبة رئيسية</td></tr>
+          <tr><td>قهوة عربية مع 3 تمرات</td><td></td><td>70 إلى 80</td><td>نص سناك</td></tr>
+          <tr><td>فيمتو أو عصير محلى</td><td>كوب</td><td>150 إلى 200</td><td>سناك</td></tr>
+        </table>
+        </div>
+        <div class="tip">حيلة تخفف نص السعرات في أي أكلة شعبية: نص كمية الأرز، وشيل الجلد من الدجاج، ولا تصب المرق أو السمن فوق.</div>
+      </div>
+    </details>
+  </section>
+ 
+  <!-- ================= 9 الالتزام ================= -->
+  <section class="section" id="mindset">
+    <div class="section-head"><div class="num">12</div><h2>الالتزام والنفسية</h2></div>
+ 
+    <details>
+      <summary>خربت يوم كامل، أبدأ من جديد الأسبوع الجاي؟</summary>
+      <div class="answer">
+        <p>لا، تبدأ من الوجبة الجاية. مو من بكرة ولا من السبت ولا من أول الشهر. "أبدأ من جديد" هي أكثر جملة تأخر الناس، لأنها تخليك تاكل كل شي في الفترة اللي قبل "البداية الجديدة". النتيجة تجي من مجموع الأيام الجيدة، مو من الكمال.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>متى أشوف نتائج؟</summary>
+      <div class="answer">
+        <p>أول أسبوعين: تحس بطاقة أفضل ونفخة أقل ونوم أحسن، والميزان يتحرك بسبب السوائل. من الأسبوع الثالث إلى الرابع: تبدأ الملابس تتغير والمقاسات تنزل. من الشهر الثاني: التغيير يصير واضح في الصور. المعدل الصحي لخسارة الدهون نص كيلو إلى كيلو في الأسبوع، وأقل من كذا طبيعي إذا وزنك أصلا قريب من هدفك.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>الحركة اليومية والنوم، فرق فعلا؟</summary>
+      <div class="answer">
+        <p>فرق كبير. الخطوات اليومية (8 إلى 10 آلاف) تحرق أكثر من جلسة كارديو. والنوم أقل من 7 ساعات يزيد الجوع ويقلل التعافي ويخلي الجسم يحتفظ بالدهون. اعتبر النوم والمشي جزء من الجدول، مو إضافات.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>أهلي أو أصحابي ما يساعدون، وش أسوي؟</summary>
+      <div class="answer">
+        <p>ما تحتاج تقنع أحد. جهز أكلك مسبقا (تحضير أسبوعي)، خل وجباتك جاهزة في الثلاجة، ولما تكونون على السفرة كل من نفس الأكل بس بالكميات اللي تعرفها. مع الوقت لما يشوفون نتائجك بيصيرون هم اللي يسألونك.</p>
+      </div>
+    </details>
+  </section>
+ 
+  <!-- ================= الاشتراك ================= -->
+  <section class="section" id="subscription">
+    <div class="section-head"><div class="num">13</div><h2>أسئلة عن الاشتراك</h2></div>
+ 
+    <details>
+      <summary>وش الفرق بين "سؤال عن الجدول" و"المتابعة"؟</summary>
+      <div class="answer">
+        <p><strong>السؤال عن الجدول:</strong> أي استفسار عن فهم الجدول نفسه (وش معنى هذا المكون، كيف أطبخه، وش بديله). هذا متاح لكل من اشترى جدول جاهز.</p>
+        <p><strong>المتابعة:</strong> إرسال القياسات والصور، وتعديل الجدول حسب تقدمك، وتغيير السعرات أو التمارين. هذي فقط في باقات المتابعة.</p>
+        <p>يعني: إذا عندك جدول جاهز بدون متابعة، تقدر تسأل عن الجدول، بس تعديله يحتاج اشتراك متابعة.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>متى يبدأ اشتراك المتابعة ومتى ينتهي؟</summary>
+      <div class="answer">
+        <p>يبدأ من يوم استلامك الجدول، ومدته حسب الباقة اللي اشتريتها (شهر، 3 شهور، أو 6 شهور). قبل ما ينتهي بأسبوع تقدر تجدد من المتجر عشان ما تنقطع المتابعة.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>أوقات الرد على الرسائل؟</summary>
+      <div class="answer">
+        <p>من الأحد إلى الخميس، من 8 صباحا إلى 4 عصرا. الرد خلال 24 ساعة من رسالتك. الرسائل اللي تجي الجمعة والسبت أو بعد الدوام، يجيك ردها في أول يوم عمل.</p>
+        <p>عشان الرد يكون أسرع: اجمع كل أسئلتك في رسالة وحدة بدل ما ترسل كل سؤال في رسالة.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>الجدول جاني فيه شي ما يناسبني أو فيه خطأ</summary>
+      <div class="answer">
+        <p>إذا فيه خطأ فعلي (مكون كتبت في الملاحظات إنك ما تاكله وطلع في الجدول، أو كمية غير منطقية)، بلغ المدربة ويتم تصحيحه مجانا.</p>
+        <p>إذا الشي مو مكتوب في ملاحظاتك من البداية (مثلا ما كتبت إنك ما تحب السمك)، الجدول ينبنى على المعلومات اللي أرسلتها، والتعديل في هذي الحالة يكون ضمن باقة المتابعة أو باستبدال المكون بنفسك من جدول البدائل.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>أقدر أشارك جدولي مع أختي أو صديقي؟</summary>
+      <div class="answer">
+        <p>لا. الجدول محسوب على جسمك أنت (وزنك، طولك، نشاطك، هدفك)، وما يناسب شخص ثاني حتى لو كان شبيه لك، وممكن يضره. الجداول والدليل حقوق ملكية خاصة بالمشترك.</p>
+      </div>
+    </details>
+ 
+    <details>
+      <summary>خلص اشتراكي، أكمل على نفس الجدول؟</summary>
+      <div class="answer">
+        <p>تقدر تكمل على نفس الجدول طالما وزنك ما تغير كثير (أقل من 3 إلى 4 كيلو). إذا تغير وزنك أكثر من كذا أو تغير هدفك (من تنشيف إلى تضخيم مثلا)، الجدول يحتاج إعادة حساب، وهذا وقت التجديد.</p>
+      </div>
+    </details>
+  </section>
+ 
+  <!-- ================= التواصل ================= -->
+  <section class="section" id="contact">
+    <div class="contact">
+      <h2>ما لقيت جوابك؟</h2>
+      <p>إذا سؤالك مو موجود هنا، ارسله للمدربة. الرد خلال 24 ساعة في أيام العمل (الأحد إلى الخميس، من 8 صباحا إلى 4 عصرا).</p>
+      <p>عشان يكون الرد أسرع وأدق: اكتب سؤالك كامل في رسالة وحدة، وإذا يخص الوزن أو التعديل أرفق قياساتك وصورك.</p>
+      <a class="btn" href="https://wa.me/966537249498?text=%D8%B3%D8%A4%D8%A7%D9%84%20%D8%B9%D9%86%20%D8%AC%D8%AF%D9%88%D9%84%D9%8A">أرسل سؤالك واتساب</a>
+      <a class="btn" style="background:transparent;border:2px solid #fff;margin-right:10px" href="https://zahraafit.vercel.app">موقع ZahraaFit</a>
+    </div>
+  </section>
+ 
+</main>
+ 
+<button class="top" id="topBtn" aria-label="العودة للأعلى">↑</button>
+ 
+<footer>© ZahraaFit <span id="year"></span> · هذا الدليل خاص بمشتركي ZahraaFit ويمنع نسخه أو إعادة نشره</footer>
+ 
+<script>
+  // السنة
+  document.getElementById('year').textContent = new Date().getFullYear();
+ 
+  // البحث في الأسئلة
+  const input = document.getElementById('q');
+  const items = Array.from(document.querySelectorAll('details'));
+  const sections = Array.from(document.querySelectorAll('.section'));
+  const noResults = document.getElementById('noResults');
+ 
+  function normalize(s){
+    return s.replace(/[ً-ْ]/g,'')   // حذف التشكيل
+            .replace(/[أإآ]/g,'ا')
+            .replace(/ة/g,'ه')
+            .replace(/ى/g,'ي')
+            .toLowerCase();
+  }
+ 
+  input.addEventListener('input', () => {
+    const q = normalize(input.value.trim());
+    let found = 0;
+    items.forEach(d => {
+      if(!q){ d.style.display=''; return; }
+      const text = normalize(d.textContent);
+      const match = text.includes(q);
+      d.style.display = match ? '' : 'none';
+      if(match){ d.open = true; found++; }
+    });
+    sections.forEach(sec => {
+      if(!q){ sec.style.display=''; return; }
+      const visible = sec.querySelectorAll('details:not([style*="display: none"])').length;
+      sec.style.display = visible ? '' : 'none';
+    });
+    noResults.style.display = (q && !found) ? 'block' : 'none';
+  });
+ 
+  // زر العودة للأعلى
+  const topBtn = document.getElementById('topBtn');
+  window.addEventListener('scroll', () => {
+    topBtn.style.display = window.scrollY > 500 ? 'block' : 'none';
+  });
+  topBtn.addEventListener('click', () => window.scrollTo({top:0,behavior:'smooth'}));
+</script>
+</body>
+</html>
+ 
+

@@ -289,7 +289,7 @@ const MGROUPS = [
 const EX = [
   /* ---------------- الصدر ---------------- */
   {id:"bench",name:"بنش بريس بالبار",group:"chest",muscle:"chest",env:["gym"],level:1,risk:["shoulder"],tip:"حافظ على لوح كتفك مشدودا للخلف ولا تباعد مرفقيك كثيرا.",type:"compound",pattern:"push",video:"https://youtu.be/SCVCLChPQFY?si=vTNIgDRqCm2Jf-W9",en:"Barbell Bench Press"},
-  {id:"inclinedb",name:"بنش مائل بالدمبل",group:"chest",muscle:"chest",env:["gym","home"],level:1,risk:["shoulder"],tip:"انزل بتحكم حتى تشعر بتمدد بسيط دون ألم في الكتف.",type:"compound",pattern:"push",video:"https://youtu.be/aVf__6cm3qU?si=J18GiBq6UMRnYmY_",en:"Incline Dumbbell Press"},
+  {id:"inclinedb",name:"بنش مائل بالدمبل",group:"chest",muscle:"chest",env:["gym"],level:1,risk:["shoulder"],tip:"انزل بتحكم حتى تشعر بتمدد بسيط دون ألم في الكتف.",type:"compound",pattern:"push",video:"https://youtu.be/aVf__6cm3qU?si=J18GiBq6UMRnYmY_",en:"Incline Dumbbell Press"},
   {id:"chestpress",name:"جهاز ضغط الصدر",group:"chest",muscle:"chest",env:["gym"],level:1,risk:[],tip:"اضبط ارتفاع المقعد بحيث يكون المقبض بمستوى منتصف صدرك.",type:"compound",pattern:"push",video:"https://youtu.be/sqNwDkUU_Ps?si=w-Qr7OzOwee3PaJC",en:"Machine Chest Press"},
   {id:"pushup",name:"تمرين الضغط (بوش أب)",group:"chest",muscle:"chest",env:["home","bodyweight"],level:1,risk:["wrist"],tip:"حافظ على جسمك بخط مستقيم من الرأس للكعب.",type:"compound",pattern:"push",video:"https://youtu.be/jWxvty2KROs?si=8BXTM-qCwkjmpZKJ",en:"Push-Up"},
   {id:"bandfly",name:"تفتيح بالشريط المطاطي",group:"chest",muscle:"chest",env:["home"],level:1,risk:[],tip:"اعصر صدرك في نهاية الحركة ولا تفرد ذراعيك بالكامل.",type:"isolation",pattern:"push",video:"https://youtu.be/dpAQZJxQa_c?si=9X0Njv6iGI3L4VQg",en:"Resistance Band Chest Fly"},
@@ -301,7 +301,7 @@ const EX = [
   /* ---------------- الظهر ---------------- */
   {id:"latpull",name:"سحب أمامي (لات بول داون)",group:"back",muscle:"upperback",env:["gym"],level:1,risk:[],tip:"اسحب البار لأعلى صدرك واخفض كتفيك بعيدا عن أذنيك.",type:"compound",pattern:"pull",video:"https://youtu.be/7JnP8dFbS14?si=JiTkT8iqfzyNvJzm",en:"Lat Pulldown"},
   {id:"seatedrow",name:"تجديف جالس بالكيبل",group:"back",muscle:"midback",env:["gym"],level:1,risk:["lowerback"],tip:"حافظ على ظهرك مستقيما ولا تتأرجح بجذعك.",type:"compound",pattern:"pull",video:"https://youtu.be/lJoozxC0Rns?si=pkqAp8e_laDQDkVc",en:"Seated Cable Row"},
-  {id:"bentrow",name:"تجديف بالبار منحنيا",group:"back",muscle:"midback",env:["gym","home"],level:2,risk:["lowerback"],tip:"ثبت ظهرك مستقيما والانحناء يكون من الورك لا من الظهر.",type:"compound",pattern:"pull",video:"https://youtu.be/bm0_q9bR_HA?si=ocZdZgKiRFjb9UdU",en:"Bent-Over Barbell Row"},
+  {id:"bentrow",name:"تجديف بالبار منحنيا",group:"back",muscle:"midback",env:["gym"],level:2,risk:["lowerback"],tip:"ثبت ظهرك مستقيما والانحناء يكون من الورك لا من الظهر.",type:"compound",pattern:"pull",video:"https://youtu.be/bm0_q9bR_HA?si=ocZdZgKiRFjb9UdU",en:"Bent-Over Barbell Row"},
   {id:"dbrow",name:"تجديف بالدمبل",group:"back",muscle:"midback",env:["gym","home"],level:1,risk:["lowerback"],tip:"استند بيدك على مقعد وحافظ على ظهر مستقيم طوال الحركة.",type:"compound",pattern:"pull",video:"https://youtu.be/DMo3HJoawrU?si=KhVXTlxj721BHYxu",en:"Dumbbell Row"},
   {id:"bandrow",name:"تجديف بالشريط المطاطي",group:"back",muscle:"midback",env:["home"],level:1,risk:[],tip:"اسحب الشريط نحو بطنك واعصر لوحي كتفك معا.",type:"compound",pattern:"pull",video:"https://youtu.be/vR9KcvzLqVo?si=iJXSF6M-nSgv8Grb",en:"Resistance Band Row"},
   {id:"pullup",name:"العقلة (بول أب)",group:"back",muscle:"upperback",env:["gym","bodyweight"],level:3,risk:["shoulder"],tip:"ابدأ بذراعين ممدودتين واسحب حتى يتجاوز ذقنك البار.",type:"compound",pattern:"pull",video:"https://youtube.com/shorts/9rckBLbVe8c?si=YxU4GWGmcBIfd3BV",en:"Pull-Up"},
@@ -1329,6 +1329,69 @@ function notesCard(){
   </div>`;
 }
 
+/* التمرين المتكرر عمدا: المركب الأساسي يتكرر في جلستي العضلة
+   بتكرارات مختلفة (ثقيل ثم خفيف). بدون بيان ذلك تظنه العميلة خطأ. */
+/* البديل بجانب التمرين: تمرين واحد بنفس نمط الحركة ونفس العضلة،
+   متاح لنفس البيئة والمستوى، وليس في الجدول أصلا.
+   المطابقة بنمط الحركة لا بالعضلة وحدها: تجديف تحت الطاولة
+   بديله سحب أفقي آخر، لا سوبرمان. */
+const _altCache = {};
+function altFor(ex){
+  if(!ex) return null;
+  /* تمارين الدعم التأهيلي بلا بديل: هي موصوفة لحالة بعينها،
+     واستبدالها يفقدها غرضها. */
+  if(ex.isSupport || ex.support || /^sup_/.test(ex.id||"")) return null;
+  if(_altCache[ex.id] !== undefined) return _altCache[ex.id];
+  const inPlan = new Set();
+  (S.plan||[]).forEach(d=>d.exercises.forEach(e=>inPlan.add(e.id)));
+  const danger = (typeof dangerSet==="function") ? dangerSet() : new Set();
+  const pAvoid = (typeof postureAvoidIds==="function") ? postureAvoidIds() : new Set();
+  const pool = EX.filter(e=>
+    e.id !== ex.id &&
+    !e.support &&
+    e.group === ex.group &&
+    e.pattern === ex.pattern &&
+    e.env.includes(S.env) &&
+    e.level <= S.level &&
+    !e.risk.some(r=>danger.has(r)) &&
+    !pAvoid.has(e.id) &&
+    !(S.no && S.no.has && S.no.has(e.id)) &&
+    !inPlan.has(e.id) &&
+    (videoLinks[e.id] || e.video)
+  );
+  /* نفضل نفس النوع (مركب/عزل) ثم نفس المستوى */
+  pool.sort((a,b)=>
+    ((a.type===ex.type?0:1)-(b.type===ex.type?0:1)) ||
+    (Math.abs(a.level-ex.level)-Math.abs(b.level-ex.level))
+  );
+  /* لا يتكرر نفس البديل لتمرينين: سوبرمان بديلا لثلاثة تمارين
+     تجديف لا يفيد المشتركة في شيء. */
+  /* نفضل بديلا لم يستخدم، وإن نفد المتاح نسمح بالتكرار بدل ترك
+     التمرين بلا بديل - التكرار أهون من الفراغ. */
+  const taken = new Set(Object.values(_altCache).filter(Boolean).map(x=>x.id));
+  let hit = pool.find(x=>!taken.has(x.id)) || pool[0] || null;
+  /* وإن لم يوجد بنفس النمط، نوسع لنفس العضلة */
+  if(!hit){
+    const wide = EX.filter(e=>
+      e.id !== ex.id && !e.support && e.group === ex.group &&
+      e.env.includes(S.env) && e.level <= S.level &&
+      !e.risk.some(r=>danger.has(r)) && !pAvoid.has(e.id) &&
+      !(S.no && S.no.has && S.no.has(e.id)) && !inPlan.has(e.id) &&
+      (videoLinks[e.id] || e.video)
+    );
+    hit = wide.find(x=>!taken.has(x.id)) || wide[0] || null;
+  }
+  _altCache[ex.id] = hit;
+  return hit;
+}
+
+function repeatInfo(id){
+  if(!S.plan) return null;
+  const days=[];
+  S.plan.forEach((d,i)=>{ if(d.exercises.some(e=>e.id===id)) days.push(i+1); });
+  return days.length>1 ? days : null;
+}
+
 function screenPlan(){
   if(!S.plan) return "";
   const c=S.client, L=loadParams();
@@ -1392,8 +1455,10 @@ function screenPlan(){
           <div class="ex-row">
             <div class="pic">${imgPic(e.muscle)}</div>
             <div class="body">
-              <b>${gt(e.name)}</b>
-              ${e.en?`<div style="font-size:11.5px;color:var(--muted);font-weight:700;letter-spacing:.2px;margin-top:1px">${e.en}</div>`:""}
+              ${e.en?`<b style="direction:ltr;display:block;text-align:right;letter-spacing:.2px">${e.en}</b>`:""}
+              <div style="font-size:13.5px;color:#3d4d68;font-weight:700;margin-top:2px">${gt(e.name)}</div>
+              ${repeatInfo(e.id)?`<span style="display:inline-block;background:#fff7ee;color:#8a5a13;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:20px;margin-top:3px">يتكرر في اليوم ${repeatInfo(e.id).filter(d=>d!==i+1).join(" و")}</span>`:""}
+              ${(()=>{const a=altFor(e); return a?`<div style="font-size:12px;color:#6a7488;font-weight:700;margin-top:3px">↔ بديل: ${gt(a.name)} ${(videoLinks[a.id]||a.video)?`<a href="${videoLinks[a.id]||a.video}" target="_blank" rel="noopener" style="color:#ff0000;text-decoration:none">▶</a>`:""}</div>`:"";})()}
               <div class="tip"><span class="i">💡</span> ${gt(e.tip)}</div>
             </div>
             <div class="sets">
@@ -1488,7 +1553,7 @@ function screenImages(){
       <div style="background:#eef4ff;border:1px solid #c9dcff;border-radius:14px;padding:14px 16px;margin-bottom:18px;font-size:13px;color:#33476b;font-weight:600;line-height:1.9">
         <b>📱 الفتح من أي جهاز:</b> الصور المرفوعة هنا تحفظ في متصفح هذا الجهاز فقط.
         لتظهر على كل جهاز، ضعي الصور كملفات في مجلد <code style="background:#fff;padding:1px 6px;border-radius:5px">img/</code> بجانب البرنامج على الخادم
-        بأسماء المفاتيح (<code style="background:#fff;padding:1px 6px;border-radius:5px">chest.png</code>، <code style="background:#fff;padding:1px 6px;border-radius:5px">glutes.png</code>، <code style="background:#fff;padding:1px 6px;border-radius:5px">logo.png</code> …)
+        بأسماء المفاتيح (<code style="background:#fff;padding:1px 6px;border-radius:5px">chest.png</code>، <code style="background:#fff;padding:1px 6px;border-radius:5px">glutes.png</code>، <code style="background:#fff;padding:1px 6px;border-radius:5px">logo.png</code> )
         - البرنامج يلتقطها تلقائيا.<br>
         أو استخدمي التصدير والاستيراد أدناه لنقل كل شيء بملف واحد.
         <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
@@ -1789,10 +1854,31 @@ function injectSupport(plan, maxDaily){
   });
 }
 
+/* يختار تقسيمة بعدد الأيام المطلوب بالضبط: إن لم تكن معرفة،
+   يأخذ الأقرب أعلى ويقص، أو يكرر أنماط الأقرب أسفل. */
+function pickSplit(sys, days){
+  if(sys.days[days]) return sys.days[days];
+  const keys = Object.keys(sys.days).map(Number).sort((a,b)=>a-b);
+  const above = keys.filter(k=>k>days);
+  if(above.length){
+    const src = sys.days[above[0]];
+    /* نأخذ أول الأيام ونضم ما تبقى من عضلات لآخر يوم حتى لا تضيع عضلة */
+    const kept = src.slice(0, days).map(a=>a.slice());
+    const rest = src.slice(days).flat();
+    rest.forEach(g=>{ if(!kept[days-1].includes(g)) kept[days-1].push(g); });
+    return kept;
+  }
+  const src = sys.days[keys[keys.length-1]];
+  const out = [];
+  for(let i=0;i<days;i++) out.push(src[i % src.length].slice());
+  return out;
+}
+
 function generate(){
+  for(const k in _altCache) delete _altCache[k];
   const danger=dangerSet();
   const sys = SPLIT_SYSTEMS[S.split] || SPLIT_SYSTEMS.ppl;
-  const split = sys.days[S.days] || sys.days[4] || Object.values(sys.days)[0];
+  const split = pickSplit(sys, S.days);
   const L=loadParams();
   const used=new Set();
 
@@ -2651,7 +2737,10 @@ function buildPdfHTML(){
       rows+=`<tr style="page-break-inside:avoid">
         <td style="width:84px;padding:9px 8px;vertical-align:middle">${pic}</td>
         <td style="padding:9px 6px;vertical-align:middle">
-          <div style="font-family:Cairo;font-weight:700;font-size:14.5px;color:${navy}">${e.name}</div>
+          ${e.en?`<div style="font-family:Cairo;font-weight:800;font-size:14px;color:${navy};direction:ltr;text-align:right;letter-spacing:.2px">${e.en}</div>`:""}
+          <div style="font-family:Cairo;font-weight:700;font-size:13.5px;color:#3d4d68;margin-top:2px">${e.name}</div>
+          ${repeatInfo(e.id)?`<div style="font-size:10.5px;color:#8a5a13;font-weight:700;margin-top:2px">يتكرر في اليوم ${repeatInfo(e.id).filter(d=>d!==i+1).join(" و")} بتكرارات مختلفة</div>`:""}
+          ${(()=>{const a=altFor(e); return a?`<div style="font-size:11px;color:#6a7488;font-weight:700;margin-top:3px">&#8596; بديل: ${a.name}${(videoLinks[a.id]||a.video)?` <a href="${videoLinks[a.id]||a.video}" style="color:#ff0000;text-decoration:none">&#9654;</a>`:""}</div>`:"";})()}
           ${e.en?`<div style="font-size:10.5px;color:#8a94a8;font-weight:700;letter-spacing:.3px;direction:ltr;text-align:right;margin-top:1px">${e.en}</div>`:""}
           <div style="font-size:12px;color:#6a7488;font-weight:600;margin-top:2px">💡 ${e.tip}</div>
         </td>
@@ -3367,7 +3456,7 @@ function buildPdfHTML(){
       </div>
 
       <div style="max-width:660px;margin:16px auto 0">
-        <b style="font-family:Cairo;color:${navy};font-size:15px;display:block;margin-bottom:9px">ماذا لو…</b>
+        <b style="font-family:Cairo;color:${navy};font-size:15px;display:block;margin-bottom:9px">ماذا لو</b>
         ${q("الوزن ثقيل ولا أكملي "+lo+" تكرارات؟",
            "انزلي خطوة واحدة ("+step+" كجم) وأكملي. الوزن الذي يكسر التكنيك لا يبني شيئا.")}
         ${q("أكملت "+hi+" بسهولة من الأسبوع الأول؟",
@@ -4275,7 +4364,9 @@ function orderDay(list){
 function generate(){
   const danger = dangerSet();
   const sys    = SPLIT_SYSTEMS[S.split] || SPLIT_SYSTEMS.ppl;
-  const split  = sys.days[S.days] || sys.days[4] || Object.values(sys.days)[0];
+  /* الأيام غير المدعومة في التقسيمة: كان يسقط على 4 أيام صامتا فيخرج
+     جدولا بعدد أيام مخالف لما طلبته المدربة. الآن يقص أو يمدد بدقة. */
+  const split  = pickSplit(sys, S.days);
   const minDaily = S.minDaily ?? 0;
   const maxDaily = S.maxDaily ?? 8;
 
@@ -4430,9 +4521,13 @@ function generate(){
   injectCorrectives(plan, maxDaily);
   plan.forEach(d=>d.exercises.forEach(e=>used.add(e.id)));
   injectSupport(plan, maxDaily);
+  /* إعادة الترتيب بعد الحقن: الدعم يضاف في آخر اليوم فيكسر ترتيب
+     المركب قبل العزل والبطن أخيرا. */
+  plan.forEach(d=>{ d.exercises = orderDay(d.exercises); });
   plan.forEach(d=>d.exercises.forEach(e=>used.add(e.id)));
   const report = verifyVolume(plan, danger, used, maxDaily);
   trimOvershoot(plan);
+  plan.forEach(d=>{ d.exercises = orderDay(d.exercises); });
   plan.forEach(d=>{ d.warmup = buildWarmup(d); d.cooldown = buildCooldown(d); });
   report.balance     = balanceAudit(plan);
   report.progression = progressionBlock();

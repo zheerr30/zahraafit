@@ -289,14 +289,14 @@ const MGROUPS = [
 const EX = [
   /* ---------------- الصدر ---------------- */
   {id:"bench",name:"بنش بريس بالبار",group:"chest",muscle:"chest",env:["gym"],level:1,risk:["shoulder"],tip:"حافظ على لوح كتفك مشدودا للخلف ولا تباعد مرفقيك كثيرا.",type:"compound",pattern:"push",video:"https://youtu.be/SCVCLChPQFY?si=vTNIgDRqCm2Jf-W9",en:"Barbell Bench Press"},
-  {id:"inclinedb",name:"بنش مائل بالدمبل",group:"chest",muscle:"chest",env:["gym"],level:1,risk:["shoulder"],tip:"انزل بتحكم حتى تشعر بتمدد بسيط دون ألم في الكتف.",type:"compound",pattern:"push",video:"https://youtu.be/aVf__6cm3qU?si=J18GiBq6UMRnYmY_",en:"Incline Dumbbell Press"},
+  {id:"inclinedb",name:"بنش مائل بالدمبل",group:"chest",muscle:"chest",env:["gym","home"],level:1,risk:["shoulder"],tip:"انزل بتحكم حتى تشعر بتمدد بسيط دون ألم في الكتف.",type:"compound",pattern:"push",video:"https://youtu.be/aVf__6cm3qU?si=J18GiBq6UMRnYmY_",en:"Incline Dumbbell Press"},
   {id:"chestpress",name:"جهاز ضغط الصدر",group:"chest",muscle:"chest",env:["gym"],level:1,risk:[],tip:"اضبط ارتفاع المقعد بحيث يكون المقبض بمستوى منتصف صدرك.",type:"compound",pattern:"push",video:"https://youtu.be/sqNwDkUU_Ps?si=w-Qr7OzOwee3PaJC",en:"Machine Chest Press"},
-  {id:"pushup",name:"تمرين الضغط (بوش أب)",group:"chest",muscle:"chest",env:["home","bodyweight"],level:1,risk:["wrist"],tip:"حافظ على جسمك بخط مستقيم من الرأس للكعب.",type:"compound",pattern:"push",video:"https://youtu.be/jWxvty2KROs?si=8BXTM-qCwkjmpZKJ",en:"Push-Up"},
+  {id:"pushup",name:"تمرين الضغط (بوش أب)",group:"chest",muscle:"chest",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"حافظ على جسمك بخط مستقيم من الرأس للكعب.",type:"compound",pattern:"push",video:"https://youtu.be/jWxvty2KROs?si=8BXTM-qCwkjmpZKJ",en:"Push-Up"},
   {id:"bandfly",name:"تفتيح بالشريط المطاطي",group:"chest",muscle:"chest",env:["home"],level:1,risk:[],tip:"اعصر صدرك في نهاية الحركة ولا تفرد ذراعيك بالكامل.",type:"isolation",pattern:"push",video:"https://youtu.be/dpAQZJxQa_c?si=9X0Njv6iGI3L4VQg",en:"Resistance Band Chest Fly"},
   {id:"dips",name:"غطس الصدر (ديبس)",group:"chest",muscle:"chest",env:["gym","bodyweight"],level:2,risk:["shoulder"],tip:"مل بجذعك للأمام قليلا لاستهداف الصدر وتجنب إجهاد الكتف.",type:"compound",pattern:"push",video:"https://youtube.com/shorts/4ua3MzaU0QU?si=BuihIMv8sEZSR55e",en:"Chest Dips"},
   {id:"cablecross",name:"تقاطع الكيبل للصدر",group:"chest",muscle:"chest",env:["gym"],level:2,risk:[],tip:"اعصري صدرك في منتصف الحركة وتحكمي في الرجوع ببطء.",type:"isolation",pattern:"push",video:"https://youtu.be/hhruLxo9yZU?si=oNek7sHvXX4ebb7_",en:"Cable Crossover"},
-  {id:"declinepush",name:"ضغط مائل لأسفل",group:"chest",muscle:"chest",env:["home","bodyweight"],level:2,risk:["wrist"],tip:"ارفعي قدميك على سطح مرتفع لاستهداف أسفل الصدر.",type:"compound",pattern:"push",video:"https://youtu.be/aq2xZxfrQlM?si=56rGHiMYbu9cSl3b",en:"Decline Push-Up"},
-  {id:"flatdb",name:"بنش مستقيم بالدمبل",group:"chest",muscle:"chest",env:["gym","home"],level:1,risk:["shoulder"],tip:"أنزلي الدمبل لمستوى الصدر وادفعي للأعلى بثبات.",type:"compound",pattern:"push",video:"https://youtu.be/_yeMxOqhctg?si=OYWw_wd5ws_F87Ve",en:"Flat Dumbbell Bench Press"},
+  {id:"declinepush",name:"ضغط مائل لأسفل",group:"chest",muscle:"chest",env:["gym","home","bodyweight"],level:2,risk:["wrist"],tip:"ارفعي قدميك على سطح مرتفع لاستهداف أسفل الصدر.",type:"compound",pattern:"push",video:"https://youtu.be/aq2xZxfrQlM?si=56rGHiMYbu9cSl3b",en:"Decline Push-Up"},
+  {id:"flatdb",name:"بنش مستو بالدمبل",group:"chest",muscle:"chest",env:["gym","home"],level:1,risk:["shoulder"],tip:"أنزلي الدمبل لمستوى الصدر وادفعي للأعلى بثبات.",type:"compound",pattern:"push",video:"https://youtu.be/_yeMxOqhctg?si=OYWw_wd5ws_F87Ve",en:"Flat Dumbbell Bench Press"},
 
   /* ---------------- الظهر ---------------- */
   {id:"latpull",name:"سحب أمامي (لات بول داون)",group:"back",muscle:"upperback",env:["gym"],level:1,risk:[],tip:"اسحب البار لأعلى صدرك واخفض كتفيك بعيدا عن أذنيك.",type:"compound",pattern:"pull",video:"https://youtu.be/7JnP8dFbS14?si=JiTkT8iqfzyNvJzm",en:"Lat Pulldown"},
@@ -305,14 +305,14 @@ const EX = [
   {id:"dbrow",name:"تجديف بالدمبل",group:"back",muscle:"midback",env:["gym","home"],level:1,risk:["lowerback"],tip:"استند بيدك على مقعد وحافظ على ظهر مستقيم طوال الحركة.",type:"compound",pattern:"pull",video:"https://youtu.be/DMo3HJoawrU?si=KhVXTlxj721BHYxu",en:"Dumbbell Row"},
   {id:"bandrow",name:"تجديف بالشريط المطاطي",group:"back",muscle:"midback",env:["home"],level:1,risk:[],tip:"اسحب الشريط نحو بطنك واعصر لوحي كتفك معا.",type:"compound",pattern:"pull",video:"https://youtu.be/vR9KcvzLqVo?si=iJXSF6M-nSgv8Grb",en:"Resistance Band Row"},
   {id:"pullup",name:"العقلة (بول أب)",group:"back",muscle:"upperback",env:["gym","bodyweight"],level:3,risk:["shoulder"],tip:"ابدأ بذراعين ممدودتين واسحب حتى يتجاوز ذقنك البار.",type:"compound",pattern:"pull",video:"https://youtube.com/shorts/9rckBLbVe8c?si=YxU4GWGmcBIfd3BV",en:"Pull-Up"},
-  {id:"superman",name:"سوبرمان (تقوية أسفل الظهر)",group:"back",muscle:"midback",env:["home","bodyweight"],level:1,risk:[],tip:"ارفعي ذراعيك وساقيك برفق دون فرط تقويس للظهر.",type:"isolation",pattern:"pull",video:"https://youtu.be/LZoWdePF1NQ?si=BK3KAkay1CT4AeD7",en:"Superman Exercise"},
+  {id:"superman",name:"سوبرمان (تقوية أسفل الظهر)",group:"back",muscle:"midback",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ارفعي ذراعيك وساقيك برفق دون فرط تقويس للظهر.",type:"isolation",pattern:"pull",video:"https://youtu.be/LZoWdePF1NQ?si=BK3KAkay1CT4AeD7",en:"Superman Exercise"},
   {id:"facepull",name:"سحب للوجه بالكيبل",group:"back",muscle:"upperback",env:["gym"],level:1,risk:[],tip:"اسحبي الحبل نحو وجهك مع فتح المرفقين لتنشيط أعلى الظهر.",type:"isolation",pattern:"pull",video:"https://youtu.be/0Po47vvj9g4?si=U_mst7MrzVWK7hRf",en:"Cable Face Pull"},
   {id:"closegrippull",name:"سحب أمامي قبضة ضيقة",group:"back",muscle:"upperback",env:["gym"],level:1,risk:[],tip:"اسحبي لأسفل الصدر واعصري عضلات الظهر في النهاية.",type:"compound",pattern:"pull",video:"https://youtube.com/shorts/OXteyscbYkA?si=I-lTGshFb5Tj4rNn",en:"Close-Grip Lat Pulldown"},
-  {id:"invertedrow",name:"تجديف معكوس (بار منخفض)",group:"back",muscle:"midback",env:["home","bodyweight"],level:2,risk:[],tip:"حافظي على جسمك مستقيما واسحبي صدرك نحو البار.",type:"compound",pattern:"pull",video:"https://youtu.be/KOaCM1HMwU0?si=odQHNydteqTfcawT",en:"Inverted Row"},
+  {id:"invertedrow",name:"تجديف معكوس (بار منخفض)",group:"back",muscle:"midback",env:["gym","bodyweight"],level:2,risk:[],tip:"حافظي على جسمك مستقيما واسحبي صدرك نحو البار.",type:"compound",pattern:"pull",video:"https://youtu.be/KOaCM1HMwU0?si=odQHNydteqTfcawT",en:"Inverted Row"},
   {id:"bandlatpull",name:"سحب علوي بالشريط",group:"back",muscle:"upperback",env:["home"],level:1,risk:[],tip:"اسحبي الشريط لأسفل خلف رقبتك مع خفض الكتفين.",type:"isolation",pattern:"pull",video:"https://youtu.be/8zv8Pray4-w?si=7jEg0AXzoGcNqL8O",en:"Resistance Band Lat Pulldown"},
-  {id:"towelrow",name:"تجديف بالمنشفة/الباب",group:"back",muscle:"midback",env:["bodyweight","home"],level:1,risk:[],tip:"أمسكي منشفة حول عمود ثابت واسحبي جسمك للخلف بظهر مستقيم.",type:"isolation",pattern:"pull",video:"https://youtu.be/SkFBcrHVGn4?si=QUPjYt9FYimHaVxK",en:"Towel Door Row"},
-  {id:"reverssnow",name:"ملاك الثلج المعكوس",group:"back",muscle:"upperback",env:["bodyweight","home"],level:1,risk:[],tip:"استلقي على بطنك وحركي ذراعيك كأنك ترسمين قوسا مع عصر الظهر.",type:"isolation",pattern:"pull",video:"https://youtu.be/0qLP2RNKX4A?si=KYPndzP9FEqdnkyX",en:"Reverse Snow Angel"},
-  {id:"birddog",name:"تمرين الكلب-الطائر",group:"back",muscle:"midback",env:["bodyweight","home"],level:1,risk:[],tip:"مدي ذراعا وساقا معاكسة مع شد البطن وثبات الظهر.",type:"isolation",pattern:"pull",video:"https://youtu.be/ZdAHe9_HeEw",en:"Bird Dog"},
+  {id:"towelrow",name:"تجديف بالمنشفة/الباب",group:"back",muscle:"midback",env:["home","bodyweight"],level:1,risk:[],tip:"أمسكي منشفة حول عمود ثابت واسحبي جسمك للخلف بظهر مستقيم.",type:"isolation",pattern:"pull",video:"https://youtu.be/SkFBcrHVGn4?si=QUPjYt9FYimHaVxK",en:"Towel Door Row"},
+  {id:"reverssnow",name:"ملاك الثلج المعكوس",group:"back",muscle:"upperback",env:["gym","home","bodyweight"],level:1,risk:[],tip:"استلقي على بطنك وحركي ذراعيك كأنك ترسمين قوسا مع عصر الظهر.",type:"isolation",pattern:"pull",video:"https://youtu.be/0qLP2RNKX4A?si=KYPndzP9FEqdnkyX",en:"Reverse Snow Angel"},
+  {id:"birddog",name:"تمرين الكلب-الطائر",group:"back",muscle:"midback",env:["gym","home","bodyweight"],level:1,risk:[],tip:"مدي ذراعا وساقا معاكسة مع شد البطن وثبات الظهر.",type:"isolation",pattern:"pull",video:"https://youtu.be/ZdAHe9_HeEw",en:"Bird Dog"},
 
   /* ---------------- الأكتاف ---------------- */
   {id:"ohp",name:"ضغط الكتف بالبار",group:"shoulders",muscle:"frontdelt",env:["gym"],level:2,risk:["shoulder","lowerback"],tip:"شد بطنك ولا تقوس أسفل ظهرك أثناء الدفع لأعلى.",type:"compound",pattern:"push",video:"https://youtu.be/2yjwXTZQDDI?si=aPshl7z8gjaTL4aq",en:"Standing Barbell Overhead Press"},
@@ -320,26 +320,26 @@ const EX = [
   {id:"lateral",name:"رفرفة جانبية",group:"shoulders",muscle:"sidedelt",env:["gym","home"],level:1,risk:["shoulder"],tip:"ارفع حتى مستوى الكتف فقط وقد الحركة بمرفقك.",type:"isolation",pattern:"push",video:"https://youtu.be/XPPfnSEATJA?si=PZCWI4E9iy3GCTg9",en:"Dumbbell Lateral Raise"},
   {id:"reardelt",name:"رفرفة خلفية",group:"shoulders",muscle:"reardelt",env:["gym","home"],level:1,risk:[],tip:"انحن قليلا للأمام واعصر مؤخرة كتفك في الأعلى.",type:"isolation",pattern:"push",video:"https://youtu.be/p1yQnTNE808?si=MtjP364n8dddJuLI",en:"Rear Delt Fly"},
   {id:"bandlateral",name:"رفرفة جانبية بالشريط",group:"shoulders",muscle:"sidedelt",env:["home"],level:1,risk:[],tip:"تحكم في النزول ولا تدع الشريط يسحب ذراعك بسرعة.",type:"isolation",pattern:"push",video:"https://youtu.be/QqyKKd3dXGk?si=rB_aPmqllixVTjaY",en:"Resistance Band Lateral Raise"},
-  {id:"pike",name:"ضغط بايك (للكتف بوزن الجسم)",group:"shoulders",muscle:"frontdelt",env:["bodyweight"],level:2,risk:["shoulder","wrist"],tip:"ارفع وركك عاليا واخفض رأسك برفق نحو الأرض.",type:"compound",pattern:"push",video:"https://youtu.be/XckEEwa1BPI?si=fwjFL03nau2Ijtaf",en:"Pike Push-Up"},
-  {id:"wallpush",name:"ضغط الكتف على الحائط",group:"shoulders",muscle:"frontdelt",env:["bodyweight","home"],level:1,risk:["shoulder"],tip:"قف مائلا نحو الحائط وادفع بثبات دون قفل المرفقين.",type:"isolation",pattern:"push",video:"https://youtu.be/wIPJvBQs7RA?si=fxg5Xugw1Qq6XFl6",en:"Wall Push-Up"},
-  {id:"armcircle",name:"تدوير الذراعين (تنشيط الكتف)",group:"shoulders",muscle:"sidedelt",env:["bodyweight","home"],level:1,risk:[],tip:"ابدأ بدوائر صغيرة وكبرها تدريجيا مع تحكم كامل.",type:"isolation",pattern:"push",video:"https://youtu.be/UVMEnIaY8aU?si=PcvkZGlhcEXCG25q",en:"Arm Circles"},
+  {id:"pike",name:"ضغط بايك (للكتف بوزن الجسم)",group:"shoulders",muscle:"frontdelt",env:["gym","home","bodyweight"],level:2,risk:["shoulder","wrist"],tip:"ارفع وركك عاليا واخفض رأسك برفق نحو الأرض.",type:"compound",pattern:"push",video:"https://youtu.be/XckEEwa1BPI?si=fwjFL03nau2Ijtaf",en:"Pike Push-Up"},
+  {id:"wallpush",name:"ضغط الكتف على الحائط",group:"shoulders",muscle:"frontdelt",env:["gym","home","bodyweight"],level:1,risk:["shoulder"],tip:"قف مائلا نحو الحائط وادفع بثبات دون قفل المرفقين.",type:"isolation",pattern:"push",video:"https://youtu.be/wIPJvBQs7RA?si=fxg5Xugw1Qq6XFl6",en:"Wall Push-Up"},
+  {id:"armcircle",name:"تدوير الذراعين (تنشيط الكتف)",group:"shoulders",muscle:"sidedelt",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ابدأ بدوائر صغيرة وكبرها تدريجيا مع تحكم كامل.",type:"isolation",pattern:"push",video:"https://youtu.be/UVMEnIaY8aU?si=PcvkZGlhcEXCG25q",en:"Arm Circles"},
 
   /* ---------------- البايسبس ---------------- */
-  {id:"barbellcurl",name:"مرجحة بايسبس بالبار",group:"biceps",muscle:"biceps",env:["gym","home"],level:1,risk:[],tip:"ثبت مرفقيك بجانبك ولا تتأرجح بجسمك.",type:"isolation",pattern:"pull",video:"https://youtu.be/N5x5M1x1Gd0?si=91ARagkNomwC8lEl",en:"Barbell Biceps Curl"},
+  {id:"barbellcurl",name:"مرجحة بايسبس بالبار",group:"biceps",muscle:"biceps",env:["gym"],level:1,risk:[],tip:"ثبت مرفقيك بجانبك ولا تتأرجح بجسمك.",type:"isolation",pattern:"pull",video:"https://youtu.be/N5x5M1x1Gd0?si=91ARagkNomwC8lEl",en:"Barbell Biceps Curl"},
   {id:"dbcurl",name:"مرجحة بايسبس بالدمبل",group:"biceps",muscle:"biceps",env:["gym","home"],level:1,risk:[],tip:"اعصر العضلة في الأعلى وانزل ببطء.",type:"isolation",pattern:"pull",video:"https://youtu.be/6DeLZ6cbgWQ?si=yRe1MfkaMsx4KRc3",en:"Dumbbell Biceps Curl"},
   {id:"hammer",name:"مرجحة مطرقية",group:"biceps",muscle:"biceps",env:["gym","home"],level:1,risk:[],tip:"حافظ على راحتي يدك متقابلتين طوال الحركة.",type:"isolation",pattern:"pull",video:"https://youtu.be/TwD-YGVP4Bk?si=5kcDcR6vaAybPXNX",en:"Hammer Curl"},
   {id:"bandcurl",name:"مرجحة بايسبس بالشريط",group:"biceps",muscle:"biceps",env:["home"],level:1,risk:[],tip:"حافظ على شد ثابت في الشريط ولا ترخه فجأة.",type:"isolation",pattern:"pull",video:"https://youtu.be/0hZboUNuogA?si=NnjIuWdtTSPIZEF3",en:"Resistance Band Biceps Curl"},
-  {id:"chinup",name:"عقلة قبضة عكسية",group:"biceps",muscle:"biceps",env:["bodyweight"],level:3,risk:["shoulder"],tip:"اسحب بقبضة ضيقة مع التركيز على شد البايسبس.",type:"compound",pattern:"pull",video:"https://youtube.com/shorts/6YGGFTKlDDw?si=2qJ9FcuvVnAh1WgA",en:"Chin-Up"},
-  {id:"bwcurl",name:"مرجحة بايسبس بالمنشفة",group:"biceps",muscle:"biceps",env:["bodyweight","home"],level:1,risk:[],tip:"شدي المنشفة بمقاومة ذاتية أثناء ثنيها نحو كتفك.",type:"isolation",pattern:"pull",video:"https://youtu.be/astPQqDb1s4?si=wOFfFmgNBn3OPv6i",en:"Towel Biceps Curl"},
-  {id:"isocurl",name:"انقباض ثابت للبايسبس",group:"biceps",muscle:"biceps",env:["bodyweight","home"],level:1,risk:[],tip:"اضغطي راحتك ضد بعضها وثبتي الانقباض على شكل زاوية 90°.",type:"isolation",pattern:"pull",video:"https://youtu.be/RpqQZT4GVJg?si=8TIv-WHle_ky64_G",en:"Isometric Biceps Hold"},
+  {id:"chinup",name:"عقلة قبضة عكسية",group:"biceps",muscle:"biceps",env:["gym","bodyweight"],level:3,risk:["shoulder"],tip:"اسحب بقبضة ضيقة مع التركيز على شد البايسبس.",type:"compound",pattern:"pull",video:"https://youtube.com/shorts/6YGGFTKlDDw?si=2qJ9FcuvVnAh1WgA",en:"Chin-Up"},
+  {id:"bwcurl",name:"مرجحة بايسبس بالمنشفة",group:"biceps",muscle:"biceps",env:["home","bodyweight"],level:1,risk:[],tip:"شدي المنشفة بمقاومة ذاتية أثناء ثنيها نحو كتفك.",type:"isolation",pattern:"pull",video:"https://youtu.be/astPQqDb1s4?si=wOFfFmgNBn3OPv6i",en:"Towel Biceps Curl"},
+  {id:"isocurl",name:"انقباض ثابت للبايسبس",group:"biceps",muscle:"biceps",env:["gym","home"],level:1,risk:[],tip:"اضغطي راحتك ضد بعضها وثبتي الانقباض على شكل زاوية 90°.",type:"isolation",pattern:"pull",video:"https://youtu.be/RpqQZT4GVJg?si=8TIv-WHle_ky64_G",en:"Isometric Biceps Hold"},
 
   /* ---------------- الترايسبس ---------------- */
   {id:"pushdown",name:"دفع الترايسبس بالكيبل",group:"triceps",muscle:"triceps",env:["gym"],level:1,risk:[],tip:"ثبت مرفقيك بجانبك وافرد ذراعيك بالكامل في الأسفل.",type:"isolation",pattern:"push",video:"https://youtu.be/LXkCrxn3caQ?si=GWBg2AAydRJgbTIn",en:"Cable Triceps Pushdown"},
   {id:"skull",name:"تمرين الجمجمة بالدمبل",group:"triceps",muscle:"triceps",env:["gym","home"],level:2,risk:["elbow"],tip:"حرك من المرفق فقط وثبت عضدك عموديا.",type:"isolation",pattern:"push",video:"https://youtu.be/1BDGIcMTSXc?si=BhtwMhbFSnas1FNk",en:"Dumbbell Skull Crusher"},
   {id:"overheadtri",name:"تمديد علوي للترايسبس",group:"triceps",muscle:"triceps",env:["gym","home"],level:1,risk:["shoulder"],tip:"أبق مرفقيك قريبين من رأسك أثناء التمديد.",type:"isolation",pattern:"push",video:"https://youtu.be/-Vyt2QdsR7E?si=8E_M_TRwZj-yKLKR",en:"Overhead Dumbbell Triceps Extension"},
   {id:"bandpush",name:"دفع الترايسبس بالشريط",group:"triceps",muscle:"triceps",env:["home"],level:1,risk:[],tip:"افرد ذراعيك بالكامل واعصر الترايسبس في النهاية.",type:"isolation",pattern:"push",video:"https://youtu.be/RWFCLyyyqV8?si=6pgNiQ1Cb8k7tFmj",en:"Resistance Band Triceps Pushdown"},
-  {id:"benchdip",name:"غطس على المقعد",group:"triceps",muscle:"triceps",env:["home","bodyweight"],level:1,risk:["shoulder"],tip:"أبق جسمك قريبا من المقعد ولا تنزل لأبعد من زاوية مريحة للكتف.",type:"compound",pattern:"push",video:"https://youtu.be/larQGD02ndE?si=lJSAKrK8oNMQ9Aox",en:"Bench Dip"},
-  {id:"diamondpush",name:"ضغط ماسي للترايسبس",group:"triceps",muscle:"triceps",env:["bodyweight"],level:2,risk:["wrist"],tip:"ضم يديك على شكل ماسة تحت صدرك وحافظ على مرفقيك قريبين.",type:"compound",pattern:"push",video:"https://youtu.be/UCmqw3kKZ38?si=Fh-bI-7RI-mfErJT",en:"Diamond Push-Up"},
+  {id:"benchdip",name:"غطس على المقعد",group:"triceps",muscle:"triceps",env:["gym","home","bodyweight"],level:1,risk:["shoulder"],tip:"أبق جسمك قريبا من المقعد ولا تنزل لأبعد من زاوية مريحة للكتف.",type:"compound",pattern:"push",video:"https://youtu.be/larQGD02ndE?si=lJSAKrK8oNMQ9Aox",en:"Bench Dip"},
+  {id:"diamondpush",name:"ضغط ماسي للترايسبس",group:"triceps",muscle:"triceps",env:["gym","home","bodyweight"],level:2,risk:["wrist"],tip:"ضم يديك على شكل ماسة تحت صدرك وحافظ على مرفقيك قريبين.",type:"compound",pattern:"push",video:"https://youtu.be/UCmqw3kKZ38?si=Fh-bI-7RI-mfErJT",en:"Diamond Push-Up"},
 
   /* ---------------- الأرجل ---------------- */
   {id:"squat",name:"سكوات بالبار",group:"quads",muscle:"quads",env:["gym"],level:2,risk:["knee","lowerback"],tip:"انزل والركبتان باتجاه أصابع القدم وظهرك مستقيم.",type:"compound",pattern:"legs",video:"https://youtu.be/rrJIyZGlK8c?si=XVKU40IDTs0q3Cgm",en:"Barbell Back Squat"},
@@ -348,40 +348,40 @@ const EX = [
   {id:"legcurl",name:"جهاز ثني الأرجل (خلفي)",group:"hams",muscle:"hamstrings",env:["gym"],level:1,risk:["knee"],tip:"حرك ببطء واعصر الفخذ الخلفي في النهاية.",type:"isolation",pattern:"legs",video:"https://youtu.be/WGih6WFr3uI?si=MsW8UjcW_xx4AmBB",en:"Lying Leg Curl Machine"},
   {id:"rdl",name:"رفعة رومانية بالدمبل",group:"hams",muscle:"hamstrings",env:["gym","home"],level:1,risk:["lowerback","knee"],tip:"ادفع وركك للخلف وحافظ على ظهرك مستقيما تماما.",type:"compound",pattern:"legs",video:"https://youtu.be/5WxMW-Fu5KU?si=qZUlRw5oaFAc6Xhr",en:"Dumbbell Romanian Deadlift"},
   {id:"gobletsquat",name:"سكوات كأسي بالدمبل",group:"quads",muscle:"quads",env:["gym","home"],level:1,risk:["knee"],tip:"أبق صدرك مرفوعا وكعبيك ملاصقين للأرض.",type:"compound",pattern:"legs",video:"https://youtu.be/zBV3ceGyAxw?si=XvZsb9u-lhTWbIqi",en:"Goblet Squat"},
-  {id:"lunge",name:"طعنات (لانجز)",group:"quads",muscle:"quads",env:["home","bodyweight","gym"],level:1,risk:["knee"],tip:"اخط خطوة ثابتة ولا تدع ركبتك الأمامية تتجاوز أصابع قدمك كثيرا.",type:"compound",pattern:"legs",video:"https://youtu.be/9gglI77Kzq8?si=n5FPWKpwXDFHVhLq",en:"Bodyweight Lunge"},
+  {id:"lunge",name:"طعنات (لانجز)",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:["knee"],tip:"اخط خطوة ثابتة ولا تدع ركبتك الأمامية تتجاوز أصابع قدمك كثيرا.",type:"compound",pattern:"legs",video:"https://youtu.be/9gglI77Kzq8?si=n5FPWKpwXDFHVhLq",en:"Bodyweight Lunge"},
   {id:"bandsquat",name:"سكوات بالشريط",group:"quads",muscle:"quads",env:["home"],level:1,risk:["knee"],tip:"ادفع ركبتيك للخارج ضد مقاومة الشريط.",type:"compound",pattern:"legs",video:"https://youtu.be/D-SD9mGJ3Ok?si=ry1seOCPaoBO7aY9",en:"Resistance Band Squat"},
-  {id:"wallsit",name:"الجلوس على الحائط",group:"quads",muscle:"quads",env:["bodyweight","home"],level:1,risk:["knee"],tip:"حافظ على زاوية 90° للركبة وظهرك ملاصق للحائط.",type:"compound",pattern:"legs",video:"https://youtu.be/RG7z0P9qrLk?si=3ygPcte_UBY_ImNE",en:"Wall Sit"},
+  {id:"wallsit",name:"الجلوس على الحائط",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:["knee"],tip:"حافظ على زاوية 90° للركبة وظهرك ملاصق للحائط.",type:"compound",pattern:"legs",video:"https://youtu.be/RG7z0P9qrLk?si=3ygPcte_UBY_ImNE",en:"Wall Sit"},
   {id:"calfraise",name:"رفع السمانة",group:"calves",muscle:"calves",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ارفعي على أطراف أصابعك لأقصى مدى واعصري السمانة.",type:"isolation",pattern:"legs",video:"https://youtu.be/3ZRe_QpvRPg?si=B71LbbGiAK6IzleL",en:"Standing Calf Raise"},
   {id:"hacksquat",name:"سكوات هاك بالجهاز",group:"quads",muscle:"quads",env:["gym"],level:2,risk:["knee"],tip:"حافظي على ظهرك ملاصقا للوسادة وانزلي بتحكم.",type:"compound",pattern:"legs",video:"https://youtu.be/rYgNArpwE7E?si=Zb6g4tUQgxr3ZZgh",en:"Hack Squat Machine"},
-  {id:"bulgarian",name:"سكوات بلغاري",group:"quads",muscle:"quads",env:["gym","home"],level:2,risk:["knee"],tip:"ارفعي قدمك الخلفية على مقعد وانزلي بثبات على الأمامية.",type:"compound",pattern:"legs",video:"https://youtu.be/vgn7bSXkgkA?si=j6aPBvVEszw-pBgw",en:"Bulgarian Split Squat"},
-  {id:"stepup",name:"الصعود على المنصة",group:"quads",muscle:"quads",env:["home","bodyweight","gym"],level:1,risk:["knee"],tip:"اصعدي بالكامل على المنصة وادفعي من كعب القدم الأمامية.",type:"compound",pattern:"legs",video:"https://youtu.be/9ZknEYboBOQ?si=esxaoV86edZsKYX2",en:"Step-Up"},
+  {id:"bulgarian",name:"سكوات بلغاري",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:2,risk:["knee"],tip:"ارفعي قدمك الخلفية على مقعد وانزلي بثبات على الأمامية.",type:"compound",pattern:"legs",video:"https://youtu.be/vgn7bSXkgkA?si=j6aPBvVEszw-pBgw",en:"Bulgarian Split Squat"},
+  {id:"stepup",name:"الصعود على المنصة",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:["knee"],tip:"اصعدي بالكامل على المنصة وادفعي من كعب القدم الأمامية.",type:"compound",pattern:"legs",video:"https://youtu.be/9ZknEYboBOQ?si=esxaoV86edZsKYX2",en:"Step-Up"},
   {id:"seatedcalf",name:"رفع السمانة جالسا",group:"calves",muscle:"calves",env:["gym"],level:1,risk:[],tip:"حركي ببطء واعصري السمانة في أعلى الحركة.",type:"isolation",pattern:"legs",video:"https://youtu.be/2Q-HQ3mnePg?si=Unet9QC0YmLK-zyH",en:"Seated Calf Raise"},
-  {id:"sumosquat",name:"سكوات سومو",group:"quads",muscle:"quads",env:["home","bodyweight","gym"],level:1,risk:["knee"],tip:"باعدي قدميك ووجهي أصابعك للخارج لاستهداف الفخذ الداخلي.",type:"compound",pattern:"legs",video:"https://youtu.be/u2oXPmPH0hA?si=rkU2VSQ_oRf9ZXG5",en:"Sumo Squat"},
+  {id:"sumosquat",name:"سكوات سومو",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:["knee"],tip:"باعدي قدميك ووجهي أصابعك للخارج لاستهداف الفخذ الداخلي.",type:"compound",pattern:"legs",video:"https://youtu.be/u2oXPmPH0hA?si=rkU2VSQ_oRf9ZXG5",en:"Sumo Squat"},
 
   /* ---------------- المؤخرة ---------------- */
-  {id:"hipthrust",name:"دفع الورك (هيب ثرست)",group:"glutes",muscle:"glutes",env:["gym","home"],level:1,risk:["lowerback"],tip:"اعصر مؤخرتك في الأعلى ولا تفرط في تقويس ظهرك.",type:"compound",pattern:"legs",video:"https://youtu.be/nME5wVVCfc4?si=ZslpabkXTqyCifId",en:"Hip Thrust Machine"},
-  {id:"glutebridge",name:"جسر المؤخرة",group:"glutes",muscle:"glutes",env:["home","bodyweight"],level:1,risk:[],tip:"ادفع من كعبيك واعصر المؤخرة في الأعلى لثانية.",type:"compound",pattern:"legs",video:"https://youtu.be/Xp33YgPZgns?si=Uk9-h1etAQPw0eQV",en:"Glute Bridge"},
-  {id:"kickback",name:"رفس خلفي للمؤخرة",group:"glutes",muscle:"glutes",env:["home","bodyweight","gym"],level:1,risk:[],tip:"حرك من الورك فقط وحافظ على ظهرك ثابتا.",type:"isolation",pattern:"legs",video:"https://youtu.be/BNDw4ciQoQI?si=K-ZThAKsksngCOUG",en:"Glute Kickback"},
+  {id:"hipthrust",name:"دفع الورك بالجهاز (هيب ثرست)",group:"glutes",muscle:"glutes",env:["gym"],level:1,risk:["lowerback"],tip:"اعصر مؤخرتك في الأعلى ولا تفرط في تقويس ظهرك.",type:"compound",pattern:"legs",video:"https://youtu.be/nME5wVVCfc4?si=ZslpabkXTqyCifId",en:"Hip Thrust Machine"},
+  {id:"glutebridge",name:"جسر المؤخرة",group:"glutes",muscle:"glutes",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ادفع من كعبيك واعصر المؤخرة في الأعلى لثانية.",type:"compound",pattern:"legs",video:"https://youtu.be/Xp33YgPZgns?si=Uk9-h1etAQPw0eQV",en:"Glute Bridge"},
+  {id:"kickback",name:"رفس خلفي للمؤخرة",group:"glutes",muscle:"glutes",env:["gym","home","bodyweight"],level:1,risk:[],tip:"حرك من الورك فقط وحافظ على ظهرك ثابتا.",type:"isolation",pattern:"legs",video:"https://youtu.be/BNDw4ciQoQI?si=K-ZThAKsksngCOUG",en:"Glute Kickback"},
   {id:"bandkick",name:"رفس خلفي بالشريط",group:"glutes",muscle:"glutes",env:["home"],level:1,risk:[],tip:"ادفع كعبك للخلف ببطء ضد مقاومة الشريط.",type:"isolation",pattern:"legs",video:"https://youtu.be/A3e_q2qSs-Q?si=-WLA5yerBWcxIVOk",en:"Resistance Band Glute Kickback"},
   {id:"cablekick",name:"رفس خلفي بالكيبل",group:"glutes",muscle:"glutes",env:["gym"],level:1,risk:[],tip:"حركي من الورك واعصري المؤخرة في نهاية الحركة.",type:"isolation",pattern:"legs",video:"https://youtu.be/SqO-VUEak2M?si=tJT0sBKxwh9BSL6z",en:"Cable Glute Kickback"},
   {id:"abduction",name:"جهاز تبعيد الأرجل",group:"glutes",muscle:"glutes",env:["gym"],level:1,risk:[],tip:"افتحي ساقيك ضد المقاومة واعصري الجانب.",type:"isolation",pattern:"legs",video:"https://youtu.be/H98IP8rARy4?si=mWvDtgnlCKXDbNSw",en:"Hip Abduction Machine"},
-  {id:"frogpump",name:"ضخ الضفدع للمؤخرة",group:"glutes",muscle:"glutes",env:["home","bodyweight"],level:1,risk:[],tip:"ضمي كعبيك معا وادفعي وركك لأعلى بعصر قوي.",type:"isolation",pattern:"legs",video:"https://youtu.be/KvdJEqifOLk?si=yTrNSDv_8s5xlQ82",en:"Frog Pump"},
-  {id:"sidelunge",name:"طعنة جانبية",group:"glutes",muscle:"glutes",env:["home","bodyweight","gym"],level:1,risk:["knee"],tip:"اخطي للجانب وانزلي على ساق واحدة مع إبقاء الأخرى ممدودة.",type:"compound",pattern:"legs",video:"https://youtu.be/1D_tsUSW3ZY?si=yyhQqv221rSaqkSi",en:"Lateral Lunge"},
+  {id:"frogpump",name:"ضخ الضفدع للمؤخرة",group:"glutes",muscle:"glutes",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ضمي كعبيك معا وادفعي وركك لأعلى بعصر قوي.",type:"isolation",pattern:"legs",video:"https://youtu.be/KvdJEqifOLk?si=yTrNSDv_8s5xlQ82",en:"Frog Pump"},
+  {id:"sidelunge",name:"طعنة جانبية",group:"glutes",muscle:"glutes",env:["gym","home","bodyweight"],level:1,risk:["knee"],tip:"اخطي للجانب وانزلي على ساق واحدة مع إبقاء الأخرى ممدودة.",type:"compound",pattern:"legs",video:"https://youtu.be/1D_tsUSW3ZY?si=yyhQqv221rSaqkSi",en:"Lateral Lunge"},
 
   /* ---------------- البطن ---------------- */
   {id:"crunch",name:"كرنش (تقريب علوي)",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:["neck","diastasis"],tip:"ارفع كتفيك عن الأرض دون شد رقبتك بيديك.",type:"isolation",pattern:"core",video:"https://youtu.be/XY8KzdDcMFg?si=H9wsO6EmbImSc1gf",en:"Abdominal Crunch"},
   {id:"plank",name:"بلانك (الثبات)",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:["lowerback"],tip:"حافظ على جسمك بخط مستقيم ولا ترخ وركك للأسفل.",type:"isolation",pattern:"core",video:"https://youtu.be/pvIjsG5Svck?si=EhGwj013hKcNQYyx",en:"Forearm Plank"},
   {id:"legraise",name:"رفع الأرجل",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:2,risk:["lowerback","diastasis"],tip:"ألصق أسفل ظهرك بالأرض ولا ترفع رجليك باندفاع.",type:"isolation",pattern:"core",video:"https://youtu.be/xqTh6NqbAtM",en:"Lying Leg Raise"},
-  {id:"russian",name:"الالتفاف الروسي",group:"abs",muscle:"absside",env:["home","bodyweight","gym"],level:1,risk:["lowerback","diastasis"],tip:"لف من خصرك ببطء وحافظ على ظهر مستقيم.",type:"isolation",pattern:"core",video:"https://youtu.be/DJQGX2J4IVw?si=5JJZwfN189nyj481",en:"Russian Twist"},
+  {id:"russian",name:"الالتفاف الروسي",group:"abs",muscle:"absside",env:["gym","home","bodyweight"],level:1,risk:["lowerback","diastasis"],tip:"لف من خصرك ببطء وحافظ على ظهر مستقيم.",type:"isolation",pattern:"core",video:"https://youtu.be/DJQGX2J4IVw?si=5JJZwfN189nyj481",en:"Russian Twist"},
   {id:"sideplank",name:"بلانك جانبي",group:"abs",muscle:"absside",env:["gym","home","bodyweight"],level:1,risk:["shoulder"],tip:"ارفع وركك واحفظ جسمك بخط مستقيم من الكتف للقدم.",type:"isolation",pattern:"core",video:"https://youtu.be/N_s9em1xTqU?si=nmAKmnthPS5_f5KG",en:"Side Plank"},
-  {id:"bicycle",name:"كرنش الدراجة",group:"abs",muscle:"absside",env:["home","bodyweight","gym"],level:1,risk:["neck","diastasis"],tip:"لامس مرفقك بالركبة المعاكسة دون شد رقبتك.",type:"isolation",pattern:"core",video:"https://youtu.be/9FGilxCbdz8?si=f92LML1e1ZoIzC0r",en:"Bicycle Crunch"},
+  {id:"bicycle",name:"كرنش الدراجة",group:"abs",muscle:"absside",env:["gym","home","bodyweight"],level:1,risk:["neck","diastasis"],tip:"لامس مرفقك بالركبة المعاكسة دون شد رقبتك.",type:"isolation",pattern:"core",video:"https://youtu.be/9FGilxCbdz8?si=f92LML1e1ZoIzC0r",en:"Bicycle Crunch"},
 
   /* ===== مكتبة التمارين الإضافية ===== */
   /* صدر */
   {id:"pecdeck",name:"جهاز التفتيح (بيك ديك)",group:"chest",muscle:"chest",env:["gym"],level:1,risk:["shoulder"],tip:"اجمعي ذراعيك أمامك ببطء واعصري الصدر في المنتصف.",type:"isolation",pattern:"push",video:"https://youtu.be/K2VJ4HeXb4s?si=pdMWxGayNnwJ26yO",en:"Pec Deck Machine Fly"},
   {id:"inclinemachine",name:"جهاز ضغط صدر علوي",group:"chest",muscle:"chest",env:["gym"],level:1,risk:["shoulder"],tip:"ادفعي لأعلى لاستهداف الجزء العلوي من الصدر.",type:"compound",pattern:"push",video:"https://youtu.be/tiWPSwt8_zM?si=1UNVzDlhRx1EDZYj",en:"Incline Chest Press Machine"},
-  {id:"svendpress",name:"ضغط سفيند بالدمبل",group:"chest",muscle:"chest",env:["home","gym"],level:2,risk:[],tip:"اضغطي دمبل بين راحتيك وادفعيه للأمام مع عصر الصدر.",type:"isolation",pattern:"push",video:"https://youtu.be/I2l8AYYSNUo?si=Ft1SDKUr8mL1xSNS",en:"Svend Press"},
-  {id:"widepush",name:"ضغط واسع",group:"chest",muscle:"chest",env:["bodyweight","home"],level:1,risk:["wrist"],tip:"باعدي يديك أوسع من كتفيك لاستهداف الصدر أكثر.",type:"compound",pattern:"push",video:"https://youtu.be/EsIdzx1J0iA?si=OjucbQ-u3NIRWkii",en:"Wide-Grip Push-Up"},
+  {id:"svendpress",name:"ضغط سفيند بالدمبل",group:"chest",muscle:"chest",env:["gym","home"],level:2,risk:[],tip:"اضغطي دمبل بين راحتيك وادفعيه للأمام مع عصر الصدر.",type:"isolation",pattern:"push",video:"https://youtu.be/I2l8AYYSNUo?si=Ft1SDKUr8mL1xSNS",en:"Svend Press"},
+  {id:"widepush",name:"ضغط واسع",group:"chest",muscle:"chest",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"باعدي يديك أوسع من كتفيك لاستهداف الصدر أكثر.",type:"compound",pattern:"push",video:"https://youtu.be/EsIdzx1J0iA?si=OjucbQ-u3NIRWkii",en:"Wide-Grip Push-Up"},
 
   /* ظهر */
   {id:"tbar",name:"تجديف تي-بار",group:"back",muscle:"midback",env:["gym"],level:2,risk:["lowerback"],tip:"حافظي على ظهر مستقيم واسحبي البار نحو بطنك.",type:"compound",pattern:"pull",video:"https://youtu.be/hYo72r8Ivso?si=w5mK7JWULay_rBUA",en:"T-Bar Row"},
@@ -399,7 +399,7 @@ const EX = [
   {id:"preachercurl",name:"مرجحة بريتشر",group:"biceps",muscle:"biceps",env:["gym"],level:1,risk:[],tip:"ثبتي عضدك على الوسادة وارفعي بتحكم كامل.",type:"isolation",pattern:"pull",video:"https://youtu.be/sxA__DoLsgo?si=437I5Z7-bzRNOPbt",en:"Preacher Curl"},
   {id:"concentration",name:"مرجحة تركيز",group:"biceps",muscle:"biceps",env:["gym","home"],level:1,risk:[],tip:"اسندي مرفقك على فخذك واعصري البايسبس في الأعلى.",type:"isolation",pattern:"pull",video:"https://youtu.be/0AUGkch3tzc?si=38tOZn3wNFmqfJyr",en:"Concentration Curl"},
   {id:"cablecurl",name:"مرجحة بايسبس بالكيبل",group:"biceps",muscle:"biceps",env:["gym"],level:1,risk:[],tip:"حافظي على شد ثابت طوال الحركة دون تأرجح.",type:"isolation",pattern:"pull",video:"https://youtu.be/njLoCel5lUI?si=akXB6rwEeIuxzET4",en:"Cable Biceps Curl"},
-  {id:"spidercurl",name:"مرجحة العنكبوت",group:"biceps",muscle:"biceps",env:["gym"],level:2,risk:[],tip:"انحني للأمام ودعي ذراعيك تتدليان ثم ارفعي بعزل تام.",type:"isolation",pattern:"pull",video:"https://youtu.be/z1uuyKW5PRk?si=kpISZVzYKTk53-jk",en:"Spider Curl"},
+  {id:"spidercurl",name:"مرجحة العنكبوت",group:"biceps",muscle:"biceps",env:["gym","home"],level:2,risk:[],tip:"انحني للأمام ودعي ذراعيك تتدليان ثم ارفعي بعزل تام.",type:"isolation",pattern:"pull",video:"https://youtu.be/z1uuyKW5PRk?si=kpISZVzYKTk53-jk",en:"Spider Curl"},
 
   /* ترايسبس */
   {id:"ropepush",name:"دفع الترايسبس بالحبل",group:"triceps",muscle:"triceps",env:["gym"],level:1,risk:[],tip:"افتحي الحبل في الأسفل واعصري الترايسبس بالكامل.",type:"isolation",pattern:"push",video:"https://youtu.be/-xa-6cQaZKY?si=aXSbOxD7O5Q3PBBO",en:"Rope Triceps Pushdown"},
@@ -409,44 +409,44 @@ const EX = [
 
   /* أرجل */
   {id:"frontsquat",name:"سكوات أمامي",group:"quads",muscle:"quads",env:["gym"],level:3,risk:["knee","lowerback"],tip:"أبقي مرفقيك مرفوعين والبار على أعلى صدرك.",type:"compound",pattern:"legs",video:"https://youtu.be/uYumuL_G_V0?si=5OBER6xpyjYgFi_6",en:"Barbell Front Squat"},
-  {id:"goodmorning",name:"تمرين صباح الخير",group:"hams",muscle:"hamstrings",env:["gym","home"],level:1,risk:["lowerback"],tip:"ادفعي الورك للخلف بظهر مستقيم لاستهداف الفخذ الخلفي.",type:"compound",pattern:"legs",video:"https://youtu.be/nWyx81AfTos?si=N4DwucbfqqNrmf5Y",en:"Barbell Good Morning"},
-  {id:"jumpsquat",name:"سكوات بقفز",group:"quads",muscle:"quads",env:["bodyweight","home"],level:2,risk:["knee"],tip:"انزلي للسكوات ثم اقفزي بانفجار وأنزلي برفق.",type:"compound",pattern:"legs",video:"https://youtu.be/BRfxI2Es2lE?si=oyDxUmSgFvDKASAR",en:"Jump Squat"},
-  {id:"singleleg",name:"رفعة رومانية بساق واحدة",group:"hams",muscle:"hamstrings",env:["home","bodyweight","gym"],level:1,risk:["lowerback"],tip:"وازني على ساق واحدة ومدي الأخرى خلفك مع ميل الجذع.",type:"compound",pattern:"legs",video:"https://youtu.be/0CodCXxgMk4?si=cyFruPyftJA1fPDF",en:"Single-Leg Romanian Deadlift"},
+  {id:"goodmorning",name:"تمرين صباح الخير",group:"hams",muscle:"hamstrings",env:["gym"],level:1,risk:["lowerback"],tip:"ادفعي الورك للخلف بظهر مستقيم لاستهداف الفخذ الخلفي.",type:"compound",pattern:"legs",video:"https://youtu.be/nWyx81AfTos?si=N4DwucbfqqNrmf5Y",en:"Barbell Good Morning"},
+  {id:"jumpsquat",name:"سكوات بقفز",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:2,risk:["knee"],tip:"انزلي للسكوات ثم اقفزي بانفجار وأنزلي برفق.",type:"compound",pattern:"legs",video:"https://youtu.be/BRfxI2Es2lE?si=oyDxUmSgFvDKASAR",en:"Jump Squat"},
+  {id:"singleleg",name:"رفعة رومانية بساق واحدة",group:"hams",muscle:"hamstrings",env:["gym","home","bodyweight"],level:1,risk:["lowerback"],tip:"وازني على ساق واحدة ومدي الأخرى خلفك مع ميل الجذع.",type:"compound",pattern:"legs",video:"https://youtu.be/0CodCXxgMk4?si=cyFruPyftJA1fPDF",en:"Single-Leg Romanian Deadlift"},
 
   /* مؤخرة */
-  {id:"curtsy",name:"طعنة كيرتسي",group:"glutes",muscle:"glutes",env:["home","bodyweight","gym"],level:1,risk:["knee"],tip:"اخطي بساقك خلف الأخرى قطريا لاستهداف المؤخرة الجانبية.",type:"compound",pattern:"legs",video:"https://youtu.be/2EyH9MN7hYE?si=TO-tzNwZqPUv7dLL",en:"Curtsy Lunge"},
+  {id:"curtsy",name:"طعنة كيرتسي",group:"glutes",muscle:"glutes",env:["gym","home","bodyweight"],level:1,risk:["knee"],tip:"اخطي بساقك خلف الأخرى قطريا لاستهداف المؤخرة الجانبية.",type:"compound",pattern:"legs",video:"https://youtu.be/2EyH9MN7hYE?si=TO-tzNwZqPUv7dLL",en:"Curtsy Lunge"},
   {id:"hipabduct",name:"فتح الورك بالشريط",group:"glutes",muscle:"glutes",env:["home"],level:1,risk:[],tip:"ضعي الشريط فوق ركبتيك وافتحيهما ضد المقاومة.",type:"isolation",pattern:"legs",video:"https://youtu.be/CRpDEFu-a9c?si=FBqYB6pq1uZw_ciI",en:"Banded Hip Abduction"},
-  {id:"donkeykick",name:"رفسة الحمار",group:"glutes",muscle:"glutes",env:["home","bodyweight"],level:1,risk:[],tip:"ادفعي كعبك للأعلى مع ثني الركبة واعصري المؤخرة.",type:"isolation",pattern:"legs",video:"https://youtu.be/EtSJ8rwm5M8?si=sw9kNsJn3E7MdMH7",en:"Donkey Kick"},
+  {id:"donkeykick",name:"رفسة الحمار",group:"glutes",muscle:"glutes",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ادفعي كعبك للأعلى مع ثني الركبة واعصري المؤخرة.",type:"isolation",pattern:"legs",video:"https://youtu.be/EtSJ8rwm5M8?si=sw9kNsJn3E7MdMH7",en:"Donkey Kick"},
   {id:"glutemachine",name:"جهاز المؤخرة",group:"glutes",muscle:"glutes",env:["gym"],level:1,risk:[],tip:"ادفعي المنصة للخلف من كعبك واعصري في النهاية.",type:"isolation",pattern:"legs",video:"https://youtu.be/o5Kt4kZRfLY?si=vSBO39fMlVjhKWup",en:"Standing Glute Kickback Machine"},
 
   /* بطن */
-  {id:"hangingraise",name:"رفع الأرجل معلقا",group:"abs",muscle:"absfront",env:["gym"],level:3,risk:["shoulder","diastasis"],tip:"تعلقي بالبار وارفعي ساقيك دون تأرجح.",type:"isolation",pattern:"core",video:"https://youtu.be/B4HbKc05yOA?si=i4Fdy2zXZZ-D9AVR",en:"Hanging Leg Raise"},
-  {id:"mountain",name:"متسلق الجبل",group:"abs",muscle:"absfront",env:["home","bodyweight","gym"],level:1,risk:["wrist","diastasis"],tip:"بدلي ركبتيك نحو صدرك بسرعة مع ثبات الجذع.",type:"compound",pattern:"core",video:"https://youtu.be/kLh-uczlPLg?si=MrwLfZKHYdHUeZ1t",en:"Mountain Climbers"},
-  {id:"deadbug",name:"تمرين الخنفساء",group:"abs",muscle:"absfront",env:["home","bodyweight"],level:1,risk:[],tip:"مدي ذراعا وساقا معاكسة مع إلصاق أسفل ظهرك بالأرض.",type:"isolation",pattern:"core",video:"https://youtu.be/GbSC02oU3To?si=udaAn9F16HkPXb80",en:"Dead Bug"},
-  {id:"vups",name:"تمرين V-Ups",group:"abs",muscle:"absfront",env:["home","bodyweight"],level:2,risk:["lowerback","diastasis"],tip:"ارفعي جذعك وساقيك معا لتلامس يداك قدميك.",type:"isolation",pattern:"core",video:"https://youtu.be/7UVgs18Y1P4?si=cCKBhLUQpMv2-erc",en:"V-Ups"},
+  {id:"hangingraise",name:"رفع الأرجل معلقا",group:"abs",muscle:"absfront",env:["gym","bodyweight"],level:3,risk:["shoulder","diastasis"],tip:"تعلقي بالبار وارفعي ساقيك دون تأرجح.",type:"isolation",pattern:"core",video:"https://youtu.be/B4HbKc05yOA?si=i4Fdy2zXZZ-D9AVR",en:"Hanging Leg Raise"},
+  {id:"mountain",name:"متسلق الجبل",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:["wrist","diastasis"],tip:"بدلي ركبتيك نحو صدرك بسرعة مع ثبات الجذع.",type:"compound",pattern:"core",video:"https://youtu.be/kLh-uczlPLg?si=MrwLfZKHYdHUeZ1t",en:"Mountain Climbers"},
+  {id:"deadbug",name:"تمرين الخنفساء",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"مدي ذراعا وساقا معاكسة مع إلصاق أسفل ظهرك بالأرض.",type:"isolation",pattern:"core",video:"https://youtu.be/GbSC02oU3To?si=udaAn9F16HkPXb80",en:"Dead Bug"},
+  {id:"vups",name:"تمرين V-Ups",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:2,risk:["lowerback","diastasis"],tip:"ارفعي جذعك وساقيك معا لتلامس يداك قدميك.",type:"isolation",pattern:"core",video:"https://youtu.be/7UVgs18Y1P4?si=cCKBhLUQpMv2-erc",en:"V-Ups"},
   {id:"woodchop",name:"تقطيع الخشب بالكيبل",group:"abs",muscle:"absside",env:["gym"],level:2,risk:["lowerback"],tip:"اسحبي قطريا من أعلى لأسفل مع لف الجذع.",type:"isolation",pattern:"core",video:"https://youtu.be/gcGNypjIQDo?si=A-GOFTZqHuwpy4Lq",en:"Cable Woodchop"},
 
   /* ===== فخذ داخلي (Adductors) ===== */
   {id:"hipadduction",name:"جهاز ضم الأرجل",group:"adductors",muscle:"adductors",env:["gym"],level:1,risk:[],tip:"اضغطي ساقيك للداخل ببطء واعصري الفخذ الداخلي.",type:"isolation",pattern:"legs",video:"https://youtu.be/CjAVezAggkI?si=29feGJd8jGSfMB9f",en:"Hip Adduction Machine"},
-  {id:"sumosquat2",name:"سكوات سومو عميق",group:"adductors",muscle:"adductors",env:["gym","home","bodyweight"],level:1,risk:["knee"],tip:"باعدي قدميك ووجهي أصابعك للخارج وانزلي عميقا.",type:"compound",pattern:"legs",video:"https://youtu.be/Gi6qyetXQNk?si=sEhtUhTDXgT7ipz_",en:"Deep Sumo Squat"},
-  {id:"sidelyingraise",name:"رفع الساق جانبيا (مستلقية)",group:"adductors",muscle:"adductors",env:["home","bodyweight"],level:1,risk:[],tip:"استلقي على جنبك وارفعي الساق السفلية للأعلى ببطء.",type:"isolation",pattern:"legs",video:"https://youtu.be/jgh6sGwtTwk?si=Rm7UV5Jv3rM5yHtv",en:"Side-Lying Leg Raise"},
-  {id:"copenhagen",name:"تمرين كوبنهاجن",group:"adductors",muscle:"adductors",env:["bodyweight","home"],level:3,risk:[],tip:"ارفعي جسمك على مقعد بساق واحدة مع شد الفخذ الداخلي.",type:"isolation",pattern:"legs",video:"https://youtu.be/1NNqUQvMYGc?si=SP6evPP_iKRUvpH4",en:"Copenhagen Plank"},
+  {id:"sumosquat2",name:"سكوات سومو عميق",group:"adductors",muscle:"adductors",env:["gym","home"],level:1,risk:["knee"],tip:"باعدي قدميك ووجهي أصابعك للخارج وانزلي عميقا.",type:"compound",pattern:"legs",video:"https://youtu.be/Gi6qyetXQNk?si=sEhtUhTDXgT7ipz_",en:"Deep Sumo Squat"},
+  {id:"sidelyingraise",name:"رفع الساق جانبيا (مستلقية)",group:"adductors",muscle:"adductors",env:["gym","home","bodyweight"],level:1,risk:[],tip:"استلقي على جنبك وارفعي الساق السفلية للأعلى ببطء.",type:"isolation",pattern:"legs",video:"https://youtu.be/jgh6sGwtTwk?si=Rm7UV5Jv3rM5yHtv",en:"Side-Lying Leg Raise"},
+  {id:"copenhagen",name:"تمرين كوبنهاجن",group:"adductors",muscle:"adductors",env:["gym","home","bodyweight"],level:3,risk:[],tip:"ارفعي جسمك على مقعد بساق واحدة مع شد الفخذ الداخلي.",type:"isolation",pattern:"legs",video:"https://youtu.be/1NNqUQvMYGc?si=SP6evPP_iKRUvpH4",en:"Copenhagen Plank"},
   {id:"plie",name:"سكوات بليه بالدمبل",group:"adductors",muscle:"adductors",env:["gym","home"],level:1,risk:["knee"],tip:"قفي بوضع باليه وانزلي مستقيمة مع عصر الفخذ الداخلي.",type:"compound",pattern:"legs",video:"https://youtu.be/DlnYtOX5zIo?si=PFbYlvUpHffr0K_i",en:"Plié Squat"},
   {id:"cableadduction",name:"ضم الورك بالكيبل",group:"adductors",muscle:"adductors",env:["gym"],level:2,risk:[],tip:"اسحبي ساقك للداخل عبر جسمك ضد المقاومة.",type:"isolation",pattern:"legs",video:"https://youtu.be/EHq78mQYLbI?si=iPevH5r-XTjcIGEe",en:"Cable Hip Adduction"},
   {id:"bandadduction",name:"ضم الأرجل بالشريط",group:"adductors",muscle:"adductors",env:["home"],level:1,risk:[],tip:"ثبتي الشريط جانبا واسحبي ساقك للداخل ببطء.",type:"isolation",pattern:"legs",video:"https://youtu.be/6knza6psCwo?si=NM5c-FfZ6NFn38Td",en:"Banded Hip Adduction"},
 
   /* ===== فخذ خلفي إضافي ===== */
   {id:"gluteham",name:"رفعة الفخذ الخلفي (GHR)",group:"hams",muscle:"hamstrings",env:["gym"],level:3,risk:["knee"],tip:"اخفضي جسمك ببطء مقاومة بالفخذ الخلفي ثم ارجعي.",type:"compound",pattern:"legs",video:"https://youtu.be/7vg1YjVOtUI?si=cAGpPlt-gKsV9V_a",en:"Glute Ham Raise"},
-  {id:"nordic",name:"ثني نوردك للفخذ الخلفي",group:"hams",muscle:"hamstrings",env:["bodyweight","home"],level:3,risk:["knee"],tip:"ثبتي كعبيك وانزلي للأمام ببطء بمقاومة الفخذ الخلفي.",type:"compound",pattern:"legs",video:"https://youtu.be/3-4pKUhkzoQ?si=Y9UXsDCZwmNruCSz",en:"Nordic Hamstring Curl"},
+  {id:"nordic",name:"ثني نوردك للفخذ الخلفي",group:"hams",muscle:"hamstrings",env:["gym","home","bodyweight"],level:3,risk:["knee"],tip:"ثبتي كعبيك وانزلي للأمام ببطء بمقاومة الفخذ الخلفي.",type:"compound",pattern:"legs",video:"https://youtu.be/3-4pKUhkzoQ?si=Y9UXsDCZwmNruCSz",en:"Nordic Hamstring Curl"},
   {id:"stiffdl",name:"رفعة ساق مستقيمة",group:"hams",muscle:"hamstrings",env:["gym","home"],level:1,risk:["lowerback"],tip:"حافظي على ساقيك شبه مستقيمتين وادفعي وركك للخلف.",type:"compound",pattern:"legs",video:"https://youtu.be/CN_7cz3P-1U?si=HWfYqUaRu4LgFCUG",en:"Stiff-Leg Deadlift"},
   {id:"bandlegcurl",name:"ثني الفخذ الخلفي بالشريط",group:"hams",muscle:"hamstrings",env:["home"],level:1,risk:[],tip:"اثني ركبتك ضد مقاومة الشريط واعصري في النهاية.",type:"isolation",pattern:"legs",video:"https://youtu.be/nryFYmxflcU?si=h0UGM5wrIBgeTPyN",en:"Banded Hamstring Curl"},
-  {id:"swissball",name:"ثني الفخذ بكرة سويسرية",group:"hams",muscle:"hamstrings",env:["home"],level:2,risk:[],tip:"اسحبي الكرة نحوك بكعبيك مع رفع وركك.",type:"isolation",pattern:"legs",video:"https://youtu.be/XkESHgkTdFw?si=7E1FG_OrTcfJsXXX",en:"Swiss Ball Hamstring Curl"},
+  {id:"swissball",name:"ثني الفخذ بكرة سويسرية",group:"hams",muscle:"hamstrings",env:["gym","home"],level:2,risk:[],tip:"اسحبي الكرة نحوك بكعبيك مع رفع وركك.",type:"isolation",pattern:"legs",video:"https://youtu.be/XkESHgkTdFw?si=7E1FG_OrTcfJsXXX",en:"Swiss Ball Hamstring Curl"},
 
   /* ===== سمانة إضافي ===== */
   {id:"legpresscalf",name:"سمانة على جهاز الضغط",group:"calves",muscle:"calves",env:["gym"],level:1,risk:[],tip:"ادفعي بأطراف أصابعك على المنصة ومدي السمانة بالكامل.",type:"isolation",pattern:"legs",video:"https://youtu.be/dhRz1Ns60Zg?si=9ZKDId3uSlUqw6U_",en:"Calf Press on Leg Press Machine"},
-  {id:"donkeycalf",name:"رفع السمانة (دونكي)",group:"calves",muscle:"calves",env:["gym"],level:2,risk:[],tip:"انحني للأمام وارفعي كعبيك بأقصى مدى.",type:"isolation",pattern:"legs",video:"https://youtu.be/WbBJmFQsIMA?si=NMRfkhupLgzeNP9q",en:"Donkey Calf Raise"},
-  {id:"singlecalf",name:"سمانة على ساق واحدة",group:"calves",muscle:"calves",env:["home","bodyweight","gym"],level:1,risk:[],tip:"قفي على ساق واحدة وارفعي كعبك ببطء واعصري.",type:"isolation",pattern:"legs",video:"https://youtu.be/qPd73snQfUs?si=3fh9CXyQHgUgBLxC",en:"Single-Leg Calf Raise"},
-  {id:"jumprope",name:"نط الحبل (سمانة)",group:"calves",muscle:"calves",env:["home","bodyweight"],level:1,risk:["knee"],tip:"انطي على أطراف أصابعك بإيقاع ثابت لتنشيط السمانة.",type:"isolation",pattern:"legs",video:"https://youtu.be/u3zgHI8QnqE?si=jDPrObe6QwPAgFje",en:"Jump Rope"},
+  {id:"donkeycalf",name:"رفع السمانة (دونكي)",group:"calves",muscle:"calves",env:["gym","home","bodyweight"],level:2,risk:[],tip:"انحني للأمام وارفعي كعبيك بأقصى مدى.",type:"isolation",pattern:"legs",video:"https://youtu.be/WbBJmFQsIMA?si=NMRfkhupLgzeNP9q",en:"Donkey Calf Raise"},
+  {id:"singlecalf",name:"سمانة على ساق واحدة",group:"calves",muscle:"calves",env:["gym","home","bodyweight"],level:1,risk:[],tip:"قفي على ساق واحدة وارفعي كعبك ببطء واعصري.",type:"isolation",pattern:"legs",video:"https://youtu.be/qPd73snQfUs?si=3fh9CXyQHgUgBLxC",en:"Single-Leg Calf Raise"},
+  {id:"jumprope",name:"نط الحبل (سمانة)",group:"calves",muscle:"calves",env:["gym","home","bodyweight"],level:1,risk:["knee"],tip:"انطي على أطراف أصابعك بإيقاع ثابت لتنشيط السمانة.",type:"isolation",pattern:"legs",video:"https://youtu.be/u3zgHI8QnqE?si=jDPrObe6QwPAgFje",en:"Jump Rope"},
 
 /* ===== 15 تمرينا جديدا - أضيفيها داخل مصفوفة EX قبل القوس الأخير ] ===== */
   {id:"hipthrustdb",name:"دفع الورك بالدمبل (هيب ثرست)",group:"glutes",muscle:"glutes",env:["gym","home"],level:1,risk:[],tip:"ضعي الدمبل على الحوض واعصري المؤخرة في الأعلى دون تقويس الظهر.",type:"compound",pattern:"legs",video:"https://youtu.be/29OfN4ztW_g?si=iT3-Zr8jrQyN6ATl",en:"Dumbbell Hip Thrust"},
@@ -467,7 +467,7 @@ const EX = [
 
   {id:"dbfloorpress",name:"ضغط أرضي بالدمبل",group:"chest",muscle:"chest",env:["gym","home"],level:1,risk:[],tip:"استلقي على الأرض والدمبل قريب من صدرك، وانزلي حتى يلمس مرفقك الأرض ثم ادفعي.",type:"compound",pattern:"push",video:"https://youtu.be/qHCI9rK7HqM",en:"Dumbbell Floor Press"},
   {id:"reverselunge",name:"طعنة خلفية",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:["knee"],tip:"اخطي للخلف وانزلي حتى تصير الركبتان بزاوية قائمة، والوزن على الرجل الأمامية.",type:"compound",pattern:"legs",video:"https://youtu.be/RZKXLMxPF_I",en:"Reverse Lunge"},
-  {id:"inclinepush",name:"ضغط مائل لأعلى (اليدان مرتفعتان)",group:"chest",muscle:"chest",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"يداك على كرسي أو طاولة والجسم بخط مستقيم - كل ما ارتفعت اليدان صار أسهل.",type:"compound",pattern:"push",video:"https://youtu.be/49jfZ_z7-us",en:"Incline Push-Up"},
+  {id:"inclinepush",name:"ضغط على سطح مرتفع",group:"chest",muscle:"chest",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"يداك على كرسي أو طاولة والجسم بخط مستقيم - كل ما ارتفعت اليدان صار أسهل.",type:"compound",pattern:"push",video:"https://youtu.be/0JUrOH--Kdk",en:"Incline Push-Up"},
 
   {id:"kneepush",name:"ضغط على الركبتين",group:"chest",muscle:"chest",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"من وضع الركبتين، حافظي على استقامة الجذع من الركبة للكتف.",type:"compound",pattern:"push",video:"https://youtu.be/zVnlzUV7a2w",en:"Knee Push-Up"},
   {id:"negpush",name:"ضغط سلبي بطيء",group:"chest",muscle:"chest",env:["gym","home","bodyweight"],level:1,risk:["wrist"],tip:"انزلي ببطء في 4 ثوان ثم ارجعي بأي طريقة. أفضل تدرج نحو الضغط الكامل.",type:"compound",pattern:"push",video:"https://youtu.be/dK0FbJvPCug",en:"Negative Push-Up"},
@@ -499,35 +499,35 @@ const EX = [
   {id:"sup_knee_3",name:"انزلاق الظهر على الحائط",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ادفعي وركك لأعلى من وضع الاستلقاء لتقوية الداعمات. 3×12.",type:"isolation",pattern:"legs",video:"https://youtu.be/xhbpQ80JiUQ",en:"",support:"دعم الركبة",supType:"تقوية"},
   {id:"sup_knee_4",name:"إطالة الفخذ الخلفي مستلقية",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:[],tip:"انزلي للنصف فقط مسندة ظهرك بالحائط دون ألم. 3×10.",type:"isolation",pattern:"legs",video:"https://youtu.be/Il1L75v6gq0",en:"",support:"دعم الركبة",supType:"إطالة"},
   {id:"sup_knee_5",name:"رفع السمانة واقفة",group:"quads",muscle:"quads",env:["gym","home","bodyweight"],level:1,risk:[],tip:"استلقي وارفعي ساقك المستقيمة بمساعدة منشفة حول القدم. ثبات 20 ثانية.",type:"isolation",pattern:"legs",video:"https://youtu.be/k8ipHzKeAkQ",en:"",support:"دعم الركبة",supType:"تقوية"},
-  {id:"sup_lowerback_0",name:"إمالة الحوض الخلفية",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"إمالة الحوض الخلفية.",type:"isolation",pattern:"core",video:"https://youtu.be/44s2-4rEjoo",en:"",support:"دعم أسفل الظهر",supType:"تقوية"},
+  {id:"sup_lowerback_0",name:"إمالة الحوض الخلفية",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"استلقي مع ثني الركبتين واضغطي أسفل ظهرك نحو الأرض بشد بطنك. 3×12.",type:"isolation",pattern:"core",video:"https://youtu.be/44s2-4rEjoo",en:"",support:"دعم أسفل الظهر",supType:"تقوية"},
   {id:"sup_lowerback_1",name:"القطة البقرة",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"استلقي واضغطي أسفل ظهرك للأرض بشد بطنك. 3×12.",type:"isolation",pattern:"core",video:"https://youtu.be/LIVJZZyZ2qM",en:"",support:"دعم أسفل الظهر",supType:"مرونة"},
   {id:"sup_lowerback_2",name:"الكلب الطائر",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"قوسي ظهرك لأعلى وأسفل برفق على وضع الزحف. 10 مرات.",type:"isolation",pattern:"core",video:"https://youtu.be/ZdAHe9_HeEw",en:"",support:"دعم أسفل الظهر",supType:"تقوية"},
   {id:"sup_lowerback_3",name:"بلانك على الركبتين",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"مدي ذراعا وساقا معاكسة مع ثبات الجذع. 3×8 لكل جهة.",type:"isolation",pattern:"core",video:"https://youtu.be/iDSHokfXqyA",en:"",support:"دعم أسفل الظهر",supType:"تقوية"},
   {id:"sup_lowerback_4",name:"سحب الركبة للصدر",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ثبات بطن خفيف دون ضغط على أسفل الظهر. 3×20 ثانية.",type:"isolation",pattern:"core",video:"https://youtu.be/Yd9wY25koVk",en:"",support:"دعم أسفل الظهر",supType:"إطالة"},
   {id:"sup_lowerback_5",name:"جسر المؤخرة",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"اسحبي ركبتك نحو صدرك برفق وأنت مستلقية. ثبات 20 ثانية لكل ساق.",type:"isolation",pattern:"core",video:"https://youtu.be/YRqoIM0u0PY",en:"",support:"دعم أسفل الظهر",supType:"تقوية"},
-  {id:"sup_shoulder_0",name:"دوران خارجي بالشريط",group:"shoulders",muscle:"reardelt",env:["gym","home","bodyweight"],level:1,risk:[],tip:"دوران خارجي بالشريط.",type:"isolation",pattern:"pull",video:"https://youtu.be/_UvmPNGtlPM",en:"",support:"دعم الكتف",supType:"تقوية"},
+  {id:"sup_shoulder_0",name:"دوران خارجي بالشريط",group:"shoulders",muscle:"reardelt",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ثبتي مرفقك بجانبك ولفي ساعدك للخارج ضد مقاومة الشريط. 3×12 لكل ذراع.",type:"isolation",pattern:"pull",video:"https://youtu.be/_UvmPNGtlPM",en:"",support:"دعم الكتف",supType:"تقوية"},
   {id:"sup_shoulder_1",name:"دوران داخلي بالشريط",group:"shoulders",muscle:"reardelt",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ثبتي مرفقك بجانبك ولفي ساعدك للخارج ضد شريط خفيف. 3×12.",type:"isolation",pattern:"pull",video:"https://youtu.be/N3P7rp7bCYc",en:"",support:"دعم الكتف",supType:"تقوية"},
   {id:"sup_shoulder_2",name:"رفع الذراع في مستوى اللوح",group:"shoulders",muscle:"reardelt",env:["gym","home","bodyweight"],level:1,risk:[],tip:"نفس الوضع لكن لف الساعد للداخل. 3×12.",type:"isolation",pattern:"pull",video:"https://youtu.be/XOAIGRH90RY",en:"",support:"دعم الكتف",supType:"تقوية"},
   {id:"sup_shoulder_3",name:"ملاك الحائط",group:"shoulders",muscle:"reardelt",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ارفعي ذراعك لمستوى الكتف بوزن خفيف جدا أو بدون. 3×10.",type:"isolation",pattern:"pull",video:"https://youtu.be/1UU4VvklQ44",en:"",support:"دعم الكتف",supType:"مرونة"},
   {id:"sup_shoulder_4",name:"ضم لوحي الكتف",group:"shoulders",muscle:"reardelt",env:["gym","home","bodyweight"],level:1,risk:[],tip:"حركي ذراعيك صعودا ونزولا ملاصقة للحائط. 3×10.",type:"isolation",pattern:"pull",video:"https://youtu.be/QN1oZVMMRjE",en:"",support:"دعم الكتف",supType:"تقوية"},
   {id:"sup_shoulder_5",name:"إطالة الكتف المتقاطعة",group:"shoulders",muscle:"reardelt",env:["gym","home","bodyweight"],level:1,risk:[],tip:"اسحبي لوحي كتفك للخلف وللأسفل واثبتي. 3×12.",type:"isolation",pattern:"pull",video:"https://youtube.com/shorts/aIq0fLi8iak",en:"",support:"دعم الكتف",supType:"إطالة"},
-  {id:"sup_weakcore_0",name:"بلانك على الساعدين",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"بلانك على الساعدين.",type:"isolation",pattern:"core",video:"https://youtu.be/pvIjsG5Svck",en:"",support:"تقوية الكور",supType:"تقوية"},
+  {id:"sup_weakcore_0",name:"بلانك على الساعدين",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ثبات على الساعدين والجسم بخط مستقيم من الرأس للكعب. 3×20 ثانية.",type:"isolation",pattern:"core",video:"https://youtu.be/pvIjsG5Svck",en:"",support:"تقوية الكور",supType:"تقوية"},
   {id:"sup_weakcore_1",name:"الخنفساء",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ابدئي بـ15 ثانية وزيدي تدريجيا. 3 مجموعات.",type:"isolation",pattern:"core",video:"https://youtu.be/GbSC02oU3To",en:"",support:"تقوية الكور",supType:"تقوية"},
   {id:"sup_weakcore_2",name:"إمالة الحوض",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"مدي ذراعا وساقا معاكسة مع إلصاق ظهرك بالأرض. 3×10.",type:"isolation",pattern:"core",video:"https://youtu.be/TWuR_U9ddcc",en:"",support:"تقوية الكور",supType:"تقوية"},
   {id:"sup_weakcore_3",name:"بلانك جانبي على الركبة",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"تنشيط عضلات البطن العميقة. 3×12.",type:"isolation",pattern:"core",video:"https://youtu.be/N_s9em1xTqU",en:"",support:"تقوية الكور",supType:"تقوية"},
   {id:"sup_weakcore_4",name:"الكلب الطائر",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ثبات جانبي خفيف لتقوية الخصر. 3×15 ثانية لكل جهة.",type:"isolation",pattern:"core",video:"https://youtu.be/ZdAHe9_HeEw",en:"",support:"تقوية الكور",supType:"تقوية"},
   {id:"sup_weakcore_5",name:"جسر المؤخرة مع شد البطن",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ثبات وتوازن للجذع. 3×8 لكل جهة.",type:"isolation",pattern:"core",video:"https://youtu.be/J_2ImNPjxtc",en:"",support:"تقوية الكور",supType:"تقوية"},
-  {id:"sup_wrist_0",name:"إطالة قابضات الرسغ",group:"biceps",muscle:"biceps",env:["gym","home","bodyweight"],level:1,risk:[],tip:"إطالة قابضات الرسغ.",type:"isolation",pattern:"pull",video:"https://youtu.be/i-JV2PsFzWA",en:"",support:"دعم الرسغ",supType:"إطالة"},
+  {id:"sup_wrist_0",name:"إطالة قابضات الرسغ",group:"biceps",muscle:"biceps",env:["gym","home","bodyweight"],level:1,risk:[],tip:"مدي ذراعك للأمام واسحبي أصابعك للأسفل برفق. 20 ثانية لكل يد.",type:"isolation",pattern:"pull",video:"https://youtu.be/i-JV2PsFzWA",en:"",support:"دعم الرسغ",supType:"إطالة"},
   {id:"sup_wrist_1",name:"إطالة باسطات الرسغ",group:"biceps",muscle:"biceps",env:["gym","home","bodyweight"],level:1,risk:[],tip:"مدي ذراعك واسحبي أصابعك للأسفل برفق. 20 ثانية لكل يد.",type:"isolation",pattern:"pull",video:"https://youtu.be/80Y3HHMgo6w",en:"",support:"دعم الرسغ",supType:"إطالة"},
   {id:"sup_wrist_2",name:"تدوير الرسغ",group:"biceps",muscle:"biceps",env:["gym","home","bodyweight"],level:1,risk:[],tip:"اسحبي أصابعك للأعلى برفق. 20 ثانية لكل يد.",type:"isolation",pattern:"pull",video:"https://youtu.be/wRSk1_C6yOM",en:"",support:"دعم الرسغ",supType:"مرونة"},
   {id:"sup_wrist_3",name:"عصر كرة اليد",group:"biceps",muscle:"biceps",env:["gym","home","bodyweight"],level:1,risk:[],tip:"لفي رسغك بدوائر بطيئة. 10 لكل اتجاه.",type:"isolation",pattern:"pull",video:"https://youtu.be/8h0tSMxLNG4",en:"",support:"دعم الرسغ",supType:"تقوية"},
   {id:"sup_wrist_4",name:"ثني وبسط الرسغ بوزن خفيف",group:"biceps",muscle:"biceps",env:["gym","home","bodyweight"],level:1,risk:[],tip:"اقبضي يدك ثم افرديها بالكامل. 3×15.",type:"isolation",pattern:"pull",video:"https://youtu.be/UcwgCTkVvIQ",en:"",support:"دعم الرسغ",supType:"تقوية"},
-  {id:"sup_neck_0",name:"إطالة الترابيس العلوية",group:"back",muscle:"upperback",env:["gym","home","bodyweight"],level:1,risk:[],tip:"إطالة الترابيس العلوية.",type:"isolation",pattern:"pull",video:"https://youtu.be/-r0eoFS7_5Q",en:"",support:"دعم الرقبة",supType:"إطالة"},
+  {id:"sup_neck_0",name:"إطالة الترابيس العلوية",group:"back",muscle:"upperback",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ميلي رأسك نحو كتفك مع إبقاء الكتف منخفضا. 15 ثانية لكل جهة.",type:"isolation",pattern:"pull",video:"https://youtu.be/-r0eoFS7_5Q",en:"",support:"دعم الرقبة",supType:"إطالة"},
   {id:"sup_neck_1",name:"تدوير الرقبة البطيء",group:"back",muscle:"upperback",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ميلي رأسك نحو كتفك برفق. 15 ثانية لكل جهة.",type:"isolation",pattern:"pull",video:"https://youtu.be/UbHEH6t_OJQ",en:"",support:"دعم الرقبة",supType:"مرونة"},
   {id:"sup_neck_2",name:"شد الذقن للداخل",group:"back",muscle:"upperback",env:["gym","home","bodyweight"],level:1,risk:[],tip:"لفي رأسك ببطء نحو كل كتف. 10 مرات.",type:"isolation",pattern:"pull",video:"https://youtu.be/7rnlAVhAK-8",en:"",support:"دعم الرقبة",supType:"تقوية"},
-  {id:"sup_neck_3",name:"إطالة الرافعة اللوحية",group:"back",muscle:"upperback",env:["gym","home","bodyweight"],level:1,risk:[],tip:"sup_shoulder_5",type:"isolation",pattern:"pull",video:"https://youtu.be/GSoXPJRnR6E",en:"",support:"دعم الرقبة",supType:"إطالة"},
+  {id:"sup_neck_3",name:"إطالة الرافعة اللوحية",group:"back",muscle:"upperback",env:["gym","home","bodyweight"],level:1,risk:[],tip:"اسحبي ذقنك للخلف لمحاذاة الرقبة. 3×10.",type:"isolation",pattern:"pull",video:"https://youtu.be/GSoXPJRnR6E",en:"",support:"دعم الرقبة",supType:"إطالة"},
   {id:"sup_neck_4",name:"تدوير الكتفين",group:"back",muscle:"upperback",env:["gym","home","bodyweight"],level:1,risk:[],tip:"أنزلي ذقنك نحو صدرك برفق. ثبات 15 ثانية.",type:"isolation",pattern:"pull",video:"https://youtu.be/XbzY45Z5DE8",en:"",support:"دعم الرقبة",supType:"استرخاء"},
-  {id:"sup_diastasis_0",name:"التنفس الحجابي",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"التنفس الحجابي.",type:"isolation",pattern:"core",video:"https://youtu.be/TPGUgXWBY4Y",en:"",support:"الانفصال العضلي",supType:"تنفس"},
+  {id:"sup_diastasis_0",name:"التنفس الحجابي",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"استلقي وضعي يدك على بطنك، شهيق عميق من الأنف وزفير بطيء مع شد البطن. 3×8 أنفاس.",type:"isolation",pattern:"core",video:"https://youtu.be/TPGUgXWBY4Y",en:"",support:"الانفصال العضلي",supType:"تنفس"},
   {id:"sup_diastasis_1",name:"إمالة الحوض الخلفية",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"استلقي وضعي يدك على بطنك. شهيق عميق من الأنف حتى يرتفع بطنك، ثم زفير ببطء مع سحب البطن للداخل. 5 دقائق يوميا.",type:"isolation",pattern:"core",video:"https://youtu.be/-AWtsAzHBp4",en:"",support:"الانفصال العضلي",supType:"تقوية"},
   {id:"sup_diastasis_2",name:"جسر المؤخرة",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"استلقي مع ثني الركبتين. اضغطي أسفل ظهرك للأرض بشد البطن وإمالة الحوض لأعلى ببطء. 3×10.",type:"isolation",pattern:"core",video:"https://youtu.be/YRqoIM0u0PY",en:"",support:"الانفصال العضلي",supType:"تقوية"},
   {id:"sup_diastasis_3",name:"الكلب الطائر",group:"abs",muscle:"absfront",env:["gym","home","bodyweight"],level:1,risk:[],tip:"ارفعي الحوض ببطء مع شد البطن دون تقويس أسفل الظهر. 3×12.",type:"isolation",pattern:"core",video:"https://youtu.be/ZdAHe9_HeEw",en:"",support:"الانفصال العضلي",supType:"تقوية"},
@@ -600,11 +600,11 @@ const SUPPORT = {
     name:"دعم الركبة", ico:"🦵",
     intro:"تمارين لطيفة لتقوية العضلات الداعمة للركبة (الفخذ الأمامي والخلفي) وتحسين ثباتها. أديها بلا ألم، وتوقفي عند أي وجع حاد.",
     items:[
-      ["sup_knee_1","تمديد الفخذ الأمامي جالسة","افردي ركبتك ببطء وأنت جالسة على كرسي واثبتي ثانيتين. 3×12."],
-      ["sup_knee_2","رفع الساق المستقيمة","استلقي وارفعي الساق ممدودة 30 سم دون ثني الركبة. 3×10 لكل ساق."],
-      ["sup_knee_3","جسر المؤخرة","ادفعي وركك لأعلى من وضع الاستلقاء لتقوية الداعمات. 3×12."],
-      ["sup_knee_4","انزلاق على الحائط (نصف سكوات)","انزلي للنصف فقط مسندة ظهرك بالحائط دون ألم. 3×10."],
-      ["sup_knee_5","تمديد الفخذ الخلفي","استلقي وارفعي ساقك المستقيمة بمساعدة منشفة حول القدم. ثبات 20 ثانية."],
+      ["sup_knee_1","رفع الساق المستقيمة","افردي ركبتك ببطء وأنت جالسة على كرسي واثبتي ثانيتين. 3×12."],
+      ["sup_knee_2","جسر المؤخرة","استلقي وارفعي الساق ممدودة 30 سم دون ثني الركبة. 3×10 لكل ساق."],
+      ["sup_knee_3","انزلاق الظهر على الحائط","ادفعي وركك لأعلى من وضع الاستلقاء لتقوية الداعمات. 3×12."],
+      ["sup_knee_4","إطالة الفخذ الخلفي مستلقية","انزلي للنصف فقط مسندة ظهرك بالحائط دون ألم. 3×10."],
+      ["sup_knee_5","رفع السمانة واقفة","استلقي وارفعي ساقك المستقيمة بمساعدة منشفة حول القدم. ثبات 20 ثانية."],
       ["sup_knee_6","تقوية السمانة الخفيفة","ارفعي كعبيك ببطء وأنت ممسكة بحائط للتوازن. 3×15."]
     ]
   },
@@ -612,11 +612,11 @@ const SUPPORT = {
     name:"دعم أسفل الظهر", ico:"🔙",
     intro:"تمارين لتثبيت العمود الفقري وتقوية عضلات الجذع الداعمة لأسفل الظهر، مع إطالات لطيفة لتخفيف الشد.",
     items:[
-      ["sup_lowerback_1","إمالة الحوض","استلقي واضغطي أسفل ظهرك للأرض بشد بطنك. 3×12."],
-      ["sup_lowerback_2","تمرين القطة-البقرة","قوسي ظهرك لأعلى وأسفل برفق على وضع الزحف. 10 مرات."],
-      ["sup_lowerback_3","الكلب-الطائر","مدي ذراعا وساقا معاكسة مع ثبات الجذع. 3×8 لكل جهة."],
-      ["sup_lowerback_4","بلانك معدل على الركبتين","ثبات بطن خفيف دون ضغط على أسفل الظهر. 3×20 ثانية."],
-      ["sup_lowerback_5","ركبة للصدر","اسحبي ركبتك نحو صدرك برفق وأنت مستلقية. ثبات 20 ثانية لكل ساق."],
+      ["sup_lowerback_1","القطة البقرة","استلقي واضغطي أسفل ظهرك للأرض بشد بطنك. 3×12."],
+      ["sup_lowerback_2","الكلب الطائر","قوسي ظهرك لأعلى وأسفل برفق على وضع الزحف. 10 مرات."],
+      ["sup_lowerback_3","بلانك على الركبتين","مدي ذراعا وساقا معاكسة مع ثبات الجذع. 3×8 لكل جهة."],
+      ["sup_lowerback_4","سحب الركبة للصدر","ثبات بطن خفيف دون ضغط على أسفل الظهر. 3×20 ثانية."],
+      ["sup_lowerback_5","جسر المؤخرة","اسحبي ركبتك نحو صدرك برفق وأنت مستلقية. ثبات 20 ثانية لكل ساق."],
       ["sup_lowerback_6","جسر المؤخرة","لتقوية المؤخرة وتخفيف الحمل عن أسفل الظهر. 3×12."]
     ]
   },
@@ -624,11 +624,11 @@ const SUPPORT = {
     name:"دعم الكتف", ico:"💪",
     intro:"تمارين لتنشيط الكفة المدورة وتحسين مدى حركة الكتف وثباته، بأوزان خفيفة جدا أو بدون وزن.",
     items:[
-      ["sup_shoulder_1","دوران خارجي بالشريط","ثبتي مرفقك بجانبك ولفي ساعدك للخارج ضد شريط خفيف. 3×12."],
-      ["sup_shoulder_2","دوران داخلي بالشريط","نفس الوضع لكن لف الساعد للداخل. 3×12."],
-      ["sup_shoulder_3","رفع الذراع أماما خفيف","ارفعي ذراعك لمستوى الكتف بوزن خفيف جدا أو بدون. 3×10."],
-      ["sup_shoulder_4","انزلاق على الحائط","حركي ذراعيك صعودا ونزولا ملاصقة للحائط. 3×10."],
-      ["sup_shoulder_5","شد لوحي الكتف","اسحبي لوحي كتفك للخلف وللأسفل واثبتي. 3×12."],
+      ["sup_shoulder_1","دوران داخلي بالشريط","ثبتي مرفقك بجانبك ولفي ساعدك للخارج ضد شريط خفيف. 3×12."],
+      ["sup_shoulder_2","رفع الذراع في مستوى اللوح","نفس الوضع لكن لف الساعد للداخل. 3×12."],
+      ["sup_shoulder_3","ملاك الحائط","ارفعي ذراعك لمستوى الكتف بوزن خفيف جدا أو بدون. 3×10."],
+      ["sup_shoulder_4","ضم لوحي الكتف","حركي ذراعيك صعودا ونزولا ملاصقة للحائط. 3×10."],
+      ["sup_shoulder_5","إطالة الكتف المتقاطعة","اسحبي لوحي كتفك للخلف وللأسفل واثبتي. 3×12."],
       ["sup_shoulder_6","إطالة الكتف المتقاطعة","اسحبي ذراعك عبر صدرك برفق. ثبات 20 ثانية لكل جهة."]
     ]
   },
@@ -636,11 +636,11 @@ const SUPPORT = {
     name:"تقوية الكور", ico:"🔥",
     intro:"تمارين تدريجية لبناء قوة الجذع والثبات، أساس لكل التمارين الأخرى وحماية للظهر.",
     items:[
-      ["sup_weakcore_1","بلانك متدرج","ابدئي بـ15 ثانية وزيدي تدريجيا. 3 مجموعات."],
-      ["sup_weakcore_2","الخنفساء (Dead Bug)","مدي ذراعا وساقا معاكسة مع إلصاق ظهرك بالأرض. 3×10."],
-      ["sup_weakcore_3","إمالة الحوض","تنشيط عضلات البطن العميقة. 3×12."],
-      ["sup_weakcore_4","بلانك جانبي على الركبة","ثبات جانبي خفيف لتقوية الخصر. 3×15 ثانية لكل جهة."],
-      ["sup_weakcore_5","الكلب-الطائر","ثبات وتوازن للجذع. 3×8 لكل جهة."],
+      ["sup_weakcore_1","الخنفساء","ابدئي بـ15 ثانية وزيدي تدريجيا. 3 مجموعات."],
+      ["sup_weakcore_2","إمالة الحوض","مدي ذراعا وساقا معاكسة مع إلصاق ظهرك بالأرض. 3×10."],
+      ["sup_weakcore_3","بلانك جانبي على الركبة","تنشيط عضلات البطن العميقة. 3×12."],
+      ["sup_weakcore_4","الكلب الطائر","ثبات جانبي خفيف لتقوية الخصر. 3×15 ثانية لكل جهة."],
+      ["sup_weakcore_5","جسر المؤخرة مع شد البطن","ثبات وتوازن للجذع. 3×8 لكل جهة."],
       ["sup_weakcore_6","جسر المؤخرة مع شد البطن","يجمع تقوية المؤخرة والكور معا. 3×12."]
     ]
   },
@@ -648,10 +648,10 @@ const SUPPORT = {
     name:"دعم الرسغ", ico:"✋",
     intro:"إطالات وتقوية لطيفة لمفصل الرسغ والساعد، مفيدة قبل التمارين التي تحمل الرسغ.",
     items:[
-      ["sup_wrist_1","إطالة ثني الرسغ","مدي ذراعك واسحبي أصابعك للأسفل برفق. 20 ثانية لكل يد."],
-      ["sup_wrist_2","إطالة بسط الرسغ","اسحبي أصابعك للأعلى برفق. 20 ثانية لكل يد."],
-      ["sup_wrist_3","دوران الرسغ","لفي رسغك بدوائر بطيئة. 10 لكل اتجاه."],
-      ["sup_wrist_4","قبض وفرد الأصابع","اقبضي يدك ثم افرديها بالكامل. 3×15."],
+      ["sup_wrist_1","إطالة باسطات الرسغ","مدي ذراعك واسحبي أصابعك للأسفل برفق. 20 ثانية لكل يد."],
+      ["sup_wrist_2","تدوير الرسغ","اسحبي أصابعك للأعلى برفق. 20 ثانية لكل يد."],
+      ["sup_wrist_3","عصر كرة اليد","لفي رسغك بدوائر بطيئة. 10 لكل اتجاه."],
+      ["sup_wrist_4","ثني وبسط الرسغ بوزن خفيف","اقبضي يدك ثم افرديها بالكامل. 3×15."],
       ["sup_wrist_5","تقوية الرسغ بوزن خفيف","ارفعي وزنا خفيفا جدا بثني الرسغ لأعلى. 3×12."]
     ]
   },
@@ -659,10 +659,10 @@ const SUPPORT = {
     name:"دعم الرقبة", ico:"🧣",
     intro:"إطالات لطيفة لتخفيف توتر الرقبة وتحسين مرونتها. حركي ببطء شديد دون أي اندفاع.",
     items:[
-      ["sup_neck_1","إمالة جانبية","ميلي رأسك نحو كتفك برفق. 15 ثانية لكل جهة."],
-      ["sup_neck_2","تدوير بطيء","لفي رأسك ببطء نحو كل كتف. 10 مرات."],
-      ["sup_neck_3","شد الذقن للداخل","اسحبي ذقنك للخلف لمحاذاة الرقبة. 3×10."],
-      ["sup_neck_4","إطالة خلفية","أنزلي ذقنك نحو صدرك برفق. ثبات 15 ثانية."],
+      ["sup_neck_1","تدوير الرقبة البطيء","ميلي رأسك نحو كتفك برفق. 15 ثانية لكل جهة."],
+      ["sup_neck_2","شد الذقن للداخل","لفي رأسك ببطء نحو كل كتف. 10 مرات."],
+      ["sup_neck_3","إطالة الرافعة اللوحية","اسحبي ذقنك للخلف لمحاذاة الرقبة. 3×10."],
+      ["sup_neck_4","تدوير الكتفين","أنزلي ذقنك نحو صدرك برفق. ثبات 15 ثانية."],
       ["sup_neck_5","استرخاء الكتفين","ارفعي كتفيك ثم أنزليهما بزفير. 10 مرات."]
     ]
   },
@@ -670,11 +670,11 @@ const SUPPORT = {
     name:"برنامج الانفصال العضلي", ico:"🤰",
     intro:"الانفصال العضلي يحدث عندما تضعف عضلات البطن الأمامية وتبتعد عن بعضها. هذه التمارين تقوي العضلات العميقة للبطن والظهر بأمان، وتتجنب الحركات التي تزيد الضغط على البطن (كالكرنش والمعدة الكاملة). أديها 2-3 مرات أسبوعيا بتحكم وتنفس عميق، وتوقفي عند أي ألم.",
     items:[
-      ["sup_diastasis_1","التنفس العميق بالحجاب الحاجز","استلقي وضعي يدك على بطنك. شهيق عميق من الأنف حتى يرتفع بطنك، ثم زفير ببطء مع سحب البطن للداخل. 5 دقائق يوميا."],
-      ["sup_diastasis_2","إمالة الحوض","استلقي مع ثني الركبتين. اضغطي أسفل ظهرك للأرض بشد البطن وإمالة الحوض لأعلى ببطء. 3×10."],
-      ["sup_diastasis_3","جسر المؤخرة","ارفعي الحوض ببطء مع شد البطن دون تقويس أسفل الظهر. 3×12."],
-      ["sup_diastasis_4","الكلب-الطائر (Bird Dog)","من وضع اليدين والركبتين، مدي ذراعا وساقا معاكسة بشكل مستقيم وثبتي مع شد الجذع. 3×10 لكل جهة."],
-      ["sup_diastasis_5","المحارة (Clamshell)","نامي على جنبك بركبتين مثنيتين 45°، وارفعي الركبة العليا دون تحريك الحوض (بشريط مقاومة إن توفر). 3×12 لكل جهة."],
+      ["sup_diastasis_1","إمالة الحوض الخلفية","استلقي وضعي يدك على بطنك. شهيق عميق من الأنف حتى يرتفع بطنك، ثم زفير ببطء مع سحب البطن للداخل. 5 دقائق يوميا."],
+      ["sup_diastasis_2","جسر المؤخرة","استلقي مع ثني الركبتين. اضغطي أسفل ظهرك للأرض بشد البطن وإمالة الحوض لأعلى ببطء. 3×10."],
+      ["sup_diastasis_3","الكلب الطائر","ارفعي الحوض ببطء مع شد البطن دون تقويس أسفل الظهر. 3×12."],
+      ["sup_diastasis_4","المحارة","من وضع اليدين والركبتين، مدي ذراعا وساقا معاكسة بشكل مستقيم وثبتي مع شد الجذع. 3×10 لكل جهة."],
+      ["sup_diastasis_5","تفعيل العضلة المستعرضة (شد البطن العميق)","نامي على جنبك بركبتين مثنيتين 45°، وارفعي الركبة العليا دون تحريك الحوض (بشريط مقاومة إن توفر). 3×12 لكل جهة."],
       ["sup_diastasis_6","شد البطن العميق (Vacuum)","اسحبي بطنك للداخل نحو العمود الفقري وأنت تتنفسين بشكل طبيعي، واثبتي 10-15 ثانية. 3 مرات."]
     ]
   }
@@ -1380,6 +1380,18 @@ function altFor(ex){
       (videoLinks[e.id] || e.video)
     );
     hit = wide.find(x=>!taken.has(x.id)) || wide[0] || null;
+  }
+  /* الملاذ الأخير: نسمح ببديل موجود في الجدول (في يوم آخر) بدل
+     ترك التمرين بلا بديل - المشتركة تعرفه أصلا فينفعها. */
+  if(!hit){
+    const last = EX.filter(e=>
+      e.id !== ex.id && !e.support && !/^sup_/.test(e.id) &&
+      e.group === ex.group && e.env.includes(S.env) && e.level <= S.level &&
+      !e.risk.some(r=>danger.has(r)) && !pAvoid.has(e.id) &&
+      !(S.no && S.no.has && S.no.has(e.id)) &&
+      (videoLinks[e.id] || e.video)
+    );
+    hit = last.find(x=>!taken.has(x.id)) || last[0] || null;
   }
   _altCache[ex.id] = hit;
   return hit;
@@ -3191,6 +3203,7 @@ function buildPdfHTML(){
   const toc = [];
   toc.push(["تعليمات وملاحظات هامة","اقرأها قبل أول حصة"]);
   if((S.notes||"").trim()) toc.push(["ملاحظات مدربتك","توجيهات خاصة بك"]);
+  toc.push(["أساسيات كل تمرين","اقرأها قبل أول حصة"]);
   toc.push(["جدول التمارين",`${S.plan.length} أيام تدريب`]);
   toc.push(["أول أربعة أسابيع","كيف تبدأ وكيف تزيد الوزن"]);
   if(typeof buildSupportRoutine==="function" && buildSupportRoutine()) toc.push(["الدعم والتأهيل","تمارين حالتك الصحية"]);
@@ -3227,6 +3240,68 @@ function buildPdfHTML(){
   /* صفحة ملف المتابعة: رابط نسخ لقالب جوجل شيت.
      روابط data محجوبة في قارئات الـPDF لأسباب أمنية، فالرابط العادي
      هو الوحيد الذي يعمل عند المشترك. */
+  /* ============================================================
+     صفحة المبادئ - ما يتكرر في كل تمرين ولا داعي لتكراره 162 مرة.
+     المشتركات يسألن "أشد بطني ولا أرخي؟" وهذا سؤال عن قاعدة عامة
+     لا عن تمرين بعينه.
+     ============================================================ */
+  let basicsP = "";
+  {
+    const rule = (num, title, body, warn) => `
+      <div style="page-break-inside:avoid;background:#fff;border:1px solid #e3e7ee;border-radius:11px;padding:15px 19px;direction:rtl;text-align:right;margin-bottom:11px">
+        <table style="width:100%;border-collapse:collapse"><tr>
+          <td style="width:34px;vertical-align:top">
+            <div style="width:27px;height:27px;border-radius:8px;background:${navy};color:#fff;font-family:Cairo;font-weight:900;font-size:12px;line-height:27px;text-align:center">${num}</div>
+          </td>
+          <td style="vertical-align:top;padding-right:4px">
+            <div style="font-family:Cairo;font-weight:800;font-size:15px;color:${navy}">${title}</div>
+            <div style="font-size:13.5px;color:#4a5a78;font-weight:600;line-height:2.05;margin-top:5px">${body}</div>
+            ${warn?`<div style="font-size:12.5px;color:#8a5a13;font-weight:700;margin-top:7px;padding-top:7px;border-top:1px solid #f0f2f6">${warn}</div>`:""}
+          </td>
+        </tr></table>
+      </div>`;
+
+    basicsP = `
+    <div style="page-break-before:always;padding:52px 52px 26px">
+      ${secHead("أساسيات كل تمرين","اقرأها مرة وطبقها في كل حركة",3)}
+
+      <div style="page-break-inside:avoid;background:#eef4ff;border:1px solid #c9dcff;border-radius:12px;padding:15px 20px;max-width:640px;direction:rtl;text-align:right;margin:0 auto 16px;font-size:13.5px;color:#33476b;font-weight:600;line-height:2.05">
+        هذه القواعد تنطبق على <b style="color:${navy}">كل تمرين في جدولك</b> بلا استثناء، فلن تتكرر بجانب كل حركة.
+        ما تجدينه بجانب التمرين هو الخاص به وحده.
+      </div>
+
+      <div style="max-width:640px;margin:0 auto">
+        ${rule(1,"شد الجذع - قبل كل تكرار",
+          "قبل أن تتحركي: اشدي بطنك كأن أحدا سيلكمك، وشدي مؤخرتك قليلا. هذا يثبت عمودك الفقري ويحميه من الحمل. الشد يبقى طوال التكرار، ويرتخي قليلا بين التكرارات لا أثناءها.",
+          "الخطأ الشائع: إرخاء البطن عند التعب في آخر تكرارين - وهنا تحدث أغلب إصابات أسفل الظهر.")}
+
+        ${rule(2,"التنفس",
+          "القاعدة: <b>شهيق في الجزء السهل، زفير في الجزء الصعب</b>. في السكوات: شهيق عند النزول، زفير عند الصعود. في الضغط: شهيق عند النزول، زفير عند الدفع. في تمارين الثبات مثل البلانك: تنفسي بانتظام ولا تحبسي.",
+          "لا تحبسي نفسك في التكرارات الخفيفة. الحبس يرفع الضغط ويسبب دوخة.")}
+
+        ${rule(3,"الرقبة والنظر",
+          "الرقبة امتداد للعمود الفقري: انظري أماما أو لنقطة ثابتة، ولا ترفعي ذقنك للسقف ولا تلصقيه بصدرك. في تمارين البطن، ضعي يدك خلف رأسك للسند لا للسحب.",
+          "")}
+
+        ${rule(4,"المدى الكامل",
+          "أنزلي إلى أقصى مدى مريح وارجعي بالكامل. المدى الكامل يبني عضلا أكثر من نصف المدى بوزن أثقل. إن لم تصلي للمدى الكامل، الوزن ثقيل - خففيه.",
+          "استثناء: عند الألم أو محدودية المفصل، قصري المدى إلى النقطة المريحة وتوقفي عندها.")}
+
+        ${rule(5,"السرعة",
+          "انزلي في <b>2-3 ثوان</b> وادفعي في ثانية أو ثانيتين. النزول البطيء هو ما يبني العضلة، والاندفاع يفقدك نصف الفائدة ويزيد خطر الإصابة.",
+          "لا تستخدمي الزخم: إن كنت تتأرجحين بجسمك لترفعي الوزن، فالوزن ثقيل.")}
+
+        ${rule(6,"الإحساس بالعضلة",
+          "يجب أن تشعري بالعضلة المستهدفة تعمل. إن شعرت بالحمل في مفصل أو في عضلة أخرى، فالوضعية خاطئة أو الوزن ثقيل. جربي وزنا أخف وركزي على العضلة قبل زيادة الوزن.",
+          "")}
+
+        ${rule(7,"متى تتوقفين",
+          "توقفي فورا عند: ألم حاد أو مفاجئ | ألم في المفصل لا في العضلة | دوخة أو ضيق نفس غير معتاد | فقدان التحكم في الوزن. التعب والحرقة في العضلة طبيعيان، أما الألم فلا.",
+          "الألم ليس علامة تقدم. توقفي وراسليني.")}
+      </div>
+    </div>`;
+  }
+
   let trackP = "";
   if(S.plan && S.plan.length){
     let url = (S.sheetTemplateUrl||"").trim();
@@ -3547,7 +3622,7 @@ function buildPdfHTML(){
 
 
   const __pages = gt([pdfMuscleCSS(), cover, tocPage, intro, coachNotes,
-    body, startPage, supportP, postureP, cyclePage, trackP, disc, warmup, stretch, cardio, support, library, edu, rights]
+    basicsP, body, startPage, supportP, postureP, cyclePage, trackP, disc, warmup, stretch, cardio, support, library, edu, rights]
          .filter(Boolean).join("\n"));
   return `<div dir="rtl" style="background:#eef1f7;-webkit-print-color-adjust:exact;print-color-adjust:exact">${__pages}</div>`;
 }

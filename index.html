@@ -2810,24 +2810,36 @@ function buildPdfHTML(){
      الأرقام الخام (21.8/13) لا تعني شيئا لغير المختص، فصارت
      أشرطة مرئية + شرح بلغة مفهومة + مثال محسوب. */
   const volMax = Math.max(...(RV ? RV.map(x=>x.effective) : [1]), 1);
-  const volBars = (RV || []).map(x => {
-    const gr = volumeGrade(x.effective, x.target);
-    const pct = Math.max(6, Math.round(x.effective / volMax * 100));
+  /* ============================================================
+     شريط الحجم للعميلة: نصيب كل عضلة من مجموع الجهد، مرتبا تنازليا.
+     المقياس السابق كان يقارن كل عضلة بهدفها هي، فتقرأ العميلة
+     "متوسط" بجانب المؤخرة وتظن أن المدربة لم تركز عليها - بينما
+     المؤخرة كانت أعلى عضلة في الجدول فعلا. النسبة من الجهد الكلي
+     تطابق ما تراه عينها.
+     تقييم "خفيف/متوسط/عالي" بقي في شاشة المدربة للمراجعة المهنية.
+     ============================================================ */
+  const volTotal = (RV || []).reduce((s, x) => s + x.effective, 0) || 1;
+  const volSorted = (RV || []).slice().sort((a, b) => b.effective - a.effective);
+  const volBars = volSorted.map((x, i) => {
+    const share = x.effective / volTotal * 100;
+    const pct = Math.max(5, Math.round(x.effective / volMax * 100));
     const days = x.freq;
-    return `<div style="page-break-inside:avoid;margin-bottom:11px">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
-        <div style="width:78px;font-family:Cairo;font-weight:800;font-size:13px;color:${navy};flex:none">${grpNames[x.muscle]||x.muscle}</div>
+    /* التدرج اللوني يتبع الترتيب لا التقييم: الأعلى أغمق */
+    const col = i === 0 ? "#1d4fd8" : i < 3 ? "#2563c9" : i < 6 ? "#4d84e0" : "#8fb4ec";
+    return `<div style="page-break-inside:avoid;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:80px;font-family:Cairo;font-weight:800;font-size:13px;color:${navy};flex:none">${grpNames[x.muscle]||x.muscle}</div>
         <div style="flex:1;height:19px;background:#e9edf5;border-radius:10px;overflow:hidden">
-          <div style="width:${pct}%;height:100%;background:linear-gradient(90deg,${gr.color},${gr.color}bb);border-radius:10px"></div>
+          <div style="width:${pct}%;height:100%;background:${col};border-radius:10px"></div>
         </div>
-        <div style="width:96px;text-align:left;flex:none;font-size:11.5px;color:#6a7488;font-weight:700">
-          ${days} ${days===1?"يوم":"أيام"} | ${gr.label}
+        <div style="width:104px;text-align:left;flex:none;font-size:11.5px;color:#6a7488;font-weight:700">
+          ${share.toFixed(0)}% | ${days} ${days===1?"يوم":"أيام"}
         </div>
       </div>
     </div>`;
   }).join("");
 
-  const topMuscle = RV && RV.length ? (grpNames[RV[0].muscle]||RV[0].muscle) : "";
+  const topMuscle = volSorted.length ? (grpNames[volSorted[0].muscle]||volSorted[0].muscle) : "";
 
   const summary = `<div style="page-break-before:always;padding:44px 52px 26px">
     ${secHead(`كيف وزع جهدك في الأسبوع`,`صفحة توضيحية`,9)}
@@ -2845,20 +2857,11 @@ function buildPdfHTML(){
       ${volBars}
     </div>
 
-    <div style="page-break-inside:avoid;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:16px auto 0;max-width:640px">
-      <div style="background:#fff;border:1px solid #e3e7ee;border-radius:11px;padding:9px 16px;font-size:12px;font-weight:700;color:#4a5a78">
-        <span style="display:inline-block;width:11px;height:11px;border-radius:3px;background:#d98a1f;vertical-align:-1px;margin-left:5px"></span>
-        خفيف - شغل تمهيدي
+    <div style="page-break-inside:avoid;background:#eef4ff;border:1px solid #c9dcff;border-radius:12px;padding:13px 20px;max-width:640px;direction:rtl;text-align:right;margin:14px auto 0;font-size:13px;color:#33476b;font-weight:600;line-height:2">
+        <b style="color:${navy}">أولوياتك في هذا الجدول:</b>
+        ${volSorted.slice(0,3).map((x,i)=>`<b style="color:${navy}">${i+1}. ${grpNames[x.muscle]||x.muscle}</b> (${(x.effective/volTotal*100).toFixed(0)}%)`).join(" | ")}
+        <div style="margin-top:6px">هذا الترتيب مقصود ومبني على هدفك، لا صدفة.</div>
       </div>
-      <div style="background:#fff;border:1px solid #e3e7ee;border-radius:11px;padding:9px 16px;font-size:12px;font-weight:700;color:#4a5a78">
-        <span style="display:inline-block;width:11px;height:11px;border-radius:3px;background:#1f9d57;vertical-align:-1px;margin-left:5px"></span>
-        متوسط - النطاق المثالي للنمو
-      </div>
-      <div style="background:#fff;border:1px solid #e3e7ee;border-radius:11px;padding:9px 16px;font-size:12px;font-weight:700;color:#4a5a78">
-        <span style="display:inline-block;width:11px;height:11px;border-radius:3px;background:#2563c9;vertical-align:-1px;margin-left:5px"></span>
-        عالي - عضلة أولوية في جدولك
-      </div>
-    </div>
 
     <div style="page-break-inside:avoid;background:#eef4ff;border:1px solid #c9dcff;border-radius:14px;padding:16px 20px;max-width:640px;direction:rtl;text-align:right;word-wrap:break-word;overflow-wrap:break-word;margin:18px auto 0">
       <b style="font-family:Cairo;color:${navy};font-size:14px">💡 توضيحات مهمة قبل أن تبدأ</b>
@@ -5382,10 +5385,10 @@ const EX_ALIAS = {
   "chin tuck":"sup_neck_3", "شد الذقن":"sup_neck_3", "سحب الذقن":"sup_neck_3",
   "scapular retraction":"sup_shoulder_5", "شد اللوحين":"sup_shoulder_5",
   "ضم اللوحين":"sup_shoulder_5", "شد لوح الكتف":"sup_shoulder_5",
-  "bird dog":"sup_lowerback_3", "الكلب الطائر":"sup_lowerback_3",
+  "bird dog":"birddog", "الكلب الطائر":"birddog",
   "dead bug":"deadbug", "الخنفساء":"deadbug",
   "cat cow":"sup_lowerback_2", "القطة والبقرة":"sup_lowerback_2",
-  "clamshell":"sup_diastasis_5", "المحارة":"sup_diastasis_5",
+  "clamshell":"clamshell", "المحارة":"clamshell",
   "glute bridge":"glutebridge", "plank":"plank", "side plank":"sideplank",
   "face pull":"facepull", "hip thrust":"hipthrustdb", "goblet squat":"gobletsquat",
   "romanian deadlift":"rdl", "rdl":"rdl", "bulgarian split squat":"bulgarian",

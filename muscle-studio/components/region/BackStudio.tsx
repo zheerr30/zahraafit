@@ -1,0 +1,433 @@
+"use client";
+
+import dynamic from "next/dynamic";
+import Link from "next/link";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { DEPTH_NAMES, LAYER_NAMES, REGION_MUSCLES, REGION_MUSCLE_BY_ID, type RegionLayer, type RegionMuscle } from "@/data/region/backShoulders";
+import { COLORS } from "@/lib/region/backModel";
+import { backStore, useBack, type DepthMode, type RegionView } from "@/stores/backStore";
+import { cn } from "@/components/ui/cn";
+import { IconEye, IconEyeOff, IconFocus, IconReset, IconRotate, IconX } from "@/components/ui/icons";
+import type { LoadState } from "./BackViewport";
+import { RegionTestHooks } from "./RegionTestHooks";
+
+const BackViewport = dynamic(() => import("./BackViewport").then((m) => m.BackViewport), { ssr: false });
+
+const NAVY = "#0B2E6B";
+
+const KIND_AR: Record<string, string> = {
+  unit: "عضلة",
+  context: "عضلة (مرجع)",
+  bone: "عظم",
+  tendon: "وتر / رباط / لفافة",
+  nerve: "عصب",
+  attachment: "موضع ارتكاز",
+};
+const SIDE_AR = { l: "الأيسر", r: "الأيمن", m: "" } as const;
+
+function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-label={label}
+      onClick={() => onChange(!checked)}
+      className={cn("relative h-5 w-9 shrink-0 rounded-full transition-colors", checked ? "bg-[#173F8A]" : "bg-[#cfd6e4]")}
+    >
+      <span className={cn("absolute top-0.5 size-4 rounded-full bg-white shadow transition-all", checked ? "start-[18px]" : "start-0.5")} />
+    </button>
+  );
+}
+
+function Section({ title, children, action }: { title: string; children: React.ReactNode; action?: React.ReactNode }) {
+  return (
+    <section className="border-b border-[#e3e8f2] px-4 py-4">
+      <div className="mb-2.5 flex items-center justify-between">
+        <h2 className="text-sm font-semibold text-[#0B2E6B]">{title}</h2>
+        {action}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function MuscleRow({ m }: { m: RegionMuscle }) {
+  const hidden = useBack((s) => !!s.hiddenUnits[m.id]);
+  const selected = useBack((s) => s.selected?.kind === "unit" && s.selected.id === m.id);
+  const showEnglish = useBack((s) => s.showEnglish);
+  return (
+    <li className={cn("flex items-center gap-1 rounded-lg", selected && "bg-[#fdeee7]")}>
+      <button
+        type="button"
+        data-unit-id={m.id}
+        aria-pressed={selected}
+        onClick={() => (selected ? backStore.getState().select(null) : backStore.getState().selectUnit(m.id))}
+        className="flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-1.5 text-start hover:bg-[#f2f5fa]"
+      >
+        <span className="size-2.5 shrink-0 rounded-full" style={{ background: selected ? COLORS.highlight : "#B9545A" }} />
+        <span className="min-w-0">
+          <span className={cn("block truncate text-sm", hidden ? "text-[#9aa5b8] line-through" : "text-[#13213d]")}>{m.ar}</span>
+          {showEnglish && <span className="block truncate text-[11px] text-[#6b7891]" dir="ltr">{m.en}</span>}
+        </span>
+        <span className="ms-auto shrink-0 rounded bg-[#eef2f8] px-1.5 py-0.5 text-[10px] text-[#4b5d80]">{DEPTH_NAMES[m.depth]}</span>
+      </button>
+      <button
+        type="button"
+        onClick={() => backStore.getState().toggleUnit(m.id)}
+        aria-label={hidden ? `إظهار ${m.ar}` : `إخفاء ${m.ar}`}
+        title={hidden ? "إظهار" : "إخفاء"}
+        className="grid size-8 shrink-0 place-items-center rounded-lg text-[#4b5d80] hover:bg-[#eef2f8]"
+      >
+        {hidden ? <IconEyeOff size={16} /> : <IconEye size={16} />}
+      </button>
+    </li>
+  );
+}
+
+function LayersPanel() {
+  const layers = useBack((s) => s.layers);
+  const depthMode = useBack((s) => s.depthMode);
+  const st = backStore.getState();
+  const back = REGION_MUSCLES.filter((m) => m.group === "back");
+  const shoulder = REGION_MUSCLES.filter((m) => m.group === "shoulder");
+  return (
+    <aside
+      aria-label="الطبقات التشريحية"
+      className="scroll-thin flex shrink-0 flex-col overflow-y-auto border-e border-[#e3e8f2] bg-white text-[#13213d] max-lg:max-h-[42dvh] max-lg:border-t lg:w-[340px]"
+    >
+      <Section title="الطبقات">
+        <ul className="space-y-2">
+          {(Object.keys(LAYER_NAMES) as RegionLayer[]).map((l) => (
+            <li key={l} className="flex items-center justify-between gap-3 text-sm">
+              <span className="flex items-center gap-2">
+                {l === "attachments" && (
+                  <span className="flex gap-0.5">
+                    <span className="size-2.5 rounded-full" style={{ background: COLORS.origin }} />
+                    <span className="size-2.5 rounded-full" style={{ background: COLORS.insertion }} />
+                  </span>
+                )}
+                {l === "nerves" && <span className="size-2.5 rounded-full" style={{ background: COLORS.nerve }} />}
+                {LAYER_NAMES[l]}
+              </span>
+              <Toggle checked={layers[l]} onChange={(v) => st.setLayer(l, v)} label={LAYER_NAMES[l]} />
+            </li>
+          ))}
+        </ul>
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          <button type="button" onClick={st.skeletonOnly} className="rounded-lg border border-[#cfd6e4] px-2 py-1.5 text-xs font-medium text-[#0B2E6B] hover:bg-[#f2f5fa]">
+            الهيكل العظمي فقط
+          </button>
+          <button type="button" onClick={st.showNervesAndTendons} className="rounded-lg border border-[#cfd6e4] px-2 py-1.5 text-xs font-medium text-[#0B2E6B] hover:bg-[#f2f5fa]">
+            إظهار الأعصاب والأوتار
+          </button>
+          <button
+            type="button"
+            onClick={st.resetAll}
+            className="col-span-2 flex items-center justify-center gap-1.5 rounded-lg bg-[#0B2E6B] px-2 py-2 text-xs font-medium text-white hover:bg-[#173F8A]"
+          >
+            <IconReset size={14} /> إعادة جميع الطبقات إلى وضعها الأصلي
+          </button>
+        </div>
+      </Section>
+
+      <Section title="العمق">
+        <div role="radiogroup" aria-label="العمق" className="grid grid-cols-3 gap-1 rounded-lg bg-[#eef2f8] p-1">
+          {(
+            [
+              ["all", "كل العضلات"],
+              ["no-superficial", "بدون السطحية"],
+              ["deep", "العميقة فقط"],
+            ] as [DepthMode, string][]
+          ).map(([v, label]) => (
+            <button
+              key={v}
+              type="button"
+              role="radio"
+              aria-checked={depthMode === v}
+              onClick={() => st.setDepthMode(v)}
+              className={cn("rounded-md px-1 py-1.5 text-xs", depthMode === v ? "bg-white font-semibold text-[#0B2E6B] shadow-sm" : "text-[#4b5d80]")}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <p className="mt-2 text-[11px] leading-relaxed text-[#6b7891]">
+          «بدون السطحية» يخفي شبه المنحرفة والظهرية العريضة والدالية لتظهر المعينيتان والرافعة وعضلات الكفة المدورة.
+        </p>
+      </Section>
+
+      <Section title="عضلات الظهر">
+        <ul className="space-y-0.5">{back.map((m) => <MuscleRow key={m.id} m={m} />)}</ul>
+      </Section>
+      <Section title="عضلات الكتف">
+        <ul className="space-y-0.5">{shoulder.map((m) => <MuscleRow key={m.id} m={m} />)}</ul>
+      </Section>
+      <div className="px-4 py-4 text-[11px] leading-relaxed text-[#6b7891]">
+        المجسمات: <a className="underline" href="https://github.com/LluisV/Z-Anatomy" target="_blank" rel="noreferrer">Z-Anatomy</a> (مبنية على
+        BodyParts3D) — رخصة{" "}
+        <a className="underline" href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer">
+          CC BY-SA 4.0
+        </a>
+        . <Link href="/credits" className="underline">المصادر والترخيص</Link>
+      </div>
+    </aside>
+  );
+}
+
+function Chips({ title, list }: { title: string; list: RegionMuscle["synergists"] }) {
+  return (
+    <div>
+      <dt className="mb-1 text-[11px] font-semibold text-[#4b5d80]">{title}</dt>
+      <dd className="flex flex-wrap gap-1">
+        {list.map((r) =>
+          r.id ? (
+            <button
+              key={r.ar}
+              type="button"
+              onClick={() => backStore.getState().selectUnit(r.id!)}
+              className="rounded-full border border-[#cfd6e4] bg-white px-2 py-0.5 text-[11px] text-[#0B2E6B] hover:border-[#E8602C] hover:text-[#c44a1c]"
+            >
+              {r.ar}
+            </button>
+          ) : (
+            <span key={r.ar} className="rounded-full bg-[#eef2f8] px-2 py-0.5 text-[11px] text-[#4b5d80]">
+              {r.ar}
+            </span>
+          ),
+        )}
+      </dd>
+    </div>
+  );
+}
+
+function InfoCard() {
+  const selected = useBack((s) => s.selected);
+  const isolate = useBack((s) => s.isolate);
+  const showEnglish = useBack((s) => s.showEnglish);
+  if (!selected) return null;
+  const st = backStore.getState();
+  const unit: RegionMuscle | undefined = selected.kind === "unit" ? REGION_MUSCLE_BY_ID.get(selected.id) : undefined;
+  return (
+    <div
+      role="dialog"
+      aria-label={`بطاقة ${selected.ar}`}
+      className="scroll-thin pointer-events-auto absolute end-3 top-3 z-20 max-h-[calc(100%-1.5rem)] w-[min(380px,calc(100%-1.5rem))] overflow-y-auto rounded-2xl bg-white/97 text-[#13213d] shadow-2xl ring-1 ring-black/5"
+    >
+      <div className="sticky top-0 flex items-start gap-2 border-b border-[#eef2f8] bg-white px-4 py-3">
+        <span className="mt-1.5 size-3 shrink-0 rounded-full" style={{ background: COLORS.highlight }} />
+        <div className="min-w-0 flex-1">
+          <h3 className="text-base font-semibold leading-snug text-[#0B2E6B]">{selected.ar}</h3>
+          {showEnglish && (
+            <p className="text-xs text-[#6b7891]" dir="ltr">
+              {selected.en}
+              {unit && <span className="italic"> · {unit.latin}</span>}
+            </p>
+          )}
+          <p className="mt-0.5 text-[11px] text-[#6b7891]">
+            {KIND_AR[selected.kind]}
+            {unit && ` · ${unit.group === "back" ? "الظهر" : "الكتف"} · طبقة ${DEPTH_NAMES[unit.depth]}`}
+            {!unit && selected.side !== "m" && ` · الجانب ${SIDE_AR[selected.side]}`}
+          </p>
+        </div>
+        <button type="button" aria-label="إغلاق البطاقة" onClick={() => st.select(null)} className="grid size-7 place-items-center rounded-lg text-[#6b7891] hover:bg-[#f2f5fa]">
+          <IconX size={16} />
+        </button>
+      </div>
+      <div className="flex flex-wrap gap-1.5 px-4 pt-3">
+        <button type="button" onClick={() => (unit ? st.focus(unit.id, selected.side) : backStore.setState({ cameraCommand: { type: "focus-structure", key: selected.id, nonce: Date.now() } }))} className="flex items-center gap-1 rounded-lg bg-[#0B2E6B] px-2.5 py-1.5 text-xs text-white hover:bg-[#173F8A]">
+          <IconFocus size={14} /> تركيز الكاميرا
+        </button>
+        <button type="button" aria-pressed={isolate} onClick={() => st.setIsolate(!isolate)} className={cn("rounded-lg border px-2.5 py-1.5 text-xs", isolate ? "border-[#E8602C] bg-[#fdeee7] text-[#c44a1c]" : "border-[#cfd6e4] text-[#0B2E6B] hover:bg-[#f2f5fa]")}>
+          {isolate ? "إلغاء العزل" : "عزل"}
+        </button>
+        {unit && (
+          <>
+            <button type="button" onClick={() => st.showAttachmentsOf(unit.id)} className="rounded-lg border border-[#cfd6e4] px-2.5 py-1.5 text-xs text-[#0B2E6B] hover:bg-[#f2f5fa]">
+              المنشأ والمرتكز على العظم
+            </button>
+            <button type="button" onClick={() => { st.toggleUnit(unit.id); st.select(null); }} className="rounded-lg border border-[#cfd6e4] px-2.5 py-1.5 text-xs text-[#0B2E6B] hover:bg-[#f2f5fa]">
+              إخفاء العضلة
+            </button>
+          </>
+        )}
+      </div>
+      {unit ? (
+        <dl className="space-y-3 px-4 py-3 text-sm leading-relaxed">
+          <div>
+            <dt className="flex items-center gap-1.5 text-[11px] font-semibold text-[#4b5d80]">
+              <span className="size-2 rounded-full" style={{ background: COLORS.origin }} /> المنشأ
+            </dt>
+            <dd>{unit.origin}</dd>
+          </div>
+          <div>
+            <dt className="flex items-center gap-1.5 text-[11px] font-semibold text-[#4b5d80]">
+              <span className="size-2 rounded-full" style={{ background: COLORS.insertion }} /> المرتكز
+            </dt>
+            <dd>{unit.insertion}</dd>
+          </div>
+          <div>
+            <dt className="text-[11px] font-semibold text-[#4b5d80]">الوظيفة</dt>
+            <dd>{unit.action}</dd>
+          </div>
+          <div>
+            <dt className="text-[11px] font-semibold text-[#4b5d80]">التعصيب</dt>
+            <dd>{unit.innervation}</dd>
+          </div>
+          <Chips title="العضلات المساعدة" list={unit.synergists} />
+          <Chips title="العضلات المضادة" list={unit.antagonists} />
+          {unit.note && <p className="rounded-lg bg-[#f5f7fb] p-2 text-xs text-[#4b5d80]">{unit.note}</p>}
+        </dl>
+      ) : (
+        <p className="px-4 py-3 text-sm leading-relaxed text-[#4b5d80]">
+          بنية مرجعية في المنطقة. البطاقات التفصيلية (المنشأ والمرتكز والوظيفة والتعصيب) متاحة للعضلات الست عشرة في قائمة الظهر والكتف.
+        </p>
+      )}
+    </div>
+  );
+}
+
+function HoverLabel() {
+  const hovered = useBack((s) => s.hovered);
+  const showEnglish = useBack((s) => s.showEnglish);
+  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
+  useEffect(() => {
+    const onMove = (e: PointerEvent) => setPos({ x: e.clientX, y: e.clientY });
+    window.addEventListener("pointermove", onMove);
+    return () => window.removeEventListener("pointermove", onMove);
+  }, []);
+  if (!hovered || !pos) return null;
+  return (
+    <div
+      role="tooltip"
+      className="pointer-events-none fixed z-40 max-w-xs -translate-x-1/2 rounded-lg bg-[#0B2E6B]/95 px-2.5 py-1.5 text-xs text-white shadow-lg"
+      style={{ left: pos.x, top: pos.y + 18 }}
+    >
+      <div className="font-medium">
+        {hovered.ar}
+        {hovered.kind !== "unit" && hovered.side !== "m" && <span className="text-white/70"> — {SIDE_AR[hovered.side]}</span>}
+      </div>
+      {showEnglish && <div className="text-[11px] text-white/70" dir="ltr">{hovered.en}</div>}
+    </div>
+  );
+}
+
+function ViewBar() {
+  const autoRotate = useBack((s) => s.autoRotate);
+  const bg = useBack((s) => s.background);
+  const showEnglish = useBack((s) => s.showEnglish);
+  const st = backStore.getState();
+  const views: [RegionView, string, string][] = [
+    ["back", "خلفي", "1"],
+    ["left", "جانبي أيسر", "2"],
+    ["right", "جانبي أيمن", "3"],
+    ["front", "أمامي", "4"],
+  ];
+  const btn = "rounded-lg px-2.5 py-1.5 text-xs transition-colors";
+  return (
+    <div className="pointer-events-auto absolute inset-x-3 bottom-3 z-10 flex flex-wrap items-center justify-center gap-1.5">
+      <div role="group" aria-label="المنظور" className="flex gap-0.5 rounded-xl bg-white/95 p-1 shadow-lg">
+        {views.map(([v, label, key]) => (
+          <button key={v} type="button" title={`${label} (${key})`} onClick={() => st.view(v)} className={cn(btn, "text-[#0B2E6B] hover:bg-[#eef2f8]")}>
+            {label}
+          </button>
+        ))}
+        <button
+          type="button"
+          aria-pressed={autoRotate}
+          onClick={() => st.setAutoRotate(!autoRotate)}
+          className={cn(btn, "flex items-center gap-1", autoRotate ? "bg-[#0B2E6B] text-white" : "text-[#0B2E6B] hover:bg-[#eef2f8]")}
+        >
+          <IconRotate size={14} /> 360°
+        </button>
+      </div>
+      <div className="flex gap-0.5 rounded-xl bg-white/95 p-1 shadow-lg">
+        <button type="button" aria-pressed={bg === "navy"} onClick={() => st.setBackground(bg === "black" ? "navy" : "black")} className={cn(btn, "text-[#0B2E6B] hover:bg-[#eef2f8]")}>
+          خلفية {bg === "black" ? "كحلية" : "سوداء"}
+        </button>
+        <button type="button" aria-pressed={showEnglish} onClick={() => st.setShowEnglish(!showEnglish)} className={cn(btn, showEnglish ? "bg-[#0B2E6B] text-white" : "text-[#0B2E6B] hover:bg-[#eef2f8]")}>
+          English
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export function BackStudio() {
+  const [load, setLoad] = useState<LoadState>({ status: "loading", progress: 0 });
+  const onState = useCallback((s: LoadState) => setLoad(s), []);
+  const isolate = useBack((s) => s.isolate);
+  const selected = useBack((s) => s.selected);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.ctrlKey || e.metaKey || e.altKey) return;
+      const st = backStore.getState();
+      const map: Record<string, RegionView> = { "1": "back", "2": "left", "3": "right", "4": "front" };
+      if (map[e.key]) st.view(map[e.key]);
+      else if (e.key === "Escape") st.select(null);
+      else if (e.key.toLowerCase() === "i" && st.selected) st.setIsolate(!st.isolate);
+      else if (e.key.toLowerCase() === "f" && st.selected?.kind === "unit") st.focus(st.selected.id, st.selected.side);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const unitCount = useMemo(() => REGION_MUSCLES.length, []);
+
+  return (
+    <div className="flex h-dvh flex-col bg-white">
+      <header className="flex h-14 shrink-0 items-center gap-4 px-4 text-white" style={{ background: NAVY }}>
+        <Link href="/" className="text-sm font-bold tracking-wide">
+          MUSCLE STUDIO <span className="text-[#E8602C]">3D</span>
+        </Link>
+        <span className="hidden h-5 w-px bg-white/25 sm:block" />
+        <h1 className="truncate text-sm font-medium">المرحلة الأولى — الظهر والكتفان</h1>
+        <span className="ms-auto hidden text-xs text-white/70 md:block">
+          {unitCount} عضلة مفصولة لكل جانب · عظام · أوتار · أعصاب
+        </span>
+      </header>
+      <div className="flex min-h-0 flex-1 max-lg:flex-col-reverse">
+        <LayersPanel />
+        <main className="relative min-h-0 flex-1 bg-black max-lg:min-h-[58dvh]" data-viewport-wrap="">
+          <BackViewport onState={onState} />
+          {load.status === "loading" && (
+            <div className="absolute inset-0 grid place-items-center">
+              <div className="w-64 text-center text-sm text-white/80">
+                <p className="mb-2">تحميل النموذج التشريحي…</p>
+                <div className="h-1.5 overflow-hidden rounded-full bg-white/15">
+                  <div className="h-full bg-[#E8602C] transition-all" style={{ width: `${Math.round(load.progress * 100)}%` }} />
+                </div>
+              </div>
+            </div>
+          )}
+          {load.status === "error" && (
+            <div role="alert" className="absolute inset-0 grid place-items-center p-6">
+              <div className="max-w-md rounded-2xl bg-white p-5 text-center text-sm text-[#13213d]">
+                <p className="mb-1 font-semibold text-[#c44a1c]">تعذّر تحميل النموذج التشريحي</p>
+                <p dir="auto" className="text-[#4b5d80]">{load.message}</p>
+                <p className="mt-2 text-xs text-[#6b7891]">لا يُعرض أي مجسّم بديل.</p>
+              </div>
+            </div>
+          )}
+          {load.status === "ready" && (
+            <>
+              <InfoCard />
+              <ViewBar />
+              {isolate && selected && (
+                <div className="absolute start-3 top-3 z-10 rounded-lg bg-[#E8602C] px-2.5 py-1 text-xs font-medium text-white shadow">
+                  عرض معزول: {selected.ar}
+                </div>
+              )}
+              <p className="pointer-events-none absolute bottom-16 start-3 z-0 hidden text-[11px] text-white/45 md:block">
+                السحب: تدوير · العجلة: تكبير نحو المؤشر · الزر الأيمن: تحريك · 1–4: المناظر · I: عزل · F: تركيز
+              </p>
+            </>
+          )}
+          <RegionTestHooks />
+        </main>
+      </div>
+      <HoverLabel />
+    </div>
+  );
+}

@@ -75,6 +75,7 @@ export function createMuscleMaterial(hex: string, look: MuscleLook, hover: boole
     uLight: { value: light },
   };
 
+  mat.userData.msUniforms = uniforms;
   mat.onBeforeCompile = (shader) => {
     Object.assign(shader.uniforms, uniforms);
     shader.vertexShader = shader.vertexShader
@@ -206,4 +207,28 @@ export function createMuscleMaterial(hex: string, look: MuscleLook, hover: boole
   mat.customProgramCacheKey = () => `muscle3:${look.tendon}:${look.bump}:${look.stripe}:${look.ao}`;
   mat.name = `muscle:${hex}`;
   return mat;
+}
+
+/**
+ * Re-colour / re-style a material made by createMuscleMaterial in place
+ * (no shader recompile): used when a single mesh owns its material, e.g. to
+ * highlight, hover or fade one muscle of the region viewer.
+ */
+export function setMuscleLook(mat: MeshPhysicalMaterial, hex: string, look: MuscleLook, hover: boolean): void {
+  const u = mat.userData.msUniforms as Record<string, { value: unknown }> | undefined;
+  if (!u) return;
+  const color = new Color(hex);
+  const { groove, light } = fibreColors(hex);
+  mat.color.copy(color);
+  mat.roughness = look.roughness;
+  mat.clearcoat = look.clearcoat;
+  mat.sheen = look.sheen;
+  mat.sheenColor.copy(light).lerp(new Color(1, 1, 1), 0.35);
+  mat.emissive.copy(hover ? color.clone().multiplyScalar(0.25) : new Color(0, 0, 0));
+  u.uTendon.value = look.tendon;
+  u.uBump.value = look.bump;
+  u.uStripe.value = look.stripe;
+  u.uAo.value = look.ao;
+  (u.uGroove.value as Color).copy(groove);
+  (u.uLight.value as Color).copy(light);
 }

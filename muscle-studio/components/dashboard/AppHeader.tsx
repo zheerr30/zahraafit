@@ -7,6 +7,7 @@ import { cn } from "@/components/ui/cn";
 
 const NAV = [
   { href: "/", label: "الرئيسية" },
+  { href: "/back", label: "الظهر والكتفان" },
   { href: "/projects", label: "الرسوم المحفوظة" },
   { href: "/library", label: "مكتبة العضلات" },
   { href: "/setup", label: "الإعدادات" },

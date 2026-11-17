@@ -35,7 +35,20 @@ export const OPEN_ANATOMY_ATTRIBUTION: AssetAttribution = {
 /** Upstream commit the bundled files were copied from (see data/models/open-anatomy-3d/SOURCE_COMMIT). */
 export const OPEN_ANATOMY_COMMIT = "c050aa7b1bc56ceed668199b01ea017341928d7b";
 
+/** Phase 1 region model (back & shoulders): Z-Anatomy, share-alike. */
+export const ZANATOMY_CREDIT =
+  "Z-Anatomy models (Gauthier Kervyn / Z-Anatomy, CC BY-SA 4.0), based on BodyParts3D © DBCLS. " +
+  "Region extract, subdivision and appearance data by MUSCLE STUDIO 3D, CC BY-SA 4.0.";
+
 export const SOURCES = [
+  {
+    name: "Z-Anatomy",
+    owner: "Gauthier Kervyn / Z-Anatomy (تطبيق Lluís Vinent Juanico) — مبني على BodyParts3D",
+    license: "CC BY-SA 4.0",
+    url: "https://github.com/LluisV/Z-Anatomy",
+    usage:
+      "نموذج المرحلة الأولى (الظهر والكتفان): العضلات المفصولة والعظام ومواضع المنشأ والمرتكز والأربطة والأعصاب. الملف المشتق public/models/back-shoulders/back-shoulders.glb مرخّص بالرخصة نفسها CC BY-SA 4.0 (شرط المشاركة بالمثل يسري على ملف النموذج وتعديلاته).",
+  },
   {
     name: "BodyParts3D 4.0",
     owner: "© The Database Center for Life Science (DBCLS)",

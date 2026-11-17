@@ -1,0 +1,6386 @@
+{
+ "muscles": [
+  {
+   "name": "Acromial part of deltoid muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Axillary nerve",
+    "Deltoid muscle",
+    "Left upper limb",
+    "Muscles",
+    "Muscles of upper limb",
+    "Superficial muscles"
+   ],
+   "verts": 1482,
+   "faces": 2964,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Abductor",
+    "Tendon"
+   ],
+   "parent": "Deltoid muscle.g"
+  },
+  {
+   "name": "Acromial part of deltoid muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Axillary nerve",
+    "Deltoid muscle",
+    "Muscles",
+    "Muscles of upper limb",
+    "Right upper limb",
+    "Superficial muscles"
+   ],
+   "verts": 1482,
+   "faces": 2964,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Abductor",
+    "Tendon"
+   ],
+   "parent": "Deltoid muscle.g"
+  },
+  {
+   "name": "Ascending part of trapezius muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Accessory nerve (XI)",
+    "Back",
+    "Hypaxial muscles of back",
+    "Muscles",
+    "Neck",
+    "Superficial muscles",
+    "Trapezius muscle",
+    "Trunk"
+   ],
+   "verts": 2298,
+   "faces": 4596,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Abductor",
+    "Tendon"
+   ],
+   "parent": "Trapezius muscle.g"
+  },
+  {
+   "name": "Ascending part of trapezius muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Accessory nerve (XI)",
+    "Back",
+    "Hypaxial muscles of back",
+    "Muscles",
+    "Neck",
+    "Superficial muscles",
+    "Trapezius muscle",
+    "Trunk"
+   ],
+   "verts": 2298,
+   "faces": 4596,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Abductor",
+    "Tendon"
+   ],
+   "parent": "Trapezius muscle.g"
+  },
+  {
+   "name": "Clavicular part of deltoid muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Axillary nerve",
+    "Deltoid muscle",
+    "Left upper limb",
+    "Muscles",
+    "Muscles of upper limb",
+    "Superficial muscles"
+   ],
+   "verts": 1453,
+   "faces": 2902,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Abductor",
+    "Tendon"
+   ],
+   "parent": "Deltoid muscle.g"
+  },
+  {
+   "name": "Clavicular part of deltoid muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Axillary nerve",
+    "Deltoid muscle",
+    "Muscles",
+    "Muscles of upper limb",
+    "Right upper limb",
+    "Superficial muscles"
+   ],
+   "verts": 1453,
+   "faces": 2902,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Abductor",
+    "Tendon"
+   ],
+   "parent": "Deltoid muscle.g"
+  },
+  {
+   "name": "Deltoid fascia.l",
+   "collections": [
+    "4: Muscular system",
+    "Fascia",
+    "Left upper limb",
+    "Superficial muscles"
+   ],
+   "verts": 1848,
+   "faces": 1821,
+   "quads": 1617,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Fascia"
+   ],
+   "parent": "Fasciae of upper limb.g"
+  },
+  {
+   "name": "Deltoid fascia.r",
+   "collections": [
+    "4: Muscular system",
+    "Fascia",
+    "Right upper limb",
+    "Superficial muscles"
+   ],
+   "verts": 1848,
+   "faces": 1821,
+   "quads": 1617,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Fascia"
+   ],
+   "parent": "Fasciae of upper limb.g"
+  },
+  {
+   "name": "Deltoid muscle.j",
+   "collections": [
+    "4: Muscular system",
+    "Muscles of upper limb",
+    "Right upper limb"
+   ],
+   "verts": 2,
+   "faces": 0,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [],
+   "parent": "Deltoid muscle.g"
+  },
+  {
+   "name": "Deltoid region.l",
+   "collections": [
+    "9: Regions of human body",
+    "Left upper limb",
+    "Regions of upper limb"
+   ],
+   "verts": 157,
+   "faces": 142,
+   "quads": 116,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.003000000026077032
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Skin-3",
+    "Skin-4",
+    "Skin-5",
+    "Skin-7",
+    "Skin-in"
+   ],
+   "parent": "Regions of upper limb.g"
+  },
+  {
+   "name": "Deltoid region.r",
+   "collections": [
+    "9: Regions of human body",
+    "Regions of upper limb",
+    "Right upper limb"
+   ],
+   "verts": 157,
+   "faces": 142,
+   "quads": 116,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.003000000026077032
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Skin-3",
+    "Skin-4",
+    "Skin-5",
+    "Skin-7",
+    "Skin-in"
+   ],
+   "parent": "Regions of upper limb.g"
+  },
+  {
+   "name": "Deltoid tubercle.i",
+   "collections": [
+    "1: Skeletal system",
+    "Bonus collection"
+   ],
+   "verts": 2,
+   "faces": 0,
+   "quads": 0,
+   "mods": [
+    [
+     "HOOK",
+     null,
+     null,
+     null
+    ]
+   ],
+   "props": {
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [],
+   "parent": "Deltoid tubercle.s"
+  },
+  {
+   "name": "Deltoid tubercle.j",
+   "collections": [
+    "1: Skeletal system",
+    "Bonus collection"
+   ],
+   "verts": 2,
+   "faces": 0,
+   "quads": 0,
+   "mods": [
+    [
+     "HOOK",
+     null,
+     null,
+     null
+    ]
+   ],
+   "props": {
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [],
+   "parent": "Deltoid tubercle.t"
+  },
+  {
+   "name": "Deltoid tuberosity.i",
+   "collections": [
+    "1: Skeletal system",
+    "Bonus collection"
+   ],
+   "verts": 2,
+   "faces": 0,
+   "quads": 0,
+   "mods": [
+    [
+     "HOOK",
+     null,
+     null,
+     null
+    ]
+   ],
+   "props": {
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [],
+   "parent": "Deltoid tuberosity.s"
+  },
+  {
+   "name": "Deltoid tuberosity.j",
+   "collections": [
+    "1: Skeletal system",
+    "Bonus collection"
+   ],
+   "verts": 2,
+   "faces": 0,
+   "quads": 0,
+   "mods": [
+    [
+     "HOOK",
+     null,
+     null,
+     null
+    ]
+   ],
+   "props": {
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [],
+   "parent": "Deltoid tuberosity.t"
+  },
+  {
+   "name": "Descending part of trapezius muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Accessory nerve (XI)",
+    "Back",
+    "Hypaxial muscles of back",
+    "Muscles",
+    "Superficial muscles",
+    "Trapezius muscle",
+    "Trunk"
+   ],
+   "verts": 3376,
+   "faces": 6760,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "External rotation",
+    "Tendon"
+   ],
+   "parent": "Trapezius muscle.g"
+  },
+  {
+   "name": "Descending part of trapezius muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Accessory nerve (XI)",
+    "Back",
+    "Hypaxial muscles of back",
+    "Muscles",
+    "Superficial muscles",
+    "Trapezius muscle",
+    "Trunk"
+   ],
+   "verts": 3376,
+   "faces": 6760,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "External rotation",
+    "Tendon"
+   ],
+   "parent": "Trapezius muscle.g"
+  },
+  {
+   "name": "Erector spinae.j",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Trunk"
+   ],
+   "verts": 2,
+   "faces": 0,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [],
+   "parent": "Erector spinae.g"
+  },
+  {
+   "name": "Iliocostalis colli muscle",
+   "collections": [
+    "4: Muscular system",
+    "Erector spinae",
+    "Muscles",
+    "Neck",
+    "Trunk"
+   ],
+   "verts": 1027,
+   "faces": 2050,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "External rotation",
+    "Tendon"
+   ],
+   "parent": "Iliocostalis muscles.g"
+  },
+  {
+   "name": "Iliocostalis colli muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Erector spinae",
+    "Muscles",
+    "Neck",
+    "Trunk"
+   ],
+   "verts": 1027,
+   "faces": 2050,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "External rotation",
+    "Tendon"
+   ],
+   "parent": "Iliocostalis muscles.g"
+  },
+  {
+   "name": "Iliocostalis lumborum muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Erector spinae",
+    "Muscles",
+    "Trunk"
+   ],
+   "verts": 5019,
+   "faces": 10038,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "External rotation",
+    "Tendon"
+   ],
+   "parent": "Iliocostalis muscles.g"
+  },
+  {
+   "name": "Iliocostalis lumborum muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Erector spinae",
+    "Muscles",
+    "Trunk"
+   ],
+   "verts": 5019,
+   "faces": 10038,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "External rotation",
+    "Tendon"
+   ],
+   "parent": "Iliocostalis muscles.g"
+  },
+  {
+   "name": "Iliocostalis muscles.j",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Trunk"
+   ],
+   "verts": 2,
+   "faces": 0,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [],
+   "parent": "Iliocostalis muscles.g"
+  },
+  {
+   "name": "Iliocostalis thoracis muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Erector spinae",
+    "Muscles",
+    "Trunk"
+   ],
+   "verts": 2888,
+   "faces": 5772,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Extension",
+    "Tendon"
+   ],
+   "parent": "Iliocostalis muscles.g"
+  },
+  {
+   "name": "Iliocostalis thoracis muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Erector spinae",
+    "Muscles",
+    "Trunk"
+   ],
+   "verts": 2888,
+   "faces": 5772,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Extension",
+    "Tendon"
+   ],
+   "parent": "Iliocostalis muscles.g"
+  },
+  {
+   "name": "Infraspinatus muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Left upper limb",
+    "Muscles",
+    "Muscles of upper limb",
+    "Rotator cuff muscles",
+    "Suprascapular nerve",
+    "Trunk"
+   ],
+   "verts": 1585,
+   "faces": 3166,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "External rotation",
+    "Tendon"
+   ],
+   "parent": "Rotator cuff muscles.g"
+  },
+  {
+   "name": "Infraspinatus muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Muscles",
+    "Muscles of upper limb",
+    "Right upper limb",
+    "Rotator cuff muscles",
+    "Suprascapular nerve",
+    "Trunk"
+   ],
+   "verts": 1585,
+   "faces": 3166,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "External rotation",
+    "Tendon"
+   ],
+   "parent": "Rotator cuff muscles.g"
+  },
+  {
+   "name": "Latissimus dorsi muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Hypaxial muscles of back",
+    "Muscles",
+    "Superficial muscles",
+    "Trunk"
+   ],
+   "verts": 10796,
+   "faces": 21580,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Adductor",
+    "Tendon"
+   ],
+   "parent": "Hypaxial muscles of back.g"
+  },
+  {
+   "name": "Latissimus dorsi muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Hypaxial muscles of back",
+    "Muscles",
+    "Superficial muscles",
+    "Trunk"
+   ],
+   "verts": 10796,
+   "faces": 21580,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Adductor",
+    "Tendon"
+   ],
+   "parent": "Hypaxial muscles of back.g"
+  },
+  {
+   "name": "Levator scapulae.l",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Dorsal scapular nerve",
+    "Hypaxial muscles of back",
+    "Muscles",
+    "Neck",
+    "Trunk"
+   ],
+   "verts": 1543,
+   "faces": 3082,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Levator",
+    "Tendon"
+   ],
+   "parent": "Hypaxial muscles of back.g"
+  },
+  {
+   "name": "Levator scapulae.r",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Dorsal scapular nerve",
+    "Hypaxial muscles of back",
+    "Muscles",
+    "Neck",
+    "Trunk"
+   ],
+   "verts": 1543,
+   "faces": 3082,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Levator",
+    "Tendon"
+   ],
+   "parent": "Hypaxial muscles of back.g"
+  },
+  {
+   "name": "Longissimus capitis muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Erector spinae",
+    "Muscles",
+    "Neck",
+    "Trunk"
+   ],
+   "verts": 785,
+   "faces": 1574,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Abductor",
+    "Tendon"
+   ],
+   "parent": "Longissimus muscles.g"
+  },
+  {
+   "name": "Longissimus capitis muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Erector spinae",
+    "Muscles",
+    "Neck",
+    "Trunk"
+   ],
+   "verts": 785,
+   "faces": 1574,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Abductor",
+    "Tendon"
+   ],
+   "parent": "Longissimus muscles.g"
+  },
+  {
+   "name": "Longissimus colli muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Erector spinae",
+    "Muscles",
+    "Neck",
+    "Trunk"
+   ],
+   "verts": 915,
+   "faces": 1826,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Extension",
+    "Tendon"
+   ],
+   "parent": "Longissimus muscles.g"
+  },
+  {
+   "name": "Longissimus colli muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Erector spinae",
+    "Muscles",
+    "Neck",
+    "Trunk"
+   ],
+   "verts": 915,
+   "faces": 1826,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Extension",
+    "Tendon"
+   ],
+   "parent": "Longissimus muscles.g"
+  },
+  {
+   "name": "Longissimus muscles.j",
+   "collections": [
+    "4: Muscular system",
+    "Back"
+   ],
+   "verts": 2,
+   "faces": 0,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [],
+   "parent": "Longissimus muscles.g"
+  },
+  {
+   "name": "Longissimus thoracis muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Erector spinae",
+    "Muscles",
+    "Trunk"
+   ],
+   "verts": 4818,
+   "faces": 9652,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Extension",
+    "Tendon"
+   ],
+   "parent": "Longissimus muscles.g"
+  },
+  {
+   "name": "Longissimus thoracis muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Erector spinae",
+    "Muscles",
+    "Trunk"
+   ],
+   "verts": 4818,
+   "faces": 9652,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Extension",
+    "Tendon"
+   ],
+   "parent": "Longissimus muscles.g"
+  },
+  {
+   "name": "Rhomboid major muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Dorsal scapular nerve",
+    "Hypaxial muscles of back",
+    "Muscles",
+    "Trunk"
+   ],
+   "verts": 2402,
+   "faces": 4800,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Adductor",
+    "Tendon"
+   ],
+   "parent": "Hypaxial muscles of back.g"
+  },
+  {
+   "name": "Rhomboid major muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Dorsal scapular nerve",
+    "Hypaxial muscles of back",
+    "Muscles",
+    "Trunk"
+   ],
+   "verts": 2402,
+   "faces": 4800,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Adductor",
+    "Tendon"
+   ],
+   "parent": "Hypaxial muscles of back.g"
+  },
+  {
+   "name": "Rhomboid minor muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Dorsal scapular nerve",
+    "Hypaxial muscles of back",
+    "Muscles",
+    "Trunk"
+   ],
+   "verts": 747,
+   "faces": 1494,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Adductor",
+    "Tendon"
+   ],
+   "parent": "Hypaxial muscles of back.g"
+  },
+  {
+   "name": "Rhomboid minor muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Dorsal scapular nerve",
+    "Hypaxial muscles of back",
+    "Muscles",
+    "Trunk"
+   ],
+   "verts": 747,
+   "faces": 1494,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Adductor",
+    "Tendon"
+   ],
+   "parent": "Hypaxial muscles of back.g"
+  },
+  {
+   "name": "Semispinalis colli muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Muscles",
+    "Neck",
+    "Transversospinal muscles",
+    "Trunk"
+   ],
+   "verts": 1292,
+   "faces": 2584,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Internal rotator",
+    "Tendon"
+   ],
+   "parent": "Semispinalis muscles.g"
+  },
+  {
+   "name": "Semispinalis colli muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Muscles",
+    "Neck",
+    "Transversospinal muscles",
+    "Trunk"
+   ],
+   "verts": 1292,
+   "faces": 2584,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Internal rotator",
+    "Tendon"
+   ],
+   "parent": "Semispinalis muscles.g"
+  },
+  {
+   "name": "Semispinalis muscles.j",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Trunk"
+   ],
+   "verts": 2,
+   "faces": 0,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [],
+   "parent": "Semispinalis muscles.g"
+  },
+  {
+   "name": "Semispinalis thoracis muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Muscles",
+    "Transversospinal muscles",
+    "Trunk"
+   ],
+   "verts": 2475,
+   "faces": 4972,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Extension",
+    "Tendon"
+   ],
+   "parent": "Semispinalis muscles.g"
+  },
+  {
+   "name": "Scapular spinal part of deltoid muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Axillary nerve",
+    "Deltoid muscle",
+    "Left upper limb",
+    "Muscles",
+    "Muscles of upper limb",
+    "Superficial muscles"
+   ],
+   "verts": 2189,
+   "faces": 4378,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Abductor",
+    "Tendon"
+   ],
+   "parent": "Deltoid muscle.g"
+  },
+  {
+   "name": "Scapular spinal part of deltoid muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Axillary nerve",
+    "Deltoid muscle",
+    "Muscles",
+    "Muscles of upper limb",
+    "Right upper limb",
+    "Superficial muscles"
+   ],
+   "verts": 2189,
+   "faces": 4378,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Abductor",
+    "Tendon"
+   ],
+   "parent": "Deltoid muscle.g"
+  },
+  {
+   "name": "Semispinalis thoracis muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Muscles",
+    "Transversospinal muscles",
+    "Trunk"
+   ],
+   "verts": 2475,
+   "faces": 4972,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Extension",
+    "Tendon"
+   ],
+   "parent": "Semispinalis muscles.g"
+  },
+  {
+   "name": "Spinalis capitis muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Erector spinae",
+    "Muscles",
+    "Neck",
+    "Trunk"
+   ],
+   "verts": 1275,
+   "faces": 2560,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Extension",
+    "Tendon"
+   ],
+   "parent": "Spinalis muscles.g"
+  },
+  {
+   "name": "Spinalis capitis muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Erector spinae",
+    "Muscles",
+    "Neck",
+    "Trunk"
+   ],
+   "verts": 1275,
+   "faces": 2560,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Extension",
+    "Tendon"
+   ],
+   "parent": "Spinalis muscles.g"
+  },
+  {
+   "name": "Spinalis colli muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Erector spinae",
+    "Muscles",
+    "Neck",
+    "Trunk"
+   ],
+   "verts": 298,
+   "faces": 596,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Extension",
+    "Tendon"
+   ],
+   "parent": "Spinalis muscles.g"
+  },
+  {
+   "name": "Spinalis colli muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Erector spinae",
+    "Muscles",
+    "Neck",
+    "Trunk"
+   ],
+   "verts": 298,
+   "faces": 596,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Extension",
+    "Tendon"
+   ],
+   "parent": "Spinalis muscles.g"
+  },
+  {
+   "name": "Spinalis muscles.j",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Trunk"
+   ],
+   "verts": 2,
+   "faces": 0,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [],
+   "parent": "Spinalis muscles.g"
+  },
+  {
+   "name": "Spinalis thoracis muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Erector spinae",
+    "Muscles",
+    "Trunk"
+   ],
+   "verts": 2768,
+   "faces": 5532,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Extension",
+    "Tendon"
+   ],
+   "parent": "Spinalis muscles.g"
+  },
+  {
+   "name": "Spinalis thoracis muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Erector spinae",
+    "Muscles",
+    "Trunk"
+   ],
+   "verts": 2768,
+   "faces": 5532,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Extension",
+    "Tendon"
+   ],
+   "parent": "Spinalis muscles.g"
+  },
+  {
+   "name": "Subdeltoid bursa.l",
+   "collections": [
+    "4: Muscular system",
+    "Bursae",
+    "Left upper limb"
+   ],
+   "verts": 178,
+   "faces": 192,
+   "quads": 160,
+   "mods": [
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "key_color": false
+   },
+   "materials": [
+    "Bursa"
+   ],
+   "parent": "Bursae of upper limb.g"
+  },
+  {
+   "name": "Subdeltoid bursa.r",
+   "collections": [
+    "4: Muscular system",
+    "Bursae",
+    "Right upper limb"
+   ],
+   "verts": 178,
+   "faces": 192,
+   "quads": 160,
+   "mods": [
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "key_color": false
+   },
+   "materials": [
+    "Bursa"
+   ],
+   "parent": "Bursae of upper limb.g"
+  },
+  {
+   "name": "Subscapularis muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Left upper limb",
+    "Muscles",
+    "Muscles of upper limb",
+    "Rotator cuff muscles",
+    "Trunk"
+   ],
+   "verts": 1471,
+   "faces": 2954,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Internal rotator",
+    "Tendon"
+   ],
+   "parent": "Rotator cuff muscles.g"
+  },
+  {
+   "name": "Subscapularis muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Muscles",
+    "Muscles of upper limb",
+    "Right upper limb",
+    "Rotator cuff muscles",
+    "Trunk"
+   ],
+   "verts": 1471,
+   "faces": 2954,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Internal rotator",
+    "Tendon"
+   ],
+   "parent": "Rotator cuff muscles.g"
+  },
+  {
+   "name": "Subtendinous bursa of infraspinatus muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Bursae",
+    "Left upper limb"
+   ],
+   "verts": 178,
+   "faces": 192,
+   "quads": 160,
+   "mods": [
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "key_color": false
+   },
+   "materials": [
+    "Bursa"
+   ],
+   "parent": "Bursae of upper limb.g"
+  },
+  {
+   "name": "Subtendinous bursa of infraspinatus muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Bursae",
+    "Right upper limb"
+   ],
+   "verts": 178,
+   "faces": 192,
+   "quads": 160,
+   "mods": [
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "key_color": false
+   },
+   "materials": [
+    "Bursa"
+   ],
+   "parent": "Bursae of upper limb.g"
+  },
+  {
+   "name": "Subtendinous bursa of teres major muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Bursae",
+    "Left upper limb"
+   ],
+   "verts": 178,
+   "faces": 192,
+   "quads": 160,
+   "mods": [
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "key_color": false
+   },
+   "materials": [
+    "Bursa"
+   ],
+   "parent": "Bursae of upper limb.g"
+  },
+  {
+   "name": "Subtendinous bursa of teres major muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Bursae",
+    "Right upper limb"
+   ],
+   "verts": 178,
+   "faces": 192,
+   "quads": 160,
+   "mods": [
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "key_color": false
+   },
+   "materials": [
+    "Bursa"
+   ],
+   "parent": "Bursae of upper limb.g"
+  },
+  {
+   "name": "Subtendinous bursa of trapezius muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Bursae",
+    "Left upper limb"
+   ],
+   "verts": 178,
+   "faces": 192,
+   "quads": 160,
+   "mods": [
+    [
+     "SUBSURF",
+     2,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "key_color": false
+   },
+   "materials": [
+    "Bursa"
+   ],
+   "parent": "Bursae of upper limb.g"
+  },
+  {
+   "name": "Subtendinous bursa of trapezius muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Bursae",
+    "Right upper limb"
+   ],
+   "verts": 178,
+   "faces": 192,
+   "quads": 160,
+   "mods": [
+    [
+     "SUBSURF",
+     1,
+     1,
+     null
+    ]
+   ],
+   "props": {
+    "key_color": false
+   },
+   "materials": [
+    "Bursa"
+   ],
+   "parent": "Bursae of upper limb.g"
+  },
+  {
+   "name": "Supraspinatus muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Left upper limb",
+    "Muscles",
+    "Muscles of upper limb",
+    "Rotator cuff muscles",
+    "Suprascapular nerve",
+    "Trunk"
+   ],
+   "verts": 717,
+   "faces": 1430,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Abductor",
+    "Tendon"
+   ],
+   "parent": "Rotator cuff muscles.g"
+  },
+  {
+   "name": "Supraspinatus muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Muscles",
+    "Muscles of upper limb",
+    "Right upper limb",
+    "Rotator cuff muscles",
+    "Suprascapular nerve",
+    "Trunk"
+   ],
+   "verts": 717,
+   "faces": 1430,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Abductor",
+    "Tendon"
+   ],
+   "parent": "Rotator cuff muscles.g"
+  },
+  {
+   "name": "Teres major muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Muscles",
+    "Trunk"
+   ],
+   "verts": 577,
+   "faces": 1154,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Internal rotator",
+    "Tendon"
+   ],
+   "parent": "Scapulohumeral muscles.g"
+  },
+  {
+   "name": "Teres major muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Muscles",
+    "Muscles of upper limb",
+    "Right upper limb",
+    "Trunk"
+   ],
+   "verts": 577,
+   "faces": 1154,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Internal rotator",
+    "Tendon"
+   ],
+   "parent": "Scapulohumeral muscles.g"
+  },
+  {
+   "name": "Teres minor muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Axillary nerve",
+    "Left upper limb",
+    "Muscles",
+    "Muscles of upper limb",
+    "Rotator cuff muscles"
+   ],
+   "verts": 763,
+   "faces": 1522,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "External rotation",
+    "Tendon"
+   ],
+   "parent": "Rotator cuff muscles.g"
+  },
+  {
+   "name": "Teres minor muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Axillary nerve",
+    "Muscles",
+    "Muscles of upper limb",
+    "Right upper limb",
+    "Rotator cuff muscles"
+   ],
+   "verts": 763,
+   "faces": 1522,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "External rotation",
+    "Tendon"
+   ],
+   "parent": "Rotator cuff muscles.g"
+  },
+  {
+   "name": "Transverse part of trapezius muscle.l",
+   "collections": [
+    "4: Muscular system",
+    "Accessory nerve (XI)",
+    "Back",
+    "Hypaxial muscles of back",
+    "Muscles",
+    "Superficial muscles",
+    "Trapezius muscle",
+    "Trunk"
+   ],
+   "verts": 1494,
+   "faces": 2992,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "External rotation",
+    "Tendon"
+   ],
+   "parent": "Trapezius muscle.g"
+  },
+  {
+   "name": "Transverse part of trapezius muscle.r",
+   "collections": [
+    "4: Muscular system",
+    "Accessory nerve (XI)",
+    "Back",
+    "Hypaxial muscles of back",
+    "Muscles",
+    "Superficial muscles",
+    "Trapezius muscle",
+    "Trunk"
+   ],
+   "verts": 1494,
+   "faces": 2992,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "External rotation",
+    "Tendon"
+   ],
+   "parent": "Trapezius muscle.g"
+  },
+  {
+   "name": "Trapezius muscle.j",
+   "collections": [
+    "4: Muscular system",
+    "Back",
+    "Trunk"
+   ],
+   "verts": 2,
+   "faces": 0,
+   "quads": 0,
+   "mods": [],
+   "props": {
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [],
+   "parent": "Trapezius muscle.g"
+  }
+ ],
+ "insertions": [
+  {
+   "name": "Acromial part of deltoid muscle.ol",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 305,
+   "faces": 510,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Abduction"
+   ],
+   "parent": "Scapula.l"
+  },
+  {
+   "name": "Acromial part of deltoid muscle.or",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 305,
+   "faces": 510,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Abduction"
+   ],
+   "parent": "Scapula.r"
+  },
+  {
+   "name": "Ascending part of trapezius muscle.el",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 23,
+   "faces": 12,
+   "quads": 9,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Abduction"
+   ],
+   "parent": "Occipital bone"
+  },
+  {
+   "name": "Ascending part of trapezius muscle.er",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 23,
+   "faces": 12,
+   "quads": 9,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Abduction"
+   ],
+   "parent": "Occipital bone"
+  },
+  {
+   "name": "Ascending part of trapezius muscle.ol",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 48,
+   "faces": 61,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Abduction"
+   ],
+   "parent": "Clavicle.l"
+  },
+  {
+   "name": "Ascending part of trapezius muscle.or",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 48,
+   "faces": 61,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Abduction"
+   ],
+   "parent": "Clavicle.r"
+  },
+  {
+   "name": "Clavicular part of deltoid muscle.ol",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 90,
+   "faces": 125,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Abduction"
+   ],
+   "parent": "Clavicle.l"
+  },
+  {
+   "name": "Clavicular part of deltoid muscle.or",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 90,
+   "faces": 125,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Abduction"
+   ],
+   "parent": "Clavicle.r"
+  },
+  {
+   "name": "Deltoid muscle.el",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 29,
+   "faces": 35,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Abduction"
+   ],
+   "parent": "Humerus.l"
+  },
+  {
+   "name": "Deltoid muscle.er",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 29,
+   "faces": 35,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Abduction"
+   ],
+   "parent": "Humerus.r"
+  },
+  {
+   "name": "Descending part of trapezius muscle.ol",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 168,
+   "faces": 247,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Abduction"
+   ],
+   "parent": "Scapula.l"
+  },
+  {
+   "name": "Descending part of trapezius muscle.or",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 168,
+   "faces": 247,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Abduction"
+   ],
+   "parent": "Scapula.r"
+  },
+  {
+   "name": "Erector spinae.ol",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 52,
+   "faces": 57,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Extension"
+   ],
+   "parent": "Hip bone.l"
+  },
+  {
+   "name": "Erector spinae.or",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 52,
+   "faces": 57,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Extension"
+   ],
+   "parent": "Hip bone.r"
+  },
+  {
+   "name": "Iliocostalis colli muscle.el",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 20,
+   "faces": 16,
+   "quads": 4,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-External rotation"
+   ],
+   "parent": "Vertebra C4"
+  },
+  {
+   "name": "Iliocostalis colli muscle.er",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 20,
+   "faces": 16,
+   "quads": 4,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-External rotation"
+   ],
+   "parent": "Vertebra C4"
+  },
+  {
+   "name": "Infraspinatus muscle.el",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 59,
+   "faces": 79,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-External rotation"
+   ],
+   "parent": "Humerus.l"
+  },
+  {
+   "name": "Infraspinatus muscle.er",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 59,
+   "faces": 79,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-External rotation"
+   ],
+   "parent": "Humerus.r"
+  },
+  {
+   "name": "Infraspinatus muscle.ol",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 585,
+   "faces": 1027,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-External rotation"
+   ],
+   "parent": "Scapula.l"
+  },
+  {
+   "name": "Infraspinatus muscle.or",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 585,
+   "faces": 1027,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-External rotation"
+   ],
+   "parent": "Scapula.r"
+  },
+  {
+   "name": "Latissimus dorsi muscle.el",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 150,
+   "faces": 231,
+   "quads": 3,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Adduction",
+    "Cartilage"
+   ],
+   "parent": "Scapula.l"
+  },
+  {
+   "name": "Latissimus dorsi muscle.er",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 150,
+   "faces": 231,
+   "quads": 3,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Adduction",
+    "Cartilage"
+   ],
+   "parent": "Scapula.r"
+  },
+  {
+   "name": "Latissimus dorsi muscle.ol",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 58,
+   "faces": 46,
+   "quads": 15,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Adduction"
+   ],
+   "parent": "Hip bone.l"
+  },
+  {
+   "name": "Latissimus dorsi muscle.or",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 58,
+   "faces": 46,
+   "quads": 15,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Adduction"
+   ],
+   "parent": "Hip bone.r"
+  },
+  {
+   "name": "Levator scapulae.el",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 485,
+   "faces": 897,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Levator"
+   ],
+   "parent": "Scapula.l"
+  },
+  {
+   "name": "Levator scapulae.er",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 485,
+   "faces": 897,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Levator"
+   ],
+   "parent": "Scapula.r"
+  },
+  {
+   "name": "Levator scapulae.o1l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 10,
+   "faces": 5,
+   "quads": 1,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Levator"
+   ],
+   "parent": "Axis (C2)"
+  },
+  {
+   "name": "Levator scapulae.o1r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 10,
+   "faces": 5,
+   "quads": 1,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Levator"
+   ],
+   "parent": "Axis (C2)"
+  },
+  {
+   "name": "Levator scapulae.o2l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 24,
+   "faces": 26,
+   "quads": 4,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Levator"
+   ],
+   "parent": "Vertebra C3"
+  },
+  {
+   "name": "Levator scapulae.o2r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 24,
+   "faces": 26,
+   "quads": 4,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Levator"
+   ],
+   "parent": "Vertebra C3"
+  },
+  {
+   "name": "Levator scapulae.o3l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 25,
+   "faces": 25,
+   "quads": 4,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Levator"
+   ],
+   "parent": "Vertebra C4"
+  },
+  {
+   "name": "Levator scapulae.o3r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 25,
+   "faces": 25,
+   "quads": 4,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Levator"
+   ],
+   "parent": "Vertebra C4"
+  },
+  {
+   "name": "Levator scapulae.ol",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 15,
+   "faces": 11,
+   "quads": 3,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Levator"
+   ],
+   "parent": "Atlas (C1)"
+  },
+  {
+   "name": "Levator scapulae.or",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 15,
+   "faces": 11,
+   "quads": 3,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Levator"
+   ],
+   "parent": "Atlas (C1)"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e10l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 37,
+   "faces": 45,
+   "quads": 4,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Eighth rib.l"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e10r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 37,
+   "faces": 45,
+   "quads": 4,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Eighth rib.r"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e11l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 14,
+   "faces": 15,
+   "quads": 1,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T8"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e11r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 14,
+   "faces": 15,
+   "quads": 1,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T8"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e12l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 28,
+   "faces": 26,
+   "quads": 10,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Seventh rib.l"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e12r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 28,
+   "faces": 26,
+   "quads": 10,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Seventh rib.r"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e13l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 22,
+   "faces": 25,
+   "quads": 3,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T7"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e13r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 22,
+   "faces": 25,
+   "quads": 3,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T7"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e14l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 28,
+   "faces": 22,
+   "quads": 7,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Sixth rib.l"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e14r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 28,
+   "faces": 22,
+   "quads": 7,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Sixth rib.r"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e15l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 10,
+   "faces": 9,
+   "quads": 1,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T6"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e15r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 10,
+   "faces": 9,
+   "quads": 1,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T6"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e16l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 20,
+   "faces": 15,
+   "quads": 1,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Fifth rib.l"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e16r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 20,
+   "faces": 15,
+   "quads": 1,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Fifth rib.r"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e17l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 17,
+   "faces": 12,
+   "quads": 5,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T5"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e17r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 17,
+   "faces": 12,
+   "quads": 5,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T5"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e18l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 34,
+   "faces": 34,
+   "quads": 6,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Fourth rib.l"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e18r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 34,
+   "faces": 34,
+   "quads": 6,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Fourth rib.r"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e19l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 17,
+   "faces": 17,
+   "quads": 2,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T4"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e19r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 17,
+   "faces": 17,
+   "quads": 2,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T4"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e1l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 54,
+   "faces": 53,
+   "quads": 14,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra L2"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e1r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 54,
+   "faces": 53,
+   "quads": 14,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra L2"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e20l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 33,
+   "faces": 27,
+   "quads": 9,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Third rib.l"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e20r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 33,
+   "faces": 27,
+   "quads": 9,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Third rib.r"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e21l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 25,
+   "faces": 19,
+   "quads": 8,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T3"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e21r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 25,
+   "faces": 19,
+   "quads": 8,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T3"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e22l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 19,
+   "faces": 19,
+   "quads": 2,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Second rib.l"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e22r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 19,
+   "faces": 19,
+   "quads": 2,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Second rib.r"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e23l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 18,
+   "faces": 12,
+   "quads": 2,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T2"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e23r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 18,
+   "faces": 12,
+   "quads": 2,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T2"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e24l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 27,
+   "faces": 26,
+   "quads": 6,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "First rib.l"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e24r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 27,
+   "faces": 26,
+   "quads": 6,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "First rib.r"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e25l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 20,
+   "faces": 17,
+   "quads": 6,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T1"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e25r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 20,
+   "faces": 17,
+   "quads": 6,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T1"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e26l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 33,
+   "faces": 37,
+   "quads": 6,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Twelfth rib.l"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e26r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 33,
+   "faces": 37,
+   "quads": 6,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Twelfth rib.r"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e2l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 42,
+   "faces": 40,
+   "quads": 10,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra L1"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e2r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 42,
+   "faces": 40,
+   "quads": 10,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra L1"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e3r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 30,
+   "faces": 28,
+   "quads": 7,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T12"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e3l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 30,
+   "faces": 28,
+   "quads": 7,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T12"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e4l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 39,
+   "faces": 44,
+   "quads": 6,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Eleventh rib.l"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e4r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 39,
+   "faces": 44,
+   "quads": 6,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Eleventh rib.r"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e5l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 22,
+   "faces": 23,
+   "quads": 4,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T11"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e5r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 22,
+   "faces": 23,
+   "quads": 4,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T11"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e6l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 47,
+   "faces": 53,
+   "quads": 6,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Tenth rib.l"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e6r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 47,
+   "faces": 53,
+   "quads": 6,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Tenth rib.r"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e7l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 34,
+   "faces": 43,
+   "quads": 4,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T10"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e7r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 34,
+   "faces": 43,
+   "quads": 4,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T10"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e8l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 29,
+   "faces": 23,
+   "quads": 6,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Ninth rib.l"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e8r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 29,
+   "faces": 23,
+   "quads": 6,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Ninth rib.r"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e9l",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 22,
+   "faces": 23,
+   "quads": 5,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T9"
+  },
+  {
+   "name": "Longissimus thoracis muscle.e9r",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 22,
+   "faces": 23,
+   "quads": 5,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra T9"
+  },
+  {
+   "name": "Longissimus thoracis muscle.el",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 22,
+   "faces": 19,
+   "quads": 5,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra L3"
+  },
+  {
+   "name": "Longissimus thoracis muscle.er",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 22,
+   "faces": 19,
+   "quads": 5,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Vertebra L3"
+  },
+  {
+   "name": "Rhomboid major muscle.el",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 685,
+   "faces": 1238,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Adduction"
+   ],
+   "parent": "Scapula.l"
+  },
+  {
+   "name": "Rhomboid major muscle.er",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 685,
+   "faces": 1238,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Adduction"
+   ],
+   "parent": "Scapula.r"
+  },
+  {
+   "name": "Rhomboid minor muscle.el",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 206,
+   "faces": 354,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Adduction"
+   ],
+   "parent": "Scapula.l"
+  },
+  {
+   "name": "Rhomboid minor muscle.er",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 206,
+   "faces": 354,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Adduction"
+   ],
+   "parent": "Scapula.r"
+  },
+  {
+   "name": "Scapular spinal part of deltoid muscle.ol",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 516,
+   "faces": 872,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Abduction"
+   ],
+   "parent": "Scapula.l"
+  },
+  {
+   "name": "Scapular spinal part of deltoid muscle.or",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 516,
+   "faces": 872,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Abduction"
+   ],
+   "parent": "Scapula.r"
+  },
+  {
+   "name": "Spinalis capitis muscle.el",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 27,
+   "faces": 17,
+   "quads": 4,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Occipital bone"
+  },
+  {
+   "name": "Spinalis capitis muscle.er",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 27,
+   "faces": 17,
+   "quads": 4,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Extension"
+   ],
+   "parent": "Occipital bone"
+  },
+  {
+   "name": "Subscapularis muscle.el",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 25,
+   "faces": 28,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Internal rotation"
+   ],
+   "parent": "Humerus.l"
+  },
+  {
+   "name": "Subscapularis muscle.er",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 25,
+   "faces": 28,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Internal rotation"
+   ],
+   "parent": "Humerus.r"
+  },
+  {
+   "name": "Subscapularis muscle.ol",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 735,
+   "faces": 1319,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Internal rotation"
+   ],
+   "parent": "Scapula.l"
+  },
+  {
+   "name": "Subscapularis muscle.or",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 735,
+   "faces": 1319,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Internal rotation"
+   ],
+   "parent": "Scapula.r"
+  },
+  {
+   "name": "Supraspinatus muscle.el",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 63,
+   "faces": 89,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Abduction"
+   ],
+   "parent": "Humerus.l"
+  },
+  {
+   "name": "Supraspinatus muscle.er",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 63,
+   "faces": 89,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-Abduction"
+   ],
+   "parent": "Humerus.r"
+  },
+  {
+   "name": "Supraspinatus muscle.ol",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 351,
+   "faces": 598,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Abduction"
+   ],
+   "parent": "Scapula.l"
+  },
+  {
+   "name": "Supraspinatus muscle.or",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 351,
+   "faces": 598,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Abduction"
+   ],
+   "parent": "Scapula.r"
+  },
+  {
+   "name": "Teres major muscle.ol",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 225,
+   "faces": 323,
+   "quads": 30,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Internal rotation"
+   ],
+   "parent": "Scapula.l"
+  },
+  {
+   "name": "Teres major muscle.or",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 225,
+   "faces": 323,
+   "quads": 30,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Internal rotation"
+   ],
+   "parent": "Scapula.r"
+  },
+  {
+   "name": "Teres minor muscle.el",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 83,
+   "faces": 127,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-External rotation"
+   ],
+   "parent": "Humerus.l"
+  },
+  {
+   "name": "Teres minor muscle.er",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 83,
+   "faces": 127,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "End-External rotation"
+   ],
+   "parent": "Humerus.r"
+  },
+  {
+   "name": "Teres minor muscle.ol",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 252,
+   "faces": 408,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-External rotation"
+   ],
+   "parent": "Scapula.l"
+  },
+  {
+   "name": "Teres minor muscle.or",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 252,
+   "faces": 408,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-External rotation"
+   ],
+   "parent": "Scapula.r"
+  },
+  {
+   "name": "Transverse part of trapezius muscle.ol",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 138,
+   "faces": 214,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Abduction"
+   ],
+   "parent": "Scapula.l"
+  },
+  {
+   "name": "Transverse part of trapezius muscle.or",
+   "collections": [
+    "2: Muscular insertions"
+   ],
+   "verts": 138,
+   "faces": 214,
+   "quads": 0,
+   "mods": [
+    [
+     "SOLIDIFY",
+     null,
+     null,
+     0.0005000000237487257
+    ],
+    [
+     "SUBSURF",
+     1,
+     2,
+     null
+    ]
+   ],
+   "props": {
+    "M3": "IDPropertyGroup",
+    "muscle_color": 0,
+    "key_color": false
+   },
+   "materials": [
+    "Origin-Abduction"
+   ],
+   "parent": "Scapula.r"
+  }
+ ],
+ "bones": [
+  {
+   "name": "Clavicle.l",
+   "collections": [
+    "1: Skeletal system",
+    "Appendicular skeleton",
+    "Bones of pectoral girdle",
+    "Bones of upper limb",
+    "Bonus collection",
+    "Left upper limb",
+    "Trunk"
+   ],
+   "faces": 1548,
+   "mods": []
+  },
+  {
+   "name": "Clavicle.r",
+   "collections": [
+    "1: Skeletal system",
+    "Appendicular skeleton",
+    "Bones of pectoral girdle",
+    "Bones of upper limb",
+    "Bonus collection",
+    "Right upper limb",
+    "Trunk"
+   ],
+   "faces": 1548,
+   "mods": []
+  },
+  {
+   "name": "Costal cartilage of eighth rib.l",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Cartilages",
+    "Costal cartilages",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 330,
+   "mods": [
+    "SUBSURF"
+   ]
+  },
+  {
+   "name": "Costal cartilage of eighth rib.r",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Cartilages",
+    "Costal cartilages",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 330,
+   "mods": [
+    "SUBSURF"
+   ]
+  },
+  {
+   "name": "Costal cartilage of fifth rib.l",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Cartilages",
+    "Costal cartilages",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 1082,
+   "mods": [
+    "SUBSURF"
+   ]
+  },
+  {
+   "name": "Costal cartilage of fifth rib.r",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Cartilages",
+    "Costal cartilages",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 1082,
+   "mods": [
+    "SUBSURF"
+   ]
+  },
+  {
+   "name": "Costal cartilage of first rib.l",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Cartilages",
+    "Costal cartilages",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 462,
+   "mods": [
+    "SUBSURF"
+   ]
+  },
+  {
+   "name": "Costal cartilage of first rib.r",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Cartilages",
+    "Costal cartilages",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 462,
+   "mods": [
+    "SUBSURF"
+   ]
+  },
+  {
+   "name": "Costal cartilage of fourth rib.l",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Cartilages",
+    "Costal cartilages",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 745,
+   "mods": [
+    "SUBSURF"
+   ]
+  },
+  {
+   "name": "Costal cartilage of fourth rib.r",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Cartilages",
+    "Costal cartilages",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 745,
+   "mods": [
+    "SUBSURF"
+   ]
+  },
+  {
+   "name": "Costal cartilage of ninth rib.l",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Cartilages",
+    "Costal cartilages",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 247,
+   "mods": [
+    "SUBSURF"
+   ]
+  },
+  {
+   "name": "Costal cartilage of ninth rib.r",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Cartilages",
+    "Costal cartilages",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 247,
+   "mods": [
+    "SUBSURF"
+   ]
+  },
+  {
+   "name": "Costal cartilage of second rib.l",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Cartilages",
+    "Costal cartilages",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 568,
+   "mods": [
+    "SUBSURF"
+   ]
+  },
+  {
+   "name": "Costal cartilage of second rib.r",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Cartilages",
+    "Costal cartilages",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 568,
+   "mods": [
+    "SUBSURF"
+   ]
+  },
+  {
+   "name": "Costal cartilage of seventh rib.l",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Cartilages",
+    "Costal cartilages",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 2294,
+   "mods": [
+    "SUBSURF"
+   ]
+  },
+  {
+   "name": "Costal cartilage of seventh rib.r",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Cartilages",
+    "Costal cartilages",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 2294,
+   "mods": [
+    "SUBSURF"
+   ]
+  },
+  {
+   "name": "Costal cartilage of sixth rib.l",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Cartilages",
+    "Costal cartilages",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 1353,
+   "mods": [
+    "SUBSURF"
+   ]
+  },
+  {
+   "name": "Costal cartilage of sixth rib.r",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Cartilages",
+    "Costal cartilages",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 1353,
+   "mods": [
+    "SUBSURF"
+   ]
+  },
+  {
+   "name": "Costal cartilage of third rib.l",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Cartilages",
+    "Costal cartilages",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 600,
+   "mods": [
+    "SUBSURF"
+   ]
+  },
+  {
+   "name": "Costal cartilage of third rib.r",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Cartilages",
+    "Costal cartilages",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 600,
+   "mods": [
+    "SUBSURF"
+   ]
+  },
+  {
+   "name": "Eighth rib.l",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "False ribs",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 8257,
+   "mods": []
+  },
+  {
+   "name": "Eighth rib.r",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "False ribs",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 8257,
+   "mods": []
+  },
+  {
+   "name": "Eleventh rib.l",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "False ribs",
+    "Floating ribs",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 5032,
+   "mods": []
+  },
+  {
+   "name": "Eleventh rib.r",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "False ribs",
+    "Floating ribs",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 5032,
+   "mods": []
+  },
+  {
+   "name": "Fifth rib.l",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 9360,
+   "mods": []
+  },
+  {
+   "name": "Fifth rib.r",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 9360,
+   "mods": []
+  },
+  {
+   "name": "First rib.l",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 3208,
+   "mods": []
+  },
+  {
+   "name": "First rib.r",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 3208,
+   "mods": []
+  },
+  {
+   "name": "Fourth rib.l",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 8640,
+   "mods": []
+  },
+  {
+   "name": "Fourth rib.r",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 8640,
+   "mods": []
+  },
+  {
+   "name": "Humerus.l",
+   "collections": [
+    "1: Skeletal system",
+    "Appendicular skeleton",
+    "Bones of upper limb",
+    "Bonus collection",
+    "Left upper limb"
+   ],
+   "faces": 4280,
+   "mods": []
+  },
+  {
+   "name": "Humerus.r",
+   "collections": [
+    "1: Skeletal system",
+    "Appendicular skeleton",
+    "Bones of upper limb",
+    "Bonus collection",
+    "Right upper limb"
+   ],
+   "faces": 4280,
+   "mods": []
+  },
+  {
+   "name": "Ninth rib.l",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "False ribs",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 7743,
+   "mods": []
+  },
+  {
+   "name": "Ninth rib.r",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "False ribs",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 7743,
+   "mods": []
+  },
+  {
+   "name": "Second rib.r",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 5354,
+   "mods": []
+  },
+  {
+   "name": "Scapula.l",
+   "collections": [
+    "1: Skeletal system",
+    "Appendicular skeleton",
+    "Bones of pectoral girdle",
+    "Bones of upper limb",
+    "Bonus collection",
+    "Left upper limb",
+    "Trunk"
+   ],
+   "faces": 25255,
+   "mods": []
+  },
+  {
+   "name": "Scapula.r",
+   "collections": [
+    "1: Skeletal system",
+    "Appendicular skeleton",
+    "Bones of pectoral girdle",
+    "Bones of upper limb",
+    "Bonus collection",
+    "Right upper limb",
+    "Trunk"
+   ],
+   "faces": 25255,
+   "mods": []
+  },
+  {
+   "name": "Second rib.l",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 5354,
+   "mods": []
+  },
+  {
+   "name": "Seventh rib.l",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 9741,
+   "mods": []
+  },
+  {
+   "name": "Seventh rib.r",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 9741,
+   "mods": []
+  },
+  {
+   "name": "Sixth rib.l",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 10092,
+   "mods": []
+  },
+  {
+   "name": "Sixth rib.r",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 10092,
+   "mods": []
+  },
+  {
+   "name": "Tenth rib.l",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "False ribs",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 7002,
+   "mods": []
+  },
+  {
+   "name": "Tenth rib.r",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "False ribs",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 7002,
+   "mods": []
+  },
+  {
+   "name": "Third rib.l",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 6957,
+   "mods": []
+  },
+  {
+   "name": "Third rib.r",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 6957,
+   "mods": []
+  },
+  {
+   "name": "Twelfth rib.l",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "False ribs",
+    "Floating ribs",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 2995,
+   "mods": []
+  },
+  {
+   "name": "Twelfth rib.r",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Bonus collection",
+    "False ribs",
+    "Floating ribs",
+    "Ribs",
+    "Thoracic skeleton",
+    "Thorax",
+    "Trunk"
+   ],
+   "faces": 2995,
+   "mods": []
+  },
+  {
+   "name": "Vertebra T1",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Back",
+    "Thoracic skeleton",
+    "Thoracic vertebrae",
+    "Trunk",
+    "Vertebral column"
+   ],
+   "faces": 1946,
+   "mods": []
+  },
+  {
+   "name": "Vertebra T10",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Back",
+    "Thoracic skeleton",
+    "Thoracic vertebrae",
+    "Trunk",
+    "Vertebral column"
+   ],
+   "faces": 2953,
+   "mods": []
+  },
+  {
+   "name": "Vertebra T11",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Back",
+    "Thoracic skeleton",
+    "Thoracic vertebrae",
+    "Trunk",
+    "Vertebral column"
+   ],
+   "faces": 1780,
+   "mods": []
+  },
+  {
+   "name": "Vertebra T12",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Back",
+    "Thoracic skeleton",
+    "Thoracic vertebrae",
+    "Trunk",
+    "Vertebral column"
+   ],
+   "faces": 2472,
+   "mods": []
+  },
+  {
+   "name": "Vertebra T2",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Back",
+    "Thoracic skeleton",
+    "Thoracic vertebrae",
+    "Trunk",
+    "Vertebral column"
+   ],
+   "faces": 2092,
+   "mods": []
+  },
+  {
+   "name": "Vertebra T3",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Back",
+    "Thoracic skeleton",
+    "Thoracic vertebrae",
+    "Trunk",
+    "Vertebral column"
+   ],
+   "faces": 2342,
+   "mods": []
+  },
+  {
+   "name": "Vertebra T4",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Back",
+    "Thoracic skeleton",
+    "Thoracic vertebrae",
+    "Trunk",
+    "Vertebral column"
+   ],
+   "faces": 2214,
+   "mods": []
+  },
+  {
+   "name": "Vertebra T5",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Back",
+    "Thoracic skeleton",
+    "Thoracic vertebrae",
+    "Trunk",
+    "Vertebral column"
+   ],
+   "faces": 2152,
+   "mods": []
+  },
+  {
+   "name": "Vertebra T6",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Back",
+    "Thoracic skeleton",
+    "Thoracic vertebrae",
+    "Trunk",
+    "Vertebral column"
+   ],
+   "faces": 1774,
+   "mods": []
+  },
+  {
+   "name": "Vertebra T7",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Back",
+    "Thoracic skeleton",
+    "Thoracic vertebrae",
+    "Trunk",
+    "Vertebral column"
+   ],
+   "faces": 2646,
+   "mods": []
+  },
+  {
+   "name": "Vertebra T8",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Back",
+    "Thoracic skeleton",
+    "Thoracic vertebrae",
+    "Trunk",
+    "Vertebral column"
+   ],
+   "faces": 1706,
+   "mods": []
+  },
+  {
+   "name": "Vertebra T9",
+   "collections": [
+    "1: Skeletal system",
+    "Axial skeleton",
+    "Back",
+    "Thoracic skeleton",
+    "Thoracic vertebrae",
+    "Trunk",
+    "Vertebral column"
+   ],
+   "faces": 2968,
+   "mods": []
+  }
+ ],
+ "texts": {
+  "Acromial part of deltoid muscle": "\n\nACROMIAL PART OF DELTOID MUSCLE\n\n\nThe deltoid muscle is the muscle forming the rounded contour of the human shoulder. \n\nIt is also known as the 'common shoulder muscle', particularly in other animals such as the domestic cat. \n\nAnatomically, the deltoid muscle appears to be made up of three distinct sets of muscle fibers, namely the\n\n-anterior or clavicular part (pars clavicularis)\n-posterior or scapular part (pars scapularis)\n-intermediate or acromial part (pars acromialis)\n\nHowever, electromyography suggests that it consists of at least seven groups that can be independently coordinated by",
+  "Ascending part of trapezius muscle": "\n\nTRAPEZIUS\n\n\nThe trapezius is a large paired trapezoid-shaped surface muscle that extends longitudinally from the occipital bone to the lower thoracic vertebrae of the spine and laterally to the spine of the scapula. \n\nIt moves the scapula and supports the arm.\n\nThe trapezius has three functional parts: an upper (descending) part which supports the weight of the arm; a middle region (transverse), which retracts the scapula; and a lower (ascending) part which medially rotates and depresses the scapula.\n\n\n== Name and history ==\n\nThe trapezius muscle resembles a trapezium (trapezoid in American ",
+  "Clavicular part of deltoid muscle": "\n\nCLAVICULAR PART OF DELTOID MUSCLE\n\n\nThe deltoid muscle is the muscle forming the rounded contour of the human shoulder. \n\nIt is also known as the 'common shoulder muscle', particularly in other animals such as the domestic cat. \n\nAnatomically, the deltoid muscle appears to be made up of three distinct sets of muscle fibers, namely the\n\n-anterior or clavicular part (pars clavicularis)\n-posterior or scapular part (pars scapularis)\n-intermediate or acromial part (pars acromialis)\n\nHowever, electromyography suggests that it consists of at least seven groups that can be independently coordinated ",
+  "Deltoid fascia": "\n\nDELTOID FASCIA\n\n\nThe deltoid fascia contributes to the brachial fascia and is connected to the medial and lateral intermuscular septa.",
+  "Deltoid muscle": "\n\nDELTOID MUSCLE\n\n\nThe deltoid muscle is the muscle forming the rounded contour of the human shoulder. \n\nIt is also known as the 'common shoulder muscle', particularly in other animals such as the domestic cat. \n\nAnatomically, the deltoid muscle appears to be made up of three distinct sets of muscle fibers, namely the\n\n-Anterior or clavicular part (pars clavicularis)\n-Posterior or scapular part (pars scapularis)\n-Intermediate or acromial part (pars acromialis)\n\nHowever, electromyography suggests that it consists of at least seven groups that can be independently coordinated by the nervous syst",
+  "Deltoid region": "\n\nDELTOID REGION\n\n\nCovering the deltoid muscle.",
+  "Deltoid tubercle": "\n\nDELTOID TUBEROSITY/TUBERCLE\n\n\nIn human anatomy, the deltoid tuberosity is a rough, triangular area on the anterolateral (front-side) surface of the middle of the humerus. \n\nIt is a site of attachment of deltoid muscle.\n\n\n== Structure ==\n\n=== Variation ===\n\nThe deltoid tuberosity has been reported as very prominent in less than 10% of people.\n\n\n=== Development ===\n\nThe deltoid tuberosity develops through endochondral ossification in a two-phase process.\n\nThe initiating signal is tendon-dependent, whilst the growth phase is muscle-dependent.\n\n\n== Clinical significance ==\n\nThe deltoid tuberosit",
+  "Descending part of trapezius muscle": "\n\nTRAPEZIUS\n\n\nThe trapezius is a large paired trapezoid-shaped surface muscle that extends longitudinally from the occipital bone to the lower thoracic vertebrae of the spine and laterally to the spine of the scapula. \n\nIt moves the scapula and supports the arm.\n\nThe trapezius has three functional parts: an upper (descending) part which supports the weight of the arm; a middle region (transverse), which retracts the scapula; and a lower (ascending) part which medially rotates and depresses the scapula.\n\n\n== Name and history ==\n\nThe trapezius muscle resembles a trapezium (trapezoid in American ",
+  "Erector spinae": "\n\nERECTOR SPINAE MUSCLES\n\n\nThe erector spinae ( irr-EK-tər SPY-nee) or spinal erectors is a set of muscles that straighten and rotate the back.\n\n\n== Structure ==\n\nThe erector spinae is not just one muscle, but a group of muscles and tendons which run more or less the length of the spine on the left and the right, from the sacrum, or sacral region, and hips to the base of the skull. \n\nThey are also known as the sacrospinalis group of muscles. \n\nThese muscles lie on either side of the spinous processes of the vertebrae and extend throughout the lumbar, thoracic, and cervical regions. \n\nThe erect",
+  "Iliocostalis colli muscle": "\n\nILIOCOSTALIS\n\n\nIliocostalis muscle is the muscle immediately lateral to the longissimus that is the nearest to the furrow that separates the epaxial muscles from the hypaxial. \n\nIt lies very deep to the fleshy portion of the serratus posterior muscle. \n\nIt laterally flexes the vertebral column to the same side.\n\n\n== Structure ==\n\nIliocostalis muscle has a common origin from the iliac crest, the sacrum, the thoracolumbar fascia, and the spinous processes of the vertebrae from T11 to L5.\n\nIliocostalis cervicis (cervicalis ascendens) arises from the angles of the third, fourth, fifth, and sixth",
+  "Iliocostalis lumborum muscle": "\n\nILIOCOSTALIS\n\n\nIliocostalis muscle is the muscle immediately lateral to the longissimus that is the nearest to the furrow that separates the epaxial muscles from the hypaxial. \n\nIt lies very deep to the fleshy portion of the serratus posterior muscle. \n\nIt laterally flexes the vertebral column to the same side.\n\n\n== Structure ==\n\nIliocostalis muscle has a common origin from the iliac crest, the sacrum, the thoracolumbar fascia, and the spinous processes of the vertebrae from T11 to L5.\n\nIliocostalis cervicis (cervicalis ascendens) arises from the angles of the third, fourth, fifth, and sixth",
+  "Iliocostalis muscles": "\n\nILIOCOSTALIS MUSCLES\n\n\nIliocostalis muscle is the muscle immediately lateral to the longissimus that is the nearest to the furrow that separates the epaxial muscles from the hypaxial. \n\nIt lies very deep to the fleshy portion of the serratus posterior muscle. \n\nIt laterally flexes the vertebral column to the same side.\n\n\n== Structure ==\n\nIliocostalis muscle has a common origin from the iliac crest, the sacrum, the thoracolumbar fascia, and the spinous processes of the vertebrae from T11 to L5.\n\nIliocostalis cervicis (cervicalis ascendens) arises from the angles of the third, fourth, fifth, a",
+  "Iliocostalis thoracis muscle": "\n\nILIOCOSTALIS\n\n\nIliocostalis muscle is the muscle immediately lateral to the longissimus that is the nearest to the furrow that separates the epaxial muscles from the hypaxial. \n\nIt lies very deep to the fleshy portion of the serratus posterior muscle. \n\nIt laterally flexes the vertebral column to the same side.\n\n\n== Structure ==\n\nIliocostalis muscle has a common origin from the iliac crest, the sacrum, the thoracolumbar fascia, and the spinous processes of the vertebrae from T11 to L5.\n\nIliocostalis cervicis (cervicalis ascendens) arises from the angles of the third, fourth, fifth, and sixth",
+  "Infraspinatus muscle": "\n\nINFRASPINATUS MUSCLE\n\n\nIn human anatomy, the infraspinatus muscle is a thick triangular muscle, which occupies the chief part of the infraspinatous fossa. \n\nAs one of the four muscles of the rotator cuff, the main function of the infraspinatus is to externally rotate the humerus and stabilize the shoulder joint.\n\n\n== Structure ==\n\nIt attaches medially to the infraspinous fossa of the scapula and laterally to the middle facet of the greater tubercle of the humerus.\n\nThe muscle arises by fleshy fibers from the medial two-thirds of the infraspinatous fossa, and by tendinous fibers from the ridg",
+  "Latissimus dorsi muscle": "\n\nLATISSIMUS DORSI MUSCLE\n\n\nThe latissimus dorsi is a large, flat muscle on the back that stretches to the sides, behind the arm, and is partly covered by the trapezius on the back near the midline. \n\nThe word latissimus dorsi (plural: latissimi dorsi) comes from Latin and means \"broadest [muscle] of the back\", from \"latissimus\" (Latin: broadest)' and \"dorsum\" (Latin: back). \n\nThe pair of muscles are commonly known as \"lats\", especially among bodybuilders. \n\nThe latissimus dorsi is the largest muscle in the upper body.\n\nThe latissimus dorsi is responsible for extension, adduction, transverse e",
+  "Levator scapulae": "\n\nLEVATOR SCAPULAE (MUSCLE)\n\n\nThe levator scapulae is a skeletal muscle situated at the back and side of the neck. \n\nAs the Latin name suggests, its main function is to lift the scapula.\n\n\n== Structure ==\n\nThe levator scapulae originates from the posterior tubercle of the transverse process of cervical vertebrae one to four. \n\nThe muscle is inserted into medial border of the scapula extending from superior angle to junction of spine and medial border of scapula.The levator scapulae may lie deep to the Sternocleidomastoid at its origin, deep or adjacent to the splenius capitis at its origin and",
+  "Longissimus capitis muscle": "\n\nLONGISSIMUS CAPITIS MUSCLE\n\n\nThe longissimus capitis (trachelomastoid muscle) lies medial to the longissimus cervicis, between it and the semispinalis capitis.\n\nIt arises by tendons from the transverse processes of the upper four or five thoracic vertebrae, and the articular processes of the lower three or four cervical vertebrae, and is inserted into the posterior margin of the mastoid process, beneath the splenius capitis and sternocleidomastoid.\n\nIt is almost always crossed by a tendinous intersection near its insertion. \n\n\n\nhttps://en.wikipedia.org/wiki/Longissimus#Longissimus_capitis",
+  "Longissimus colli muscle": "\n\nLONGISSIMUS COLLI MUSCLE\n\n\nThe longissimus colli, situated medial to the longissimus thoracis, arises by long, thin tendons from the summits of the transverse processes of thoracic vertebræ 1–5, and is inserted by similar tendons into the posterior tubercles of the transverse processes of cervical vertebrae 2–6.\n\n\n\nhttps://en.wikipedia.org/wiki/Longissimus",
+  "Longissimus muscles": "\n\nLONGISSIMUS MUSCLES\n\n\nThe longissimus (Latin for 'the longest one') is the muscle lateral to the semispinalis muscles. \n\nIt is the longest subdivision of the erector spinae muscles that extends forward into the transverse processes of the posterior cervical vertebrae.\n\n\n== Structure ==\n\n=== Longissimus thoracis et lumborum ===\n\nThe longissimus thoracis et lumborum is the intermediate and largest of the continuations of the erector spinae.\n\nIn the lumbar region (longissimus lumborum), where it is as yet blended with the iliocostalis, some of its fibers are attached to the whole length of the ",
+  "Longissimus thoracis muscle": "\n\nLONGISSIMUS\n\n\nThe longissimus (Latin for 'the longest one') is the muscle lateral to the semispinalis muscles. \n\nIt is the longest subdivision of the erector spinae muscles that extends forward into the transverse processes of the posterior cervical vertebrae.\n\n\n== Structure ==\n\n=== Longissimus thoracis et lumborum ===\n\nThe longissimus thoracis et lumborum is the intermediate and largest of the continuations of the erector spinae.\n\nIn the lumbar region (longissimus lumborum), where it is as yet blended with the iliocostalis, some of its fibers are attached to the whole length of the posterio",
+  "Rhomboid fossa": "\n\nRHOMBOID FOSSA\n\n\nThe rhomboid fossa is a rhombus-shaped depression that is the anterior part of the fourth ventricle. \n\nIts anterior wall, formed by the back of the pons and the medulla oblongata, constitutes the floor of the fourth ventricle.\nIt is covered by a thin layer of grey matter continuous with that of the spinal cord; superficial to this is a thin lamina of neuroglia which constitutes the ependyma of the ventricle and supports a layer of ciliated epithelium.\n\n\n== Parts ==\n\nThe fossa consists of three parts, superior, intermediate, and inferior:\n\nThe superior part\nThe superior part ",
+  "Rhomboid major muscle": "\n\nRHOMBOID MAJOR MUSCLE\n\n\nThe rhomboid major is a skeletal muscle on the back that connects the scapula with the vertebrae of the spinal column. \n\nIn human anatomy, it acts together with the rhomboid minor to keep the scapula pressed against thoracic wall and to retract the scapula toward the vertebral column.\n\n\n== Structure ==\n\nThe rhomboid major arises from the spinous processes of the thoracic vertebrae T2 to T5 as well as the supraspinous ligament. \n\nIt inserts on the medial border of the scapula, from about the level of the scapular spine to the scapula's inferior angle.\n\nThe rhomboid maj",
+  "Rhomboid minor muscle": "\n\nRHOMBOID MINOR MUSCLE\n\n\nIn human anatomy, the rhomboid minor is a small skeletal muscle on the back that connects the scapula with the vertebrae of the spinal column.\n\nLocated inferior to levator scapulae and superior to rhomboid major, it acts together with the latter to keep the scapula pressed against the thoracic wall.\n\nIt lies deep to trapezius but superficial to the long spinal muscles.\n\n\n== Origin and insertion ==\n\nThe rhomboid minor arises from the inferior border of the nuchal ligament, from the spinous processes of the seventh cervical and first thoracic vertebrae, and from the int",
+  "Scapular spinal part of deltoid muscle": "\n\nSCAPULAR SPINAL PART OF DELTOID MUSCLE\n\n\nThe deltoid muscle is the muscle forming the rounded contour of the human shoulder. \n\nIt is also known as the 'common shoulder muscle', particularly in other animals such as the domestic cat. \n\nAnatomically, the deltoid muscle appears to be made up of three distinct sets of muscle fibers, namely the\n\n-anterior or clavicular part (pars clavicularis)\n-posterior or scapular part (pars scapularis)\n-intermediate or acromial part (pars acromialis)\n\nHowever, electromyography suggests that it consists of at least seven groups that can be independently coordin",
+  "Semispinalis capitis muscle": "\n\nSEMISPINALIS CAPITIS MUSCLE\n\n\nThe semispinalis capitis (complexus) is situated at the upper and back part of the neck, deep to the splenius, and medial to the longissimus cervicis and longissimus capitis. \n\nIt arises by a series of tendons from the tips of the transverse processes of the upper six or seven thoracic and the seventh cervical vertebrae, and from the articular processes of the three cervical vertebrae above this (C4-C6).\n\nThe tendons, uniting, form a broad muscle, which passes upward, and is inserted between the superior and inferior nuchal lines of the occipital bone. \n\nIt lies",
+  "Semispinalis colli muscle": "\n\nSEMISPINALIS COLLI MUSCLE\n/SEMISPINALIS CERVICIS MUSCLES\n\n\nThe semispinalis cervicis (or semispinalis colli), arises by a series of tendinous and fleshy fibers from the transverse processes of the upper five or six thoracic vertebrae, and is inserted into the cervical spinous processes, from the axis to the fifth cervical vertebrae inclusive. \n\nThe semispinalis cervicis is thicker than the semispinalis thoracis. The fasciculus connected with the axis is the largest, and is chiefly muscular in structure.\n\n\n\nhttps://en.wikipedia.org/wiki/Semispinalis_muscles ",
+  "Semispinalis muscles": "\n\nSEMISPINALIS MUSCLES\n\n\nThe semispinalis muscles are a group of three muscles belonging to the transversospinales. \n\nThese are the semispinalis capitis, the semispinalis cervicis and the semispinalis thoracis.\n\nThe semispinalis capitis (complexus) is situated at the upper and back part of the neck, deep to the splenius, and medial to the longissimus cervicis and longissimus capitis. \n\nIt arises by a series of tendons from the tips of the transverse processes of the upper six or seven thoracic and the seventh cervical vertebrae, and from the articular processes of the three cervical vertebrae ",
+  "Semispinalis thoracis muscle": "\n\nSEMISPINALIS THORACIS MUSCLE\n\n\nThe semispinalis thoracis (or semispinalis dorsi) muscle consists of thin, narrow, fleshy fasciculi, interposed between tendons of considerable length. \n\nIt arises by a series of small tendons from the transverse processes of the sixth to the tenth thoracic vertebrae, and is inserted, by tendons, into the spinous processes of the upper four thoracic and lower two cervical vertebrae. \n\n\n\nhttps://en.wikipedia.org/wiki/Semispinalis_muscles",
+  "Spinalis capitis muscle": "\n\nSPINALIS CAPITIS MUSCLE\n\n\nSpinalis capitis (biventer cervicis) is usually inseparably connected with the semispinalis capitis.\n\nSpinalis capitis is not well characterized in modern anatomy textbooks and atlases, and is often omitted from anatomical illustration. \n\nHowever, it can be identified as fibers that extend from the spinous processes of TV1 and CV7 to the cranium, often blending with semispinalis capitis.\n\n\n\nhttps://en.wikipedia.org/wiki/Spinalis",
+  "Spinalis colli muscle": "\n\nSPINALIS COLLI MUSCLE\n\n\nSpinalis cervicis, or spinalis colli, is an inconstant muscle, which arises from the lower part of the nuchal ligament, the spinous process of the seventh cervical, and sometimes from the spinous processes of the first and second thoracic vertebrae, and is inserted into the spinous process of the axis, and occasionally into the spinous processes of the two cervical vertebrae below it.\n\n\n\nhttps://en.wikipedia.org/wiki/Spinalis",
+  "Spinalis muscles": "\n\nSPINALIS MUSCLES\n\n\nThe spinalis is a portion of the erector spinae, a bundle of muscles and tendons, located nearest to the spine. \n\nIt is divided into three parts: Spinalis dorsi, spinalis cervicis, and spinalis capitis.\n\n\n== Spinalis dorsi ==\n\nSpinalis dorsi, the medial continuation of the sacrospinalis, is scarcely separable as a distinct muscle. \n\nIt is situated at the medial side of the longissimus dorsi, and is intimately blended with it; it arises by three or four tendons from the spinous processes of the first two lumbar and the last two thoracic vertebrae: \n    \n    these, uniting, ",
+  "Spinalis thoracis muscle": "\n\nSPINALIS THORACIS MUSCLE\n/SPINALIS DORSI\n\n\nSpinalis dorsi, the medial continuation of the sacrospinalis, is scarcely separable as a distinct muscle. \n\nIt is situated at the medial side of the longissimus dorsi, and is intimately blended with it; it arises by three or four tendons from the spinous processes of the first two lumbar and the last two thoracic vertebrae: \n    \n    these, uniting, form a small muscle which is inserted by separate tendons into the spinous processes of the upper thoracic vertebrae, the number varying from four to eight.\n\nIt is intimately united with the semispinalis",
+  "Subscapularis muscle": "\n\nSUBSCAPULARIS MUSCLE\n\n\nThe subscapularis is a large triangular muscle which fills the subscapular fossa and inserts into the lesser tubercle of the humerus and the front of the capsule of the shoulder-joint.\n\n\n== Structure ==\n\nIt arises from its medial two-thirds and from the lower two-thirds of the groove on the axillary border (subscapular fossa) of the scapula.\n\nSome fibers arise from tendinous laminae, which intersect the muscle and are attached to ridges on the bone; others from an aponeurosis, which separates the muscle from the teres major and the long head of the triceps brachii.\n\nTh",
+  "Supraspinatus muscle": "\n\nSUPRASPINATUS MUSCLE\n\n\nThe supraspinatus (plural supraspinati) is a relatively small muscle of the upper back that runs from the supraspinous fossa superior portion of the scapula (shoulder blade) to the greater tubercle of the humerus. \n\nIt is one of the four rotator cuff muscles and also abducts the arm at the shoulder. \n\nThe spine of the scapula separates the supraspinatus muscle from the infraspinatus muscle, which originates below the spine.\n\n\n== Structure ==\n\nThe supraspinatus muscle arises from the supraspinous fossa, a shallow depression in the body of the scapula above its spine. \n\n",
+  "Teres major muscle": "\n\nTERES MAJOR MUSCLE\n\n\nThe teres major muscle is a muscle of the upper limb. \n\nIt attaches to the scapula and the humerus and is one of the seven scapulohumeral muscles. \n\nIt is a thick but somewhat flattened muscle.\n\nThe teres major muscle (from Latin teres, meaning \"rounded\") is positioned above the latissimus dorsi muscle and assists in the extension and medial rotation of the humerus. \n\nThis muscle is commonly confused as a rotator cuff muscle, but it is not because it does not attach to the capsule of the shoulder joint, unlike the teres minor muscle for example.\n\n\n== Structure ==\n\nThe te",
+  "Teres minor muscle": "\n\nTERES MINOR MUSCLE\n\n\nThe teres minor (Latin teres meaning 'rounded') is a narrow, elongated muscle of the rotator cuff. \n\nThe muscle originates from the lateral border and adjacent posterior surface of the corresponding right or left scapula and inserts at both the greater tubercle of the humerus and the posterior surface of the joint capsule.\n\nThe primary function of the teres minor is to modulate the action of the deltoid, preventing the humeral head from sliding upward as the arm is abducted. \n\nIt also functions to rotate the humerus laterally. \n\nThe teres minor is innervated by the axill",
+  "Transverse part of trapezius muscle": "\n\nTRAPEZIUS\n\n\nThe trapezius is a large paired trapezoid-shaped surface muscle that extends longitudinally from the occipital bone to the lower thoracic vertebrae of the spine and laterally to the spine of the scapula. \n\nIt moves the scapula and supports the arm.\n\nThe trapezius has three functional parts: an upper (descending) part which supports the weight of the arm; a middle region (transverse), which retracts the scapula; and a lower (ascending) part which medially rotates and depresses the scapula.\n\n\n== Name and history ==\n\nThe trapezius muscle resembles a trapezium (trapezoid in American ",
+  "Trapezius muscle": "\n\nTRAPEZIUS MUSCLE\n\n\nThe trapezius is a large paired trapezoid-shaped surface muscle that extends longitudinally from the occipital bone to the lower thoracic vertebrae of the spine and laterally to the spine of the scapula. \n\nIt moves the scapula and supports the arm.\n\nThe trapezius has three functional parts: an upper (descending) part which supports the weight of the arm; a middle region (transverse), which retracts the scapula; and a lower (ascending) part which medially rotates and depresses the scapula.\n\n\n== Structure ==\n\nThe superior or upper (or descending) fibers of the trapezius orig"
+ }
+}

@@ -3,14 +3,17 @@ import { MUSCLES } from "@/data/muscles/muscles";
 import type { BodySide, LocalizedName, SystemId } from "@/types/anatomy";
 
 /**
- * Arabic medical lexicon for every mesh structure in the Open Anatomy 3D
- * models, keyed by the catalog key without its side suffix (`lung_l` → `lung`).
+ * Arabic medical lexicon for every mesh structure shown in the studio, keyed
+ * by mesh name without its side suffix (`lung_l` → `lung`): the separated
+ * BodyParts3D muscles (via the muscle database), the non-separated muscle
+ * groups, and the Open Anatomy 3D bones, organs, vessels and nerves.
  * Arabic terms follow standard Arabic anatomical usage (المعجم الطبي الموحد).
  * English names come from the upstream catalog (CC BY 4.0).
  */
 
 export const SYSTEM_NAMES: Record<SystemId, LocalizedName> = {
-  muscles: { ar: "الجهاز العضلي", en: "Muscles" },
+  muscles: { ar: "العضلات المفصولة", en: "Separated muscles" },
+  muscles_context: { ar: "عضلات أخرى غير مفصولة", en: "Other muscles (not separated)" },
   skeleton: { ar: "الهيكل العظمي", en: "Skeleton" },
   skin: { ar: "الجلد", en: "Skin" },
   organs: { ar: "الأعضاء الداخلية", en: "Organs" },
@@ -21,6 +24,25 @@ export const SYSTEM_NAMES: Record<SystemId, LocalizedName> = {
 export const SIDE_NAMES: Record<Exclude<BodySide, "center">, LocalizedName> = {
   left: { ar: "الجانب الأيسر", en: "left" },
   right: { ar: "الجانب الأيمن", en: "right" },
+};
+
+/** Non-separated BodyParts3D muscle groups (pipeline/bodyparts3d/units.mjs CONTEXT). */
+const CONTEXT_AR: Record<string, { ar: string; en: string }> = {
+  ctx_neck_other: { ar: "عضلات العنق الأخرى (الأخمعية واللامية والجلدية العنقية…)", en: "Other neck muscles" },
+  ctx_shoulder_other: { ar: "العضلة تحت الكتف والمنشاريتان الخلفيتان وتحت الترقوة", en: "Subscapularis, serratus posterior, subclavius" },
+  ctx_back_deep_other: { ar: "عضلات الظهر العميقة (نصف الشوكية والمدوِّرات…)", en: "Deep back muscles" },
+  ctx_intercostals: { ar: "العضلات الوربية", en: "Intercostal muscles" },
+  ctx_arm_other: { ar: "العضلة المرفقية", en: "Anconeus" },
+  ctx_forearm_deep: { ar: "عضلات الساعد العميقة", en: "Deep forearm muscles" },
+  ctx_hand: { ar: "عضلات اليد", en: "Hand muscles" },
+  ctx_hip_deep: { ar: "العضلات الدوّارة العميقة للورك والسبيل الحرقفي الظنبوبي", en: "Deep hip rotators & iliotibial tract" },
+  ctx_adductor_minimus: { ar: "العضلة المقرِّبة الصغرى", en: "Adductor minimus" },
+  ctx_leg_deep: { ar: "عضلات الساق الخلفية العميقة والوتر العقبي", en: "Deep posterior leg muscles & calcaneal tendon" },
+  ctx_leg_anterior_other: { ar: "الباسطة الطويلة لإبهام القدم والشظوية الثالثة", en: "Extensor hallucis longus & fibularis tertius" },
+  ctx_foot: { ar: "عضلات القدم", en: "Foot muscles" },
+  ctx_linea_alba: { ar: "الخط الأبيض", en: "Linea alba" },
+  ctx_diaphragm: { ar: "الحجاب الحاجز", en: "Diaphragm" },
+  ctx_pelvic_floor: { ar: "عضلات قاع الحوض", en: "Pelvic floor" },
 };
 
 const STRUCTURES_AR: Record<string, string> = {
@@ -136,6 +158,8 @@ export interface StructureName {
  */
 export function structureName(key: string): StructureName | null {
   const { base, side } = splitSide(key);
+  const ctx = CONTEXT_AR[base];
+  if (ctx) return { ar: ctx.ar, en: ctx.en, side, system: "muscles_context", muscleId: null };
   const entry = CATALOG_BY_KEY.get(key);
   const muscleId = MUSCLE_BY_MESH_BASE.get(base) ?? null;
   const muscle = muscleId ? MUSCLES.find((m) => m.id === muscleId) : undefined;

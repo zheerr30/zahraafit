@@ -1,5 +1,5 @@
 import { createStore, useStore } from "zustand";
-import { MUSCLES, musclesInRegion } from "@/data/muscles/muscles";
+import { LEGACY_GROUP_IDS, MUSCLES, musclesInRegion } from "@/data/muscles/muscles";
 import {
   createDefaultDoc,
   DEFAULT_PALETTE,
@@ -334,8 +334,16 @@ export function createEditorStore(options: EditorStoreOptions = {}) {
 
       loadProject: (project) => {
         const entries = Object.entries(project.doc.selections);
-        // Drop selections for muscle ids that do not exist in the current database.
-        const kept = entries.filter(([id]) => KNOWN_IDS.has(id));
+        // Projects from the merged-group model: expand each old group id to the
+        // separated units it contained (keeping tone and colour); drop ids that
+        // have no counterpart.
+        const kept: typeof entries = [];
+        let dropped = 0;
+        for (const [id, sel] of entries) {
+          if (KNOWN_IDS.has(id)) kept.push([id, sel]);
+          else if (LEGACY_GROUP_IDS[id]) for (const unit of LEGACY_GROUP_IDS[id]) kept.push([unit, sel]);
+          else dropped++;
+        }
         set((state) => ({
           // A file loaded from disk cannot be reopened automatically; keep it if loaded.
           assetMode: state.assetMode === "local-file" ? "local-file" : "manifest",
@@ -354,7 +362,7 @@ export function createEditorStore(options: EditorStoreOptions = {}) {
           currentView: project.camera?.view ?? "front",
           assetView: project.camera?.view ?? "front",
         }));
-        return entries.length - kept.length;
+        return dropped;
       },
 
       markSaved: (id, name) => set({ projectId: id, projectName: name, dirty: false }),

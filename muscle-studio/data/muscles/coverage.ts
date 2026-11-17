@@ -1,68 +1,67 @@
 import type { LocalizedName } from "@/types/anatomy";
 
 /**
- * How the studio's original 32 target muscles are represented in the Open
- * Anatomy 3D models, derived from the upstream build rules
- * (pipeline/catalog.mjs) and verified against the actual GLB meshes.
+ * How the studio's original 32 target muscles are represented in the
+ * BodyParts3D muscles (verified against all 2,234 BodyParts3D 4.0 OBJ headers).
  *
- * - "individual": the muscle is its own selectable mesh.
- * - "whole-muscle": only the whole muscle exists (sub-parts are not separate).
- * - "in-group": merged with other muscles; highlighting colours the whole group.
- * - "missing": no mesh contains this muscle.
+ * - "individual": its own selectable mesh.
+ * - "parts": available as separate named parts (e.g. the three trapezius parts).
+ * - "in-group": merged with neighbouring muscles in one selectable mesh.
+ * - "missing": no BodyParts3D 4.0 file contains this muscle.
  */
-export type CoverageStatus = "individual" | "whole-muscle" | "in-group" | "missing";
+export type CoverageStatus = "individual" | "parts" | "in-group" | "missing";
 
 export interface CoverageEntry {
   name: LocalizedName;
   status: CoverageStatus;
-  /** Selectable muscle unit that contains it (null when missing). */
-  muscleId: string | null;
+  /** Selectable unit(s) that represent it (empty when missing). */
+  muscleIds: string[];
 }
 
-const c = (ar: string, en: string, status: CoverageStatus, muscleId: string | null): CoverageEntry => ({
+const c = (ar: string, en: string, status: CoverageStatus, ...muscleIds: string[]): CoverageEntry => ({
   name: { ar, en },
   status,
-  muscleId,
+  muscleIds,
 });
 
 export const TARGET_COVERAGE: CoverageEntry[] = [
-  c("العضلة الصدرية الكبرى", "Pectoralis Major", "individual", "pectoralis-major"),
-  c("العضلة الصدرية الصغرى", "Pectoralis Minor", "in-group", "shoulder-girdle"),
-  c("العضلة الظهرية العريضة", "Latissimus Dorsi", "missing", null),
-  c("العضلة شبه المنحرفة", "Trapezius", "individual", "trapezius"),
-  c("العضلات المعينية", "Rhomboids", "in-group", "shoulder-girdle"),
-  c("العضلة المدوّرة الكبرى", "Teres Major", "in-group", "shoulder-girdle"),
-  c("العضلة الناصبة للفقار", "Erector Spinae", "in-group", "deep-back"),
-  c("الدالية الأمامية", "Anterior Deltoid", "whole-muscle", "deltoid"),
-  c("الدالية الجانبية", "Lateral Deltoid", "whole-muscle", "deltoid"),
-  c("الدالية الخلفية", "Posterior Deltoid", "whole-muscle", "deltoid"),
-  c("العضلة ذات الرأسين العضدية", "Biceps Brachii", "in-group", "upper-arm"),
-  c("العضلة العضدية", "Brachialis", "in-group", "upper-arm"),
-  c("العضلة ثلاثية الرؤوس العضدية", "Triceps Brachii", "in-group", "upper-arm"),
-  c("عضلات الساعد القابضة", "Forearm Flexors", "in-group", "forearm"),
-  c("عضلات الساعد الباسطة", "Forearm Extensors", "in-group", "forearm"),
-  c("العضلة المستقيمة البطنية", "Rectus Abdominis", "in-group", "abdominal-wall"),
-  c("العضلة المائلة الخارجية", "External Obliques", "in-group", "abdominal-wall"),
-  c("العضلة المائلة الداخلية", "Internal Obliques", "in-group", "abdominal-wall"),
-  c("العضلة الألوية الكبرى", "Gluteus Maximus", "in-group", "gluteal"),
-  c("العضلة الألوية الوسطى", "Gluteus Medius", "in-group", "gluteal"),
-  c("العضلة الألوية الصغرى", "Gluteus Minimus", "in-group", "gluteal"),
-  c("العضلة المستقيمة الفخذية", "Rectus Femoris", "in-group", "quadriceps"),
-  c("العضلة المتسعة الوحشية", "Vastus Lateralis", "in-group", "quadriceps"),
-  c("العضلة المتسعة الإنسية", "Vastus Medialis", "in-group", "quadriceps"),
-  c("العضلة المتسعة المتوسطة", "Vastus Intermedius", "in-group", "quadriceps"),
-  c("العضلة ذات الرأسين الفخذية", "Biceps Femoris", "in-group", "hamstrings"),
-  c("العضلة نصف الوترية", "Semitendinosus", "in-group", "hamstrings"),
-  c("العضلة نصف الغشائية", "Semimembranosus", "in-group", "hamstrings"),
-  c("العضلات المقرّبة", "Adductors", "in-group", "adductors"),
-  c("العضلة التوأمية الساقية", "Gastrocnemius", "in-group", "calf"),
-  c("العضلة النعلية", "Soleus", "in-group", "calf"),
-  c("العضلة الظنبوبية الأمامية", "Tibialis Anterior", "in-group", "anterior-leg"),
+  c("العضلة الصدرية الكبرى", "Pectoralis Major", "parts", "pectoralis-major-clavicular", "pectoralis-major-sternocostal", "pectoralis-major-abdominal"),
+  c("العضلة الصدرية الصغرى", "Pectoralis Minor", "individual", "pectoralis-minor"),
+  c("العضلة الظهرية العريضة", "Latissimus Dorsi", "missing"),
+  c("العضلة شبه المنحرفة", "Trapezius", "parts", "trapezius-descending", "trapezius-transverse", "trapezius-ascending"),
+  c("العضلات المعينية", "Rhomboids", "individual", "rhomboids"),
+  c("العضلة المدوّرة الكبرى", "Teres Major", "individual", "teres-major"),
+  c("العضلة الناصبة للفقار", "Erector Spinae", "individual", "erector-spinae"),
+  c("الدالية الأمامية", "Anterior Deltoid", "individual", "deltoid-anterior"),
+  c("الدالية الجانبية", "Lateral Deltoid", "individual", "deltoid-lateral"),
+  c("الدالية الخلفية", "Posterior Deltoid", "individual", "deltoid-posterior"),
+  c("العضلة ذات الرأسين العضدية", "Biceps Brachii", "individual", "biceps-brachii"),
+  c("العضلة العضدية", "Brachialis", "individual", "brachialis"),
+  c("العضلة ثلاثية الرؤوس العضدية", "Triceps Brachii", "individual", "triceps-brachii"),
+  c("عضلات الساعد القابضة", "Forearm Flexors", "individual", "forearm-flexors"),
+  c("عضلات الساعد الباسطة", "Forearm Extensors", "individual", "forearm-extensors"),
+  c("العضلة المستقيمة البطنية", "Rectus Abdominis", "missing"),
+  c("العضلة المائلة الخارجية", "External Obliques", "individual", "external-oblique"),
+  c("العضلة المائلة الداخلية", "Internal Obliques", "missing"),
+  c("العضلة الألوية الكبرى", "Gluteus Maximus", "individual", "gluteus-maximus"),
+  c("العضلة الألوية الوسطى", "Gluteus Medius", "individual", "gluteus-medius"),
+  c("العضلة الألوية الصغرى", "Gluteus Minimus", "individual", "gluteus-minimus"),
+  c("العضلة المستقيمة الفخذية", "Rectus Femoris", "individual", "rectus-femoris"),
+  c("العضلة المتسعة الوحشية", "Vastus Lateralis", "individual", "vastus-lateralis"),
+  c("العضلة المتسعة الإنسية", "Vastus Medialis", "individual", "vastus-medialis"),
+  c("العضلة المتسعة المتوسطة", "Vastus Intermedius", "individual", "vastus-intermedius"),
+  c("العضلة ذات الرأسين الفخذية", "Biceps Femoris", "individual", "biceps-femoris"),
+  c("العضلة نصف الوترية", "Semitendinosus", "individual", "semitendinosus"),
+  c("العضلة نصف الغشائية", "Semimembranosus", "individual", "semimembranosus"),
+  c("العضلات المقرّبة", "Adductors", "parts", "adductor-longus", "adductor-brevis", "adductor-magnus"),
+  c("العضلة التوأمية الساقية", "Gastrocnemius", "individual", "gastrocnemius"),
+  c("العضلة النعلية", "Soleus", "individual", "soleus"),
+  c("العضلة الظنبوبية الأمامية", "Tibialis Anterior", "individual", "tibialis-anterior"),
 ];
 
 export const COVERAGE_LABELS: Record<CoverageStatus, string> = {
-  individual: "قابلة للتحديد منفردة",
-  "whole-muscle": "العضلة كاملة فقط",
-  "in-group": "ضمن مجموعة مدموجة",
-  missing: "غير موجودة في النموذج",
+  individual: "شبكة مستقلة",
+  parts: "مفصولة إلى أجزائها",
+  "in-group": "ضمن مجموعة",
+  missing: "غير موجودة في BodyParts3D",
 };

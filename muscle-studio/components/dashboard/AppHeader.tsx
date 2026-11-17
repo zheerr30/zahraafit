@@ -53,7 +53,8 @@ export function AppFooter() {
   return (
     <footer className="border-t border-line px-4 py-6 text-center text-xs leading-relaxed text-muted">
       <p>
-        النماذج التشريحية: Open Anatomy 3D — مبنية على BodyParts3D © DBCLS و HuBMAP HRA و MakeHuman، برخصة{" "}
+        العضلات: BodyParts3D © The Database Center for Life Science. الجسم المرجعي وشكل الجسم الأنثوي: Open Anatomy 3D
+        (BodyParts3D و HuBMAP HRA و MakeHuman). الرخصة{" "}
         <a href="https://creativecommons.org/licenses/by/4.0/" className="text-accent-2 hover:underline" target="_blank" rel="noreferrer">
           CC BY 4.0
         </a>

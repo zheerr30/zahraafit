@@ -16,6 +16,7 @@ const SYSTEM_SET = new Set<string>(SYSTEMS);
 /** Fallback display colours per system ("anatomical" colour mode and non-muscle systems). */
 export const SYSTEM_COLORS: Record<Exclude<SystemId, "skin">, string> = {
   muscles: "#B5463D",
+  muscles_context: "#8E4038",
   skeleton: "#E8E1D1",
   organs: "#C96F5D",
   vessels: "#B8322A",
@@ -73,6 +74,21 @@ function findSystem(mesh: Object3D, groups: Map<SystemId, Object3D>): SystemId |
 function ensureBvh(mesh: Mesh) {
   const g = mesh.geometry as Mesh["geometry"] & { boundsTree?: unknown };
   if (!g.boundsTree) computeBoundsTree.call(g);
+}
+
+/**
+ * Replace a body's own (merged) "muscles" node with the separated muscles
+ * GLB. Both files share the same coordinate frame, so no transform is needed.
+ * Returns the removed node so the caller can dispose it.
+ */
+export function combineBodyAndMuscles(body: Group, muscles: Group): Object3D | null {
+  const old = body.children.find((c) => authoredName(c) === "muscles") ?? null;
+  if (old) body.remove(old);
+  for (const child of [...muscles.children]) {
+    const name = authoredName(child);
+    if (name === "muscles" || name === "muscles_context") body.add(child);
+  }
+  return old;
 }
 
 /**
@@ -228,6 +244,9 @@ export function applyMaterials(
 
     if (system === "skin") {
       next = library.skin();
+    } else if (system === "muscles_context") {
+      // Non-separated muscles: shown for anatomical completeness, never painted.
+      next = library.get(doc.materialMode === "anatomical" ? SYSTEM_COLORS.muscles_context : doc.palette.shadow, "normal");
     } else if (system && system !== "muscles") {
       next = library.get(structureColor(model, mesh, system), "normal");
     } else {

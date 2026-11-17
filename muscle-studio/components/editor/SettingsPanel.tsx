@@ -14,7 +14,8 @@ import { IconReset, IconUpload } from "@/components/ui/icons";
 import { AssetInspector } from "./AssetInspector";
 
 const SYSTEM_HINTS: Record<(typeof SYSTEMS)[number], string> = {
-  muscles: "العضلات القابلة للتلوين",
+  muscles: "51 عضلة وجزءًا قابلة للتلوين، لكل جانب",
+  muscles_context: "بقية عضلات BodyParts3D للعرض فقط",
   skeleton: "العظام والفقرات",
   skin: "سطح الجسم بشفافية",
   organs: "القلب والرئتان والأحشاء",
@@ -98,7 +99,7 @@ export function SettingsPanel({ active }: { active: ActiveAsset }) {
       {hasSystems && (
         <Section title="الأجهزة التشريحية">
           <p className="mb-2 text-xs leading-relaxed text-muted">
-            تظهر العضلات فقط عند البدء. يمكن إظهار بقية الأجهزة للمرجع؛ التلوين متاح للعضلات وحدها.
+            تظهر العضلات فقط عند البدء. يمكن إظهار بقية الأجهزة للمرجع؛ التلوين متاح للعضلات المفصولة وحدها.
           </p>
           {SYSTEMS.map((system) => (
             <Switch

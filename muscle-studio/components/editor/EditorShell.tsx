@@ -57,7 +57,7 @@ function useEditorInitialization() {
               const dropped = st.loadProject(project);
               if (dropped > 0) {
                 toast.warning(
-                  `أُزيلت ${dropped} من العضلات المحفوظة لأنها غير موجودة في نموذج Open Anatomy 3D.`,
+                  `أُزيلت ${dropped} من العضلات المحفوظة لأنها غير موجودة في BodyParts3D.`,
                 );
               }
             } else {

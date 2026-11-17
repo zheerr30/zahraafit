@@ -4,7 +4,6 @@
 // Requires the `playwright` package and a Chromium build.
 const { chromium } = require('playwright');
 const BASE = process.env.BASE || 'http://localhost:3001';
-const IDS = ["neck-muscles","deltoid","rotator-cuff","shoulder-girdle","pectoralis-major","intercostals","trapezius","deep-back","upper-arm","forearm","hand","abdominal-wall","diaphragm","pelvic-floor","iliopsoas","gluteal","quadriceps","hamstrings","adductors","calf","anterior-leg","foot"];
 (async () => {
   const b = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
   const page = await b.newPage({ viewport: { width: 1600, height: 1000 } });
@@ -12,7 +11,8 @@ const IDS = ["neck-muscles","deltoid","rotator-cuff","shoulder-girdle","pectoral
   const summary = {};
   for (const g of ['male', 'female']) {
     await page.goto(`${BASE}/editor?new=1&gender=${g}&e2e=1`);
-    await page.getByText(/22 من 22 وحدة عضلية مرتبطة/).waitFor({ timeout: 120000 });
+    await page.getByText(/(\d+) من \1 وحدة عضلية مرتبطة/).waitFor({ timeout: 120000 });
+    const IDS = await page.$$eval('aside[aria-label="مكتبة العضلات"] button[data-muscle-id]', (els) => [...new Set(els.map((e) => e.dataset.muscleId))]);
     await page.waitForTimeout(1000);
     const ok = {}, wrong = [];
     for (const [key, view] of [['1','front'],['2','back'],['3','left'],['4','right']]) {
@@ -40,7 +40,7 @@ const IDS = ["neck-muscles","deltoid","rotator-cuff","shoulder-girdle","pectoral
       const sel = await page.evaluate(() => window.__muscleStudioTest.selected());
       viaList.push(`${id}:${sel.length === 1 && sel[0] === id ? 'ok' : 'FAIL ' + sel}`);
     }
-    summary[g] = { clicked: Object.keys(ok).length, byView: ok, notClickableFromOutside: viaList, mismatches: wrong };
+    summary[g] = { units: IDS.length, clicked: Object.keys(ok).length, byView: ok, notClickableFromOutside: viaList, mismatches: wrong };
   }
   console.log(JSON.stringify(summary, null, 1));
   console.log('page errors', errs);

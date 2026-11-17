@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { ANATOMY_ASSETS, primaryAssetFor } from "@/data/models/manifest";
+import { MUSCLES } from "@/data/muscles/muscles";
 import { useAssetStore } from "@/stores/assetStore";
 import { cn } from "@/components/ui/cn";
 import type { Gender } from "@/types/anatomy";
@@ -50,8 +51,8 @@ export function ModelShortcuts() {
             </div>
             <div className="min-w-0">
               <p className="text-xs font-semibold text-muted">{g === "male" ? "نموذج ذكر" : "نموذج أنثى"}</p>
-              <p className="mt-1 text-lg font-semibold">Open Anatomy 3D</p>
-              <p className="text-xs text-muted">22 وحدة عضلية قابلة للتلوين · 6 أجهزة تشريحية</p>
+              <p className="mt-1 text-lg font-semibold">BodyParts3D</p>
+              <p className="text-xs text-muted">{MUSCLES.length} عضلة مفصولة لكل جانب · العرض الأمامي والخلفي والجانبي</p>
               <div className="mt-2">
                 <StatusPill state={availability[asset.id]} />
               </div>
@@ -85,6 +86,9 @@ export function AssetStatusList() {
           <li key={a.id} className="flex items-center justify-between gap-3 px-4 py-3">
             <div className="min-w-0">
               <p className="truncate text-sm text-fg">{a.label}</p>
+              <p dir="ltr" className="truncate text-end font-mono text-[11px] text-muted">
+                public{a.musclesUrl}
+              </p>
               <p dir="ltr" className="truncate text-end font-mono text-[11px] text-muted">
                 public{a.url}
               </p>

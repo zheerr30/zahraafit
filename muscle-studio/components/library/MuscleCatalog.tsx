@@ -12,7 +12,7 @@ import { GranularityBadge, MuscleSearchInput } from "./MuscleSelector";
 
 const STATUS_STYLE: Record<CoverageStatus, string> = {
   individual: "border-ok/40 text-ok",
-  "whole-muscle": "border-accent-2/50 text-accent-2",
+  parts: "border-accent-2/50 text-accent-2",
   "in-group": "border-line-strong text-muted",
   missing: "border-danger/40 text-danger",
 };
@@ -87,7 +87,7 @@ export function MuscleCatalog() {
                     </span>
                   </div>
                   <div className="mt-3 text-xs">
-                    <p className="mb-1 text-muted">{m.granularity === "single" ? "العضلة:" : "تشمل الشبكة:"}</p>
+                    <p className="mb-1 text-muted">مصدر الشبكة في BodyParts3D:</p>
                     <ul className="space-y-0.5">
                       {m.includes.map((i) => (
                         <li key={i.en} className="flex flex-wrap gap-x-2">
@@ -103,7 +103,7 @@ export function MuscleCatalog() {
                   <p className="mt-3 text-[11px] text-muted">
                     الشبكة في النموذج:{" "}
                     <span dir="ltr" className="font-mono text-fg">
-                      {m.meshNames.map((n) => (["abdominal_muscles", "diaphragm", "pelvic_floor"].includes(n) ? n : `${n}_l / _r`)).join(", ")}
+                      {m.meshNames.map((n) => `${n}_l / _r`).join(", ")}
                     </span>
                   </p>
                   <Link
@@ -121,11 +121,11 @@ export function MuscleCatalog() {
 
       <section aria-labelledby="coverage-heading">
         <h2 id="coverage-heading" className="text-lg font-semibold">
-          تغطية النموذج للعضلات المستهدفة الـ32
+          تغطية BodyParts3D للعضلات المستهدفة الـ32
         </h2>
         <p className="mb-4 mt-1 max-w-3xl text-sm leading-relaxed text-muted">
-          نماذج Open Anatomy 3D تدمج كثيرًا من العضلات في مجموعات. يبيّن الجدول ما يمكن تلوينه فعلًا لكل عضلة من القائمة
-          المرجعية؛ عند اختيار عضلة «ضمن مجموعة» تتلوّن المجموعة كاملة.
+          فُحصت ملفات BodyParts3D 4.0 كلها (2234 ملفًا). يبيّن الجدول ما يمكن تلوينه فعلًا لكل عضلة من القائمة المرجعية،
+          وما لا يحتويه المصدر أصلًا.
         </p>
         <div className="mb-3 flex flex-wrap gap-2 text-xs">
           {(Object.keys(COVERAGE_LABELS) as CoverageStatus[]).map((s) => (
@@ -157,7 +157,9 @@ export function MuscleCatalog() {
                       {COVERAGE_LABELS[c.status]}
                     </span>
                   </td>
-                  <td className="px-3 py-2 text-muted">{c.muscleId ? getMuscle(c.muscleId)?.displayName.ar : "—"}</td>
+                  <td className="px-3 py-2 text-muted">
+                    {c.muscleIds.length ? c.muscleIds.map((id) => getMuscle(id)?.displayName.ar).join("، ") : "—"}
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -42,16 +42,26 @@ export const MuscleSearchInput = forwardRef<
 });
 
 export function GranularityBadge({ muscle }: { muscle: MuscleDefinition }) {
-  return muscle.granularity === "single" ? (
-    <span className="shrink-0 rounded border border-ok/40 px-1 text-[10px] text-ok" title="شبكة واحدة تمثل عضلة واحدة">
-      عضلة مفردة
-    </span>
-  ) : (
-    <span
-      className="shrink-0 rounded border border-line-strong px-1 text-[10px] text-muted"
-      title={`مجموعة مدموجة: ${muscle.includes.map((i) => i.ar).join("، ")}`}
-    >
-      مجموعة · {muscle.includes.length}
+  if (muscle.granularity === "part") {
+    return (
+      <span className="shrink-0 rounded border border-accent-2/50 px-1 text-[10px] text-accent-2" title="جزء مسمّى من عضلة، شبكة مستقلة">
+        جزء
+      </span>
+    );
+  }
+  if (muscle.granularity === "group") {
+    return (
+      <span
+        className="shrink-0 rounded border border-line-strong px-1 text-[10px] text-muted"
+        title={`عضلات متجاورة في شبكة واحدة: ${muscle.includes.map((i) => i.ar).join("، ")}`}
+      >
+        مجموعة · {muscle.includes.length}
+      </span>
+    );
+  }
+  return (
+    <span className="shrink-0 rounded border border-ok/40 px-1 text-[10px] text-ok" title="شبكة مستقلة لعضلة واحدة">
+      عضلة
     </span>
   );
 }

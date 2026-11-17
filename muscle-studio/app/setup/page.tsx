@@ -23,22 +23,22 @@ export default function SetupPage() {
           <header>
             <h1 className="text-2xl font-bold text-fg">الإعدادات والنماذج</h1>
             <p className="mt-1">
-              يستخدم الاستوديو نموذجي Open Anatomy 3D الأصليين (ذكر وأنثى). إذا تعذّر تحميل نموذج تظهر رسالة خطأ واضحة،
-              ولا يُستبدل أبدًا بمجسّم هندسي أو بديل.
+              العضلات مستخرجة من BodyParts3D كشبكات مستقلة بشكلها التشريحي الأصلي، والجسم المرجعي (العظام والجلد والأعضاء) من
+              Open Anatomy 3D. إذا تعذّر تحميل أي ملف تظهر رسالة خطأ واضحة، ولا يُستبدل أبدًا بمجسّم هندسي أو بديل.
             </p>
           </header>
 
           <section>
-            <h2 className="mb-2 text-base font-semibold text-fg">مكان الملفات</h2>
+            <h2 className="mb-2 text-base font-semibold text-fg">الملفات</h2>
             <ul className="space-y-1">
               <li>
-                <Code>public/models/open-anatomy-3d/anatomy-male.glb</Code>
+                <Code>public/models/bodyparts3d/muscles-male.glb</Code> و<Code>muscles-female.glb</Code> — العضلات المفصولة
               </li>
               <li>
-                <Code>public/models/open-anatomy-3d/anatomy-female.glb</Code>
+                <Code>public/models/open-anatomy-3d/anatomy-male.glb</Code> و<Code>anatomy-female.glb</Code> — الجسم المرجعي
               </li>
               <li>
-                نص الترخيص والنسبة بجانبهما: <Code>LICENSE-MODELS.md</Code> و<Code>ATTRIBUTION.md</Code>
+                تقرير البناء: <Code>public/models/bodyparts3d/build-report.json</Code>
               </li>
             </ul>
           </section>
@@ -46,26 +46,31 @@ export default function SetupPage() {
           <section>
             <h2 className="mb-2 text-base font-semibold text-fg">ما يحتويه النموذج</h2>
             <ul className="list-disc space-y-1 ps-5">
-              <li>ستة أجهزة: العضلات، والهيكل العظمي، والجلد، والأعضاء، والأوعية، والأعصاب. تظهر العضلات وحدها عند البدء.</li>
               <li>
-                41 شبكة عضلية تمثل 22 وحدة قابلة للتلوين. ثلاث منها عضلات مفردة (الصدرية الكبرى، وشبه المنحرفة، والدالية
-                كاملة) والباقي مجموعات مدموجة.
+                51 عضلة أو جزءًا مسمّى، شبكة مستقلة لكل جانب (102 شبكة)، منها أجزاء الدالية الثلاثة وأجزاء شبه المنحرفة الثلاثة
+                وأجزاء الصدرية الكبرى الثلاثة.
               </li>
+              <li>بقية عضلات BodyParts3D (378 ملفًا مستخدمًا إجمالًا) تظهر للعرض فقط في طبقة «عضلات أخرى غير مفصولة».</li>
               <li>
-                العضلة الظهرية العريضة غير موجودة، ورؤوس الدالية غير منفصلة.{" "}
+                غير موجودة في BodyParts3D 4.0 أصلًا: العضلة الظهرية العريضة، والمستقيمة البطنية، والمائلة الداخلية، والمستعرضة
+                البطنية.{" "}
                 <Link href="/library" className="text-accent-2 hover:underline">
                   جدول التغطية الكامل
                 </Link>
                 .
               </li>
+              <li>
+                BodyParts3D جسم ذكر واحد. النموذج الأنثوي هو العضلات نفسها بعد نقل تشوّه الجسم الأنثوي من Open Anatomy 3D إليها،
+                وليس تشريحًا أنثويًا مستقلًا.
+              </li>
             </ul>
           </section>
 
           <section>
-            <h2 className="mb-2 text-base font-semibold text-fg">نماذج أخرى</h2>
+            <h2 className="mb-2 text-base font-semibold text-fg">إعادة البناء</h2>
             <p>
-              يمكن تجربة ملف GLB آخر من المحرر («تحميل ملف GLB آخر…»). تُربط شبكاته بالعضلات بالأسماء القياسية الواردة في
-              المكتبة، ويمكن ربط الباقي يدويًا من «فاحص ربط الشبكات». الملف يبقى على الجهاز ولا يُرفع.
+              <Code>node pipeline/bodyparts3d/build.mjs --bp3d &lt;مجلد BodyParts3D&gt;</Code> — التفاصيل في
+              <Code>pipeline/bodyparts3d/README.md</Code>.
             </p>
           </section>
         </article>

@@ -11,12 +11,22 @@ export const OPEN_ANATOMY_CREDIT =
   "female body: MakeHuman (CC0). Modified by open-anatomy-3d " +
   "(https://github.com/MervinR07/open-anatomy-3d), CC BY 4.0.";
 
+/** Credit line required by BodyParts3D (verbatim from its README, 2025-02-25). */
+export const BODYPARTS3D_CREDIT =
+  "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International";
+
+/** Full credit for the assets shown in the studio. */
+export const STUDIO_ANATOMY_CREDIT =
+  `Muscles: ${BODYPARTS3D_CREDIT} — separated, simplified and (female) reshaped by MUSCLE STUDIO 3D. ` +
+  `Body systems and female shape: ${"open-anatomy-3d (https://github.com/MervinR07/open-anatomy-3d), CC BY 4.0"}, ` +
+  "built from BodyParts3D, Human Reference Atlas 3D Reference Organs (HuBMAP, CC BY 4.0) and MakeHuman (CC0).";
+
 /** Short credit used on exported images, where space is limited. */
 export const OPEN_ANATOMY_SHORT_CREDIT =
-  "Anatomy: BodyParts3D © DBCLS · HuBMAP HRA · MakeHuman — via open-anatomy-3d · CC BY 4.0";
+  "Anatomy: BodyParts3D © DBCLS (CC BY 4.0) · open-anatomy-3d · HuBMAP HRA · MakeHuman";
 
 export const OPEN_ANATOMY_ATTRIBUTION: AssetAttribution = {
-  credit: OPEN_ANATOMY_CREDIT,
+  credit: STUDIO_ANATOMY_CREDIT,
   license: "CC BY 4.0",
   licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
   sourceUrl: "https://github.com/MervinR07/open-anatomy-3d",
@@ -31,7 +41,8 @@ export const SOURCES = [
     owner: "© The Database Center for Life Science (DBCLS)",
     license: "CC BY 4.0",
     url: "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/",
-    usage: "التشريح في النموذجين: العضلات والعظام والأعضاء والأوعية والأعصاب.",
+    usage:
+      "المصدر الأساسي: العضلات المفصولة (51 وحدة لكل جانب) والعضلات الأخرى، استُخرجت مباشرة من ملفات OBJ الأصلية، ومنها أيضًا العظام والأعضاء والأوعية في النموذجين.",
   },
   {
     name: "Human Reference Atlas — 3D Reference Organ Set (united female v1.10)",
@@ -52,6 +63,7 @@ export const SOURCES = [
     owner: "MervinR07",
     license: "النماذج والفهرس: CC BY 4.0 · الكود: MIT",
     url: "https://github.com/MervinR07/open-anatomy-3d",
-    usage: "إعداد النموذجين وفهرس البنى التشريحية. يُستخدم الملفان الأصليان دون تعديل.",
+    usage:
+      "الجسم المرجعي (العظام والجلد والأعضاء والأوعية والأعصاب) وشكل الجسم الأنثوي: نُقل تشوّه الجسم الأنثوي إلى العضلات المفصولة. يُستخدم ملفاه الأصليان دون تعديل.",
   },
 ] as const;

@@ -44,3 +44,6 @@ next-env.d.ts
 /public/decoders
 
 !.env.example
+
+# BodyParts3D source download for pipeline/bodyparts3d (not committed)
+/bp3d

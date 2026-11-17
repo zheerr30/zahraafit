@@ -22,8 +22,8 @@ describe("muscle database", () => {
     expect(REGION_DEFINITIONS.map((r) => r.id)).toEqual([...REGIONS]);
   });
 
-  it("has one entry per selectable muscle unit of the model", () => {
-    expect(MUSCLES).toHaveLength(22);
+  it("has one entry per separated BodyParts3D unit", () => {
+    expect(MUSCLES).toHaveLength(51);
     for (const m of MUSCLES) {
       expect(m.includes.length, m.id).toBeGreaterThan(0);
       for (const i of m.includes) expect(i.ar).toMatch(/[\u0600-\u06ff]/);
@@ -43,13 +43,14 @@ describe("muscle database", () => {
 
 describe("searchMuscles", () => {
   it("finds units by Arabic name, English name, constituent muscle and gym slang", () => {
-    expect(searchMuscles(MUSCLES, "الصدرية الكبرى")[0].id).toBe("pectoralis-major");
-    expect(searchMuscles(MUSCLES, "traps")[0].id).toBe("trapezius");
-    expect(searchMuscles(MUSCLES, "biceps brachii")[0].id).toBe("upper-arm");
-    expect(searchMuscles(MUSCLES, "ذات الرأسين العضدية")[0].id).toBe("upper-arm");
-    expect(searchMuscles(MUSCLES, "السمانة")[0].id).toBe("calf");
-    expect(searchMuscles(MUSCLES, "الالوية الكبرى")[0].id).toBe("gluteal");
-    expect(searchMuscles(MUSCLES, "Musculus deltoideus")[0].id).toBe("deltoid");
+    expect(searchMuscles(MUSCLES, "الدالية الأمامية")[0].id).toBe("deltoid-anterior");
+    expect(searchMuscles(MUSCLES, "rear delt")[0].id).toBe("deltoid-posterior");
+    expect(searchMuscles(MUSCLES, "أعلى الصدر")[0].id).toBe("pectoralis-major-clavicular");
+    expect(searchMuscles(MUSCLES, "biceps brachii")[0].id).toBe("biceps-brachii");
+    expect(searchMuscles(MUSCLES, "بايسبس")[0].id).toBe("biceps-brachii");
+    expect(searchMuscles(MUSCLES, "السمانة").map((m) => m.id)).toEqual(expect.arrayContaining(["gastrocnemius", "soleus"]));
+    expect(searchMuscles(MUSCLES, "الالوية الكبرى")[0].id).toBe("gluteus-maximus");
+    expect(searchMuscles(MUSCLES, "Musculus soleus")[0].id).toBe("soleus");
   });
 
   it("returns everything for an empty query and nothing for nonsense", () => {
@@ -59,9 +60,10 @@ describe("searchMuscles", () => {
 });
 
 describe("resolveAsset", () => {
-  it("resolves the bundled Open Anatomy 3D body for each gender", () => {
-    expect(resolveAsset("male", "back")?.id).toBe("open-anatomy-3d-male");
-    expect(resolveAsset("female", "front")?.id).toBe("open-anatomy-3d-female");
+  it("resolves the BodyParts3D muscles + reference body for each gender", () => {
+    expect(resolveAsset("male", "back")?.id).toBe("bodyparts3d-male");
+    expect(resolveAsset("female", "front")?.id).toBe("bodyparts3d-female");
+    expect(ANATOMY_ASSETS.every((a) => a.musclesUrl?.startsWith("/models/bodyparts3d/"))).toBe(true);
     expect(ANATOMY_ASSETS.every((a) => a.attribution?.license === "CC BY 4.0")).toBe(true);
   });
 });

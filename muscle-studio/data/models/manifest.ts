@@ -4,30 +4,33 @@ import type { AnatomyAssetDefinition, Gender, ViewId } from "@/types/anatomy";
 /**
  * Anatomical asset manifest.
  *
- * The bundled models are the original, unmodified Open Anatomy 3D GLB files
- * (CC BY 4.0, see public/models/open-anatomy-3d/). Each body has its systems
- * (skin, skeleton, muscles, organs, vessels, nerves) as top-level nodes and one
- * named mesh per structure. If a file fails to load the editor shows an error;
- * it never substitutes other geometry.
+ * Each body = the original, unmodified Open Anatomy 3D GLB (skin, skeleton,
+ * organs, vessels, nerves) + a BodyParts3D muscles GLB built by
+ * pipeline/bodyparts3d, whose "muscles" (separated, selectable) and
+ * "muscles_context" nodes replace the body's own merged muscle groups. Both
+ * files share one coordinate frame. If either file fails to load the editor
+ * shows an error; it never substitutes other geometry.
  */
 export const ANATOMY_ASSETS: AnatomyAssetDefinition[] = [
   {
-    id: "open-anatomy-3d-male",
-    label: "Open Anatomy 3D · نموذج ذكر",
+    id: "bodyparts3d-male",
+    label: "BodyParts3D · نموذج ذكر",
     gender: "male",
     layer: "full-body",
     url: "/models/open-anatomy-3d/anatomy-male.glb",
+    musclesUrl: "/models/bodyparts3d/muscles-male.glb",
     views: ["front", "back", "left", "right"],
     priority: 10,
     hasSystems: true,
     attribution: OPEN_ANATOMY_ATTRIBUTION,
   },
   {
-    id: "open-anatomy-3d-female",
-    label: "Open Anatomy 3D · نموذج أنثى",
+    id: "bodyparts3d-female",
+    label: "BodyParts3D · نموذج أنثى",
     gender: "female",
     layer: "full-body",
     url: "/models/open-anatomy-3d/anatomy-female.glb",
+    musclesUrl: "/models/bodyparts3d/muscles-female.glb",
     views: ["front", "back", "left", "right"],
     priority: 10,
     hasSystems: true,

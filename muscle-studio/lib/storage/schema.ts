@@ -23,6 +23,8 @@ export const viewSchema = z.enum(["front", "back", "left", "right"]);
 
 export const layersSchema = z.object({
   muscles: z.boolean(),
+  // Added with the BodyParts3D muscles; older projects default to visible.
+  muscles_context: z.boolean().default(true),
   skeleton: z.boolean(),
   skin: z.boolean(),
   organs: z.boolean(),
@@ -30,9 +32,10 @@ export const layersSchema = z.object({
   nerves: z.boolean(),
 });
 
-/** Muscles only, as required on first load; other systems are opt-in. */
+/** Muscles only on first load (separated + the remaining muscles); other systems are opt-in. */
 export const DEFAULT_LAYERS: z.infer<typeof layersSchema> = {
   muscles: true,
+  muscles_context: true,
   skeleton: false,
   skin: false,
   organs: false,

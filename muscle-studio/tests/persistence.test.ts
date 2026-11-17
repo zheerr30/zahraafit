@@ -17,13 +17,13 @@ function repo(storage = new MemoryStorage()) {
 function input(name = "Leg day") {
   const doc = createDefaultDoc("female");
   doc.selections = {
-    "gluteal": { tone: "primary", color: null },
-    "hamstrings": { tone: "secondary", color: "#123456" },
+    "gluteus-maximus": { tone: "primary", color: null },
+    "biceps-femoris": { tone: "secondary", color: "#123456" },
   };
   doc.background = "transparent";
   return {
     name,
-    assetId: "open-anatomy-3d-female",
+    assetId: "bodyparts3d-female",
     doc,
     camera: { view: "back" as const, position: [0, 1, -3] as [number, number, number], target: [0, 0.9, 0] as [number, number, number] },
     thumbnail: null,
@@ -37,7 +37,7 @@ describe("LocalProjectRepository", () => {
     const loaded = await r.get(created.id);
     expect(loaded).toEqual(created);
     expect(loaded?.doc.gender).toBe("female");
-    expect(loaded?.doc.selections["hamstrings"]).toEqual({ tone: "secondary", color: "#123456" });
+    expect(loaded?.doc.selections["biceps-femoris"]).toEqual({ tone: "secondary", color: "#123456" });
     expect(loaded?.camera?.view).toBe("back");
     expect(loaded?.doc.background).toBe("transparent");
   });
@@ -92,8 +92,8 @@ describe("LocalProjectRepository", () => {
     const { repo: r } = repo();
     const store = createEditorStore();
     store.getState().setGender("female");
-    store.getState().selectMuscles(["calf", "anterior-leg"]);
-    store.getState().setMuscleColor("calf", "#abcdef");
+    store.getState().selectMuscles(["soleus", "tibialis-anterior"]);
+    store.getState().setMuscleColor("soleus", "#abcdef");
     store.getState().setLighting(1.7);
     const saved = await r.create({
       name: "Calves",
@@ -115,17 +115,22 @@ describe("LocalProjectRepository", () => {
 });
 
 describe("project migration", () => {
-  it("drops selections of muscle ids that no longer exist and reports how many", async () => {
+  it("expands merged-group ids from older projects and drops ids without a counterpart", async () => {
     const { repo: r } = repo();
     const doc = createDefaultDoc("male");
     doc.selections = {
-      "biceps-brachii": { tone: "primary", color: null },
-      trapezius: { tone: "secondary", color: null },
+      "upper-arm": { tone: "primary", color: null },
+      trapezius: { tone: "secondary", color: "#123456" },
+      hand: { tone: "primary", color: null },
     };
     const saved = await r.create({ name: "Old", assetId: null, doc, camera: null, thumbnail: null });
     const store = createEditorStore();
     expect(store.getState().loadProject(saved)).toBe(1);
-    expect(Object.keys(store.getState().doc.selections)).toEqual(["trapezius"]);
+    const sel = store.getState().doc.selections;
+    expect(Object.keys(sel).sort()).toEqual(
+      ["biceps-brachii", "brachialis", "coracobrachialis", "triceps-brachii", "trapezius-ascending", "trapezius-descending", "trapezius-transverse"].sort(),
+    );
+    expect(sel["trapezius-transverse"]).toEqual({ tone: "secondary", color: "#123456" });
   });
 
   it("reads pre-integration projects without layers and with the old material mode", async () => {
@@ -137,6 +142,7 @@ describe("project migration", () => {
     storage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(raw));
     const loaded = await r.get(p.id);
     expect(loaded?.doc.layers.muscles).toBe(true);
+    expect(loaded?.doc.layers.muscles_context).toBe(true);
     expect(loaded?.doc.layers.skin).toBe(false);
     expect(loaded?.doc.materialMode).toBe("anatomical");
   });

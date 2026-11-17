@@ -10,6 +10,7 @@ import {
   applyLayers,
   applyMaterials,
   buildAnchors,
+  combineBodyAndMuscles,
   highlightColor,
   mapPreparedModel,
   nearestAnchor,
@@ -55,13 +56,24 @@ export function AnatomyModel({ asset }: { asset: AnatomyAssetDefinition }) {
     let prepared: PreparedModel | null = null;
     setLoadState({ loadStatus: "loading", progress: 0, error: null });
 
-    loadGltf(asset.url, {
-      renderer: gl,
-      signal: controller.signal,
-      onProgress: (p) => setLoadState({ progress: p }),
-    })
-      .then((gltf) => {
-        prepared = prepareModel(gltf.scene, asset);
+    // Body + separated muscles load in parallel; progress is their average.
+    const progress = asset.musclesUrl ? [0, 0] : [0];
+    const report = (i: number) => (p: number) => {
+      progress[i] = p;
+      setLoadState({ progress: progress.reduce((a, b) => a + b, 0) / progress.length });
+    };
+    Promise.all([
+      loadGltf(asset.url, { renderer: gl, signal: controller.signal, onProgress: report(0) }),
+      asset.musclesUrl
+        ? loadGltf(asset.musclesUrl, { renderer: gl, signal: controller.signal, onProgress: report(1) })
+        : Promise.resolve(null),
+    ])
+      .then(([body, muscles]) => {
+        if (muscles) {
+          const replaced = combineBodyAndMuscles(body.scene, muscles.scene);
+          if (replaced) disposeObject3D(replaced);
+        }
+        prepared = prepareModel(body.scene, asset);
         // Visibility + picking structures before the first frame (muscles only by default).
         applyLayers(prepared, editorStore.getState().doc.layers);
         setModel(prepared);

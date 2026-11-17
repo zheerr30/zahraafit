@@ -3,7 +3,7 @@
  * imports Three.js so the data layer can be tested and reused independently.
  */
 
-export const REGIONS = ["neck", "shoulders", "chest", "back", "arms", "core", "hips", "legs"] as const;
+export const REGIONS = ["neck", "shoulders", "chest", "back", "arms", "core", "hips", "thigh", "leg"] as const;
 export type RegionId = (typeof REGIONS)[number];
 
 export const VIEWS = ["front", "back", "left", "right"] as const;
@@ -11,8 +11,12 @@ export type ViewId = (typeof VIEWS)[number];
 
 export type Gender = "male" | "female";
 
-/** Body systems as grouped in the Open Anatomy 3D models (top-level glTF nodes). */
-export const SYSTEMS = ["muscles", "skeleton", "skin", "organs", "vessels", "nerves"] as const;
+/**
+ * Body systems = top-level glTF nodes. "muscles" holds the separately
+ * selectable BodyParts3D muscles; "muscles_context" the remaining BodyParts3D
+ * muscles (not separated); the rest come from the Open Anatomy 3D body.
+ */
+export const SYSTEMS = ["muscles", "muscles_context", "skeleton", "skin", "organs", "vessels", "nerves"] as const;
 export type SystemId = (typeof SYSTEMS)[number];
 
 /** Which side of the body a mesh belongs to (from the model's perspective). */
@@ -34,11 +38,12 @@ export interface MuscleDefinition {
   latin: string;
   region: RegionId;
   /**
-   * "single": the mesh is one anatomical muscle.
-   * "group": the mesh merges several muscles that cannot be selected separately.
+   * "single": one whole anatomical muscle (its heads merged, if any).
+   * "part": a named part of a muscle (e.g. clavicular part of deltoid).
+   * "group": several neighbouring muscles merged into one mesh.
    */
-  granularity: "single" | "group";
-  /** The individual muscles merged into this mesh, per the model's build rules. */
+  granularity: "single" | "part" | "group";
+  /** The BodyParts3D structures merged into this mesh. */
   includes: LocalizedName[];
   /** Canonical mesh names in the asset (side suffix omitted). Used for mesh mapping. */
   meshNames: string[];
@@ -83,6 +88,8 @@ export interface AnatomyAssetDefinition {
   priority: number;
   /** Euler rotation (radians) applied to orient the model upright facing +Z. */
   rotation?: [number, number, number];
+  /** Optional GLB holding the separated muscles; it replaces the body's own "muscles" node. */
+  musclesUrl?: string;
   /** Model-specific mesh name → muscle id overrides (exact mesh names). */
   meshMap?: Record<string, string>;
   /** Mesh names that should be treated as non-muscle structures. */

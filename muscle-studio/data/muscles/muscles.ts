@@ -1,476 +1,182 @@
-import type { LocalizedName, MuscleDefinition, RegionDefinition } from "@/types/anatomy";
+import type { LocalizedName, MuscleDefinition, RegionDefinition, RegionId, ViewId } from "@/types/anatomy";
 
 /**
- * Selectable muscle units of the Open Anatomy 3D models.
- *
- * Each entry corresponds to one muscle mesh (or one L/R pair) that really
- * exists in `anatomy-male.glb` and `anatomy-female.glb`. The upstream build
- * (pipeline/catalog.mjs in MervinR07/open-anatomy-3d) merged BodyParts3D
- * muscles into these groups; `includes` lists exactly the muscles each group's
- * matching rule pulls in, so the library never promises more detail than the
- * geometry contains.
+ * Selectable muscle units — one mesh per side, extracted from BodyParts3D 4.0
+ * by pipeline/bodyparts3d (see units.mjs there for the exact source parts).
  *
  * - `id` is the stable key stored in projects. Never rename an id.
+ * - `meshNames[0]` is the mesh key in public/models/bodyparts3d/muscles-*.glb
+ *   (`_l` / `_r` suffix per side).
  * - Arabic names follow standard Arabic anatomical terminology
  *   (المعجم الطبي الموحد and common Arabic anatomy references).
+ *
+ * Not available in BodyParts3D 4.0 (verified against every OBJ header):
+ * latissimus dorsi, rectus abdominis, internal oblique, transversus abdominis.
  */
 
 export const REGION_DEFINITIONS: RegionDefinition[] = [
   { id: "neck", displayName: { ar: "العنق", en: "Neck" } },
-  { id: "shoulders", displayName: { ar: "الكتف وحزامه", en: "Shoulder" } },
+  { id: "shoulders", displayName: { ar: "الكتف", en: "Shoulder" } },
   { id: "chest", displayName: { ar: "الصدر", en: "Chest" } },
   { id: "back", displayName: { ar: "الظهر", en: "Back" } },
-  { id: "arms", displayName: { ar: "الطرف العلوي", en: "Upper limb" } },
-  { id: "core", displayName: { ar: "الجذع والبطن", en: "Trunk & abdomen" } },
+  { id: "arms", displayName: { ar: "العضد والساعد", en: "Arm & forearm" } },
+  { id: "core", displayName: { ar: "البطن", en: "Abdomen" } },
   { id: "hips", displayName: { ar: "الورك والأرداف", en: "Hip & gluteal" } },
-  { id: "legs", displayName: { ar: "الطرف السفلي", en: "Lower limb" } },
+  { id: "thigh", displayName: { ar: "الفخذ", en: "Thigh" } },
+  { id: "leg", displayName: { ar: "الساق", en: "Leg" } },
 ];
 
 const n = (ar: string, en: string): LocalizedName => ({ ar, en });
 
-const ALL = ["front", "back", "left", "right"] as MuscleDefinition["viewAvailability"];
-const FRONT = ["front", "left", "right"] as MuscleDefinition["viewAvailability"];
-const BACK = ["back", "left", "right"] as MuscleDefinition["viewAvailability"];
+const ALL: ViewId[] = ["front", "back", "left", "right"];
+const FRONT: ViewId[] = ["front", "left", "right"];
+const BACK: ViewId[] = ["back", "left", "right"];
+
+interface UnitInput {
+  id: string;
+  mesh: string;
+  ar: string;
+  en: string;
+  latin: string;
+  region: RegionId;
+  granularity?: MuscleDefinition["granularity"];
+  includes?: LocalizedName[];
+  views?: ViewId[];
+  deep?: boolean;
+  search?: string[];
+  note?: string;
+}
+
+function unit(u: UnitInput): MuscleDefinition {
+  return {
+    id: u.id,
+    displayName: { ar: u.ar, en: u.en },
+    latin: u.latin,
+    region: u.region,
+    granularity: u.granularity ?? "single",
+    includes: u.includes ?? [{ ar: u.ar, en: u.en }],
+    meshNames: [u.mesh],
+    aliases: [],
+    searchTerms: u.search ?? [],
+    viewAvailability: u.views ?? ALL,
+    defaultMaterial: "muscle",
+    depth: u.deep ? "deep" : "superficial",
+    note: u.note,
+  };
+}
 
 export const MUSCLES: MuscleDefinition[] = [
   // ───────────── العنق ─────────────
-  {
-    id: "neck-muscles",
-    displayName: n("عضلات العنق", "Neck muscles"),
-    latin: "Musculi colli",
-    region: "neck",
-    granularity: "group",
-    includes: [
-      n("العضلة القصية الترقوية الخشائية", "Sternocleidomastoid"),
-      n("العضلات الأخمعية", "Scalenes"),
-      n("العضلة الطويلة العنقية والطويلة الرأسية", "Longus colli & longus capitis"),
-      n("العضلات المستقيمة والمائلة الرأسية", "Recti & obliqui capitis"),
-      n("العضلة الجلدية العنقية", "Platysma"),
-      n("العضلات اللامية (الكتفية اللامية، القصية اللامية، القصية الدرقية، الدرقية اللامية، ذات البطنين، الإبرية اللامية، الضرسية اللامية)", "Hyoid muscles"),
-    ],
-    meshNames: ["neck_muscles"],
-    aliases: [],
-    searchTerms: ["رقبة", "الرقبة", "عنق"],
-    viewAvailability: ALL,
-    defaultMaterial: "muscle",
-    depth: "superficial",
-  },
+  unit({ id: "sternocleidomastoid", mesh: "sternocleidomastoid", ar: "العضلة القصية الترقوية الخشائية", en: "Sternocleidomastoid", latin: "Musculus sternocleidomastoideus", region: "neck", views: FRONT, search: ["رقبة", "الرقبة", "عنق"] }),
+  unit({
+    id: "splenius", mesh: "splenius", ar: "العضلة الطحالية", en: "Splenius", latin: "Musculi splenii", region: "neck", granularity: "group", views: BACK, deep: true,
+    includes: [n("العضلة الطحالية الرأسية", "Splenius capitis"), n("العضلة الطحالية العنقية", "Splenius cervicis")], search: ["خلف الرقبة"],
+  }),
+  unit({ id: "levator-scapulae", mesh: "levator_scapulae", ar: "العضلة الرافعة للوح الكتف", en: "Levator scapulae", latin: "Musculus levator scapulae", region: "neck", views: BACK, deep: true }),
 
   // ───────────── الكتف ─────────────
-  {
-    id: "deltoid",
-    displayName: n("العضلة الدالية", "Deltoid"),
-    latin: "Musculus deltoideus",
-    region: "shoulders",
-    granularity: "single",
-    includes: [n("العضلة الدالية (الأجزاء الأمامية والجانبية والخلفية معًا)", "Deltoid (anterior, lateral and posterior parts together)")],
-    meshNames: ["deltoid"],
-    aliases: ["deltoids", "delts"],
-    searchTerms: ["كتف", "الكتف", "دالية", "الكتف الأمامي", "الكتف الجانبي", "الكتف الخلفي", "front delt", "side delt", "rear delt"],
-    viewAvailability: ALL,
-    defaultMaterial: "muscle",
-    depth: "superficial",
-    note: "الدالية في هذا النموذج شبكة واحدة؛ لا يمكن تلوين الرأس الأمامي أو الجانبي أو الخلفي منفردًا.",
-  },
-  {
-    id: "rotator-cuff",
-    displayName: n("عضلات الكفة المدوّرة", "Rotator cuff"),
-    latin: "Musculi rotatores humeri",
-    region: "shoulders",
-    granularity: "group",
-    includes: [
-      n("العضلة فوق الشوكة", "Supraspinatus"),
-      n("العضلة تحت الشوكة", "Infraspinatus"),
-      n("العضلة المدوّرة الصغرى", "Teres minor"),
-      n("العضلة تحت الكتف", "Subscapularis"),
-    ],
-    meshNames: ["rotator_cuff"],
-    aliases: [],
-    searchTerms: ["الكفة المدورة", "روتيتور"],
-    viewAvailability: BACK,
-    defaultMaterial: "muscle",
-    depth: "deep",
-  },
-  {
-    id: "shoulder-girdle",
-    displayName: n("عضلات حزام الكتف", "Shoulder girdle muscles"),
-    latin: "Musculi cinguli pectoralis",
-    region: "shoulders",
-    granularity: "group",
-    includes: [
-      n("العضلة المدوّرة الكبرى", "Teres major"),
-      n("العضلتان المعينيتان الكبرى والصغرى", "Rhomboid major & minor"),
-      n("العضلة الرافعة للوح الكتف", "Levator scapulae"),
-      n("العضلات المنشارية (الأمامية والخلفيتان)", "Serratus anterior & posterior"),
-      n("العضلة الصدرية الصغرى", "Pectoralis minor"),
-      n("العضلة تحت الترقوة", "Subclavius"),
-    ],
-    meshNames: ["shoulder_muscles"],
-    aliases: ["shoulder girdle"],
-    searchTerms: ["معينية", "المعينية", "المنشارية", "المدورة الكبرى", "الصدرية الصغرى"],
-    viewAvailability: ALL,
-    defaultMaterial: "muscle",
-    depth: "superficial",
-  },
+  unit({ id: "deltoid-anterior", mesh: "deltoid_anterior", ar: "الدالية الأمامية (الجزء الترقوي)", en: "Anterior deltoid (clavicular part)", latin: "Pars clavicularis musculi deltoidei", region: "shoulders", granularity: "part", views: FRONT, search: ["كتف أمامي", "الكتف الأمامي", "front delt", "دالية"] }),
+  unit({ id: "deltoid-lateral", mesh: "deltoid_lateral", ar: "الدالية الجانبية (الجزء الأخرمي)", en: "Lateral deltoid (acromial part)", latin: "Pars acromialis musculi deltoidei", region: "shoulders", granularity: "part", search: ["كتف جانبي", "الكتف الجانبي", "side delt", "دالية"] }),
+  unit({ id: "deltoid-posterior", mesh: "deltoid_posterior", ar: "الدالية الخلفية (الجزء الشوكي)", en: "Posterior deltoid (spinal part)", latin: "Pars spinalis musculi deltoidei", region: "shoulders", granularity: "part", views: BACK, search: ["كتف خلفي", "الكتف الخلفي", "rear delt", "دالية"] }),
+  unit({ id: "supraspinatus", mesh: "supraspinatus", ar: "العضلة فوق الشوكة", en: "Supraspinatus", latin: "Musculus supraspinatus", region: "shoulders", views: BACK, deep: true, search: ["الكفة المدورة", "rotator cuff"] }),
+  unit({ id: "infraspinatus", mesh: "infraspinatus", ar: "العضلة تحت الشوكة", en: "Infraspinatus", latin: "Musculus infraspinatus", region: "shoulders", views: BACK, search: ["الكفة المدورة", "rotator cuff"] }),
+  unit({ id: "teres-minor", mesh: "teres_minor", ar: "العضلة المدوّرة الصغرى", en: "Teres minor", latin: "Musculus teres minor", region: "shoulders", views: BACK, search: ["الكفة المدورة", "rotator cuff"] }),
+  unit({ id: "teres-major", mesh: "teres_major", ar: "العضلة المدوّرة الكبرى", en: "Teres major", latin: "Musculus teres major", region: "shoulders", views: BACK }),
 
   // ───────────── الصدر ─────────────
-  {
-    id: "pectoralis-major",
-    displayName: n("العضلة الصدرية الكبرى", "Pectoralis major"),
-    latin: "Musculus pectoralis major",
-    region: "chest",
-    granularity: "single",
-    includes: [n("العضلة الصدرية الكبرى", "Pectoralis major")],
-    meshNames: ["chest_muscles"],
-    aliases: ["pectoralis major", "pecs"],
-    searchTerms: ["صدر", "الصدر", "صدرية", "تشست"],
-    viewAvailability: FRONT,
-    defaultMaterial: "muscle",
-    depth: "superficial",
-  },
-  {
-    id: "intercostals",
-    displayName: n("العضلات الوربية", "Intercostal muscles"),
-    latin: "Musculi intercostales",
-    region: "chest",
-    granularity: "group",
-    includes: [
-      n("العضلات الوربية الخارجية والداخلية والأعمق", "External, internal & innermost intercostals"),
-      n("العضلة الصدرية المستعرضة", "Transversus thoracis"),
-    ],
-    meshNames: ["intercostals"],
-    aliases: [],
-    searchTerms: ["بين الأضلاع", "الوربية"],
-    viewAvailability: ALL,
-    defaultMaterial: "muscle",
-    depth: "deep",
-  },
+  unit({ id: "pectoralis-major-clavicular", mesh: "pectoralis_major_clavicular", ar: "الصدرية الكبرى — الجزء الترقوي (أعلى الصدر)", en: "Pectoralis major — clavicular part (upper chest)", latin: "Pars clavicularis musculi pectoralis majoris", region: "chest", granularity: "part", views: FRONT, search: ["صدر علوي", "أعلى الصدر", "upper chest", "incline", "صدر"] }),
+  unit({ id: "pectoralis-major-sternocostal", mesh: "pectoralis_major_sternocostal", ar: "الصدرية الكبرى — الجزء القصي الضلعي (وسط الصدر)", en: "Pectoralis major — sternocostal part", latin: "Pars sternocostalis musculi pectoralis majoris", region: "chest", granularity: "part", views: FRONT, search: ["وسط الصدر", "صدر", "chest", "pecs"] }),
+  unit({ id: "pectoralis-major-abdominal", mesh: "pectoralis_major_abdominal", ar: "الصدرية الكبرى — الجزء البطني (أسفل الصدر)", en: "Pectoralis major — abdominal part (lower chest)", latin: "Pars abdominalis musculi pectoralis majoris", region: "chest", granularity: "part", views: FRONT, search: ["أسفل الصدر", "صدر سفلي", "lower chest", "decline", "صدر"] }),
+  unit({ id: "pectoralis-minor", mesh: "pectoralis_minor", ar: "العضلة الصدرية الصغرى", en: "Pectoralis minor", latin: "Musculus pectoralis minor", region: "chest", views: ["front"], deep: true }),
+  unit({ id: "serratus-anterior", mesh: "serratus_anterior", ar: "العضلة المنشارية الأمامية", en: "Serratus anterior", latin: "Musculus serratus anterior", region: "chest", views: FRONT, search: ["المنشارية", "سيراتوس"] }),
 
   // ───────────── الظهر ─────────────
-  {
-    id: "trapezius",
-    displayName: n("العضلة شبه المنحرفة", "Trapezius"),
-    latin: "Musculus trapezius",
-    region: "back",
-    granularity: "single",
-    includes: [n("العضلة شبه المنحرفة", "Trapezius")],
-    meshNames: ["trapezius"],
-    aliases: ["traps"],
-    searchTerms: ["ترابيس", "الترابيس", "شبه المنحرفة"],
-    viewAvailability: ALL,
-    defaultMaterial: "muscle",
-    depth: "superficial",
-  },
-  {
-    id: "deep-back",
-    displayName: n("عضلات الظهر العميقة (الناصبة للفقار)", "Deep back muscles (erector spinae)"),
-    latin: "Musculi dorsi proprii",
-    region: "back",
-    granularity: "group",
-    includes: [
-      n("العضلة الحرقفية الضلعية", "Iliocostalis"),
-      n("العضلة الطويلة", "Longissimus"),
-      n("العضلة الشوكية", "Spinalis"),
-      n("العضلة نصف الشوكية", "Semispinalis"),
-      n("العضلة متعددة الأقسام", "Multifidus"),
-      n("العضلات المدوِّرة", "Rotatores"),
-      n("العضلات بين الشوكية وبين المستعرضة", "Interspinales & intertransversarii"),
-      n("العضلات الرافعة للأضلاع", "Levatores costarum"),
-      n("العضلة الطحالية", "Splenius"),
-    ],
-    meshNames: ["back_muscles"],
-    aliases: ["erector spinae"],
-    searchTerms: ["أسفل الظهر", "الناصبة للفقار", "ظهر"],
-    viewAvailability: BACK,
-    defaultMaterial: "muscle",
-    depth: "deep",
-  },
+  unit({ id: "trapezius-descending", mesh: "trapezius_descending", ar: "شبه المنحرفة — الجزء النازل (العلوي)", en: "Upper trapezius (descending part)", latin: "Pars descendens musculi trapezii", region: "back", granularity: "part", search: ["ترابيس", "الترابيس", "traps", "upper traps", "شبه المنحرفة"] }),
+  unit({
+    id: "trapezius-transverse", mesh: "trapezius_transverse", ar: "شبه المنحرفة — الجزء المستعرض (الأوسط)", en: "Middle trapezius (transverse part)", latin: "Pars transversa musculi trapezii", region: "back", granularity: "part", views: BACK, search: ["ترابيس أوسط", "mid traps", "شبه المنحرفة"],
+    note: "حدود الأجزاء كما يعرّفها BodyParts3D: الجزء المستعرض شريط ضيق (نحو 8 سم) يغطيه الجزء الصاعد جزئيًا من الخلف، والجزء الصاعد هو الأكبر.",
+  }),
+  unit({ id: "trapezius-ascending", mesh: "trapezius_ascending", ar: "شبه المنحرفة — الجزء الصاعد (السفلي)", en: "Lower trapezius (ascending part)", latin: "Pars ascendens musculi trapezii", region: "back", granularity: "part", views: BACK, search: ["ترابيس سفلي", "lower traps", "شبه المنحرفة"] }),
+  unit({
+    id: "rhomboids", mesh: "rhomboids", ar: "العضلتان المعينيتان", en: "Rhomboids", latin: "Musculi rhomboidei", region: "back", granularity: "group", views: ["back"], deep: true,
+    includes: [n("العضلة المعينية الكبرى", "Rhomboid major"), n("العضلة المعينية الصغرى", "Rhomboid minor")], search: ["معينية", "المعينية", "وسط الظهر"],
+  }),
+  unit({
+    id: "erector-spinae", mesh: "erector_spinae", ar: "العضلة الناصبة للفقار", en: "Erector spinae", latin: "Musculus erector spinae", region: "back", granularity: "group", views: ["back"], deep: true,
+    includes: [n("العضلة الحرقفية الضلعية (العنقية والصدرية والقطنية)", "Iliocostalis"), n("العضلة الطويلة (الرأسية والعنقية والصدرية)", "Longissimus"), n("العضلة الشوكية", "Spinalis")],
+    search: ["أسفل الظهر", "lower back", "الناصبة للفقار"],
+    note: "في الواقع تغطي العضلةُ الظهرية العريضة ولفافتُها الجزءَ السفلي منها، لكن العريضة غير موجودة في BodyParts3D فتظهر الناصبة مكشوفة.",
+  }),
 
-  // ───────────── الطرف العلوي ─────────────
-  {
-    id: "upper-arm",
-    displayName: n("عضلات العضد", "Upper arm muscles"),
-    latin: "Musculi brachii",
-    region: "arms",
-    granularity: "group",
-    includes: [
-      n("العضلة ذات الرأسين العضدية", "Biceps brachii"),
-      n("العضلة العضدية", "Brachialis"),
-      n("العضلة الغرابية العضدية", "Coracobrachialis"),
-      n("العضلة ثلاثية الرؤوس العضدية", "Triceps brachii"),
-      n("العضلة المرفقية", "Anconeus"),
-    ],
-    meshNames: ["upper_arm_muscles"],
-    aliases: [],
-    searchTerms: ["بايسبس", "البايسبس", "ترايسبس", "الترايسبس", "ذراع", "العضد", "ذات الرأسين", "ثلاثية الرؤوس", "biceps", "triceps"],
-    viewAvailability: ALL,
-    defaultMaterial: "muscle",
-    depth: "superficial",
-    note: "ذات الرأسين وثلاثية الرؤوس مدموجتان في شبكة واحدة في هذا النموذج.",
-  },
-  {
-    id: "forearm",
-    displayName: n("عضلات الساعد", "Forearm muscles"),
-    latin: "Musculi antebrachii",
-    region: "arms",
-    granularity: "group",
-    includes: [
-      n("العضلات القابضة والباسطة للرسغ", "Wrist flexors & extensors (carpi)"),
-      n("العضلة القابضة السطحية للأصابع والقابضة العميقة للأصابع", "Flexor digitorum superficialis & profundus"),
-      n("العضلة الباسطة للأصابع والباسطة للخنصر والباسطة للسبابة", "Extensor digitorum, digiti minimi & indicis"),
-      n("العضلات الطويلة للإبهام", "Long thumb muscles (pollicis longus)"),
-      n("العضلة الراحية الطويلة", "Palmaris longus"),
-      n("العضلتان الكابّتان المدوّرة والمربعة", "Pronator teres & quadratus"),
-      n("العضلة العضدية الكعبرية", "Brachioradialis"),
-      n("العضلة المستلقية", "Supinator"),
-    ],
-    meshNames: ["forearm_muscles"],
-    aliases: [],
-    searchTerms: ["ساعد", "الساعد", "قابضات", "باسطات", "فوراآرم"],
-    viewAvailability: ALL,
-    defaultMaterial: "muscle",
-    depth: "superficial",
-  },
-  {
-    id: "hand",
-    displayName: n("عضلات اليد", "Hand muscles"),
-    latin: "Musculi manus",
-    region: "arms",
-    granularity: "group",
-    includes: [
-      n("عضلات الرانفة (القصيرة للإبهام، المقابلة للإبهام، المقرّبة للإبهام)", "Thenar muscles"),
-      n("عضلات الضرّة", "Hypothenar muscles"),
-      n("العضلات الخراطينية", "Lumbricals"),
-      n("العضلات بين العظام", "Interossei"),
-    ],
-    meshNames: ["hand_muscles"],
-    aliases: [],
-    searchTerms: ["يد", "اليد", "قبضة"],
-    viewAvailability: ALL,
-    defaultMaterial: "muscle",
-    depth: "superficial",
-  },
+  // ───────────── العضد والساعد ─────────────
+  unit({
+    id: "biceps-brachii", mesh: "biceps_brachii", ar: "العضلة ذات الرأسين العضدية", en: "Biceps brachii", latin: "Musculus biceps brachii", region: "arms", views: FRONT,
+    includes: [n("الرأس الطويل", "Long head"), n("الرأس القصير", "Short head")], search: ["بايسبس", "البايسبس", "باي", "biceps"],
+  }),
+  unit({ id: "brachialis", mesh: "brachialis", ar: "العضلة العضدية", en: "Brachialis", latin: "Musculus brachialis", region: "arms", views: FRONT }),
+  unit({ id: "coracobrachialis", mesh: "coracobrachialis", ar: "العضلة الغرابية العضدية", en: "Coracobrachialis", latin: "Musculus coracobrachialis", region: "arms", views: ["front"], deep: true }),
+  unit({
+    id: "triceps-brachii", mesh: "triceps_brachii", ar: "العضلة ثلاثية الرؤوس العضدية", en: "Triceps brachii", latin: "Musculus triceps brachii", region: "arms", views: BACK,
+    includes: [n("الرأس الطويل", "Long head"), n("الرأس الوحشي", "Lateral head"), n("الرأس الإنسي", "Medial head")], search: ["ترايسبس", "الترايسبس", "تراي", "triceps"],
+  }),
+  unit({ id: "brachioradialis", mesh: "brachioradialis", ar: "العضلة العضدية الكعبرية", en: "Brachioradialis", latin: "Musculus brachioradialis", region: "arms", views: FRONT, search: ["ساعد", "هامر"] }),
+  unit({
+    id: "forearm-flexors", mesh: "forearm_flexors", ar: "عضلات الساعد القابضة السطحية", en: "Superficial forearm flexors", latin: "Musculi flexores antebrachii superficiales", region: "arms", granularity: "group", views: FRONT,
+    includes: [n("العضلة القابضة الكعبرية للرسغ", "Flexor carpi radialis"), n("العضلة الراحية الطويلة", "Palmaris longus"), n("العضلة القابضة الزندية للرسغ", "Flexor carpi ulnaris"), n("العضلة القابضة السطحية للأصابع", "Flexor digitorum superficialis"), n("العضلة الكابّة المدوّرة", "Pronator teres")],
+    search: ["ساعد", "قابضات", "forearm"],
+  }),
+  unit({
+    id: "forearm-extensors", mesh: "forearm_extensors", ar: "عضلات الساعد الباسطة", en: "Forearm extensors", latin: "Musculi extensores antebrachii", region: "arms", granularity: "group", views: BACK,
+    includes: [n("العضلة الباسطة الكعبرية الطويلة للرسغ", "Extensor carpi radialis longus"), n("العضلة الباسطة الكعبرية القصيرة للرسغ", "Extensor carpi radialis brevis"), n("العضلة الباسطة الزندية للرسغ", "Extensor carpi ulnaris"), n("العضلة الباسطة للأصابع", "Extensor digitorum"), n("العضلة الباسطة للخنصر", "Extensor digiti minimi")],
+    search: ["ساعد", "باسطات", "forearm"],
+  }),
 
-  // ───────────── الجذع والبطن ─────────────
-  {
-    id: "abdominal-wall",
-    displayName: n("عضلات جدار البطن", "Abdominal wall muscles"),
-    latin: "Musculi abdominis",
-    region: "core",
-    granularity: "group",
-    includes: [
-      n("العضلة المستقيمة البطنية", "Rectus abdominis"),
-      n("العضلة المائلة الخارجية", "External oblique"),
-      n("العضلة المائلة الداخلية", "Internal oblique"),
-      n("العضلة المستعرضة البطنية", "Transversus abdominis"),
-      n("العضلة الهرمية", "Pyramidalis"),
-      n("الخط الأبيض", "Linea alba"),
-    ],
-    meshNames: ["abdominal_muscles"],
-    aliases: ["abs"],
-    searchTerms: ["بطن", "البطن", "معدة", "سكس باك", "الخواصر", "المائلة", "المستقيمة البطنية"],
-    viewAvailability: ALL,
-    defaultMaterial: "muscle",
-    depth: "superficial",
-    note: "المستقيمة البطنية والمائلتان مدموجة في شبكة واحدة في هذا النموذج.",
-  },
-  {
-    id: "diaphragm",
-    displayName: n("الحجاب الحاجز", "Diaphragm"),
-    latin: "Diaphragma",
-    region: "core",
-    granularity: "single",
-    includes: [n("الحجاب الحاجز", "Diaphragm")],
-    meshNames: ["diaphragm"],
-    aliases: [],
-    searchTerms: ["التنفس", "الحجاب"],
-    viewAvailability: ["front", "back"],
-    defaultMaterial: "muscle",
-    depth: "deep",
-  },
-  {
-    id: "pelvic-floor",
-    displayName: n("عضلات قاع الحوض", "Pelvic floor"),
-    latin: "Diaphragma pelvis",
-    region: "core",
-    granularity: "group",
-    includes: [
-      n("العضلة الرافعة للشرج (العانية العصعصية، العانية المستقيمية)", "Levator ani (pubococcygeus, puborectalis)"),
-      n("العضلة العصعصية", "Coccygeus"),
-      n("العضلة المصرّة الشرجية", "Anal sphincter"),
-    ],
-    meshNames: ["pelvic_floor"],
-    aliases: [],
-    searchTerms: ["قاع الحوض", "كيجل"],
-    viewAvailability: ["front", "back"],
-    defaultMaterial: "muscle",
-    depth: "deep",
-  },
+  // ───────────── البطن ─────────────
+  unit({ id: "external-oblique", mesh: "external_oblique", ar: "العضلة المائلة الخارجية للبطن", en: "External oblique", latin: "Musculus obliquus externus abdominis", region: "core", views: FRONT, search: ["خواصر", "الخواصر", "obliques", "بطن", "المائلة"] }),
 
   // ───────────── الورك والأرداف ─────────────
-  {
-    id: "iliopsoas",
-    displayName: n("العضلة الحرقفية القطنية (قابضة الورك)", "Iliopsoas (hip flexor)"),
-    latin: "Musculus iliopsoas",
-    region: "hips",
-    granularity: "group",
-    includes: [
-      n("العضلة القطنية الكبرى والصغرى", "Psoas major & minor"),
-      n("العضلة الحرقفية", "Iliacus"),
-    ],
-    meshNames: ["iliopsoas"],
-    aliases: ["hip flexor"],
-    searchTerms: ["قابضة الورك", "سواس", "القطنية"],
-    viewAvailability: ["front"],
-    defaultMaterial: "muscle",
-    depth: "deep",
-  },
-  {
-    id: "gluteal",
-    displayName: n("عضلات الألوية والورك", "Gluteal muscles"),
-    latin: "Musculi glutei",
-    region: "hips",
-    granularity: "group",
-    includes: [
-      n("العضلة الألوية الكبرى", "Gluteus maximus"),
-      n("العضلة الألوية الوسطى", "Gluteus medius"),
-      n("العضلة الألوية الصغرى", "Gluteus minimus"),
-      n("العضلة الموتّرة للّفافة العريضة والسبيل الحرقفي الظنبوبي", "Tensor fasciae latae & iliotibial tract"),
-      n("العضلة الكمثرية", "Piriformis"),
-      n("العضلتان التوأميتان والسدّادتان والمربعة الفخذية", "Gemelli, obturators & quadratus femoris"),
-    ],
-    meshNames: ["gluteal"],
-    aliases: ["glutes"],
-    searchTerms: ["أرداف", "الأرداف", "المؤخرة", "جلوت", "الألوية"],
-    viewAvailability: BACK,
-    defaultMaterial: "muscle",
-    depth: "superficial",
-    note: "الألوية الكبرى والوسطى والصغرى مدموجة في شبكة واحدة في هذا النموذج.",
-  },
+  unit({ id: "gluteus-maximus", mesh: "gluteus_maximus", ar: "العضلة الألوية الكبرى", en: "Gluteus maximus", latin: "Musculus gluteus maximus", region: "hips", views: BACK, search: ["مؤخرة", "أرداف", "الأرداف", "glutes", "جلوت"] }),
+  unit({ id: "gluteus-medius", mesh: "gluteus_medius", ar: "العضلة الألوية الوسطى", en: "Gluteus medius", latin: "Musculus gluteus medius", region: "hips", views: BACK, search: ["أرداف", "glute med"] }),
+  unit({ id: "gluteus-minimus", mesh: "gluteus_minimus", ar: "العضلة الألوية الصغرى", en: "Gluteus minimus", latin: "Musculus gluteus minimus", region: "hips", views: ["left", "right"], deep: true }),
+  unit({ id: "tensor-fasciae-latae", mesh: "tensor_fasciae_latae", ar: "العضلة الموتّرة للّفافة العريضة", en: "Tensor fasciae latae", latin: "Musculus tensor fasciae latae", region: "hips", views: FRONT, search: ["TFL"] }),
+  unit({
+    id: "iliopsoas", mesh: "iliopsoas", ar: "العضلة الحرقفية القطنية (قابضة الورك)", en: "Iliopsoas (hip flexor)", latin: "Musculus iliopsoas", region: "hips", granularity: "group", views: ["front"], deep: true,
+    includes: [n("العضلة القطنية الكبرى", "Psoas major"), n("العضلة الحرقفية", "Iliacus")], search: ["قابضة الورك", "سواس", "hip flexor"],
+  }),
 
-  // ───────────── الطرف السفلي ─────────────
-  {
-    id: "quadriceps",
-    displayName: n("العضلة رباعية الرؤوس الفخذية", "Quadriceps femoris"),
-    latin: "Musculus quadriceps femoris",
-    region: "legs",
-    granularity: "group",
-    includes: [
-      n("العضلة المستقيمة الفخذية", "Rectus femoris"),
-      n("العضلة المتسعة الوحشية", "Vastus lateralis"),
-      n("العضلة المتسعة الإنسية", "Vastus medialis"),
-      n("العضلة المتسعة المتوسطة", "Vastus intermedius"),
-      n("العضلة الخيّاطية", "Sartorius"),
-    ],
-    meshNames: ["quadriceps"],
-    aliases: ["quads"],
-    searchTerms: ["فخذ أمامي", "الفخذ الأمامي", "كوادز", "رباعية"],
-    viewAvailability: FRONT,
-    defaultMaterial: "muscle",
-    depth: "superficial",
-    note: "تتضمن الشبكة العضلة الخيّاطية أيضًا وفق قواعد بناء النموذج.",
-  },
-  {
-    id: "hamstrings",
-    displayName: n("عضلات أوتار المأبض (الفخذ الخلفية)", "Hamstrings"),
-    latin: "Musculi ischiocrurales",
-    region: "legs",
-    granularity: "group",
-    includes: [
-      n("العضلة ذات الرأسين الفخذية", "Biceps femoris"),
-      n("العضلة نصف الوترية", "Semitendinosus"),
-      n("العضلة نصف الغشائية", "Semimembranosus"),
-    ],
-    meshNames: ["hamstrings"],
-    aliases: ["hamstring"],
-    searchTerms: ["فخذ خلفي", "الفخذ الخلفي", "هامسترنج", "المأبض"],
-    viewAvailability: BACK,
-    defaultMaterial: "muscle",
-    depth: "superficial",
-  },
-  {
-    id: "adductors",
-    displayName: n("العضلات المقرِّبة للفخذ", "Hip adductors"),
-    latin: "Musculi adductores",
-    region: "legs",
-    granularity: "group",
-    includes: [
-      n("العضلة المقرِّبة الطويلة والقصيرة والكبيرة والصغرى", "Adductor longus, brevis, magnus & minimus"),
-      n("العضلة الرشيقة", "Gracilis"),
-      n("العضلة العانية", "Pectineus"),
-    ],
-    meshNames: ["adductors"],
-    aliases: ["adductor"],
-    searchTerms: ["فخذ داخلي", "الفخذ الداخلي", "المقربة"],
-    viewAvailability: ["front", "back"],
-    defaultMaterial: "muscle",
-    depth: "superficial",
-  },
-  {
-    id: "calf",
-    displayName: n("عضلات ربلة الساق", "Calf muscles"),
-    latin: "Musculi cruris posteriores",
-    region: "legs",
-    granularity: "group",
-    includes: [
-      n("العضلة التوأمية الساقية", "Gastrocnemius"),
-      n("العضلة النعلية", "Soleus"),
-      n("العضلة الأخمصية", "Plantaris"),
-      n("العضلة المأبضية", "Popliteus"),
-      n("الوتر العقبي (وتر أخيل)", "Calcaneal (Achilles) tendon"),
-      n("العضلة الظنبوبية الخلفية", "Tibialis posterior"),
-      n("العضلة القابضة الطويلة للأصابع والقابضة الطويلة لإبهام القدم", "Flexor digitorum longus & flexor hallucis longus"),
-    ],
-    meshNames: ["calf"],
-    aliases: ["calves"],
-    searchTerms: ["سمانة", "السمانة", "بطة الساق", "كافز", "التوأمية", "النعلية"],
-    viewAvailability: BACK,
-    defaultMaterial: "muscle",
-    depth: "superficial",
-  },
-  {
-    id: "anterior-leg",
-    displayName: n("عضلات مقدّم الساق والشظوية", "Anterior & lateral leg muscles"),
-    latin: "Musculi cruris anteriores et laterales",
-    region: "legs",
-    granularity: "group",
-    includes: [
-      n("العضلة الظنبوبية الأمامية", "Tibialis anterior"),
-      n("العضلة الباسطة الطويلة للأصابع", "Extensor digitorum longus"),
-      n("العضلة الباسطة الطويلة لإبهام القدم", "Extensor hallucis longus"),
-      n("العضلات الشظوية", "Fibularis (peroneus) muscles"),
-    ],
-    meshNames: ["shin_muscles"],
-    aliases: [],
-    searchTerms: ["قصبة", "مقدمة الساق", "الظنبوبية"],
-    viewAvailability: FRONT,
-    defaultMaterial: "muscle",
-    depth: "superficial",
-  },
-  {
-    id: "foot",
-    displayName: n("عضلات القدم", "Foot muscles"),
-    latin: "Musculi pedis",
-    region: "legs",
-    granularity: "group",
-    includes: [
-      n("العضلات القصيرة لإبهام القدم (القابضة، المقرِّبة، المبعِدة)", "Short hallux muscles"),
-      n("العضلة القابضة القصيرة للأصابع", "Flexor digitorum brevis"),
-      n("العضلة المربعة الأخمصية", "Quadratus plantae"),
-      n("العضلات الخراطينية وبين العظام في القدم", "Lumbricals & interossei of foot"),
-    ],
-    meshNames: ["foot_muscles"],
-    aliases: [],
-    searchTerms: ["قدم", "القدم", "أخمص"],
-    viewAvailability: ALL,
-    defaultMaterial: "muscle",
-    depth: "superficial",
-  },
+  // ───────────── الفخذ ─────────────
+  unit({ id: "rectus-femoris", mesh: "rectus_femoris", ar: "العضلة المستقيمة الفخذية", en: "Rectus femoris", latin: "Musculus rectus femoris", region: "thigh", views: FRONT, search: ["كوادز", "quads", "فخذ أمامي", "رباعية الرؤوس"] }),
+  unit({ id: "vastus-lateralis", mesh: "vastus_lateralis", ar: "العضلة المتسعة الوحشية", en: "Vastus lateralis", latin: "Musculus vastus lateralis", region: "thigh", views: FRONT, search: ["كوادز", "quads", "رباعية الرؤوس"] }),
+  unit({ id: "vastus-medialis", mesh: "vastus_medialis", ar: "العضلة المتسعة الإنسية", en: "Vastus medialis", latin: "Musculus vastus medialis", region: "thigh", views: FRONT, search: ["كوادز", "quads", "VMO", "رباعية الرؤوس"] }),
+  unit({ id: "vastus-intermedius", mesh: "vastus_intermedius", ar: "العضلة المتسعة المتوسطة", en: "Vastus intermedius", latin: "Musculus vastus intermedius", region: "thigh", views: ["front"], deep: true, search: ["كوادز", "رباعية الرؤوس"] }),
+  unit({ id: "sartorius", mesh: "sartorius", ar: "العضلة الخيّاطية", en: "Sartorius", latin: "Musculus sartorius", region: "thigh", views: FRONT }),
+  unit({ id: "gracilis", mesh: "gracilis", ar: "العضلة الرشيقة", en: "Gracilis", latin: "Musculus gracilis", region: "thigh", views: ["front", "back"], search: ["فخذ داخلي", "adductors"] }),
+  unit({ id: "pectineus", mesh: "pectineus", ar: "العضلة العانية", en: "Pectineus", latin: "Musculus pectineus", region: "thigh", views: ["front"], search: ["فخذ داخلي"] }),
+  unit({ id: "adductor-longus", mesh: "adductor_longus", ar: "العضلة المقرِّبة الطويلة", en: "Adductor longus", latin: "Musculus adductor longus", region: "thigh", views: ["front"], search: ["فخذ داخلي", "مقربة", "adductors"] }),
+  unit({ id: "adductor-brevis", mesh: "adductor_brevis", ar: "العضلة المقرِّبة القصيرة", en: "Adductor brevis", latin: "Musculus adductor brevis", region: "thigh", views: ["front"], deep: true, search: ["فخذ داخلي", "مقربة", "adductors"] }),
+  unit({ id: "adductor-magnus", mesh: "adductor_magnus", ar: "العضلة المقرِّبة الكبيرة", en: "Adductor magnus", latin: "Musculus adductor magnus", region: "thigh", views: ["front", "back"], search: ["فخذ داخلي", "مقربة", "adductors"] }),
+  unit({
+    id: "biceps-femoris", mesh: "biceps_femoris", ar: "العضلة ذات الرأسين الفخذية", en: "Biceps femoris", latin: "Musculus biceps femoris", region: "thigh", views: BACK,
+    includes: [n("الرأس الطويل", "Long head"), n("الرأس القصير", "Short head")], search: ["هامسترنج", "فخذ خلفي", "الفخذ الخلفي", "hamstrings"],
+  }),
+  unit({ id: "semitendinosus", mesh: "semitendinosus", ar: "العضلة نصف الوترية", en: "Semitendinosus", latin: "Musculus semitendinosus", region: "thigh", views: BACK, search: ["هامسترنج", "فخذ خلفي", "hamstrings"] }),
+  unit({ id: "semimembranosus", mesh: "semimembranosus", ar: "العضلة نصف الغشائية", en: "Semimembranosus", latin: "Musculus semimembranosus", region: "thigh", views: BACK, search: ["هامسترنج", "فخذ خلفي", "hamstrings"] }),
+
+  // ───────────── الساق ─────────────
+  unit({
+    id: "gastrocnemius", mesh: "gastrocnemius", ar: "العضلة التوأمية الساقية", en: "Gastrocnemius", latin: "Musculus gastrocnemius", region: "leg", views: BACK,
+    includes: [n("الرأس الإنسي", "Medial head"), n("الرأس الوحشي", "Lateral head")], search: ["سمانة", "السمانة", "بطة الساق", "calves", "كافز"],
+  }),
+  unit({ id: "soleus", mesh: "soleus", ar: "العضلة النعلية", en: "Soleus", latin: "Musculus soleus", region: "leg", views: BACK, search: ["سمانة", "السمانة", "calves"] }),
+  unit({ id: "tibialis-anterior", mesh: "tibialis_anterior", ar: "العضلة الظنبوبية الأمامية", en: "Tibialis anterior", latin: "Musculus tibialis anterior", region: "leg", views: FRONT, search: ["قصبة", "مقدمة الساق", "shin"] }),
+  unit({
+    id: "fibularis", mesh: "fibularis", ar: "العضلتان الشظويتان الطويلة والقصيرة", en: "Fibularis longus & brevis", latin: "Musculi fibulares", region: "leg", granularity: "group", views: ["left", "right"],
+    includes: [n("العضلة الشظوية الطويلة", "Fibularis longus"), n("العضلة الشظوية القصيرة", "Fibularis brevis")], search: ["الشظوية", "peroneus"],
+  }),
+  unit({ id: "extensor-digitorum-longus", mesh: "extensor_digitorum_longus", ar: "العضلة الباسطة الطويلة للأصابع", en: "Extensor digitorum longus", latin: "Musculus extensor digitorum longus", region: "leg", views: FRONT }),
 ];
 
-export const MUSCLES_BY_ID: ReadonlyMap<string, MuscleDefinition> = new Map(
-  MUSCLES.map((m) => [m.id, m]),
-);
+export const MUSCLES_BY_ID: ReadonlyMap<string, MuscleDefinition> = new Map(MUSCLES.map((m) => [m.id, m]));
 
 export function getMuscle(id: string): MuscleDefinition | undefined {
   return MUSCLES_BY_ID.get(id);
@@ -479,3 +185,28 @@ export function getMuscle(id: string): MuscleDefinition | undefined {
 export function musclesInRegion(region: string): MuscleDefinition[] {
   return MUSCLES.filter((m) => m.region === region);
 }
+
+/**
+ * Open Anatomy 3D muscle-group ids used by projects saved before the
+ * BodyParts3D muscles, mapped to the separated units they contained.
+ * Groups with no separated counterpart (hand, foot, diaphragm, pelvic floor,
+ * intercostals) are dropped on load.
+ */
+export const LEGACY_GROUP_IDS: Record<string, string[]> = {
+  "neck-muscles": ["sternocleidomastoid"],
+  deltoid: ["deltoid-anterior", "deltoid-lateral", "deltoid-posterior"],
+  "rotator-cuff": ["supraspinatus", "infraspinatus", "teres-minor"],
+  "shoulder-girdle": ["teres-major", "rhomboids", "levator-scapulae", "serratus-anterior", "pectoralis-minor"],
+  "pectoralis-major": ["pectoralis-major-clavicular", "pectoralis-major-sternocostal", "pectoralis-major-abdominal"],
+  trapezius: ["trapezius-descending", "trapezius-transverse", "trapezius-ascending"],
+  "deep-back": ["erector-spinae", "splenius"],
+  "upper-arm": ["biceps-brachii", "brachialis", "coracobrachialis", "triceps-brachii"],
+  forearm: ["brachioradialis", "forearm-flexors", "forearm-extensors"],
+  "abdominal-wall": ["external-oblique"],
+  gluteal: ["gluteus-maximus", "gluteus-medius", "gluteus-minimus", "tensor-fasciae-latae"],
+  quadriceps: ["rectus-femoris", "vastus-lateralis", "vastus-medialis", "vastus-intermedius", "sartorius"],
+  hamstrings: ["biceps-femoris", "semitendinosus", "semimembranosus"],
+  adductors: ["adductor-longus", "adductor-brevis", "adductor-magnus", "gracilis", "pectineus"],
+  calf: ["gastrocnemius", "soleus"],
+  "anterior-leg": ["tibialis-anterior", "fibularis", "extensor-digitorum-longus"],
+};

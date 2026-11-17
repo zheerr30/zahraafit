@@ -280,7 +280,7 @@ export class TriangleSurface {
     const v = (i) => [this.pos[i * 3], this.pos[i * 3 + 1], this.pos[i * 3 + 2]];
     for (const [t] of this.grid.knn(x, y, z, k)) {
       const d = pointTriangleDistanceSq([x, y, z], v(this.idx[t * 3]), v(this.idx[t * 3 + 1]), v(this.idx[t * 3 + 2]));
-      if (d < best) best = d;
+      if (Number.isFinite(d) && d < best) best = d; // skip degenerate triangles
     }
     return Math.sqrt(best);
   }

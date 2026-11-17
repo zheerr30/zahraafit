@@ -1,11 +1,11 @@
 import { Color, MeshStandardMaterial, type MeshPhysicalMaterial, type ShaderMaterial } from "three";
-import { createMuscleMaterial, HIGHLIGHT_LOOK, REALISTIC_LOOK, STUDIO_LOOK } from "./muscleMaterial";
+import { createMuscleMaterial, HIGHLIGHT_LOOK, REALISTIC_LOOK } from "./muscleMaterial";
 import { createSkinMaterial } from "./skinMaterial";
 
 export type MaterialVariant = "normal" | "hover";
-export type MuscleLookName = "realistic" | "studio" | "highlight";
+export type MuscleLookName = "realistic" | "highlight";
 
-const LOOKS = { realistic: REALISTIC_LOOK, studio: STUDIO_LOOK, highlight: HIGHLIGHT_LOOK };
+const LOOKS = { realistic: REALISTIC_LOOK, highlight: HIGHLIGHT_LOOK };
 
 /**
  * Shared, cached studio materials keyed by color + variant. Meshes swap between
@@ -17,7 +17,7 @@ export class MaterialLibrary {
   private skinMaterial: ShaderMaterial | null = null;
   private muscleCache = new Map<string, MeshPhysicalMaterial>();
 
-  /** Shaded muscle material (needs the baked _anat/_fiber attributes on the geometry). */
+  /** Shaded muscle material (needs the baked _anat/_flow attributes on the geometry). */
   muscle(hex: string, look: MuscleLookName, variant: MaterialVariant = "normal"): MeshPhysicalMaterial {
     const key = `${hex.toLowerCase()}|${look}|${variant}`;
     let mat = this.muscleCache.get(key);

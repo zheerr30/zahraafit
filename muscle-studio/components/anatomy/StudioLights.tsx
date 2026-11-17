@@ -14,12 +14,13 @@ export function StudioLights() {
 
   return (
     <>
-      <ambientLight intensity={0.18 * intensity} />
-      <hemisphereLight args={["#ffffff", "#2a2b2e", 0.35 * intensity]} />
+      <ambientLight intensity={0.24 * intensity} />
+      <hemisphereLight args={["#fff8f2", "#2a2b2e", 0.5 * intensity]} />
       {/* Key light */}
       <directionalLight
         position={[2.6, 4.2, 3.4]}
-        intensity={2.1 * intensity}
+        color="#fff3e8"
+        intensity={2.6 * intensity}
         castShadow
         shadow-mapSize={[2048, 2048]}
         shadow-bias={-0.0004}
@@ -32,9 +33,9 @@ export function StudioLights() {
         shadow-camera-far={12}
       />
       {/* Fill light */}
-      <directionalLight position={[-3, 2, 2]} intensity={0.55 * intensity} />
+      <directionalLight position={[-3, 2, 2]} intensity={0.85 * intensity} />
       {/* Rim lights for silhouette separation on a dark background */}
-      <directionalLight position={[-2.5, 3, -3.5]} intensity={1.1 * intensity} />
+      <directionalLight position={[-2.5, 3, -3.5]} color="#eef2ff" intensity={1.2 * intensity} />
       <directionalLight position={[2.5, 2, -3]} intensity={0.7 * intensity} />
 
       <Environment resolution={128} frames={1}>

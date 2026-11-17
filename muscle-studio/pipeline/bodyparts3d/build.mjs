@@ -23,9 +23,10 @@ import { Document, NodeIO } from "@gltf-transform/core";
 import { ALL_EXTENSIONS, EXTMeshoptCompression, KHRMeshQuantization } from "@gltf-transform/extensions";
 import { meshopt, quantize, reorder } from "@gltf-transform/functions";
 import { MeshoptEncoder, MeshoptSimplifier } from "meshoptimizer";
-import { harmonicFill, indexObjDirs, loadGlbScene, makeToThree, matchIsomorphicMeshes, meshWorld, parseObj, PointGrid, TriangleSurface } from "./lib.mjs";
+import { indexObjDirs, loadGlbScene, makeToThree, matchIsomorphicMeshes, meshWorld, parseObj, TriangleSurface } from "./lib.mjs";
 import { bareName, CONTEXT, sideOf, UNITS } from "./units.mjs";
-import { bakeAppearance, principalAxis } from "./bake.mjs";
+import { bakeAppearance } from "./bake.mjs";
+import { farthestPoints, fitTps } from "./tps.mjs";
 
 const arg = (name, def) => {
   const i = process.argv.indexOf(`--${name}`);
@@ -43,7 +44,7 @@ if (!BP3D) throw new Error("--bp3d <dir> is required");
 const FRAME = { cx: -0.647, cy: -100.7677, minZ: -78.1112 };
 const toThree = makeToThree(FRAME);
 
-const UNIT_BUDGET = { ratio: 0.2, min: 1500, max: 9000, error: 0.01 };
+const UNIT_BUDGET = { ratio: 0.3, min: 2000, max: 14000, error: 0.005 };
 const CONTEXT_BUDGET = { ratio: 0.08, min: 300, max: 8000, error: 0.03, sloppy: true };
 
 await MeshoptSimplifier.ready;
@@ -84,11 +85,28 @@ function mergeFiles(list) {
   list.forEach((f, fi) => {
     const o = parseObj(f.file);
     const base = pos.length / 3;
-    for (let i = 0; i < o.pos.length; i += 3) {
-      pos.push(...toThree(o.pos[i], o.pos[i + 1], o.pos[i + 2]));
-      fileOf.push(fi);
+    // BodyParts3D OBJs duplicate vertices along patch seams (e.g. the
+    // sternocostal pectoralis is 382 disconnected pieces). Weld coincident
+    // vertices (0.01 mm) within each file so the surface is continuous:
+    // smooth normals, crack-free simplification, connected fibre flow.
+    const weld = new Map();
+    const remap = new Uint32Array(o.pos.length / 3);
+    for (let i = 0; i < o.pos.length / 3; i++) {
+      const k = `${Math.round(o.pos[i * 3] * 100)},${Math.round(o.pos[i * 3 + 1] * 100)},${Math.round(o.pos[i * 3 + 2] * 100)}`;
+      let j = weld.get(k);
+      if (j === undefined) {
+        j = weld.size;
+        weld.set(k, j);
+        pos.push(...toThree(o.pos[i * 3], o.pos[i * 3 + 1], o.pos[i * 3 + 2]));
+        fileOf.push(fi);
+      }
+      remap[i] = j;
     }
-    for (const i of o.idx) idx.push(i + base);
+    for (let t = 0; t < o.idx.length; t += 3) {
+      const a = remap[o.idx[t]], b = remap[o.idx[t + 1]], c = remap[o.idx[t + 2]];
+      if (a === b || b === c || a === c) continue; // collapsed by the weld
+      idx.push(a + base, b + base, c + base);
+    }
   });
   return { pos: new Float32Array(pos), idx: new Uint32Array(idx), fileOf: Uint16Array.from(fileOf) };
 }
@@ -97,7 +115,8 @@ function simplify(mesh, budget) {
   const src = mesh.idx.length / 3;
   const target = Math.min(budget.max, Math.max(budget.min, Math.round(src * budget.ratio)));
   let idx = mesh.idx;
-  if (src > target) {
+  // Small meshes are kept whole: shaving the last 20% only costs fidelity.
+  if (src > target * 1.25) {
     const [s] = MeshoptSimplifier.simplify(mesh.idx, mesh.pos, 3, target * 3, budget.error, []);
     if (s.length >= 3 * 64) idx = s;
     // Context only: many thin open strips (intercostals) cannot be collapsed
@@ -187,10 +206,18 @@ for (const m of meshes) {
   const source = mergeFiles(m.files.map((fj) => files.find((f) => f.fj === fj)));
   const surf = new TriangleSurface(m.pos, m.idx);
   const d = [];
+  // Only vertices used by a triangle (a few OBJs carry stray, unreferenced vertices).
+  const used = new Uint8Array(source.pos.length / 3);
+  for (const i of source.idx) used[i] = 1;
   const step = Math.max(1, Math.floor(source.pos.length / 3 / 4000));
-  for (let i = 0; i < source.pos.length / 3; i += step) d.push(surf.distance(source.pos[i * 3], source.pos[i * 3 + 1], source.pos[i * 3 + 2]) * 1000);
+  for (let i = 0; i < source.pos.length / 3; i += step) if (used[i]) d.push(surf.distance(source.pos[i * 3], source.pos[i * 3 + 1], source.pos[i * 3 + 2]) * 1000);
+  // A few source files contain tiny stray fragments far from the muscle (the
+  // right sternocleidomastoid has 12 vertices on the left side of the neck);
+  // simplification drops them. Count them instead of measuring them.
+  const stray = d.filter((x) => !Number.isFinite(x)).length;
+  for (let i = d.length - 1; i >= 0; i--) if (!Number.isFinite(d[i])) d.splice(i, 1);
   d.sort((a, b) => a - b);
-  report.fidelity[m.node] = { meanMm: +(d.reduce((a, b) => a + b, 0) / d.length).toFixed(2), p95Mm: +d[Math.floor(d.length * 0.95)].toFixed(2), maxMm: +d[d.length - 1].toFixed(2) };
+  report.fidelity[m.node] = { strayVertices: stray, meanMm: +(d.reduce((a, b) => a + b, 0) / d.length).toFixed(2), p95Mm: +d[Math.floor(d.length * 0.95)].toFixed(2), maxMm: +d[d.length - 1].toFixed(2) };
 }
 const fid = Object.values(report.fidelity);
 report.fidelitySummary = {
@@ -226,161 +253,150 @@ for (const key of ["deltoid_anterior_l", "deltoid_posterior_r", "trapezius_desce
 }
 if (Object.values(report.maleFrameCheck).some((d) => d.mean > 2)) throw new Error(`male frame misaligned: ${JSON.stringify(report.maleFrameCheck)}`);
 
-// ───────────────────────── 5. male → female deformation field ─────────────────────────
-// Correspondence pairs are kept PER open-anatomy-3d structure. Each new vertex
-// is warped only with pairs from the structure it came from (its nearest male
-// structure vertex): neighbouring structures can move very differently in the
-// female warp (e.g. the hands hang next to the hips).
-const fields = []; // per structure: { grid, disp }
-const allPos = [], allField = [];
+// ───────────────────────── 5. male → female deformation ─────────────────────────
+// BodyParts3D has one (male) body. open-anatomy-3d built a female version by
+// warping it into a MakeHuman female body, but that warp badly distorts the
+// shoulder and chest muscles (up to ~40% non-rigid shape change). We keep only
+// what it tells us about female PROPORTIONS — from the skeleton, which carries
+// them reliably — and fit our own smooth, regularized thin-plate spline:
+//   1. recover the male↔female skeleton vertex correspondence (graph matching);
+//   2. take 520 well-spread landmarks (farthest-point sampling);
+//   3. fit a regularized TPS (λ = 1) and apply it to every muscle AND to the
+//      male skeleton, so the female muscles and bones stay consistent.
+const LAMBDA = 1;
+const skS = [], skD = [];
 let pairCount = 0;
-const holdout = []; // [fieldIndex, srcXYZ, dstXYZ]
-maleOA.traverse((m) => {
-  if (!m.isMesh || m.name.startsWith("skin")) return;
+maleOA.getObjectByName("skeleton").traverse((m) => {
+  if (!m.isMesh) return;
   const f = femaleOA.getObjectByName(m.name);
   if (!f) return;
   const A = meshWorld(m), B = meshWorld(f);
   if (A.idx.length !== B.idx.length || A.pos.length !== B.pos.length) return;
   const map = matchIsomorphicMeshes(A.idx, A.pos.length / 3, B.idx, B.pos.length / 3);
-  const pos = [], disp = [];
-  const fi = fields.length;
   for (let v = 0; v < map.length; v++) {
     if (map[v] < 0) continue;
-    const s = [A.pos[v * 3], A.pos[v * 3 + 1], A.pos[v * 3 + 2]];
-    const d = [B.pos[map[v] * 3], B.pos[map[v] * 3 + 1], B.pos[map[v] * 3 + 2]];
     pairCount++;
-    // Hold out 1% of pairs to measure how well the field reproduces the warp.
-    if (pairCount % 100 === 0) { holdout.push([fi, s, d, v]); continue; }
-    pos.push(...s);
-    disp.push(d[0] - s[0], d[1] - s[1], d[2] - s[2]);
+    skS.push(A.pos[v * 3], A.pos[v * 3 + 1], A.pos[v * 3 + 2]);
+    skD.push(B.pos[map[v] * 3], B.pos[map[v] * 3 + 1], B.pos[map[v] * 3 + 2]);
   }
-  if (!pos.length) return;
-  // Complete the field on every male vertex of the structure (harmonic fill of
-  // unmatched/held-out vertices) for continuous barycentric interpolation.
-  const nA = A.pos.length / 3;
-  const known = new Uint8Array(nA), full = new Float32Array(nA * 3);
-  const held = new Set(holdout.filter((h) => h[0] === fi).map((h) => h[3]));
-  for (let v = 0; v < nA; v++) {
-    if (map[v] < 0 || held.has(v)) continue;
-    known[v] = 1;
-    for (let k = 0; k < 3; k++) full[v * 3 + k] = B.pos[map[v] * 3 + k] - A.pos[v * 3 + k];
-  }
-  const filled = harmonicFill(A.idx, nA, known, full);
-  // Mesh pieces without any matched vertex: inverse-distance fallback.
-  const fieldGrid = new PointGrid(new Float32Array(pos), 0.01);
-  for (let v = 0; v < nA; v++) {
-    if (filled.filled[v]) continue;
-    const nn = fieldGrid.knn(A.pos[v * 3], A.pos[v * 3 + 1], A.pos[v * 3 + 2], 8, 40);
-    let wx = 0, wy = 0, wz = 0, ws = 0;
-    for (const [i, d2] of nn) { const w = 1 / (d2 + 1e-8); wx += disp[i * 3] * w; wy += disp[i * 3 + 1] * w; wz += disp[i * 3 + 2] * w; ws += w; }
-    filled.disp[v * 3] = wx / ws; filled.disp[v * 3 + 1] = wy / ws; filled.disp[v * 3 + 2] = wz / ws;
-  }
-  fields.push({
-    name: m.name,
-    grid: fieldGrid,
-    disp: new Float32Array(disp),
-    surface: new TriangleSurface(A.pos, A.idx),
-    idx: A.idx,
-    vdisp: filled.disp,
-  });
-  // Structure lookup: every male vertex of the open-anatomy-3d MUSCLE groups.
-  if (m.parent?.name === "muscles") for (let i = 0; i < A.pos.length; i += 3) { allPos.push(A.pos[i], A.pos[i + 1], A.pos[i + 2]); allField.push(fi); }
 });
-const structureGrid = new PointGrid(new Float32Array(allPos), 0.01);
-const structureOf = Int32Array.from(allField);
-report.correspondencePairs = pairCount;
+report.skeletonCorrespondencePairs = pairCount;
+const lmIdx = farthestPoints(Float32Array.from(skS), 520);
+const lmTrain = lmIdx.filter((_, i) => i % 5 !== 0), lmTest = lmIdx.filter((_, i) => i % 5 === 0);
+const pt = (arr, i) => [arr[i * 3], arr[i * 3 + 1], arr[i * 3 + 2]];
+const tps = fitTps(lmTrain.map((i) => pt(skS, i)), lmTrain.map((i) => pt(skD, i)), LAMBDA);
+let lmErr = 0;
+for (const i of lmTest) { const w = tps(...pt(skS, i)); lmErr += Math.hypot(w[0] - skD[i * 3], w[1] - skD[i * 3 + 1], w[2] - skD[i * 3 + 2]); }
+report.femaleWarp = { method: "regularized thin-plate spline on skeleton landmarks", lambda: LAMBDA, landmarks: lmTrain.length, boneHoldoutMm: +(lmErr / lmTest.length * 1000).toFixed(1) };
 
-/** Continuous warp: barycentric interpolation on the nearest male triangle of the structure. */
-function warpWith(fi, x, y, z) {
-  const f = fields[fi];
-  const { t, bary } = f.surface.closest(x, y, z);
-  if (t >= 0) {
-    let dx = 0, dy = 0, dz = 0;
-    for (let k = 0; k < 3; k++) {
-      const v = f.idx[t * 3 + k];
-      dx += bary[k] * f.vdisp[v * 3]; dy += bary[k] * f.vdisp[v * 3 + 1]; dz += bary[k] * f.vdisp[v * 3 + 2];
-    }
-    return [x + dx, y + dy, z + dz];
-  }
-  return warpIdw(fi, x, y, z);
-}
-function warpIdw(fi, x, y, z) {
-  const { grid, disp } = fields[fi];
-  const nn = grid.knn(x, y, z, 8, 40);
-  let wx = 0, wy = 0, wz = 0, ws = 0;
-  for (const [i, d2] of nn) {
-    const w = 1 / (d2 + 1e-8);
-    wx += disp[i * 3] * w; wy += disp[i * 3 + 1] * w; wz += disp[i * 3 + 2] * w; ws += w;
-  }
-  return [x + wx / ws, y + wy / ws, z + wz / ws];
-}
-/**
- * Each BodyParts3D file belongs to exactly one open-anatomy-3d muscle group
- * (its decimated copy lives there). Find it by majority vote of the file's
- * vertices, so every vertex of a file is warped by one coherent field.
- */
-function fileStructures(m) {
-  const votes = m.files.map(() => new Map());
-  for (let v = 0; v < m.pos.length / 3; v++) {
-    const [[nearest]] = structureGrid.knn(m.pos[v * 3], m.pos[v * 3 + 1], m.pos[v * 3 + 2], 1, 40);
-    const fi = structureOf[nearest];
-    const map = votes[m.fileOf[v]];
-    map.set(fi, (map.get(fi) ?? 0) + 1);
-  }
-  return votes.map((map) => [...map.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? -1);
-}
-report.fileStructure = {};
-let errSum = 0, errMax = 0;
-for (const [fi, src, dst] of holdout) {
-  const p = warpWith(fi, src[0], src[1], src[2]);
-  const e = Math.hypot(p[0] - dst[0], p[1] - dst[1], p[2] - dst[2]);
-  errSum += e; errMax = Math.max(errMax, e);
-}
-report.fieldHoldoutError = { meanMm: +(errSum / holdout.length * 1000).toFixed(2), maxMm: +(errMax * 1000).toFixed(2), n: holdout.length };
+const warpPos = (pos) => {
+  const out = new Float32Array(pos.length);
+  for (let i = 0; i < pos.length; i += 3) out.set(tps(pos[i], pos[i + 1], pos[i + 2]), i);
+  return out;
+};
+const femaleMeshes = meshes.map((m) => ({ ...m, pos: warpPos(m.pos) }));
 
-// Smoothness guard: no warped triangle edge may stretch far beyond its male length.
-const femaleMeshes = meshes.map((m) => {
-  const structure = fileStructures(m);
-  m.files.forEach((fj, i) => (report.fileStructure[fj] = fields[structure[i]]?.name ?? null));
-  const pos = new Float32Array(m.pos.length);
-  for (let v = 0; v < pos.length / 3; v++) pos.set(warpWith(structure[m.fileOf[v]], m.pos[v * 3], m.pos[v * 3 + 1], m.pos[v * 3 + 2]), v * 3);
-  return { ...m, pos };
+// The female skeleton: open-anatomy-3d male bones under the same warp.
+const femaleBones = [];
+maleOA.getObjectByName("skeleton").traverse((m) => {
+  if (!m.isMesh) return;
+  const { pos, idx } = meshWorld(m);
+  femaleBones.push({ node: m.name, group: "skeleton", pos: warpPos(pos), idx, files: [], bone: true });
 });
+
+// Shape check: non-rigid change of each muscle after the best similarity fit.
+function procrustesResidual(A, B) {
+  const n = A.length / 3, ca = [0, 0, 0], cb = [0, 0, 0];
+  for (let i = 0; i < n; i++) for (let k = 0; k < 3; k++) { ca[k] += A[i * 3 + k] / n; cb[k] += B[i * 3 + k] / n; }
+  const H = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+  let sa = 0, sb = 0;
+  for (let i = 0; i < n; i++) {
+    const a = [0, 1, 2].map((k) => A[i * 3 + k] - ca[k]), b = [0, 1, 2].map((k) => B[i * 3 + k] - cb[k]);
+    sa += a[0] ** 2 + a[1] ** 2 + a[2] ** 2; sb += b[0] ** 2 + b[1] ** 2 + b[2] ** 2;
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) H[r][c] += a[r] * b[c];
+  }
+  let X = H.map((r) => r.slice()); // orthogonal polar factor by Newton iteration
+  for (let it = 0; it < 50; it++) {
+    const d = X[0][0] * (X[1][1] * X[2][2] - X[1][2] * X[2][1]) - X[0][1] * (X[1][0] * X[2][2] - X[1][2] * X[2][0]) + X[0][2] * (X[1][0] * X[2][1] - X[1][1] * X[2][0]);
+    const inv = [[(X[1][1] * X[2][2] - X[1][2] * X[2][1]) / d, (X[0][2] * X[2][1] - X[0][1] * X[2][2]) / d, (X[0][1] * X[1][2] - X[0][2] * X[1][1]) / d], [(X[1][2] * X[2][0] - X[1][0] * X[2][2]) / d, (X[0][0] * X[2][2] - X[0][2] * X[2][0]) / d, (X[0][2] * X[1][0] - X[0][0] * X[1][2]) / d], [(X[1][0] * X[2][1] - X[1][1] * X[2][0]) / d, (X[0][1] * X[2][0] - X[0][0] * X[2][1]) / d, (X[0][0] * X[1][1] - X[0][1] * X[1][0]) / d]];
+    X = X.map((r, i) => r.map((v, j) => 0.5 * (v + inv[j][i])));
+  }
+  let tr = 0;
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) tr += X[r][c] * H[r][c];
+  const s = tr / sa;
+  let res = 0;
+  for (let i = 0; i < n; i++) {
+    const a = [0, 1, 2].map((k) => A[i * 3 + k] - ca[k]);
+    for (let c = 0; c < 3; c++) res += (s * (X[0][c] * a[0] + X[1][c] * a[1] + X[2][c] * a[2]) - (B[i * 3 + c] - cb[c])) ** 2;
+  }
+  return Math.sqrt(res / n) / Math.sqrt(sb / n);
+}
+const residuals = meshes
+  .map((m, i) => [m.node, procrustesResidual(m.pos, femaleMeshes[i].pos)])
+  .filter(([node]) => !node.startsWith("ctx_"))
+  .sort((a, b) => b[1] - a[1]);
+report.femaleShapeChange = {
+  medianPct: +(residuals[residuals.length >> 1][1] * 100).toFixed(1),
+  worstPct: +(residuals[0][1] * 100).toFixed(1),
+  worst: residuals[0][0],
+};
+
 let worstStretch = { ratio: 0, node: "" };
 const ratios = [];
-const over5 = {};
 for (let k = 0; k < meshes.length; k++) {
   const a = meshes[k].pos, b = femaleMeshes[k].pos, idx = meshes[k].idx;
   for (let t = 0; t < idx.length; t += 3) for (const [i, j] of [[idx[t], idx[t + 1]], [idx[t + 1], idx[t + 2]], [idx[t + 2], idx[t]]]) {
     const la = Math.hypot(a[i * 3] - a[j * 3], a[i * 3 + 1] - a[j * 3 + 1], a[i * 3 + 2] - a[j * 3 + 2]);
     const lb = Math.hypot(b[i * 3] - b[j * 3], b[i * 3 + 1] - b[j * 3 + 1], b[i * 3 + 2] - b[j * 3 + 2]);
     if (la <= 0.002) continue;
-    const r = lb / la;
-    ratios.push(r);
-    if (r > 5) over5[meshes[k].node] = (over5[meshes[k].node] ?? 0) + 1;
-    if (r > worstStretch.ratio) worstStretch = { ratio: +r.toFixed(2), node: meshes[k].node };
+    ratios.push(lb / la);
+    if (lb / la > worstStretch.ratio) worstStretch = { ratio: +(lb / la).toFixed(2), node: meshes[k].node };
   }
 }
 ratios.sort((x, y) => x - y);
 const pct = (q) => +ratios[Math.floor(ratios.length * q)].toFixed(2);
-report.femaleEdgeStretch = { median: pct(0.5), p99: pct(0.99), p999: pct(0.999), worst: worstStretch, edgesOver5x: ratios.filter((r) => r > 5).length, edges: ratios.length, over5ByMesh: over5 };
-report.femaleCheck = {};
-for (const key of ["deltoid_anterior_l", "deltoid_posterior_r", "trapezius_descending_r", "trapezius_ascending_l"]) {
-  const m = femaleMeshes.find((x) => x.node === key);
-  report.femaleCheck[key] = surfaceDistance(m.pos, meshWorld(femaleOA.getObjectByName(m.oaKey)));
-}
+report.femaleEdgeStretch = { median: pct(0.5), p99: pct(0.99), p999: pct(0.999), worst: worstStretch };
 
 // ───────────────────────── 6. appearance bake ─────────────────────────
-// Occlusion and tendon factor are computed on the male (source) geometry and
-// reused for the female mesh (same vertices); the fibre axis is recomputed.
+// Occlusion, tendon factor and fibre flow are computed on the male (source)
+// geometry and reused for the female mesh (same vertices).
 console.time("bake");
 for (const m of meshes) {
   m.nrm = normals(m.pos, m.idx);
   m.allTendon = m.node === "ctx_linea_alba"; // a tendinous band, not muscle
 }
+// External oblique: BodyParts3D's mesh wraps the rectus region (the rectus
+// abdominis itself is not in the source). Medial to the semilunar line the
+// external oblique is aponeurosis — the anterior rectus sheath — so it is
+// rendered as a pearly sheath through which the rectus contours still read.
+// Landmarks come from the model: the linea alba spans xiphoid → pubis; the
+// semilunar line runs ≈8.5 cm from the midline at the costal margin to
+// ≈3.5 cm at the pubic tubercle.
+{
+  const la = meshes.find((m) => m.node === "ctx_linea_alba");
+  let yTop = -Infinity, yBot = Infinity;
+  for (let i = 1; i < la.pos.length; i += 3) { yTop = Math.max(yTop, la.pos[i]); yBot = Math.min(yBot, la.pos[i]); }
+  const smooth = (e0, e1, x) => { const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0))); return t * t * (3 - 2 * t); };
+  for (const m of meshes) {
+    if (!/^external_oblique_[lr]$/.test(m.node)) continue;
+    const n = m.pos.length / 3;
+    m.tendonFloor = new Float32Array(n);
+    for (let v = 0; v < n; v++) {
+      const x = Math.abs(m.pos[v * 3]), y = m.pos[v * 3 + 1];
+      const t = Math.min(1, Math.max(0, (y - yBot) / (yTop - yBot)));
+      const xs = 0.035 + (0.085 - 0.035) * t;
+      const medial = 1 - smooth(xs - 0.006, xs + 0.006, x);
+      const anterior = smooth(-0.2, 0.3, m.nrm[v * 3 + 2]);
+      m.tendonFloor[v] = 0.62 * medial * anterior * (y < yTop + 0.02 ? 1 : 0);
+    }
+  }
+  report.aponeurosis = { linea_alba_y: [+yBot.toFixed(3), +yTop.toFixed(3)] };
+}
 const baked = bakeAppearance(meshes);
-meshes.forEach((m, i) => { m.anat = baked[i].anat; m.fiber = baked[i].fiber; });
-femaleMeshes.forEach((m, i) => { m.anat = baked[i].anat; m.fiber = principalAxis(m.pos); });
+// Same vertices in both bodies: the female mesh reuses the male bake, so its
+// fibre pattern deforms with the muscle instead of being recomputed.
+meshes.forEach((m, i) => { m.anat = baked[i].anat; m.fibre = baked[i].fibre; });
+femaleMeshes.forEach((m, i) => { m.anat = baked[i].anat; m.fibre = baked[i].fibre; });
 console.timeEnd("bake");
 const tendonShare = (() => {
   let t = 0, n = 0;
@@ -390,32 +406,28 @@ const tendonShare = (() => {
 report.appearance = { tendonVertexShare: tendonShare };
 
 // ───────────────────────── 7. write GLBs ─────────────────────────
-function fiberArray(f, n) {
-  const a = new Float32Array(n * 3);
-  for (let v = 0; v < n; v++) a.set(f, v * 3);
-  return a;
-}
 async function writeGlb(list, file, sex) {
   const doc = new Document();
   doc.getRoot().getAsset().generator = "muscle-studio pipeline/bodyparts3d";
   doc.getRoot().getAsset().copyright =
     "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International" +
-    (sex === "female" ? "; female shape via open-anatomy-3d (CC BY 4.0) / MakeHuman (CC0)" : "");
+    (sex === "female" ? "; female proportions derived from open-anatomy-3d (CC BY 4.0) / MakeHuman (CC0)" : "");
   const buffer = doc.createBuffer();
   const scene = doc.createScene(`bodyparts3d-muscles-${sex}`);
   const groups = {};
-  for (const g of ["muscles", "muscles_context"]) scene.addChild((groups[g] = doc.createNode(g)));
+  const groupNames = [...new Set(list.map((m) => m.group))];
+  for (const g of groupNames) scene.addChild((groups[g] = doc.createNode(g)));
   for (const m of list) {
     const prim = doc
       .createPrimitive()
       .setAttribute("POSITION", doc.createAccessor().setType("VEC3").setArray(m.pos).setBuffer(buffer))
       .setAttribute("NORMAL", doc.createAccessor().setType("VEC3").setArray(normals(m.pos, m.idx)).setBuffer(buffer))
-      .setAttribute("_ANAT", doc.createAccessor().setType("VEC2").setArray(m.anat).setBuffer(buffer))
-      .setAttribute(
-        "_FIBER",
-        doc.createAccessor().setType("VEC3").setArray(fiberArray(m.fiber, m.pos.length / 3)).setBuffer(buffer),
-      )
       .setIndices(doc.createAccessor().setType("SCALAR").setArray(m.pos.length / 3 > 65535 ? m.idx : Uint16Array.from(m.idx)).setBuffer(buffer));
+    if (m.anat) {
+      prim
+        .setAttribute("_ANAT", doc.createAccessor().setType("VEC2").setArray(m.anat).setBuffer(buffer))
+        .setAttribute("_FIBER", doc.createAccessor().setType("VEC3").setArray(m.fibre).setBuffer(buffer));
+    }
     const node = doc.createNode(m.node).setMesh(doc.createMesh(m.node).addPrimitive(prim)).setExtras({ bodyparts3d: m.files });
     groups[m.group].addChild(node);
   }
@@ -429,7 +441,7 @@ async function writeGlb(list, file, sex) {
 }
 report.bytes = {
   male: await writeGlb(meshes, path.join(OUT, "muscles-male.glb"), "male"),
-  female: await writeGlb(femaleMeshes, path.join(OUT, "muscles-female.glb"), "female"),
+  female: await writeGlb([...femaleMeshes, ...femaleBones], path.join(OUT, "muscles-female.glb"), "female"),
 };
 report.triangles = {
   units: meshes.filter((m) => m.group === "muscles").reduce((s, m) => s + m.idx.length / 3, 0),

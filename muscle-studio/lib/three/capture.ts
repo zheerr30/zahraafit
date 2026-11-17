@@ -29,7 +29,7 @@ export interface ExportOptions {
   labels: boolean;
   legend: boolean;
   language: IllustrationDoc["labelLanguage"];
-  doc: Pick<IllustrationDoc, "selections" | "palette" | "materialMode" | "dimUnselected">;
+  doc: Pick<IllustrationDoc, "selections" | "palette" | "dimUnselected">;
   title?: string;
   /** Small credit line drawn along the bottom edge (licence attribution). */
   watermark?: string;

@@ -70,8 +70,7 @@ export function AnatomyModel({ asset }: { asset: AnatomyAssetDefinition }) {
     ])
       .then(([body, muscles]) => {
         if (muscles) {
-          const replaced = combineBodyAndMuscles(body.scene, muscles.scene);
-          if (replaced) disposeObject3D(replaced);
+          for (const node of combineBodyAndMuscles(body.scene, muscles.scene)) disposeObject3D(node);
         }
         prepared = prepareModel(body.scene, asset);
         // Visibility + picking structures before the first frame (muscles only by default).
@@ -165,7 +164,6 @@ export function AnatomyModel({ asset }: { asset: AnatomyAssetDefinition }) {
       if (
         st.doc.selections !== prev.doc.selections ||
         st.doc.palette !== prev.doc.palette ||
-        st.doc.materialMode !== prev.doc.materialMode ||
         st.doc.dimUnselected !== prev.doc.dimUnselected ||
         st.hoveredMuscleId !== prev.hoveredMuscleId ||
         st.exporting !== prev.exporting

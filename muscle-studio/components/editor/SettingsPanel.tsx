@@ -76,7 +76,6 @@ export function SettingsPanel({ active }: { active: ActiveAsset }) {
   const setShowSelectedNames = useEditor((s) => s.setShowSelectedNames);
   const setLabelLanguage = useEditor((s) => s.setLabelLanguage);
   const setDimUnselected = useEditor((s) => s.setDimUnselected);
-  const setMaterialMode = useEditor((s) => s.setMaterialMode);
   const setLayer = useEditor((s) => s.setLayer);
   const hasSystems = useEditor((s) => s.assetMode === "manifest");
 
@@ -133,13 +132,9 @@ export function SettingsPanel({ active }: { active: ActiveAsset }) {
       >
         <ColorField label="العضلات المستهدفة" value={doc.palette.primary} onChange={(c) => setPaletteColor("primary", c)} />
         <ColorField label="العضلات الثانوية" value={doc.palette.secondary} onChange={(c) => setPaletteColor("secondary", c)} />
-        <ColorField label="العضلات غير المحددة" value={doc.palette.base} onChange={(c) => setPaletteColor("base", c)} />
-        <ColorField
-          label="الظل"
-          hint="للعضلات المعتّمة والشبكات غير المرتبطة"
-          value={doc.palette.shadow}
-          onChange={(c) => setPaletteColor("shadow", c)}
-        />
+        <p className="mt-1 text-xs leading-relaxed text-muted">
+          بقية العضلات تبقى بلون النسيج الطبيعي (الأحمر الوردي) مع أليافها وأوتارها العاجية.
+        </p>
       </Section>
 
       <Section title="الخلفية">
@@ -159,22 +154,9 @@ export function SettingsPanel({ active }: { active: ActiveAsset }) {
       <Section title="العرض">
         <SliderField label="شدة الإضاءة" value={doc.lighting} min={0.2} max={2.5} step={0.05} onChange={setLighting} />
         <div className="mt-2">
-          <p className="mb-1 text-sm text-fg">مظهر العضلات</p>
-          <Segmented
-            label="مظهر العضلات"
-            value={doc.materialMode}
-            onChange={setMaterialMode}
-            options={[
-              { value: "anatomical", label: "واقعي", title: "لون العضلة الطبيعي مع الألياف والأوتار البيضاء واللمعة الرطبة" },
-              { value: "studio", label: "أبيض الاستوديو", title: "خامة بيضاء موحّدة للرسوم التوضيحية، مع الظلال والألياف" },
-            ]}
-            className="flex w-full"
-          />
-        </div>
-        <div className="mt-2">
           <Switch
             label="تعتيم العضلات غير المحددة"
-            description="استخدام لون الظل لإبراز العضلات الملوّنة"
+            description="تخفيت لون النسيج الطبيعي لإبراز العضلات الملوّنة"
             checked={doc.dimUnselected}
             onChange={setDimUnselected}
           />

@@ -58,10 +58,11 @@ export const illustrationDocSchema = z.object({
   showSelectedNames: z.boolean(),
   labelLanguage: z.enum(["en", "ar", "both"]),
   dimUnselected: z.boolean(),
-  // "original" was the pre-Open-Anatomy name of the anatomical colour mode.
+  // Muscles always render as natural tissue (écorché). "original" and the
+  // retired white "studio" look from older projects map to it.
   materialMode: z.preprocess(
-    (v) => (v === "original" ? "anatomical" : v),
-    z.enum(["studio", "anatomical"]),
+    (v) => (v === "original" || v === "studio" ? "anatomical" : v),
+    z.enum(["anatomical"]),
   ),
   layers: layersSchema.default(DEFAULT_LAYERS),
 });
@@ -96,6 +97,7 @@ export type Layers = z.infer<typeof layersSchema>;
 export type CameraState = z.infer<typeof cameraStateSchema>;
 export type Project = z.infer<typeof projectSchema>;
 
+/** base/shadow are kept for older projects; muscles now keep their natural tissue colour. */
 export const DEFAULT_PALETTE: Palette = {
   primary: "#E8602C",
   secondary: "#EEA585",

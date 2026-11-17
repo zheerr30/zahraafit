@@ -1,4 +1,4 @@
-import { Box3, Color, Group, Mesh, Raycaster, Vector3, type Material, type Object3D } from "three";
+import { Box3, BufferAttribute, Color, Group, Mesh, Raycaster, Vector3, type Material, type Object3D } from "three";
 import { acceleratedRaycast, computeBoundsTree, disposeBoundsTree } from "three-mesh-bvh";
 import { MUSCLES } from "@/data/muscles/muscles";
 import catalog from "@/data/models/open-anatomy-3d/catalog.json";
@@ -82,16 +82,61 @@ function ensureBvh(mesh: Mesh) {
 /**
  * Replace a body's own (merged) "muscles" node with the separated muscles
  * GLB. Both files share the same coordinate frame, so no transform is needed.
- * Returns the removed node so the caller can dispose it.
+ * Returns the removed nodes so the caller can dispose them.
  */
-export function combineBodyAndMuscles(body: Group, muscles: Group): Object3D | null {
-  const old = body.children.find((c) => authoredName(c) === "muscles") ?? null;
-  if (old) body.remove(old);
+/**
+ * The muscles GLB is quantized (KHR_mesh_quantization): each mesh stores
+ * integer positions plus a per-node scale/offset. The fibre shader works in
+ * millimetre-scale object space, so bake that node transform into float
+ * positions — every muscle then shares one metric frame (the GLB's metres).
+ */
+export function dequantizeMesh(mesh: Mesh): void {
+  const g = mesh.geometry;
+  for (const name of ["position", "normal"] as const) {
+    const attr = g.getAttribute(name);
+    if (!attr || attr.array instanceof Float32Array) continue;
+    const out = new Float32Array(attr.count * 3);
+    for (let i = 0; i < attr.count; i++) {
+      out[i * 3] = attr.getX(i);
+      out[i * 3 + 1] = attr.getY(i);
+      out[i * 3 + 2] = attr.getZ(i);
+    }
+    g.setAttribute(name, new BufferAttribute(out, 3));
+  }
+  mesh.updateMatrix();
+  g.applyMatrix4(mesh.matrix);
+  mesh.position.set(0, 0, 0);
+  mesh.quaternion.identity();
+  mesh.scale.set(1, 1, 1);
+  mesh.updateMatrix();
+}
+
+export function combineBodyAndMuscles(body: Group, muscles: Group): Object3D[] {
+  const provided = new Set(muscles.children.map(authoredName));
+  const removed: Object3D[] = [];
+  const old = body.children.find((c) => authoredName(c) === "muscles");
+  if (old) {
+    body.remove(old);
+    removed.push(old);
+  }
+  // The female muscles file also carries the skeleton fitted with the same
+  // warp, so bones (skull included) sit exactly under the muscles.
+  if (provided.has("skeleton")) {
+    const bones = body.children.find((c) => authoredName(c) === "skeleton");
+    if (bones) {
+      body.remove(bones);
+      removed.push(bones);
+    }
+  }
   for (const child of [...muscles.children]) {
     const name = authoredName(child);
-    if (name === "muscles" || name === "muscles_context") body.add(child);
+    if (name !== "muscles" && name !== "muscles_context" && name !== "skeleton") continue;
+    child.traverse((o) => {
+      if ((o as Mesh).isMesh && (o as Mesh).geometry.getAttribute("_fiber")) dequantizeMesh(o as Mesh);
+    });
+    body.add(child);
   }
-  return old;
+  return removed;
 }
 
 /**
@@ -217,7 +262,7 @@ export function mapPreparedModel(
 }
 
 export interface MaterialContext {
-  doc: Pick<IllustrationDoc, "selections" | "palette" | "materialMode" | "dimUnselected">;
+  doc: Pick<IllustrationDoc, "selections" | "palette" | "dimUnselected">;
   hoveredMuscleId: string | null;
 }
 
@@ -237,13 +282,20 @@ function structureColor(model: PreparedModel, mesh: Mesh, system: Exclude<System
 }
 
 /**
- * Assign materials to every mesh. Highlighted muscles use cached studio
- * materials; unselected muscles use the base (or anatomical) colour; other
- * systems use their anatomical colours and the skin a translucent shader.
+ * Assign materials to every mesh. Every muscle keeps its natural tissue
+ * colour (écorché look); only selected muscles take the target colours.
+ * Other systems use their anatomical colours and the skin a translucent shader.
  */
-/** Realistic muscle colour, with a small deterministic per-muscle variation. */
-export const REALISTIC_MUSCLE = "#A33A30";
-export const REALISTIC_CONTEXT = "#86342C";
+/**
+ * Natural muscle albedo, tuned so the lit render matches the tissue colour
+ * sampled from the reference écorché images (#B0565A mid-tone); with a small
+ * per-muscle variation.
+ */
+export const REALISTIC_MUSCLE = "#C2575E";
+/** Deeper, non-separated muscles: slightly darker tissue. */
+export const REALISTIC_CONTEXT = "#AE5257";
+/** Unselected muscles when "dim unselected" is on: the same tissue, muted. */
+export const DIMMED_MUSCLE = "#7A4C4E";
 const toneCache = new Map<string, string>();
 function realisticTone(muscleId: string): string {
   let hex = toneCache.get(muscleId);
@@ -251,7 +303,7 @@ function realisticTone(muscleId: string): string {
     let h = 0;
     for (const ch of muscleId) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
     const c = new Color(REALISTIC_MUSCLE);
-    c.offsetHSL(((h % 7) - 3) * 0.004, ((h >> 3) % 5 - 2) * 0.02, ((h >> 6) % 7 - 3) * 0.012);
+    c.offsetHSL(((h % 7) - 3) * 0.004, ((h >> 3) % 5 - 2) * 0.02, ((h >> 6) % 7 - 3) * 0.01);
     hex = `#${c.getHexString()}`;
     toneCache.set(muscleId, hex);
   }
@@ -271,6 +323,7 @@ export function applyMaterials(
 ): void {
   const { doc, hoveredMuscleId } = ctx;
   const anySelected = Object.keys(doc.selections).length > 0;
+  const dim = doc.dimUnselected && anySelected;
   for (const mesh of model.meshes) {
     const system = model.systemOf.get(mesh.uuid) ?? null;
     let next: Material | Material[];
@@ -279,10 +332,7 @@ export function applyMaterials(
       next = library.skin();
     } else if (system === "muscles_context") {
       // Non-separated muscles: shown for anatomical completeness, never painted.
-      next =
-        doc.materialMode === "anatomical"
-          ? muscleMat(library, mesh, REALISTIC_CONTEXT, "realistic", "normal")
-          : muscleMat(library, mesh, doc.palette.shadow, "studio", "normal");
+      next = muscleMat(library, mesh, dim ? DIMMED_MUSCLE : REALISTIC_CONTEXT, "realistic", "normal");
     } else if (system && system !== "muscles") {
       next = library.get(structureColor(model, mesh, system), "normal");
     } else {
@@ -294,13 +344,11 @@ export function applyMaterials(
         next = muscleMat(library, mesh, hl, "highlight", variant);
       } else if (!mapping) {
         // Muscle-system meshes that are not mapped, or meshes of unstructured assets.
-        next = muscleMat(library, mesh, doc.palette.shadow, "studio", "normal");
-      } else if (doc.dimUnselected && anySelected) {
-        next = muscleMat(library, mesh, doc.palette.shadow, "studio", variant);
-      } else if (doc.materialMode === "anatomical") {
-        next = muscleMat(library, mesh, realisticTone(mapping.muscleId), "realistic", variant);
+        next = muscleMat(library, mesh, REALISTIC_CONTEXT, "realistic", "normal");
+      } else if (dim) {
+        next = muscleMat(library, mesh, DIMMED_MUSCLE, "realistic", variant);
       } else {
-        next = muscleMat(library, mesh, doc.palette.base, "studio", variant);
+        next = muscleMat(library, mesh, realisticTone(mapping.muscleId), "realistic", variant);
       }
     }
     if (mesh.material !== next) mesh.material = next;

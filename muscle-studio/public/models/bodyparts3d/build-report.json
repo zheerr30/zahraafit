@@ -3,42 +3,42 @@
     "sternocleidomastoid_l": {
       "files": 1,
       "srcTris": 10224,
-      "tris": 2044
+      "tris": 3066
     },
     "sternocleidomastoid_r": {
       "files": 1,
-      "srcTris": 10344,
-      "tris": 2068
+      "srcTris": 10336,
+      "tris": 3100
     },
     "splenius_l": {
       "files": 2,
       "srcTris": 14064,
-      "tris": 2812
+      "tris": 4216
     },
     "splenius_r": {
       "files": 2,
       "srcTris": 14064,
-      "tris": 2812
+      "tris": 4216
     },
     "levator_scapulae_l": {
       "files": 1,
-      "srcTris": 4718,
-      "tris": 1500
+      "srcTris": 4716,
+      "tris": 2000
     },
     "levator_scapulae_r": {
       "files": 1,
-      "srcTris": 4718,
-      "tris": 1500
+      "srcTris": 4716,
+      "tris": 2000
     },
     "deltoid_anterior_l": {
       "files": 1,
       "srcTris": 2206,
-      "tris": 1500
+      "tris": 2206
     },
     "deltoid_anterior_r": {
       "files": 1,
       "srcTris": 2206,
-      "tris": 1500
+      "tris": 2206
     },
     "deltoid_lateral_l": {
       "files": 1,
@@ -53,22 +53,22 @@
     "deltoid_posterior_l": {
       "files": 1,
       "srcTris": 1900,
-      "tris": 1500
+      "tris": 1900
     },
     "deltoid_posterior_r": {
       "files": 1,
       "srcTris": 1900,
-      "tris": 1500
+      "tris": 1900
     },
     "supraspinatus_l": {
       "files": 1,
-      "srcTris": 878,
-      "tris": 878
+      "srcTris": 872,
+      "tris": 872
     },
     "supraspinatus_r": {
       "files": 1,
-      "srcTris": 878,
-      "tris": 878
+      "srcTris": 876,
+      "tris": 876
     },
     "infraspinatus_l": {
       "files": 1,
@@ -103,122 +103,122 @@
     "pectoralis_major_clavicular_l": {
       "files": 1,
       "srcTris": 1846,
-      "tris": 1500
+      "tris": 1846
     },
     "pectoralis_major_clavicular_r": {
       "files": 1,
       "srcTris": 1846,
-      "tris": 1500
+      "tris": 1846
     },
     "pectoralis_major_sternocostal_l": {
       "files": 1,
       "srcTris": 7114,
-      "tris": 1518
+      "tris": 2132
     },
     "pectoralis_major_sternocostal_r": {
       "files": 1,
       "srcTris": 7114,
-      "tris": 1546
+      "tris": 2128
     },
     "pectoralis_major_abdominal_l": {
       "files": 1,
       "srcTris": 1536,
-      "tris": 1500
+      "tris": 1536
     },
     "pectoralis_major_abdominal_r": {
       "files": 1,
       "srcTris": 1536,
-      "tris": 1500
+      "tris": 1536
     },
     "pectoralis_minor_l": {
       "files": 1,
       "srcTris": 9468,
-      "tris": 1894
+      "tris": 2834
     },
     "pectoralis_minor_r": {
       "files": 1,
       "srcTris": 9468,
-      "tris": 1894
+      "tris": 2834
     },
     "serratus_anterior_l": {
       "files": 1,
-      "srcTris": 49212,
-      "tris": 9000
+      "srcTris": 49210,
+      "tris": 13986
     },
     "serratus_anterior_r": {
       "files": 1,
-      "srcTris": 49212,
-      "tris": 9000
+      "srcTris": 49210,
+      "tris": 13984
     },
     "trapezius_descending_l": {
       "files": 1,
-      "srcTris": 7108,
-      "tris": 1500
+      "srcTris": 7100,
+      "tris": 2126
     },
     "trapezius_descending_r": {
       "files": 1,
-      "srcTris": 7108,
-      "tris": 1500
+      "srcTris": 7100,
+      "tris": 2130
     },
     "trapezius_transverse_l": {
       "files": 1,
       "srcTris": 4460,
-      "tris": 1500
+      "tris": 2000
     },
     "trapezius_transverse_r": {
       "files": 1,
       "srcTris": 4460,
-      "tris": 1500
+      "tris": 1998
     },
     "trapezius_ascending_l": {
       "files": 1,
-      "srcTris": 10530,
-      "tris": 2106
+      "srcTris": 10510,
+      "tris": 3152
     },
     "trapezius_ascending_r": {
       "files": 1,
-      "srcTris": 10530,
-      "tris": 2106
+      "srcTris": 10510,
+      "tris": 3150
     },
     "rhomboids_l": {
       "files": 2,
       "srcTris": 9408,
-      "tris": 1882
+      "tris": 2822
     },
     "rhomboids_r": {
       "files": 2,
       "srcTris": 9408,
-      "tris": 1882
+      "tris": 2822
     },
     "erector_spinae_l": {
       "files": 8,
-      "srcTris": 56088,
-      "tris": 10324
+      "srcTris": 56064,
+      "tris": 13964
     },
     "erector_spinae_r": {
       "files": 8,
-      "srcTris": 56088,
-      "tris": 10170
+      "srcTris": 56064,
+      "tris": 13960
     },
     "biceps_brachii_l": {
       "files": 2,
-      "srcTris": 3282,
-      "tris": 1500
+      "srcTris": 3274,
+      "tris": 1990
     },
     "biceps_brachii_r": {
       "files": 2,
-      "srcTris": 3282,
-      "tris": 1500
+      "srcTris": 3274,
+      "tris": 1992
     },
     "brachialis_l": {
       "files": 1,
       "srcTris": 1746,
-      "tris": 1500
+      "tris": 1746
     },
     "brachialis_r": {
       "files": 1,
       "srcTris": 1746,
-      "tris": 1500
+      "tris": 1746
     },
     "coracobrachialis_l": {
       "files": 1,
@@ -233,82 +233,82 @@
     "triceps_brachii_l": {
       "files": 3,
       "srcTris": 5026,
-      "tris": 1500
+      "tris": 2000
     },
     "triceps_brachii_r": {
       "files": 3,
       "srcTris": 5026,
-      "tris": 1500
+      "tris": 2000
     },
     "brachioradialis_l": {
       "files": 1,
-      "srcTris": 4874,
-      "tris": 1500
+      "srcTris": 4872,
+      "tris": 2000
     },
     "brachioradialis_r": {
       "files": 1,
-      "srcTris": 4874,
-      "tris": 1500
+      "srcTris": 4872,
+      "tris": 2000
     },
     "forearm_flexors_l": {
       "files": 8,
-      "srcTris": 22760,
-      "tris": 4630
+      "srcTris": 22752,
+      "tris": 6794
     },
     "forearm_flexors_r": {
       "files": 8,
-      "srcTris": 22760,
-      "tris": 4636
+      "srcTris": 22752,
+      "tris": 6798
     },
     "forearm_extensors_l": {
       "files": 6,
-      "srcTris": 13694,
-      "tris": 3198
+      "srcTris": 13464,
+      "tris": 4016
     },
     "forearm_extensors_r": {
       "files": 6,
-      "srcTris": 13694,
-      "tris": 3180
+      "srcTris": 13464,
+      "tris": 4020
     },
     "external_oblique_l": {
       "files": 1,
-      "srcTris": 111826,
-      "tris": 9000
+      "srcTris": 111800,
+      "tris": 13992
     },
     "external_oblique_r": {
       "files": 1,
-      "srcTris": 111826,
-      "tris": 9000
+      "srcTris": 111800,
+      "tris": 13994
     },
     "gluteus_maximus_l": {
       "files": 1,
-      "srcTris": 2376,
-      "tris": 1500
+      "srcTris": 2370,
+      "tris": 2370
     },
     "gluteus_maximus_r": {
       "files": 1,
-      "srcTris": 2376,
-      "tris": 1500
+      "srcTris": 2370,
+      "tris": 2370
     },
     "gluteus_medius_l": {
       "files": 1,
       "srcTris": 3356,
-      "tris": 1500
+      "tris": 2000
     },
     "gluteus_medius_r": {
       "files": 1,
       "srcTris": 3356,
-      "tris": 1500
+      "tris": 2000
     },
     "gluteus_minimus_l": {
       "files": 1,
       "srcTris": 4208,
-      "tris": 1500
+      "tris": 2000
     },
     "gluteus_minimus_r": {
       "files": 1,
       "srcTris": 4208,
-      "tris": 1500
+      "tris": 2000
     },
     "tensor_fasciae_latae_l": {
       "files": 1,
@@ -322,73 +322,73 @@
     },
     "iliopsoas_l": {
       "files": 2,
-      "srcTris": 7762,
-      "tris": 1552
+      "srcTris": 7756,
+      "tris": 2318
     },
     "iliopsoas_r": {
       "files": 2,
-      "srcTris": 7762,
-      "tris": 1552
+      "srcTris": 7756,
+      "tris": 2318
     },
     "rectus_femoris_l": {
       "files": 1,
       "srcTris": 5688,
-      "tris": 1500
+      "tris": 2000
     },
     "rectus_femoris_r": {
       "files": 1,
       "srcTris": 5688,
-      "tris": 1500
+      "tris": 2000
     },
     "vastus_lateralis_l": {
       "files": 1,
       "srcTris": 6688,
-      "tris": 1500
+      "tris": 2006
     },
     "vastus_lateralis_r": {
       "files": 1,
       "srcTris": 6688,
-      "tris": 1500
+      "tris": 2006
     },
     "vastus_medialis_l": {
       "files": 1,
       "srcTris": 4552,
-      "tris": 1500
+      "tris": 2000
     },
     "vastus_medialis_r": {
       "files": 1,
       "srcTris": 4552,
-      "tris": 1500
+      "tris": 2000
     },
     "vastus_intermedius_l": {
       "files": 1,
       "srcTris": 4260,
-      "tris": 1500
+      "tris": 2000
     },
     "vastus_intermedius_r": {
       "files": 1,
       "srcTris": 4260,
-      "tris": 1500
+      "tris": 2000
     },
     "sartorius_l": {
       "files": 1,
       "srcTris": 3444,
-      "tris": 1500
+      "tris": 1992
     },
     "sartorius_r": {
       "files": 1,
       "srcTris": 3444,
-      "tris": 1500
+      "tris": 1988
     },
     "gracilis_l": {
       "files": 1,
       "srcTris": 3172,
-      "tris": 1500
+      "tris": 1998
     },
     "gracilis_r": {
       "files": 1,
       "srcTris": 3172,
-      "tris": 1500
+      "tris": 1998
     },
     "pectineus_l": {
       "files": 1,
@@ -403,12 +403,12 @@
     "adductor_longus_l": {
       "files": 1,
       "srcTris": 2616,
-      "tris": 1500
+      "tris": 2000
     },
     "adductor_longus_r": {
       "files": 1,
       "srcTris": 2616,
-      "tris": 1500
+      "tris": 2000
     },
     "adductor_brevis_l": {
       "files": 1,
@@ -423,214 +423,214 @@
     "adductor_magnus_l": {
       "files": 1,
       "srcTris": 5972,
-      "tris": 1500
+      "tris": 2000
     },
     "adductor_magnus_r": {
       "files": 1,
       "srcTris": 5972,
-      "tris": 1500
+      "tris": 2000
     },
     "biceps_femoris_l": {
       "files": 2,
       "srcTris": 6838,
-      "tris": 1500
+      "tris": 2050
     },
     "biceps_femoris_r": {
       "files": 2,
       "srcTris": 6838,
-      "tris": 1500
+      "tris": 2050
     },
     "semitendinosus_l": {
       "files": 1,
       "srcTris": 2712,
-      "tris": 1500
+      "tris": 2000
     },
     "semitendinosus_r": {
       "files": 1,
       "srcTris": 2712,
-      "tris": 1500
+      "tris": 2000
     },
     "semimembranosus_l": {
       "files": 1,
       "srcTris": 4612,
-      "tris": 1500
+      "tris": 2000
     },
     "semimembranosus_r": {
       "files": 1,
       "srcTris": 4612,
-      "tris": 1500
+      "tris": 2000
     },
     "gastrocnemius_l": {
       "files": 2,
-      "srcTris": 6894,
-      "tris": 1500
+      "srcTris": 6890,
+      "tris": 2066
     },
     "gastrocnemius_r": {
       "files": 2,
-      "srcTris": 6894,
-      "tris": 1500
+      "srcTris": 6890,
+      "tris": 2066
     },
     "soleus_l": {
       "files": 1,
       "srcTris": 4418,
-      "tris": 1500
+      "tris": 1996
     },
     "soleus_r": {
       "files": 1,
       "srcTris": 4418,
-      "tris": 1500
+      "tris": 1996
     },
     "tibialis_anterior_l": {
       "files": 1,
-      "srcTris": 2510,
-      "tris": 1500
+      "srcTris": 2494,
+      "tris": 2494
     },
     "tibialis_anterior_r": {
       "files": 1,
-      "srcTris": 2510,
-      "tris": 1500
+      "srcTris": 2494,
+      "tris": 2494
     },
     "fibularis_l": {
       "files": 2,
-      "srcTris": 5626,
-      "tris": 1500
+      "srcTris": 5618,
+      "tris": 1994
     },
     "fibularis_r": {
       "files": 2,
-      "srcTris": 5626,
-      "tris": 1500
+      "srcTris": 5618,
+      "tris": 1996
     },
     "extensor_digitorum_longus_l": {
       "files": 1,
-      "srcTris": 4546,
-      "tris": 1500
+      "srcTris": 4520,
+      "tris": 2000
     },
     "extensor_digitorum_longus_r": {
       "files": 1,
-      "srcTris": 4546,
-      "tris": 1500
+      "srcTris": 4520,
+      "tris": 1998
     }
   },
   "context": {
     "ctx_neck_other_l": {
       "files": 26,
-      "srcTris": 62690,
-      "tris": 7048
+      "srcTris": 62684,
+      "tris": 5010
     },
     "ctx_neck_other_r": {
       "files": 22,
-      "srcTris": 55810,
-      "tris": 5610
+      "srcTris": 55790,
+      "tris": 4440
     },
     "ctx_shoulder_other_l": {
       "files": 4,
-      "srcTris": 25962,
-      "tris": 1831
+      "srcTris": 25954,
+      "tris": 2070
     },
     "ctx_shoulder_other_r": {
       "files": 4,
-      "srcTris": 25962,
-      "tris": 1865
+      "srcTris": 25956,
+      "tris": 2064
     },
     "ctx_back_deep_other_l": {
       "files": 12,
-      "srcTris": 52374,
-      "tris": 3679
+      "srcTris": 52300,
+      "tris": 4170
     },
     "ctx_back_deep_other_r": {
       "files": 12,
-      "srcTris": 52374,
-      "tris": 3621
+      "srcTris": 52300,
+      "tris": 4160
     },
     "ctx_intercostals_l": {
       "files": 4,
-      "srcTris": 280172,
-      "tris": 5766
+      "srcTris": 280132,
+      "tris": 7976
     },
     "ctx_intercostals_r": {
       "files": 4,
-      "srcTris": 280172,
-      "tris": 5792
+      "srcTris": 280134,
+      "tris": 7978
     },
     "ctx_arm_other_l": {
       "files": 1,
       "srcTris": 1278,
-      "tris": 338
+      "tris": 298
     },
     "ctx_arm_other_r": {
       "files": 1,
       "srcTris": 1278,
-      "tris": 338
+      "tris": 300
     },
     "ctx_forearm_deep_l": {
       "files": 7,
-      "srcTris": 15148,
-      "tris": 1110
+      "srcTris": 15124,
+      "tris": 1200
     },
     "ctx_forearm_deep_r": {
       "files": 7,
-      "srcTris": 15148,
-      "tris": 1082
+      "srcTris": 15124,
+      "tris": 1200
     },
     "ctx_hand_l": {
       "files": 13,
-      "srcTris": 13122,
-      "tris": 901
+      "srcTris": 13010,
+      "tris": 1038
     },
     "ctx_hand_r": {
       "files": 13,
-      "srcTris": 13122,
-      "tris": 901
+      "srcTris": 13010,
+      "tris": 1040
     },
     "ctx_hip_deep_l": {
       "files": 7,
-      "srcTris": 23754,
-      "tris": 1982
+      "srcTris": 23738,
+      "tris": 1898
     },
     "ctx_hip_deep_r": {
       "files": 7,
-      "srcTris": 23754,
-      "tris": 1994
+      "srcTris": 23740,
+      "tris": 1896
     },
     "ctx_adductor_minimus_l": {
       "files": 1,
       "srcTris": 1958,
-      "tris": 438
+      "tris": 300
     },
     "ctx_adductor_minimus_r": {
       "files": 1,
       "srcTris": 1958,
-      "tris": 440
+      "tris": 300
     },
     "ctx_leg_deep_l": {
       "files": 6,
-      "srcTris": 19150,
-      "tris": 1375
+      "srcTris": 19142,
+      "tris": 1528
     },
     "ctx_leg_deep_r": {
       "files": 6,
-      "srcTris": 19150,
-      "tris": 1398
+      "srcTris": 19142,
+      "tris": 1524
     },
     "ctx_leg_anterior_other_l": {
       "files": 2,
-      "srcTris": 3084,
-      "tris": 337
+      "srcTris": 3062,
+      "tris": 300
     },
     "ctx_leg_anterior_other_r": {
       "files": 2,
-      "srcTris": 3084,
-      "tris": 343
+      "srcTris": 3062,
+      "tris": 300
     },
     "ctx_foot_l": {
       "files": 18,
-      "srcTris": 16130,
-      "tris": 2948
+      "srcTris": 16092,
+      "tris": 1284
     },
     "ctx_foot_r": {
       "files": 18,
-      "srcTris": 16130,
-      "tris": 2938
+      "srcTris": 16094,
+      "tris": 1284
     },
     "ctx_linea_alba": {
       "files": 1,
@@ -639,1006 +639,690 @@
     },
     "ctx_diaphragm": {
       "files": 1,
-      "srcTris": 68522,
-      "tris": 5482
+      "srcTris": 68512,
+      "tris": 5480
     },
     "ctx_pelvic_floor": {
       "files": 20,
-      "srcTris": 46964,
-      "tris": 11754
+      "srcTris": 46930,
+      "tris": 3752
     }
   },
   "missingParts": [],
   "fidelity": {
     "sternocleidomastoid_l": {
-      "meanMm": 0.08,
-      "p95Mm": 0.24,
-      "maxMm": 1.55
+      "strayVertices": 0,
+      "meanMm": 0.05,
+      "p95Mm": 0.15,
+      "maxMm": 1.57
     },
     "sternocleidomastoid_r": {
-      "meanMm": 0.08,
-      "p95Mm": 0.26,
-      "maxMm": 3.41
+      "strayVertices": 12,
+      "meanMm": 0.05,
+      "p95Mm": 0.16,
+      "maxMm": 1.47
     },
     "splenius_l": {
-      "meanMm": 0.1,
-      "p95Mm": 0.36,
-      "maxMm": 1.98
+      "strayVertices": 0,
+      "meanMm": 0.07,
+      "p95Mm": 0.2,
+      "maxMm": 1.8
     },
     "splenius_r": {
-      "meanMm": 0.1,
-      "p95Mm": 0.35,
-      "maxMm": 2.26
+      "strayVertices": 0,
+      "meanMm": 0.07,
+      "p95Mm": 0.2,
+      "maxMm": 2.04
     },
     "levator_scapulae_l": {
-      "meanMm": 0.06,
-      "p95Mm": 0.23,
-      "maxMm": 3.62
+      "strayVertices": 0,
+      "meanMm": 0.04,
+      "p95Mm": 0.14,
+      "maxMm": 0.84
     },
     "levator_scapulae_r": {
-      "meanMm": 0.06,
-      "p95Mm": 0.23,
-      "maxMm": 2
+      "strayVertices": 0,
+      "meanMm": 0.04,
+      "p95Mm": 0.13,
+      "maxMm": 0.84
     },
     "deltoid_anterior_l": {
-      "meanMm": 0.02,
-      "p95Mm": 0.13,
-      "maxMm": 2.12
+      "strayVertices": 0,
+      "meanMm": 0,
+      "p95Mm": 0,
+      "maxMm": 0
     },
     "deltoid_anterior_r": {
-      "meanMm": 0.02,
-      "p95Mm": 0.14,
-      "maxMm": 2.12
+      "strayVertices": 0,
+      "meanMm": 0,
+      "p95Mm": 0,
+      "maxMm": 0
     },
     "deltoid_lateral_l": {
+      "strayVertices": 0,
       "meanMm": 0,
       "p95Mm": 0,
       "maxMm": 0
     },
     "deltoid_lateral_r": {
+      "strayVertices": 0,
       "meanMm": 0,
       "p95Mm": 0,
       "maxMm": 0
     },
     "deltoid_posterior_l": {
-      "meanMm": 0.03,
-      "p95Mm": 0.26,
-      "maxMm": 1.08
+      "strayVertices": 0,
+      "meanMm": 0,
+      "p95Mm": 0,
+      "maxMm": 0
     },
     "deltoid_posterior_r": {
-      "meanMm": 0.03,
-      "p95Mm": 0.26,
-      "maxMm": 1.08
+      "strayVertices": 0,
+      "meanMm": 0,
+      "p95Mm": 0,
+      "maxMm": 0
     },
     "supraspinatus_l": {
+      "strayVertices": 0,
       "meanMm": 0,
       "p95Mm": 0,
       "maxMm": 0
     },
     "supraspinatus_r": {
+      "strayVertices": 0,
       "meanMm": 0,
       "p95Mm": 0,
       "maxMm": 0
     },
     "infraspinatus_l": {
+      "strayVertices": 0,
       "meanMm": 0,
       "p95Mm": 0,
       "maxMm": 0
     },
     "infraspinatus_r": {
+      "strayVertices": 0,
       "meanMm": 0,
       "p95Mm": 0,
       "maxMm": 0
     },
     "teres_minor_l": {
+      "strayVertices": 0,
       "meanMm": 0,
       "p95Mm": 0,
       "maxMm": 0
     },
     "teres_minor_r": {
+      "strayVertices": 0,
       "meanMm": 0,
       "p95Mm": 0,
       "maxMm": 0
     },
     "teres_major_l": {
+      "strayVertices": 0,
       "meanMm": 0,
       "p95Mm": 0,
       "maxMm": 0
     },
     "teres_major_r": {
+      "strayVertices": 0,
       "meanMm": 0,
       "p95Mm": 0,
       "maxMm": 0
     },
     "pectoralis_major_clavicular_l": {
-      "meanMm": 0.03,
-      "p95Mm": 0.11,
-      "maxMm": 1.17
+      "strayVertices": 0,
+      "meanMm": 0,
+      "p95Mm": 0,
+      "maxMm": 0
     },
     "pectoralis_major_clavicular_r": {
-      "meanMm": 0.03,
-      "p95Mm": 0.11,
-      "maxMm": 1.17
+      "strayVertices": 0,
+      "meanMm": 0,
+      "p95Mm": 0,
+      "maxMm": 0
     },
     "pectoralis_major_sternocostal_l": {
-      "meanMm": 0.34,
-      "p95Mm": 1.29,
-      "maxMm": 10.31
+      "strayVertices": 0,
+      "meanMm": 0.13,
+      "p95Mm": 0.42,
+      "maxMm": 2.92
     },
     "pectoralis_major_sternocostal_r": {
-      "meanMm": 0.31,
-      "p95Mm": 1.21,
-      "maxMm": 9.84
+      "strayVertices": 0,
+      "meanMm": 0.14,
+      "p95Mm": 0.41,
+      "maxMm": 2.91
     },
     "pectoralis_major_abdominal_l": {
-      "meanMm": 0.01,
+      "strayVertices": 0,
+      "meanMm": 0,
       "p95Mm": 0,
-      "maxMm": 0.77
+      "maxMm": 0
     },
     "pectoralis_major_abdominal_r": {
-      "meanMm": 0.01,
+      "strayVertices": 0,
+      "meanMm": 0,
       "p95Mm": 0,
-      "maxMm": 1.67
+      "maxMm": 0
     },
     "pectoralis_minor_l": {
-      "meanMm": 0.1,
-      "p95Mm": 0.33,
-      "maxMm": 3.03
+      "strayVertices": 0,
+      "meanMm": 0.06,
+      "p95Mm": 0.19,
+      "maxMm": 2.18
     },
     "pectoralis_minor_r": {
-      "meanMm": 0.1,
-      "p95Mm": 0.35,
-      "maxMm": 3.55
+      "strayVertices": 0,
+      "meanMm": 0.06,
+      "p95Mm": 0.19,
+      "maxMm": 2.18
     },
     "serratus_anterior_l": {
-      "meanMm": 0.09,
-      "p95Mm": 0.27,
-      "maxMm": 1.83
+      "strayVertices": 0,
+      "meanMm": 0.05,
+      "p95Mm": 0.16,
+      "maxMm": 1.71
     },
     "serratus_anterior_r": {
-      "meanMm": 0.09,
-      "p95Mm": 0.27,
-      "maxMm": 1.83
+      "strayVertices": 0,
+      "meanMm": 0.06,
+      "p95Mm": 0.16,
+      "maxMm": 1.7
     },
     "trapezius_descending_l": {
-      "meanMm": 0.16,
-      "p95Mm": 0.56,
-      "maxMm": 3.64
+      "strayVertices": 0,
+      "meanMm": 0.09,
+      "p95Mm": 0.28,
+      "maxMm": 3.39
     },
     "trapezius_descending_r": {
-      "meanMm": 0.16,
-      "p95Mm": 0.56,
-      "maxMm": 2.79
+      "strayVertices": 0,
+      "meanMm": 0.09,
+      "p95Mm": 0.27,
+      "maxMm": 3.39
     },
     "trapezius_transverse_l": {
-      "meanMm": 0.09,
-      "p95Mm": 0.37,
-      "maxMm": 2.1
+      "strayVertices": 0,
+      "meanMm": 0.06,
+      "p95Mm": 0.23,
+      "maxMm": 1.06
     },
     "trapezius_transverse_r": {
-      "meanMm": 0.09,
-      "p95Mm": 0.36,
-      "maxMm": 2.07
+      "strayVertices": 0,
+      "meanMm": 0.06,
+      "p95Mm": 0.23,
+      "maxMm": 1.06
     },
     "trapezius_ascending_l": {
-      "meanMm": 0.17,
-      "p95Mm": 0.58,
-      "maxMm": 8.01
+      "strayVertices": 0,
+      "meanMm": 0.1,
+      "p95Mm": 0.31,
+      "maxMm": 2.32
     },
     "trapezius_ascending_r": {
-      "meanMm": 0.18,
-      "p95Mm": 0.62,
-      "maxMm": 6.03
+      "strayVertices": 0,
+      "meanMm": 0.1,
+      "p95Mm": 0.31,
+      "maxMm": 2.35
     },
     "rhomboids_l": {
-      "meanMm": 0.12,
-      "p95Mm": 0.4,
-      "maxMm": 2.45
+      "strayVertices": 0,
+      "meanMm": 0.06,
+      "p95Mm": 0.2,
+      "maxMm": 2.01
     },
     "rhomboids_r": {
-      "meanMm": 0.11,
-      "p95Mm": 0.39,
-      "maxMm": 2.45
+      "strayVertices": 0,
+      "meanMm": 0.06,
+      "p95Mm": 0.2,
+      "maxMm": 1.8
     },
     "erector_spinae_l": {
-      "meanMm": 0.27,
-      "p95Mm": 1.16,
-      "maxMm": 6.31
+      "strayVertices": 0,
+      "meanMm": 0.1,
+      "p95Mm": 0.28,
+      "maxMm": 2.76
     },
     "erector_spinae_r": {
-      "meanMm": 0.27,
-      "p95Mm": 1.12,
-      "maxMm": 6.89
+      "strayVertices": 0,
+      "meanMm": 0.1,
+      "p95Mm": 0.28,
+      "maxMm": 2.82
     },
     "biceps_brachii_l": {
-      "meanMm": 0.07,
-      "p95Mm": 0.35,
-      "maxMm": 3.92
+      "strayVertices": 0,
+      "meanMm": 0.04,
+      "p95Mm": 0.19,
+      "maxMm": 1.15
     },
     "biceps_brachii_r": {
-      "meanMm": 0.07,
-      "p95Mm": 0.31,
-      "maxMm": 3.58
+      "strayVertices": 0,
+      "meanMm": 0.04,
+      "p95Mm": 0.18,
+      "maxMm": 1.15
     },
     "brachialis_l": {
-      "meanMm": 0.01,
-      "p95Mm": 0.04,
-      "maxMm": 0.62
+      "strayVertices": 0,
+      "meanMm": 0,
+      "p95Mm": 0,
+      "maxMm": 0
     },
     "brachialis_r": {
-      "meanMm": 0.01,
-      "p95Mm": 0.04,
-      "maxMm": 0.62
+      "strayVertices": 0,
+      "meanMm": 0,
+      "p95Mm": 0,
+      "maxMm": 0
     },
     "coracobrachialis_l": {
+      "strayVertices": 0,
       "meanMm": 0,
       "p95Mm": 0,
       "maxMm": 0
     },
     "coracobrachialis_r": {
+      "strayVertices": 0,
       "meanMm": 0,
       "p95Mm": 0,
       "maxMm": 0
     },
     "triceps_brachii_l": {
-      "meanMm": 0.16,
-      "p95Mm": 0.56,
-      "maxMm": 4.31
+      "strayVertices": 0,
+      "meanMm": 0.1,
+      "p95Mm": 0.34,
+      "maxMm": 3.15
     },
     "triceps_brachii_r": {
-      "meanMm": 0.16,
-      "p95Mm": 0.56,
-      "maxMm": 4.31
+      "strayVertices": 0,
+      "meanMm": 0.1,
+      "p95Mm": 0.34,
+      "maxMm": 3.15
     },
     "brachioradialis_l": {
-      "meanMm": 0.08,
-      "p95Mm": 0.32,
-      "maxMm": 1.46
+      "strayVertices": 0,
+      "meanMm": 0.06,
+      "p95Mm": 0.2,
+      "maxMm": 1
     },
     "brachioradialis_r": {
-      "meanMm": 0.08,
-      "p95Mm": 0.31,
-      "maxMm": 1.06
+      "strayVertices": 0,
+      "meanMm": 0.06,
+      "p95Mm": 0.2,
+      "maxMm": 1
     },
     "forearm_flexors_l": {
-      "meanMm": 0.32,
-      "p95Mm": 1.36,
-      "maxMm": 8.21
+      "strayVertices": 0,
+      "meanMm": 0.09,
+      "p95Mm": 0.28,
+      "maxMm": 3.55
     },
     "forearm_flexors_r": {
-      "meanMm": 0.32,
-      "p95Mm": 1.45,
-      "maxMm": 6.4
+      "strayVertices": 0,
+      "meanMm": 0.09,
+      "p95Mm": 0.28,
+      "maxMm": 2.3
     },
     "forearm_extensors_l": {
-      "meanMm": 0.31,
-      "p95Mm": 1.49,
-      "maxMm": 9.78
+      "strayVertices": 0,
+      "meanMm": 0.09,
+      "p95Mm": 0.32,
+      "maxMm": 2.26
     },
     "forearm_extensors_r": {
-      "meanMm": 0.32,
-      "p95Mm": 1.52,
-      "maxMm": 10.35
+      "strayVertices": 0,
+      "meanMm": 0.09,
+      "p95Mm": 0.32,
+      "maxMm": 2.26
     },
     "external_oblique_l": {
-      "meanMm": 0.18,
-      "p95Mm": 0.55,
-      "maxMm": 2.81
+      "strayVertices": 0,
+      "meanMm": 0.1,
+      "p95Mm": 0.27,
+      "maxMm": 1.89
     },
     "external_oblique_r": {
-      "meanMm": 0.18,
-      "p95Mm": 0.52,
-      "maxMm": 2.94
+      "strayVertices": 0,
+      "meanMm": 0.1,
+      "p95Mm": 0.28,
+      "maxMm": 1.66
     },
     "gluteus_maximus_l": {
-      "meanMm": 0.04,
-      "p95Mm": 0.25,
-      "maxMm": 1.46
+      "strayVertices": 0,
+      "meanMm": 0,
+      "p95Mm": 0,
+      "maxMm": 1.79
     },
     "gluteus_maximus_r": {
-      "meanMm": 0.04,
-      "p95Mm": 0.25,
-      "maxMm": 1.46
+      "strayVertices": 0,
+      "meanMm": 0,
+      "p95Mm": 0,
+      "maxMm": 1.79
     },
     "gluteus_medius_l": {
-      "meanMm": 0.06,
-      "p95Mm": 0.24,
-      "maxMm": 1.44
+      "strayVertices": 0,
+      "meanMm": 0.05,
+      "p95Mm": 0.15,
+      "maxMm": 1.51
     },
     "gluteus_medius_r": {
-      "meanMm": 0.06,
-      "p95Mm": 0.24,
-      "maxMm": 1.4
+      "strayVertices": 0,
+      "meanMm": 0.04,
+      "p95Mm": 0.14,
+      "maxMm": 1.51
     },
     "gluteus_minimus_l": {
-      "meanMm": 0.06,
-      "p95Mm": 0.23,
-      "maxMm": 1.86
+      "strayVertices": 0,
+      "meanMm": 0.05,
+      "p95Mm": 0.16,
+      "maxMm": 2.33
     },
     "gluteus_minimus_r": {
-      "meanMm": 0.06,
-      "p95Mm": 0.23,
-      "maxMm": 1.86
+      "strayVertices": 0,
+      "meanMm": 0.05,
+      "p95Mm": 0.15,
+      "maxMm": 2.33
     },
     "tensor_fasciae_latae_l": {
+      "strayVertices": 0,
       "meanMm": 0.01,
       "p95Mm": 0,
       "maxMm": 2.59
     },
     "tensor_fasciae_latae_r": {
+      "strayVertices": 0,
       "meanMm": 0.01,
       "p95Mm": 0,
       "maxMm": 2.59
     },
     "iliopsoas_l": {
-      "meanMm": 0.36,
-      "p95Mm": 1.59,
-      "maxMm": 6.21
+      "strayVertices": 0,
+      "meanMm": 0.15,
+      "p95Mm": 0.44,
+      "maxMm": 3.51
     },
     "iliopsoas_r": {
-      "meanMm": 0.38,
-      "p95Mm": 1.64,
-      "maxMm": 14.32
+      "strayVertices": 0,
+      "meanMm": 0.15,
+      "p95Mm": 0.43,
+      "maxMm": 3.66
     },
     "rectus_femoris_l": {
-      "meanMm": 0.14,
-      "p95Mm": 0.47,
-      "maxMm": 2.98
+      "strayVertices": 0,
+      "meanMm": 0.1,
+      "p95Mm": 0.33,
+      "maxMm": 1.87
     },
     "rectus_femoris_r": {
-      "meanMm": 0.15,
-      "p95Mm": 0.47,
-      "maxMm": 3.25
-    },
-    "vastus_lateralis_l": {
-      "meanMm": 0.17,
-      "p95Mm": 0.55,
-      "maxMm": 2.12
-    },
-    "vastus_lateralis_r": {
-      "meanMm": 0.17,
-      "p95Mm": 0.55,
-      "maxMm": 5.15
-    },
-    "vastus_medialis_l": {
+      "strayVertices": 0,
       "meanMm": 0.1,
       "p95Mm": 0.34,
-      "maxMm": 1.75
+      "maxMm": 1.23
+    },
+    "vastus_lateralis_l": {
+      "strayVertices": 0,
+      "meanMm": 0.13,
+      "p95Mm": 0.4,
+      "maxMm": 2.2
+    },
+    "vastus_lateralis_r": {
+      "strayVertices": 0,
+      "meanMm": 0.12,
+      "p95Mm": 0.39,
+      "maxMm": 2.32
+    },
+    "vastus_medialis_l": {
+      "strayVertices": 0,
+      "meanMm": 0.06,
+      "p95Mm": 0.23,
+      "maxMm": 1.9
     },
     "vastus_medialis_r": {
-      "meanMm": 0.1,
-      "p95Mm": 0.35,
-      "maxMm": 1.75
+      "strayVertices": 0,
+      "meanMm": 0.06,
+      "p95Mm": 0.23,
+      "maxMm": 1.53
     },
     "vastus_intermedius_l": {
-      "meanMm": 0.11,
-      "p95Mm": 0.4,
-      "maxMm": 5.11
+      "strayVertices": 0,
+      "meanMm": 0.07,
+      "p95Mm": 0.24,
+      "maxMm": 4.8
     },
     "vastus_intermedius_r": {
-      "meanMm": 0.11,
-      "p95Mm": 0.4,
-      "maxMm": 5.11
+      "strayVertices": 0,
+      "meanMm": 0.07,
+      "p95Mm": 0.24,
+      "maxMm": 4.8
     },
     "sartorius_l": {
-      "meanMm": 0.07,
-      "p95Mm": 0.3,
-      "maxMm": 2.26
+      "strayVertices": 0,
+      "meanMm": 0.05,
+      "p95Mm": 0.2,
+      "maxMm": 2.12
     },
     "sartorius_r": {
-      "meanMm": 0.07,
-      "p95Mm": 0.3,
-      "maxMm": 2.26
+      "strayVertices": 0,
+      "meanMm": 0.05,
+      "p95Mm": 0.23,
+      "maxMm": 2.12
     },
     "gracilis_l": {
-      "meanMm": 0.07,
-      "p95Mm": 0.28,
-      "maxMm": 3.47
+      "strayVertices": 0,
+      "meanMm": 0.05,
+      "p95Mm": 0.17,
+      "maxMm": 4.41
     },
     "gracilis_r": {
-      "meanMm": 0.07,
-      "p95Mm": 0.27,
-      "maxMm": 5.25
+      "strayVertices": 0,
+      "meanMm": 0.04,
+      "p95Mm": 0.17,
+      "maxMm": 4.41
     },
     "pectineus_l": {
+      "strayVertices": 0,
       "meanMm": 0,
       "p95Mm": 0,
       "maxMm": 0
     },
     "pectineus_r": {
+      "strayVertices": 0,
       "meanMm": 0,
       "p95Mm": 0,
       "maxMm": 0
     },
     "adductor_longus_l": {
-      "meanMm": 0.04,
-      "p95Mm": 0.17,
-      "maxMm": 1.62
+      "strayVertices": 0,
+      "meanMm": 0.02,
+      "p95Mm": 0.08,
+      "maxMm": 1.41
     },
     "adductor_longus_r": {
-      "meanMm": 0.04,
-      "p95Mm": 0.16,
-      "maxMm": 1.62
+      "strayVertices": 0,
+      "meanMm": 0.02,
+      "p95Mm": 0.07,
+      "maxMm": 1.41
     },
     "adductor_brevis_l": {
+      "strayVertices": 0,
       "meanMm": 0,
       "p95Mm": 0,
       "maxMm": 0
     },
     "adductor_brevis_r": {
+      "strayVertices": 0,
       "meanMm": 0,
       "p95Mm": 0,
       "maxMm": 0
     },
     "adductor_magnus_l": {
-      "meanMm": 0.19,
-      "p95Mm": 0.69,
-      "maxMm": 5.1
+      "strayVertices": 0,
+      "meanMm": 0.09,
+      "p95Mm": 0.29,
+      "maxMm": 3.22
     },
     "adductor_magnus_r": {
-      "meanMm": 0.19,
-      "p95Mm": 0.73,
-      "maxMm": 5.53
+      "strayVertices": 0,
+      "meanMm": 0.1,
+      "p95Mm": 0.3,
+      "maxMm": 3.22
     },
     "biceps_femoris_l": {
-      "meanMm": 0.18,
-      "p95Mm": 0.58,
-      "maxMm": 3.15
-    },
-    "biceps_femoris_r": {
-      "meanMm": 0.18,
-      "p95Mm": 0.56,
-      "maxMm": 3.15
-    },
-    "semitendinosus_l": {
-      "meanMm": 0.05,
-      "p95Mm": 0.2,
-      "maxMm": 2.9
-    },
-    "semitendinosus_r": {
-      "meanMm": 0.05,
-      "p95Mm": 0.2,
-      "maxMm": 2.9
-    },
-    "semimembranosus_l": {
+      "strayVertices": 0,
       "meanMm": 0.12,
       "p95Mm": 0.38,
-      "maxMm": 2.75
+      "maxMm": 2.5
+    },
+    "biceps_femoris_r": {
+      "strayVertices": 0,
+      "meanMm": 0.13,
+      "p95Mm": 0.38,
+      "maxMm": 2.5
+    },
+    "semitendinosus_l": {
+      "strayVertices": 0,
+      "meanMm": 0.02,
+      "p95Mm": 0.1,
+      "maxMm": 1.62
+    },
+    "semitendinosus_r": {
+      "strayVertices": 0,
+      "meanMm": 0.02,
+      "p95Mm": 0.1,
+      "maxMm": 1.62
+    },
+    "semimembranosus_l": {
+      "strayVertices": 0,
+      "meanMm": 0.08,
+      "p95Mm": 0.27,
+      "maxMm": 1.73
     },
     "semimembranosus_r": {
-      "meanMm": 0.12,
-      "p95Mm": 0.39,
-      "maxMm": 2.75
+      "strayVertices": 0,
+      "meanMm": 0.08,
+      "p95Mm": 0.28,
+      "maxMm": 2.93
     },
     "gastrocnemius_l": {
-      "meanMm": 0.19,
-      "p95Mm": 0.58,
-      "maxMm": 3.1
+      "strayVertices": 0,
+      "meanMm": 0.13,
+      "p95Mm": 0.4,
+      "maxMm": 3.71
     },
     "gastrocnemius_r": {
-      "meanMm": 0.19,
-      "p95Mm": 0.6,
+      "strayVertices": 0,
+      "meanMm": 0.13,
+      "p95Mm": 0.41,
       "maxMm": 2.84
     },
     "soleus_l": {
-      "meanMm": 0.1,
-      "p95Mm": 0.36,
-      "maxMm": 1.56
+      "strayVertices": 0,
+      "meanMm": 0.07,
+      "p95Mm": 0.24,
+      "maxMm": 1.61
     },
     "soleus_r": {
-      "meanMm": 0.1,
-      "p95Mm": 0.36,
-      "maxMm": 1.56
+      "strayVertices": 0,
+      "meanMm": 0.07,
+      "p95Mm": 0.24,
+      "maxMm": 1.61
     },
     "tibialis_anterior_l": {
-      "meanMm": 0.05,
-      "p95Mm": 0.2,
-      "maxMm": 2.8
+      "strayVertices": 0,
+      "meanMm": 0,
+      "p95Mm": 0,
+      "maxMm": 1.86
     },
     "tibialis_anterior_r": {
-      "meanMm": 0.05,
-      "p95Mm": 0.21,
-      "maxMm": 2.8
+      "strayVertices": 0,
+      "meanMm": 0,
+      "p95Mm": 0,
+      "maxMm": 1.86
     },
     "fibularis_l": {
-      "meanMm": 0.14,
-      "p95Mm": 0.55,
-      "maxMm": 3.22
+      "strayVertices": 0,
+      "meanMm": 0.1,
+      "p95Mm": 0.3,
+      "maxMm": 3.54
     },
     "fibularis_r": {
-      "meanMm": 0.14,
-      "p95Mm": 0.57,
-      "maxMm": 3.41
+      "strayVertices": 0,
+      "meanMm": 0.1,
+      "p95Mm": 0.28,
+      "maxMm": 3.54
     },
     "extensor_digitorum_longus_l": {
-      "meanMm": 0.09,
-      "p95Mm": 0.4,
-      "maxMm": 2.68
+      "strayVertices": 0,
+      "meanMm": 0.08,
+      "p95Mm": 0.22,
+      "maxMm": 2.57
     },
     "extensor_digitorum_longus_r": {
-      "meanMm": 0.09,
-      "p95Mm": 0.38,
-      "maxMm": 2.3
+      "strayVertices": 0,
+      "meanMm": 0.08,
+      "p95Mm": 0.23,
+      "maxMm": 2.57
     }
   },
   "fidelitySummary": {
-    "worstMeanMm": 0.38,
-    "worstP95Mm": 1.64,
-    "worstMaxMm": 14.32
+    "worstMeanMm": 0.15,
+    "worstP95Mm": 0.44,
+    "worstMaxMm": 4.8
   },
   "filesUsed": 378,
   "maleFrameCheck": {
     "deltoid_anterior_l": {
-      "mean": 0.21,
-      "p95": 1.46
+      "mean": 0.79,
+      "p95": 3.91
     },
     "deltoid_posterior_r": {
-      "mean": 0.82,
-      "p95": 4.34
+      "mean": 1.38,
+      "p95": 5.23
     },
     "trapezius_descending_r": {
-      "mean": 0.24,
-      "p95": 1.46
+      "mean": 1.05,
+      "p95": 4.92
     },
     "trapezius_ascending_l": {
-      "mean": 0.21,
-      "p95": 1.23
+      "mean": 1,
+      "p95": 4.66
     }
   },
-  "correspondencePairs": 603359,
-  "fileStructure": {
-    "FJ1573": "neck_muscles_l",
-    "FJ1595": "neck_muscles_r",
-    "FJ1545M": "back_muscles_l",
-    "FJ1546M": "back_muscles_l",
-    "FJ1545": "back_muscles_r",
-    "FJ1546": "back_muscles_r",
-    "FJ1532M": "shoulder_muscles_l",
-    "FJ1532": "shoulder_muscles_r",
-    "FJ1468M": "deltoid_l",
-    "FJ1468": "deltoid_r",
-    "FJ1467M": "deltoid_l",
-    "FJ1467": "deltoid_r",
-    "FJ1513M": "deltoid_l",
-    "FJ1513": "deltoid_r",
-    "FJ1506M": "rotator_cuff_l",
-    "FJ1506": "rotator_cuff_r",
-    "FJ1500M": "rotator_cuff_l",
-    "FJ1500": "rotator_cuff_r",
-    "FJ1508M": "rotator_cuff_l",
-    "FJ1508": "rotator_cuff_r",
-    "FJ1507M": "shoulder_muscles_l",
-    "FJ1507": "shoulder_muscles_r",
-    "FJ1447M": "chest_muscles_l",
-    "FJ1447": "chest_muscles_r",
-    "FJ1464M": "chest_muscles_l",
-    "FJ1464": "chest_muscles_r",
-    "FJ1446M": "chest_muscles_l",
-    "FJ1446": "chest_muscles_r",
-    "FJ1456M": "shoulder_muscles_l",
-    "FJ1456": "shoulder_muscles_r",
-    "FJ1459M": "shoulder_muscles_l",
-    "FJ1459": "shoulder_muscles_r",
-    "FJ1521M": "trapezius_l",
-    "FJ1521": "trapezius_r",
-    "FJ1554M": "trapezius_l",
-    "FJ1554": "trapezius_r",
-    "FJ1520M": "trapezius_l",
-    "FJ1520": "trapezius_r",
-    "FJ1536M": "shoulder_muscles_l",
-    "FJ1537M": "shoulder_muscles_l",
-    "FJ1536": "shoulder_muscles_r",
-    "FJ1537": "shoulder_muscles_r",
-    "FJ1526M": "back_muscles_l",
-    "FJ1528M": "back_muscles_l",
-    "FJ1527M": "back_muscles_l",
-    "FJ1533M": "back_muscles_l",
-    "FJ1534M": "back_muscles_l",
-    "FJ1535M": "back_muscles_l",
-    "FJ1544M": "back_muscles_l",
-    "FJ1543M": "back_muscles_l",
-    "FJ1526": "back_muscles_r",
-    "FJ1528": "back_muscles_r",
-    "FJ1527": "back_muscles_r",
-    "FJ1533": "back_muscles_r",
-    "FJ1534": "back_muscles_r",
-    "FJ1535": "back_muscles_r",
-    "FJ1544": "back_muscles_r",
-    "FJ1543": "back_muscles_r",
-    "FJ1478M": "upper_arm_muscles_l",
-    "FJ1512M": "upper_arm_muscles_l",
-    "FJ1478": "upper_arm_muscles_r",
-    "FJ1512": "upper_arm_muscles_r",
-    "FJ1486M": "upper_arm_muscles_l",
-    "FJ1486": "upper_arm_muscles_r",
-    "FJ1488M": "upper_arm_muscles_l",
-    "FJ1488": "upper_arm_muscles_r",
-    "FJ1479M": "upper_arm_muscles_l",
-    "FJ1477M": "upper_arm_muscles_l",
-    "FJ1480M": "upper_arm_muscles_l",
-    "FJ1479": "upper_arm_muscles_r",
-    "FJ1477": "upper_arm_muscles_r",
-    "FJ1480": "upper_arm_muscles_r",
-    "FJ1487M": "forearm_muscles_l",
-    "FJ1487": "forearm_muscles_r",
-    "FJ1496M": "forearm_muscles_l",
-    "FJ1502M": "forearm_muscles_l",
-    "FJ1473M": "forearm_muscles_l",
-    "FJ1518M": "forearm_muscles_l",
-    "FJ1475M": "forearm_muscles_l",
-    "FJ1499M": "forearm_muscles_l",
-    "FJ1474M": "forearm_muscles_l",
-    "FJ1516M": "forearm_muscles_l",
-    "FJ1496": "forearm_muscles_r",
-    "FJ1502": "forearm_muscles_r",
-    "FJ1473": "forearm_muscles_r",
-    "FJ1518": "forearm_muscles_r",
-    "FJ1475": "forearm_muscles_r",
-    "FJ1499": "forearm_muscles_r",
-    "FJ1474": "forearm_muscles_r",
-    "FJ1516": "forearm_muscles_r",
-    "FJ1490M": "forearm_muscles_l",
-    "FJ1489M": "forearm_muscles_l",
-    "FJ1472M": "forearm_muscles_l",
-    "FJ1517M": "forearm_muscles_l",
-    "FJ1492M": "forearm_muscles_l",
-    "FJ1491M": "forearm_muscles_l",
-    "FJ1490": "forearm_muscles_r",
-    "FJ1489": "forearm_muscles_r",
-    "FJ1472": "forearm_muscles_r",
-    "FJ1517": "forearm_muscles_r",
-    "FJ1492": "forearm_muscles_r",
-    "FJ1491": "forearm_muscles_r",
-    "FJ1452M": "abdominal_muscles",
-    "FJ1452": "abdominal_muscles",
-    "FJ1418M": "gluteal_l",
-    "FJ1418": "gluteal_r",
-    "FJ1419M": "gluteal_l",
-    "FJ1419": "gluteal_r",
-    "FJ1420M": "gluteal_l",
-    "FJ1420": "gluteal_r",
-    "FJ1438M": "gluteal_l",
-    "FJ1438": "gluteal_r",
-    "FJ1431M": "iliopsoas_l",
-    "FJ1422M": "iliopsoas_l",
-    "FJ1431": "iliopsoas_r",
-    "FJ1422": "iliopsoas_r",
-    "FJ1433M": "quadriceps_l",
-    "FJ1433": "quadriceps_r",
-    "FJ1442M": "quadriceps_l",
-    "FJ1442": "quadriceps_r",
-    "FJ1443M": "quadriceps_l",
-    "FJ1443": "quadriceps_r",
-    "FJ1441M": "quadriceps_l",
-    "FJ1441": "quadriceps_r",
-    "FJ1434M": "quadriceps_l",
-    "FJ1434": "quadriceps_r",
-    "FJ1421M": "adductors_l",
-    "FJ1421": "adductors_r",
-    "FJ1427M": "adductors_l",
-    "FJ1427": "adductors_r",
-    "FJ1402M": "adductors_l",
-    "FJ1402": "adductors_r",
-    "FJ1401M": "adductors_l",
-    "FJ1401": "adductors_r",
-    "FJ1403M": "adductors_l",
-    "FJ1403": "adductors_r",
-    "FJ1395M": "hamstrings_l",
-    "FJ1444M": "hamstrings_l",
-    "FJ1395": "hamstrings_r",
-    "FJ1444": "hamstrings_r",
-    "FJ1436M": "hamstrings_l",
-    "FJ1436": "hamstrings_r",
-    "FJ1435M": "hamstrings_l",
-    "FJ1435": "hamstrings_r",
-    "FJ1397M": "calf_l",
-    "FJ1394M": "calf_l",
-    "FJ1397": "calf_r",
-    "FJ1394": "calf_r",
-    "FJ1437M": "calf_l",
-    "FJ1437": "calf_r",
-    "FJ1439M": "shin_muscles_l",
-    "FJ1439": "shin_muscles_r",
-    "FJ1410M": "shin_muscles_l",
-    "FJ1409M": "shin_muscles_l",
-    "FJ1410": "shin_muscles_r",
-    "FJ1409": "shin_muscles_r",
-    "FJ1406M": "shin_muscles_l",
-    "FJ1406": "shin_muscles_r",
-    "FJ1557": "neck_muscles_l",
-    "FJ1555": "neck_muscles_l",
-    "FJ1560": "neck_muscles_l",
-    "FJ1578": "neck_muscles_l",
-    "FJ1561": "neck_muscles_l",
-    "FJ1562": "neck_muscles_l",
-    "FJ1563": "neck_muscles_l",
-    "FJ1564": "neck_muscles_l",
-    "FJ1565": "neck_muscles_l",
-    "FJ1558": "neck_muscles_l",
-    "FJ1566": "neck_muscles_l",
-    "FJ1569": "neck_muscles_l",
-    "FJ1567": "neck_muscles_l",
-    "FJ1568": "neck_muscles_l",
-    "FJ1570": "neck_muscles_l",
-    "FJ1571": "neck_muscles_l",
-    "FJ1572": "neck_muscles_l",
-    "FJ1574": "neck_muscles_l",
-    "FJ1575": "neck_muscles_l",
-    "FJ1576": "neck_muscles_l",
-    "FJ1577": "neck_muscles_l",
-    "FJ1549M": "neck_muscles_l",
-    "FJ1552M": "neck_muscles_l",
-    "FJ1553M": "neck_muscles_l",
-    "FJ1600": "neck_muscles_l",
-    "FJ1601": "neck_muscles_l",
-    "FJ1556": "neck_muscles_r",
-    "FJ1579": "neck_muscles_r",
-    "FJ1582": "neck_muscles_r",
-    "FJ1583": "neck_muscles_r",
-    "FJ1584": "neck_muscles_r",
-    "FJ1585": "neck_muscles_r",
-    "FJ1586": "neck_muscles_r",
-    "FJ1587": "neck_muscles_r",
-    "FJ1588": "neck_muscles_r",
-    "FJ1591": "neck_muscles_r",
-    "FJ1589": "neck_muscles_r",
-    "FJ1590": "neck_muscles_r",
-    "FJ1592": "neck_muscles_r",
-    "FJ1593": "neck_muscles_r",
-    "FJ1594": "neck_muscles_r",
-    "FJ1596": "neck_muscles_r",
-    "FJ1597": "neck_muscles_r",
-    "FJ1598": "neck_muscles_r",
-    "FJ1599": "neck_muscles_r",
-    "FJ1549": "neck_muscles_r",
-    "FJ1552": "neck_muscles_r",
-    "FJ1553": "neck_muscles_r",
-    "FJ1504M": "rotator_cuff_l",
-    "FJ1541M": "shoulder_muscles_l",
-    "FJ1542M": "shoulder_muscles_l",
-    "FJ1460M": "shoulder_muscles_l",
-    "FJ1504": "rotator_cuff_r",
-    "FJ1541": "shoulder_muscles_r",
-    "FJ1542": "shoulder_muscles_r",
-    "FJ1460": "shoulder_muscles_r",
-    "FJ1547M": "back_muscles_l",
-    "FJ1548M": "back_muscles_l",
-    "FJ1524M": "back_muscles_l",
-    "FJ1551M": "back_muscles_l",
-    "FJ1522M": "back_muscles_l",
-    "FJ1538M": "back_muscles_l",
-    "FJ1539M": "back_muscles_l",
-    "FJ1540M": "back_muscles_l",
-    "FJ1550M": "back_muscles_l",
-    "FJ1462M": "back_muscles_l",
-    "FJ1463M": "back_muscles_l",
-    "FJ1525M": "back_muscles_l",
-    "FJ1547": "back_muscles_r",
-    "FJ1548": "back_muscles_r",
-    "FJ1524": "back_muscles_r",
-    "FJ1551": "back_muscles_r",
-    "FJ1522": "back_muscles_r",
-    "FJ1538": "back_muscles_r",
-    "FJ1539": "back_muscles_r",
-    "FJ1540": "back_muscles_r",
-    "FJ1550": "back_muscles_r",
-    "FJ1462": "back_muscles_r",
-    "FJ1463": "back_muscles_r",
-    "FJ1525": "back_muscles_r",
-    "FJ1451M": "intercostals_l",
-    "FJ1454M": "intercostals_l",
-    "FJ1455M": "intercostals_l",
-    "FJ1461M": "intercostals_l",
-    "FJ1451": "intercostals_r",
-    "FJ1454": "intercostals_r",
-    "FJ1455": "intercostals_r",
-    "FJ1461": "intercostals_r",
-    "FJ1485M": "upper_arm_muscles_l",
-    "FJ1485": "upper_arm_muscles_r",
-    "FJ1484M": "forearm_muscles_l",
-    "FJ1493M": "forearm_muscles_l",
-    "FJ1495M": "forearm_muscles_l",
-    "FJ1497M": "forearm_muscles_l",
-    "FJ1498M": "forearm_muscles_l",
-    "FJ1503M": "forearm_muscles_l",
-    "FJ1505M": "forearm_muscles_l",
-    "FJ1484": "forearm_muscles_r",
-    "FJ1493": "forearm_muscles_r",
-    "FJ1495": "forearm_muscles_r",
-    "FJ1497": "forearm_muscles_r",
-    "FJ1498": "forearm_muscles_r",
-    "FJ1503": "forearm_muscles_r",
-    "FJ1505": "forearm_muscles_r",
-    "FJ1466M": "hand_muscles_l",
-    "FJ1470M": "hand_muscles_l",
-    "FJ1483M": "hand_muscles_l",
-    "FJ1494M": "hand_muscles_l",
-    "FJ1501M": "hand_muscles_l",
-    "FJ1481M": "hand_muscles_l",
-    "FJ1482M": "hand_muscles_l",
-    "FJ1469": "hand_muscles_r",
-    "FJ1509M": "hand_muscles_l",
-    "FJ1510M": "hand_muscles_l",
-    "FJ1511M": "hand_muscles_l",
-    "FJ1514M": "hand_muscles_l",
-    "FJ1515M": "hand_muscles_l",
-    "FJ1466": "hand_muscles_r",
-    "FJ1470": "hand_muscles_r",
-    "FJ1483": "hand_muscles_r",
-    "FJ1494": "hand_muscles_r",
-    "FJ1501": "hand_muscles_r",
-    "FJ1481": "hand_muscles_r",
-    "FJ1482": "hand_muscles_r",
-    "FJ1469M": "hand_muscles_l",
-    "FJ1509": "hand_muscles_r",
-    "FJ1510": "hand_muscles_r",
-    "FJ1511": "hand_muscles_r",
-    "FJ1514": "hand_muscles_r",
-    "FJ1515": "hand_muscles_r",
-    "FJ1416M": "gluteal_l",
-    "FJ1417M": "gluteal_l",
-    "FJ1425M": "gluteal_l",
-    "FJ1426M": "gluteal_l",
-    "FJ1428M": "gluteal_l",
-    "FJ1432M": "gluteal_l",
-    "FJ1423M": "gluteal_l",
-    "FJ1416": "gluteal_r",
-    "FJ1417": "gluteal_r",
-    "FJ1425": "gluteal_r",
-    "FJ1426": "gluteal_r",
-    "FJ1428": "gluteal_r",
-    "FJ1432": "gluteal_r",
-    "FJ1423": "gluteal_r",
-    "FJ1404M": "adductors_l",
-    "FJ1404": "adductors_r",
-    "FJ1405M": "calf_l",
-    "FJ1414M": "calf_l",
-    "FJ1415M": "calf_l",
-    "FJ1429M": "calf_l",
-    "FJ1430M": "calf_l",
-    "FJ1440M": "calf_l",
-    "FJ1405": "calf_r",
-    "FJ1414": "calf_r",
-    "FJ1415": "calf_r",
-    "FJ1429": "calf_r",
-    "FJ1430": "calf_r",
-    "FJ1440": "calf_r",
-    "FJ1408M": "shin_muscles_l",
-    "FJ1411M": "shin_muscles_l",
-    "FJ1408": "shin_muscles_r",
-    "FJ1411": "shin_muscles_r",
-    "FJ1390M": "foot_muscles_l",
-    "FJ1383M": "foot_muscles_l",
-    "FJ1384M": "foot_muscles_l",
-    "FJ1391M": "foot_muscles_l",
-    "FJ1389M": "foot_muscles_l",
-    "FJ1393M": "foot_muscles_l",
-    "FJ1400M": "foot_muscles_l",
-    "FJ1407M": "foot_muscles_l",
-    "FJ1412M": "foot_muscles_l",
-    "FJ1413M": "foot_muscles_l",
-    "FJ1396M": "foot_muscles_l",
-    "FJ1398M": "foot_muscles_l",
-    "FJ1399M": "foot_muscles_l",
-    "FJ1385M": "foot_muscles_l",
-    "FJ1386M": "foot_muscles_l",
-    "FJ1387M": "foot_muscles_l",
-    "FJ1388M": "foot_muscles_l",
-    "FJ1445M": "foot_muscles_l",
-    "FJ1390": "foot_muscles_r",
-    "FJ1383": "foot_muscles_r",
-    "FJ1384": "foot_muscles_r",
-    "FJ1391": "foot_muscles_r",
-    "FJ1389": "foot_muscles_r",
-    "FJ1393": "foot_muscles_r",
-    "FJ1400": "foot_muscles_r",
-    "FJ1407": "foot_muscles_r",
-    "FJ1412": "foot_muscles_r",
-    "FJ1413": "foot_muscles_r",
-    "FJ1396": "foot_muscles_r",
-    "FJ1398": "foot_muscles_r",
-    "FJ1399": "foot_muscles_r",
-    "FJ1385": "foot_muscles_r",
-    "FJ1386": "foot_muscles_r",
-    "FJ1387": "foot_muscles_r",
-    "FJ1388": "foot_muscles_r",
-    "FJ1445": "foot_muscles_r",
-    "FJ1448": "abdominal_muscles",
-    "FJ3131": "diaphragm",
-    "FJ1450": "pelvic_floor",
-    "FJ1450M": "pelvic_floor",
-    "FJ2543": "pelvic_floor",
-    "FJ2548": "pelvic_floor",
-    "FJ1449M": "pelvic_floor",
-    "FJ2542": "pelvic_floor",
-    "FJ2547": "pelvic_floor",
-    "FJ1453M": "pelvic_floor",
-    "FJ2544": "pelvic_floor",
-    "FJ2549": "pelvic_floor",
-    "FJ1457M": "pelvic_floor",
-    "FJ2545": "pelvic_floor",
-    "FJ2550": "pelvic_floor",
-    "FJ1458M": "pelvic_floor",
-    "FJ2546": "pelvic_floor",
-    "FJ2551": "pelvic_floor",
-    "FJ1465": "pelvic_floor",
-    "FJ1465M": "pelvic_floor",
-    "FJ2552": "pelvic_floor",
-    "FJ2553": "pelvic_floor"
+  "skeletonCorrespondencePairs": 78726,
+  "femaleWarp": {
+    "method": "regularized thin-plate spline on skeleton landmarks",
+    "lambda": 1,
+    "landmarks": 416,
+    "boneHoldoutMm": 18.9
   },
-  "fieldHoldoutError": {
-    "meanMm": 0.58,
-    "maxMm": 27.75,
-    "n": 6033
+  "femaleShapeChange": {
+    "medianPct": 6.8,
+    "worstPct": 13.7,
+    "worst": "serratus_anterior_r"
   },
   "femaleEdgeStretch": {
-    "median": 0.92,
-    "p99": 2.05,
-    "p999": 3.65,
+    "median": 0.87,
+    "p99": 1.2,
+    "p999": 1.26,
     "worst": {
-      "ratio": 16.81,
-      "node": "pectoralis_major_clavicular_r"
-    },
-    "edgesOver5x": 176,
-    "edges": 638079,
-    "over5ByMesh": {
-      "deltoid_lateral_l": 10,
-      "deltoid_lateral_r": 4,
-      "deltoid_posterior_l": 6,
-      "deltoid_posterior_r": 16,
-      "infraspinatus_l": 22,
-      "infraspinatus_r": 8,
-      "teres_minor_l": 4,
-      "teres_minor_r": 2,
-      "pectoralis_major_clavicular_l": 14,
-      "pectoralis_major_clavicular_r": 14,
-      "serratus_anterior_r": 2,
-      "trapezius_transverse_r": 4,
-      "biceps_brachii_l": 2,
-      "biceps_brachii_r": 4,
-      "brachialis_l": 2,
-      "coracobrachialis_r": 2,
-      "forearm_flexors_l": 6,
-      "forearm_flexors_r": 8,
-      "forearm_extensors_l": 8,
-      "forearm_extensors_r": 4,
-      "gracilis_r": 4,
-      "adductor_longus_l": 10,
-      "adductor_longus_r": 2,
-      "adductor_brevis_r": 2,
-      "semitendinosus_r": 2,
-      "ctx_hand_l": 2,
-      "ctx_foot_l": 2,
-      "ctx_foot_r": 10
+      "ratio": 1.38,
+      "node": "ctx_leg_deep_r"
     }
   },
-  "femaleCheck": {
-    "deltoid_anterior_l": {
-      "mean": 0.23,
-      "p95": 1.31
-    },
-    "deltoid_posterior_r": {
-      "mean": 0.64,
-      "p95": 3.18
-    },
-    "trapezius_descending_r": {
-      "mean": 0.24,
-      "p95": 1.33
-    },
-    "trapezius_ascending_l": {
-      "mean": 0.26,
-      "p95": 1.23
-    }
+  "aponeurosis": {
+    "linea_alba_y": [
+      0.867,
+      1.256
+    ]
   },
   "appearance": {
-    "tendonVertexShare": 0.065
+    "tendonVertexShare": 0.096
   },
   "bytes": {
-    "male": 2712628,
-    "female": 2717088
+    "male": 3162520,
+    "female": 4021908
   },
   "triangles": {
-    "units": 208074,
-    "context": 71611
+    "units": 285508,
+    "context": 63090
   }
 }

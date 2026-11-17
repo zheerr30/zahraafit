@@ -25,6 +25,7 @@ import { meshopt, quantize, reorder } from "@gltf-transform/functions";
 import { MeshoptEncoder, MeshoptSimplifier } from "meshoptimizer";
 import { harmonicFill, indexObjDirs, loadGlbScene, makeToThree, matchIsomorphicMeshes, meshWorld, parseObj, PointGrid, TriangleSurface } from "./lib.mjs";
 import { bareName, CONTEXT, sideOf, UNITS } from "./units.mjs";
+import { bakeAppearance, principalAxis } from "./bake.mjs";
 
 const arg = (name, def) => {
   const i = process.argv.indexOf(`--${name}`);
@@ -369,7 +370,31 @@ for (const key of ["deltoid_anterior_l", "deltoid_posterior_r", "trapezius_desce
   report.femaleCheck[key] = surfaceDistance(m.pos, meshWorld(femaleOA.getObjectByName(m.oaKey)));
 }
 
-// ───────────────────────── 6. write GLBs ─────────────────────────
+// ───────────────────────── 6. appearance bake ─────────────────────────
+// Occlusion and tendon factor are computed on the male (source) geometry and
+// reused for the female mesh (same vertices); the fibre axis is recomputed.
+console.time("bake");
+for (const m of meshes) {
+  m.nrm = normals(m.pos, m.idx);
+  m.allTendon = m.node === "ctx_linea_alba"; // a tendinous band, not muscle
+}
+const baked = bakeAppearance(meshes);
+meshes.forEach((m, i) => { m.anat = baked[i].anat; m.fiber = baked[i].fiber; });
+femaleMeshes.forEach((m, i) => { m.anat = baked[i].anat; m.fiber = principalAxis(m.pos); });
+console.timeEnd("bake");
+const tendonShare = (() => {
+  let t = 0, n = 0;
+  for (const m of meshes) for (let v = 1; v < m.anat.length; v += 2) { t += m.anat[v] > 0.5 ? 1 : 0; n++; }
+  return +(t / n).toFixed(3);
+})();
+report.appearance = { tendonVertexShare: tendonShare };
+
+// ───────────────────────── 7. write GLBs ─────────────────────────
+function fiberArray(f, n) {
+  const a = new Float32Array(n * 3);
+  for (let v = 0; v < n; v++) a.set(f, v * 3);
+  return a;
+}
 async function writeGlb(list, file, sex) {
   const doc = new Document();
   doc.getRoot().getAsset().generator = "muscle-studio pipeline/bodyparts3d";
@@ -385,6 +410,11 @@ async function writeGlb(list, file, sex) {
       .createPrimitive()
       .setAttribute("POSITION", doc.createAccessor().setType("VEC3").setArray(m.pos).setBuffer(buffer))
       .setAttribute("NORMAL", doc.createAccessor().setType("VEC3").setArray(normals(m.pos, m.idx)).setBuffer(buffer))
+      .setAttribute("_ANAT", doc.createAccessor().setType("VEC2").setArray(m.anat).setBuffer(buffer))
+      .setAttribute(
+        "_FIBER",
+        doc.createAccessor().setType("VEC3").setArray(fiberArray(m.fiber, m.pos.length / 3)).setBuffer(buffer),
+      )
       .setIndices(doc.createAccessor().setType("SCALAR").setArray(m.pos.length / 3 > 65535 ? m.idx : Uint16Array.from(m.idx)).setBuffer(buffer));
     const node = doc.createNode(m.node).setMesh(doc.createMesh(m.node).addPrimitive(prim)).setExtras({ bodyparts3d: m.files });
     groups[m.group].addChild(node);

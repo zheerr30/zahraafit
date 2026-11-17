@@ -103,10 +103,15 @@ describe.each(["male", "female"])("%s body with separated BodyParts3D muscles", 
     }
   });
 
-  it("shows only muscles at start (separated + context) and never maps context meshes", () => {
+  it("shows only muscles (+ the skull to complete the head) at start and never maps context meshes", () => {
     const { model, report: r } = bodies[gender];
     for (const [system, group] of model.systemGroups) {
-      expect(group.visible, system).toBe(system === "muscles" || system === "muscles_context");
+      expect(group.visible, system).toBe(["muscles", "muscles_context", "skeleton"].includes(system));
+    }
+    for (const mesh of model.meshes) {
+      if (model.systemOf.get(mesh.uuid) !== "skeleton") continue;
+      const name = model.meshNames.get(mesh.uuid)!;
+      expect(mesh.visible, name).toBe(["skull", "mandible", "teeth"].includes(name));
     }
     for (const mesh of model.meshes) {
       if (model.systemOf.get(mesh.uuid) === "muscles_context") expect(r.byMesh.has(mesh.uuid)).toBe(false);
@@ -128,7 +133,7 @@ describe.each(["male", "female"])("%s body with separated BodyParts3D muscles", 
     const { model, report: r } = bodies[gender];
     const library = new MaterialLibrary();
     const doc = createDefaultDoc(gender as "male" | "female");
-    const highlight = library.get(doc.palette.primary);
+    const highlight = library.muscle(doc.palette.primary, "highlight");
     for (const muscle of MUSCLES) {
       const store = createEditorStore({ initialDoc: doc });
       store.getState().toggleMuscle(muscle.id);
@@ -140,6 +145,25 @@ describe.each(["male", "female"])("%s body with separated BodyParts3D muscles", 
       }
     }
     library.dispose();
+  });
+});
+
+describe.each(["male", "female"])("%s realistic appearance data", (gender) => {
+  it("every muscle mesh carries baked occlusion, tendon and fibre attributes", () => {
+    const { model } = bodies[gender];
+    for (const mesh of model.meshes) {
+      const system = model.systemOf.get(mesh.uuid);
+      if (system !== "muscles" && system !== "muscles_context") continue;
+      const anat = mesh.geometry.getAttribute("_anat");
+      const fiber = mesh.geometry.getAttribute("_fiber");
+      expect(anat, model.meshNames.get(mesh.uuid)).toBeDefined();
+      expect(fiber).toBeDefined();
+      for (let i = 0; i < anat.count; i += Math.max(1, anat.count >> 4)) {
+        expect(anat.getX(i)).toBeGreaterThanOrEqual(0);
+        expect(anat.getX(i)).toBeLessThanOrEqual(1.0001);
+        expect(Math.hypot(fiber.getX(i), fiber.getY(i), fiber.getZ(i))).toBeCloseTo(1, 1);
+      }
+    }
   });
 });
 

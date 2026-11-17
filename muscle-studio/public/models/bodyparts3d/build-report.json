@@ -1630,9 +1630,12 @@
       "p95": 1.23
     }
   },
+  "appearance": {
+    "tendonVertexShare": 0.065
+  },
   "bytes": {
-    "male": 2070740,
-    "female": 2076244
+    "male": 2712628,
+    "female": 2717088
   },
   "triangles": {
     "units": 208074,

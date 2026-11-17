@@ -1,11 +1,11 @@
-import { Box3, Group, Mesh, Raycaster, Vector3, type Material, type Object3D } from "three";
+import { Box3, Color, Group, Mesh, Raycaster, Vector3, type Material, type Object3D } from "three";
 import { acceleratedRaycast, computeBoundsTree, disposeBoundsTree } from "three-mesh-bvh";
 import { MUSCLES } from "@/data/muscles/muscles";
 import catalog from "@/data/models/open-anatomy-3d/catalog.json";
 import { mapMeshesToMuscles, type MappingReport } from "@/lib/anatomy/resolver";
 import type { IllustrationDoc, Layers } from "@/lib/storage/schema";
 import { SYSTEMS, type AnatomyAssetDefinition, type BodySide, type SystemId } from "@/types/anatomy";
-import type { MaterialLibrary } from "./materials";
+import type { MaterialLibrary, MaterialVariant, MuscleLookName } from "./materials";
 
 /** Normalized model height in scene units (meters). */
 export const MODEL_HEIGHT = 1.8;
@@ -26,6 +26,9 @@ export const SYSTEM_COLORS: Record<Exclude<SystemId, "skin">, string> = {
 const CATALOG_COLOR = new Map((catalog as { key: string; color: string }[]).map((c) => [c.key, c.color]));
 
 const noRaycast: Mesh["raycast"] = () => {};
+
+/** Bones shown by the "head" layer. */
+export const HEAD_BONES = new Set(["skull", "mandible", "teeth"]);
 
 export interface PreparedModel {
   /** Normalized root: upright, feet at y=0, centered on X/Z, height = MODEL_HEIGHT. */
@@ -159,10 +162,18 @@ export function applyLayers(model: PreparedModel, layers: Layers): void {
     }
     return;
   }
-  for (const [system, group] of model.systemGroups) group.visible = layers[system];
+  // The source has no head muscles; the skull can complete the head on its own
+  // ("head" layer) even when the rest of the skeleton is hidden.
+  for (const [system, group] of model.systemGroups) {
+    group.visible = layers[system] || (system === "skeleton" && layers.head);
+  }
   for (const mesh of model.meshes) {
     const system = model.systemOf.get(mesh.uuid);
-    const visible = system ? layers[system] : true;
+    let visible = system ? layers[system] : true;
+    if (system === "skeleton") {
+      visible = layers.skeleton || (layers.head && HEAD_BONES.has(model.meshNames.get(mesh.uuid) ?? ""));
+      mesh.visible = visible;
+    }
     const pickable = visible && system !== "skin";
     mesh.userData.pickable = pickable;
     if (pickable) {
@@ -230,6 +241,28 @@ function structureColor(model: PreparedModel, mesh: Mesh, system: Exclude<System
  * materials; unselected muscles use the base (or anatomical) colour; other
  * systems use their anatomical colours and the skin a translucent shader.
  */
+/** Realistic muscle colour, with a small deterministic per-muscle variation. */
+export const REALISTIC_MUSCLE = "#A33A30";
+export const REALISTIC_CONTEXT = "#86342C";
+const toneCache = new Map<string, string>();
+function realisticTone(muscleId: string): string {
+  let hex = toneCache.get(muscleId);
+  if (!hex) {
+    let h = 0;
+    for (const ch of muscleId) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    const c = new Color(REALISTIC_MUSCLE);
+    c.offsetHSL(((h % 7) - 3) * 0.004, ((h >> 3) % 5 - 2) * 0.02, ((h >> 6) % 7 - 3) * 0.012);
+    hex = `#${c.getHexString()}`;
+    toneCache.set(muscleId, hex);
+  }
+  return hex;
+}
+
+/** Shaded muscle material when the mesh carries baked appearance data, plain otherwise. */
+function muscleMat(library: MaterialLibrary, mesh: Mesh, hex: string, look: MuscleLookName, variant: MaterialVariant): Material {
+  return mesh.geometry.getAttribute("_anat") ? library.muscle(hex, look, variant) : library.get(hex, variant);
+}
+
 export function applyMaterials(
   model: PreparedModel,
   report: MappingReport,
@@ -246,7 +279,10 @@ export function applyMaterials(
       next = library.skin();
     } else if (system === "muscles_context") {
       // Non-separated muscles: shown for anatomical completeness, never painted.
-      next = library.get(doc.materialMode === "anatomical" ? SYSTEM_COLORS.muscles_context : doc.palette.shadow, "normal");
+      next =
+        doc.materialMode === "anatomical"
+          ? muscleMat(library, mesh, REALISTIC_CONTEXT, "realistic", "normal")
+          : muscleMat(library, mesh, doc.palette.shadow, "studio", "normal");
     } else if (system && system !== "muscles") {
       next = library.get(structureColor(model, mesh, system), "normal");
     } else {
@@ -255,16 +291,16 @@ export function applyMaterials(
       const variant = hovered ? "hover" : "normal";
       const hl = mapping ? highlightColor(mapping.muscleId, doc) : null;
       if (hl) {
-        next = library.get(hl, variant);
+        next = muscleMat(library, mesh, hl, "highlight", variant);
       } else if (!mapping) {
         // Muscle-system meshes that are not mapped, or meshes of unstructured assets.
-        next = library.get(doc.palette.shadow, "normal");
+        next = muscleMat(library, mesh, doc.palette.shadow, "studio", "normal");
       } else if (doc.dimUnselected && anySelected) {
-        next = library.get(doc.palette.shadow, variant);
+        next = muscleMat(library, mesh, doc.palette.shadow, "studio", variant);
       } else if (doc.materialMode === "anatomical") {
-        next = library.get(model.hasSystems ? structureColor(model, mesh, "muscles") : SYSTEM_COLORS.muscles, variant);
+        next = muscleMat(library, mesh, realisticTone(mapping.muscleId), "realistic", variant);
       } else {
-        next = library.get(doc.palette.base, variant);
+        next = muscleMat(library, mesh, doc.palette.base, "studio", variant);
       }
     }
     if (mesh.material !== next) mesh.material = next;

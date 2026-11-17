@@ -25,6 +25,8 @@ export const layersSchema = z.object({
   muscles: z.boolean(),
   // Added with the BodyParts3D muscles; older projects default to visible.
   muscles_context: z.boolean().default(true),
+  // Skull only: BodyParts3D has no head muscles, so this completes the figure.
+  head: z.boolean().default(true),
   skeleton: z.boolean(),
   skin: z.boolean(),
   organs: z.boolean(),
@@ -36,6 +38,7 @@ export const layersSchema = z.object({
 export const DEFAULT_LAYERS: z.infer<typeof layersSchema> = {
   muscles: true,
   muscles_context: true,
+  head: true,
   skeleton: false,
   skin: false,
   organs: false,
@@ -113,7 +116,7 @@ export function createDefaultDoc(gender: IllustrationDoc["gender"] = "male"): Il
     showSelectedNames: true,
     labelLanguage: "ar",
     dimUnselected: false,
-    materialMode: "studio",
+    materialMode: "anatomical",
     layers: { ...DEFAULT_LAYERS },
   };
 }

@@ -101,6 +101,12 @@ export function SettingsPanel({ active }: { active: ActiveAsset }) {
           <p className="mb-2 text-xs leading-relaxed text-muted">
             تظهر العضلات فقط عند البدء. يمكن إظهار بقية الأجهزة للمرجع؛ التلوين متاح للعضلات المفصولة وحدها.
           </p>
+          <Switch
+            label="الجمجمة (إكمال الرأس)"
+            description="المصدر لا يحتوي عضلات الرأس والوجه، فتُكمل الجمجمة شكل الجسم"
+            checked={doc.layers.head}
+            onChange={(v) => setLayer("head", v)}
+          />
           {SYSTEMS.map((system) => (
             <Switch
               key={system}
@@ -153,14 +159,14 @@ export function SettingsPanel({ active }: { active: ActiveAsset }) {
       <Section title="العرض">
         <SliderField label="شدة الإضاءة" value={doc.lighting} min={0.2} max={2.5} step={0.05} onChange={setLighting} />
         <div className="mt-2">
-          <p className="mb-1 text-sm text-fg">لون العضلات غير المحددة</p>
+          <p className="mb-1 text-sm text-fg">مظهر العضلات</p>
           <Segmented
-            label="لون العضلات غير المحددة"
+            label="مظهر العضلات"
             value={doc.materialMode}
             onChange={setMaterialMode}
             options={[
-              { value: "studio", label: "أبيض الاستوديو", title: "خامة موحّدة للرسوم التوضيحية" },
-              { value: "anatomical", label: "ألوان تشريحية", title: "الألوان المقترحة في فهرس النموذج" },
+              { value: "anatomical", label: "واقعي", title: "لون العضلة الطبيعي مع الألياف والأوتار البيضاء واللمعة الرطبة" },
+              { value: "studio", label: "أبيض الاستوديو", title: "خامة بيضاء موحّدة للرسوم التوضيحية، مع الظلال والألياف" },
             ]}
             className="flex w-full"
           />

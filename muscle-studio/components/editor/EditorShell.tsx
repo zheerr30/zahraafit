@@ -16,11 +16,11 @@ import { SettingsPanel } from "./SettingsPanel";
 import { ShortcutsDialog } from "./ShortcutsDialog";
 import { Toolbar } from "./Toolbar";
 import {
-  AssetSetupState,
   AssetWarnings,
   HoverReadout,
   LoadErrorOverlay,
   LoadingOverlay,
+  ModelCredit,
   SelectedNamesLegend,
 } from "./ViewportOverlays";
 
@@ -29,7 +29,7 @@ const AnatomyViewport = dynamic(() => import("@/components/anatomy/AnatomyViewpo
   ssr: false,
   loading: () => (
     <div className="absolute inset-0 flex items-center justify-center text-sm text-muted" role="status">
-      Starting 3D engine…
+      جارٍ تشغيل المحرك ثلاثي الأبعاد…
     </div>
   ),
 });
@@ -46,8 +46,6 @@ function useEditorInitialization() {
       const projectId = params.get("project");
       const gender = params.get("gender");
       const select = params.get("select");
-      const asset = params.get("asset");
-      if (asset === "test-rig") st.setAssetMode("test-rig");
 
       if (projectId) {
         if (st.projectId !== projectId) {
@@ -55,13 +53,19 @@ function useEditorInitialization() {
             const repo = await getProjectRepository();
             const project = await repo.get(projectId);
             if (cancelled) return;
-            if (project) st.loadProject(project);
-            else {
-              toast.error("That project no longer exists. Starting a new illustration.");
+            if (project) {
+              const dropped = st.loadProject(project);
+              if (dropped > 0) {
+                toast.warning(
+                  `أُزيلت ${dropped} من العضلات المحفوظة لأنها غير موجودة في نموذج Open Anatomy 3D.`,
+                );
+              }
+            } else {
+              toast.error("هذا المشروع لم يعد موجودًا. بدأ رسم جديد.");
               st.newDocument();
             }
           } catch (e) {
-            toast.error(e instanceof Error ? e.message : "Could not open the project.");
+            toast.error(e instanceof Error ? e.message : "تعذّر فتح المشروع.");
           }
         }
       } else if (params.has("new") || gender) {
@@ -138,7 +142,7 @@ export function EditorShell() {
         {(leftOpen || rightOpen) && (
           <button
             type="button"
-            aria-label="Close panel"
+            aria-label="إغلاق اللوحة"
             onClick={() => {
               setLeftOpen(false);
               setRightOpen(false);
@@ -152,10 +156,11 @@ export function EditorShell() {
         )}
 
         <aside
-          aria-label="Muscle library"
+          aria-label="مكتبة العضلات"
           className={cn(
-            "absolute inset-y-0 left-0 z-30 w-[min(340px,88vw)] border-r border-line bg-panel transition-transform duration-200 lg:static lg:z-auto lg:w-[300px] lg:translate-x-0",
-            leftOpen ? "translate-x-0" : "-translate-x-full",
+            "absolute inset-y-0 start-0 z-30 w-[min(340px,88vw)] border-e border-line bg-panel transition-transform duration-200 lg:static lg:z-auto lg:w-[310px]",
+            // Off-canvas only below lg; in RTL the start edge is on the right.
+            !leftOpen && "max-lg:translate-x-full max-lg:ltr:-translate-x-full",
           )}
         >
           <MuscleSelector ref={searchRef} />
@@ -163,7 +168,7 @@ export function EditorShell() {
 
         <main
           data-viewport
-          aria-label="3D viewport"
+          aria-label="العارض ثلاثي الأبعاد"
           className={cn(
             "relative min-w-0 flex-1 overflow-hidden",
             background === "white" ? "bg-white" : background === "transparent" ? "checkerboard" : "bg-[#050505]",
@@ -172,12 +177,6 @@ export function EditorShell() {
           {ready && (
             <AnatomyViewport asset={active.status === "ok" ? active.asset : null} />
           )}
-          {active.status === "missing" && <AssetSetupState active={active} />}
-          {active.status === "checking" && (
-            <div className="absolute inset-0 flex items-center justify-center text-sm text-muted" role="status">
-              Checking installed anatomical assets…
-            </div>
-          )}
           {active.status === "ok" && (
             <>
               <LoadingOverlay />
@@ -185,15 +184,16 @@ export function EditorShell() {
               <AssetWarnings />
               <SelectedNamesLegend />
               <HoverReadout />
+              <ModelCredit />
             </>
           )}
         </main>
 
         <aside
-          aria-label="Visual settings"
+          aria-label="إعدادات العرض"
           className={cn(
-            "absolute inset-y-0 right-0 z-30 w-[min(340px,88vw)] border-l border-line bg-panel transition-transform duration-200 xl:static xl:z-auto xl:w-[310px] xl:translate-x-0",
-            rightOpen ? "translate-x-0" : "translate-x-full",
+            "absolute inset-y-0 end-0 z-30 w-[min(340px,88vw)] border-s border-line bg-panel transition-transform duration-200 xl:static xl:z-auto xl:w-[310px]",
+            !rightOpen && "max-xl:-translate-x-full max-xl:ltr:translate-x-full",
           )}
         >
           <SettingsPanel active={active} />

@@ -23,7 +23,7 @@ export const LOCAL_STORAGE_KEY = "muscle-studio.projects.v1";
 
 export class StorageQuotaError extends Error {
   constructor() {
-    super("Browser storage is full. Delete old projects or export them before saving.");
+    super("مساحة التخزين في المتصفح ممتلئة. يُرجى حذف مشاريع قديمة ثم إعادة الحفظ.");
     this.name = "StorageQuotaError";
   }
 }
@@ -139,7 +139,7 @@ export class LocalProjectRepository implements ProjectRepository {
     const source = await this.get(id);
     if (!source) throw new ProjectNotFoundError(id);
     return this.create({
-      name: `${source.name} (copy)`,
+      name: `${source.name} (نسخة)`,
       assetId: source.assetId,
       doc: structuredClone(source.doc),
       camera: source.camera ? structuredClone(source.camera) : null,

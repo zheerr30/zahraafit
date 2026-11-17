@@ -1,8 +1,15 @@
-import { Box3, Color, MathUtils, PerspectiveCamera, Raycaster, Vector2, Vector3 } from "three";
+import { Color, MathUtils, PerspectiveCamera, Raycaster, Vector2, Vector3 } from "three";
 import { getMuscle } from "@/data/muscles/muscles";
 import type { IllustrationDoc } from "@/lib/storage/schema";
 import type { ViewId } from "@/types/anatomy";
-import { anchorWorldPosition, boundsForMuscles, highlightColor, type LabelAnchor } from "./anatomyModel";
+import {
+  anchorWorldPosition,
+  boundsForMuscles,
+  highlightColor,
+  raycastPickable,
+  visibleBounds,
+  type LabelAnchor,
+} from "./anatomyModel";
 import { poseForBox, poseForView } from "./cameraPoses";
 import { viewportBridge, type LoadedModelHandle, type ViewportHandles } from "./viewportBridge";
 
@@ -24,12 +31,25 @@ export interface ExportOptions {
   language: IllustrationDoc["labelLanguage"];
   doc: Pick<IllustrationDoc, "selections" | "palette" | "materialMode" | "dimUnselected">;
   title?: string;
-  /** Small notice drawn in the bottom-right corner (used for diagnostic assets). */
+  /** Small credit line drawn along the bottom edge (licence attribution). */
   watermark?: string;
 }
 
-const FONT_STACK =
-  '"Segoe UI", "Helvetica Neue", Arial, "Noto Sans Arabic", "Geeza Pro", Tahoma, sans-serif';
+const FONT_STACK = '"IBM Plex Sans Arabic", "Segoe UI", "Noto Sans Arabic", "Geeza Pro", Tahoma, sans-serif';
+
+/** Make sure the Arabic web font is ready before text is drawn onto the canvas. */
+async function ensureFonts(): Promise<void> {
+  if (typeof document === "undefined" || !document.fonts) return;
+  try {
+    await Promise.all([
+      document.fonts.load('500 16px "IBM Plex Sans Arabic"', "عضلة"),
+      document.fonts.load('600 16px "IBM Plex Sans Arabic"', "عضلة"),
+      document.fonts.load('700 16px "IBM Plex Sans Arabic"', "عضلة"),
+    ]);
+  } catch {
+    /* fall back to system fonts */
+  }
+}
 
 /** Hard cap on output dimensions to keep memory bounded (~256 MB RGBA). */
 export const MAX_EXPORT_SIDE = 8192;
@@ -141,7 +161,7 @@ export function buildExportCamera(
   const cam = base.clone();
   cam.aspect = aspect;
   cam.clearViewOffset();
-  const modelBox = new Box3().setFromObject(loaded.model.root, true);
+  const modelBox = visibleBounds(loaded.model);
 
   if (view === "current") {
     // Preserve horizontal coverage when the export is narrower than the viewport.
@@ -201,6 +221,7 @@ export function visibleLabelPoint(
   const anchors = loaded.anchors.get(muscleId);
   if (!anchors?.length) return null;
   const raycaster = new Raycaster();
+  (raycaster as Raycaster & { firstHitOnly?: boolean }).firstHitOnly = true;
   const dir = new Vector3();
   const sorted = [...anchors].sort(
     (a, b) =>
@@ -213,7 +234,7 @@ export function visibleLabelPoint(
       const dist = dir.length();
       raycaster.set(camera.position, dir.normalize());
       raycaster.far = dist * 1.01 + 0.005;
-      const hit = raycaster.intersectObjects(loaded.model.meshes, false)[0];
+      const hit = raycastPickable(loaded.model, raycaster);
       if (hit && loaded.report.byMesh.get(hit.object.uuid)?.muscleId === muscleId) return hit.point;
     }
   }
@@ -230,9 +251,9 @@ interface Rect {
 function labelText(id: string, language: ExportOptions["language"]): { primary: string; secondary?: string; rtl: boolean } {
   const m = getMuscle(id);
   if (!m) return { primary: id, rtl: false };
-  if (language === "ar") return { primary: m.displayName.ar, rtl: true };
-  if (language === "both") return { primary: m.displayName.en, secondary: m.displayName.ar, rtl: false };
-  return { primary: m.displayName.en, rtl: false };
+  if (language === "en") return { primary: m.displayName.en, rtl: false };
+  if (language === "both") return { primary: m.displayName.ar, secondary: m.displayName.en, rtl: true };
+  return { primary: m.displayName.ar, rtl: true };
 }
 
 function theme(background: ExportOptions["background"]) {
@@ -356,9 +377,9 @@ export function drawLabels(
     if (item.text.secondary) {
       ctx.font = `500 ${subSize}px ${FONT_STACK}`;
       ctx.fillStyle = t.muted;
-      ctx.direction = "rtl";
-      ctx.textAlign = "right";
-      ctx.fillText(item.text.secondary, x + item.w - pad, y + pad + fontSize + pad * 0.2);
+      ctx.direction = "ltr";
+      ctx.textAlign = item.text.rtl ? "right" : "left";
+      ctx.fillText(item.text.secondary, tx, y + pad + fontSize + pad * 0.2);
     }
     ctx.direction = "ltr";
     ctx.textAlign = "left";
@@ -380,7 +401,7 @@ export function drawLegend(
   const lineH = Math.round(fontSize * 1.6);
   const margin = Math.round(unit * 0.035);
   const t = theme(opts.background);
-  const rtl = opts.language === "ar";
+  const rtl = opts.language !== "en";
 
   if (opts.title) {
     ctx.font = `700 ${Math.round(fontSize * 1.5)}px ${FONT_STACK}`;
@@ -398,11 +419,11 @@ export function drawLegend(
     if (!m) continue;
     const color = highlightColor(id, opts.doc) ?? opts.doc.palette.primary;
     const name =
-      opts.language === "ar"
-        ? m.displayName.ar
+      opts.language === "en"
+        ? m.displayName.en
         : opts.language === "both"
-          ? `${m.displayName.en} · ${m.displayName.ar}`
-          : m.displayName.en;
+          ? `${m.displayName.ar} · ${m.displayName.en}`
+          : m.displayName.ar;
     const sw = Math.round(fontSize * 0.9);
     const cy = y + lineH / 2;
     const swX = rtl ? rect.x + rect.w - margin - sw : rect.x + margin;
@@ -424,12 +445,12 @@ export function drawLegend(
 export async function renderIllustration(opts: ExportOptions): Promise<HTMLCanvasElement> {
   const handles = viewportBridge.handles;
   const loaded = viewportBridge.loaded;
-  if (!handles || !loaded) throw new Error("The 3D viewport is not ready. Load a model first.");
+  if (!handles || !loaded) throw new Error("العارض ثلاثي الأبعاد غير جاهز. يلزم تحميل النموذج أولًا.");
   const W = Math.round(MathUtils.clamp(opts.width, 16, MAX_EXPORT_SIDE));
   const H = Math.round(MathUtils.clamp(opts.height, 16, MAX_EXPORT_SIDE));
   const views = opts.views.length ? opts.views : (["current"] as ExportView[]);
 
-  await waitForFrames(handles, 2);
+  await Promise.all([waitForFrames(handles, 2), ensureFonts()]);
 
   const out = createCanvas(W, H);
   const ctx = ctx2d(out);
@@ -449,12 +470,20 @@ export async function renderIllustration(opts: ExportOptions): Promise<HTMLCanva
   });
   if (opts.legend) drawLegend(ctx, { x: 0, y: 0, w: W, h: H }, opts);
   if (opts.watermark) {
-    const size = Math.max(10, Math.round(Math.min(W, H) * 0.016));
-    ctx.font = `600 ${size}px ${FONT_STACK}`;
-    ctx.textAlign = "right";
+    // Licence credit line (CC BY 4.0), centred along the bottom edge.
+    let size = Math.max(9, Math.round(Math.min(W, H) * 0.013));
+    ctx.font = `500 ${size}px ${FONT_STACK}`;
+    const maxW = W * 0.94;
+    const measured = ctx.measureText(opts.watermark).width;
+    if (measured > maxW) {
+      size = Math.max(7, Math.floor((size * maxW) / measured));
+      ctx.font = `500 ${size}px ${FONT_STACK}`;
+    }
+    ctx.direction = "ltr";
+    ctx.textAlign = "center";
     ctx.textBaseline = "bottom";
-    ctx.fillStyle = opts.background === "white" ? "rgba(17,18,20,0.6)" : "rgba(245,165,36,0.85)";
-    ctx.fillText(opts.watermark, W - size, H - size);
+    ctx.fillStyle = opts.background === "white" ? "rgba(17,18,20,0.62)" : "rgba(200,203,208,0.78)";
+    ctx.fillText(opts.watermark, W / 2, H - size * 0.8);
     ctx.textAlign = "left";
   }
   return out;
@@ -462,7 +491,7 @@ export async function renderIllustration(opts: ExportOptions): Promise<HTMLCanva
 
 export function canvasToBlob(canvas: HTMLCanvasElement, type = "image/png", quality?: number): Promise<Blob> {
   return new Promise((resolve, reject) =>
-    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("Image encoding failed."))), type, quality),
+    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("تعذّر ترميز الصورة."))), type, quality),
   );
 }
 

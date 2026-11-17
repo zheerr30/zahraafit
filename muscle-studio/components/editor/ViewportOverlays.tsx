@@ -1,75 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { structureName, withSide } from "@/data/anatomy/lexicon";
 import { getMuscle } from "@/data/muscles/muscles";
-import type { ActiveAsset } from "@/hooks/useActiveAsset";
 import { useLocalModelFile } from "@/hooks/useLocalModelFile";
 import { highlightColor } from "@/lib/three/anatomyModel";
 import { useAssetStore } from "@/stores/assetStore";
 import { useEditor } from "@/stores/editorStore";
 import { Button } from "@/components/ui/Button";
-import { IconUpload, IconWarning } from "@/components/ui/icons";
-
-/** Shown instead of a fake model when no anatomical GLB is installed. */
-export function AssetSetupState({ active }: { active: Extract<ActiveAsset, { status: "missing" }> }) {
-  const setMode = useEditor((s) => s.setAssetMode);
-  const testRigAvailable = useAssetStore((s) => s.availability["pipeline-test-rig"]);
-  const { open } = useLocalModelFile();
-  const genderLabel = active.gender === "male" ? "male" : "female";
-
-  return (
-    <div className="absolute inset-0 z-10 flex items-center justify-center overflow-y-auto p-4 sm:p-8">
-      <div className="w-full max-w-lg rounded-2xl border border-line bg-panel/95 p-6 shadow-2xl backdrop-blur">
-        <div className="mb-4 flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-warn/30 bg-warn/10 text-warn">
-            <IconWarning size={20} />
-          </span>
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-warn">Asset setup required</p>
-            <h2 className="text-lg font-semibold">
-              {active.testRig ? "Pipeline test rig not found" : `No ${genderLabel} anatomical model installed`}
-            </h2>
-          </div>
-        </div>
-        <p className="text-sm leading-relaxed text-muted">
-          MUSCLE STUDIO 3D does not ship an anatomical model and never substitutes a generic mannequin.
-          Add a licensed GLB with one separately named mesh per muscle at:
-        </p>
-        <ul className="mt-3 space-y-1.5">
-          {active.expected.map((a) => (
-            <li key={a.id} className="rounded-lg border border-line bg-panel-2 px-3 py-2">
-              <code className="break-all font-mono text-xs text-fg">public{a.url}</code>
-              <span className="mt-0.5 block text-[11px] text-muted">
-                {a.label}
-                {a.views.length < 4 ? ` · optional, ${a.views.join("/")} view only` : ""}
-              </span>
-            </li>
-          ))}
-        </ul>
-        <div className="mt-5 flex flex-wrap gap-2">
-          <Button variant="primary" onClick={open}>
-            <IconUpload size={16} /> Load a GLB from this computer
-          </Button>
-          {!active.testRig && testRigAvailable && (
-            <Button onClick={() => setMode("test-rig")}>Use pipeline test rig</Button>
-          )}
-          <Link
-            href="/setup"
-            className="inline-flex h-9 items-center rounded-lg px-3.5 text-sm text-muted hover:bg-panel-2 hover:text-fg"
-          >
-            Setup guide
-          </Link>
-        </div>
-        {!active.testRig && testRigAvailable && (
-          <p className="mt-3 text-xs leading-relaxed text-muted">
-            The pipeline test rig is a geometric, non-anatomical stand-in with one mesh per muscle. Use it only
-            to try selection, colors and export while you source real assets.
-          </p>
-        )}
-      </div>
-    </div>
-  );
-}
+import { IconWarning } from "@/components/ui/icons";
 
 export function LoadingOverlay() {
   const status = useAssetStore((s) => s.loadStatus);
@@ -79,36 +18,43 @@ export function LoadingOverlay() {
   return (
     <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center" role="status">
       <div className="w-64 rounded-xl border border-line bg-panel/95 p-4 text-center shadow-xl">
-        <p className="text-sm text-fg">Loading anatomical model…</p>
-        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-panel-3">
-          <div
-            className="h-full rounded-full bg-accent transition-[width]"
-            style={{ width: `${pct > 0 ? pct : 12}%` }}
-          />
+        <p className="text-sm text-fg">جارٍ تحميل النموذج التشريحي…</p>
+        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-panel-3" dir="ltr">
+          <div className="h-full rounded-full bg-accent transition-[width]" style={{ width: `${pct > 0 ? pct : 12}%` }} />
         </div>
-        <p className="mt-2 font-mono text-xs text-muted">{pct > 0 ? `${pct}%` : "connecting"}</p>
+        <p className="mt-2 font-mono text-xs text-muted">{pct > 0 ? `${pct}%` : "جارٍ الاتصال"}</p>
       </div>
     </div>
   );
 }
 
+/**
+ * Shown when the model cannot be loaded. There is deliberately no fallback
+ * geometry: the viewport stays empty and explains what went wrong.
+ */
 export function LoadErrorOverlay() {
   const status = useAssetStore((s) => s.loadStatus);
   const error = useAssetStore((s) => s.error);
   const reload = useAssetStore((s) => s.reload);
-  const { open } = useLocalModelFile();
+  const localFile = useEditor((s) => s.localFile);
+  const { clear } = useLocalModelFile();
   if (status !== "error") return null;
   return (
     <div className="absolute inset-0 z-10 flex items-center justify-center p-6" role="alert">
-      <div className="max-w-md rounded-2xl border border-line bg-panel p-6 text-center">
-        <IconWarning className="mx-auto mb-3 text-danger" size={26} />
-        <h2 className="text-base font-semibold">The model could not be loaded</h2>
-        <p className="mt-2 break-words text-sm text-muted">{error}</p>
+      <div className="max-w-md rounded-2xl border border-danger/40 bg-panel p-6 text-center">
+        <IconWarning className="mx-auto mb-3 text-danger" size={28} />
+        <h2 className="text-base font-semibold">تعذّر تحميل النموذج التشريحي</h2>
+        <p className="mt-2 text-sm leading-relaxed text-muted">
+          لم يُعرض أي مجسّم بديل. يُرجى التحقق من الاتصال ومن وجود ملف النموذج ثم إعادة المحاولة.
+        </p>
+        <p dir="auto" className="mt-3 break-words rounded-lg bg-panel-2 p-2 text-start text-xs text-muted">
+          {error}
+        </p>
         <div className="mt-4 flex justify-center gap-2">
           <Button variant="primary" onClick={reload}>
-            Retry
+            إعادة المحاولة
           </Button>
-          <Button onClick={open}>Choose another file</Button>
+          {localFile && <Button onClick={clear}>العودة إلى النموذج المدمج</Button>}
         </div>
       </div>
     </div>
@@ -117,23 +63,29 @@ export function LoadErrorOverlay() {
 
 export function AssetWarnings() {
   const summary = useAssetStore((s) => s.summary);
-  if (!summary) return null;
+  if (!summary?.unsuitableReason) return null;
   return (
-    <div className="pointer-events-none absolute inset-x-0 top-3 z-10 flex flex-col items-center gap-2 px-3">
-      {summary.diagnostic && (
-        <div className="pointer-events-auto rounded-full border border-warn/40 bg-bg/85 px-3 py-1 text-center text-[11px] font-medium text-warn backdrop-blur">
-          PIPELINE TEST RIG — geometric stand-ins, not anatomically accurate
-        </div>
-      )}
-      {summary.unsuitableReason && (
-        <div
-          role="alert"
-          className="pointer-events-auto max-w-lg rounded-xl border border-warn/40 bg-bg/90 px-4 py-2 text-xs text-warn backdrop-blur"
-        >
-          <strong className="font-semibold">Not suitable for muscle highlighting.</strong> {summary.unsuitableReason}
-        </div>
-      )}
+    <div className="pointer-events-none absolute inset-x-0 top-3 z-10 flex justify-center px-3">
+      <div role="alert" className="pointer-events-auto max-w-lg rounded-xl border border-warn/40 bg-bg/90 px-4 py-2 text-xs text-warn backdrop-blur">
+        <strong className="font-semibold">هذا النموذج لا يصلح لتلوين العضلات منفردة.</strong>{" "}
+        {summary.unsuitableReason}
+      </div>
     </div>
+  );
+}
+
+/** Persistent licence credit for CC BY assets (links to the full attribution page). */
+export function ModelCredit() {
+  const summary = useAssetStore((s) => s.summary);
+  if (!summary?.attribution) return null;
+  return (
+    <Link
+      href="/credits"
+      className="absolute bottom-3 left-1/2 z-10 max-w-[min(520px,70%)] -translate-x-1/2 truncate rounded-full border border-line/70 bg-bg/70 px-3 py-1 text-[10px] text-muted backdrop-blur hover:text-fg"
+      title={summary.attribution.credit}
+    >
+      النموذج: Open Anatomy 3D · BodyParts3D © DBCLS · رخصة CC BY 4.0 — المصادر
+    </Link>
   );
 }
 
@@ -145,7 +97,7 @@ export function SelectedNamesLegend() {
   const ids = Object.keys(selections);
   if (!show || !ids.length) return null;
   return (
-    <div className="pointer-events-none absolute bottom-3 left-3 z-10 max-h-[45%] max-w-[min(320px,70%)] overflow-hidden rounded-xl border border-line bg-bg/75 p-3 backdrop-blur">
+    <div className="pointer-events-none absolute bottom-3 start-3 z-10 max-h-[45%] max-w-[min(320px,60%)] overflow-hidden rounded-xl border border-line bg-bg/75 p-3 backdrop-blur">
       <ul className="space-y-1.5">
         {ids.map((id) => {
           const m = getMuscle(id);
@@ -156,10 +108,10 @@ export function SelectedNamesLegend() {
                 className="h-2.5 w-2.5 shrink-0 rounded-sm"
                 style={{ backgroundColor: highlightColor(id, { selections, palette }) ?? palette.primary }}
               />
-              {language !== "ar" && <span className="truncate text-fg">{m.displayName.en}</span>}
-              {language !== "en" && (
-                <span dir="rtl" className={language === "both" ? "truncate text-muted" : "truncate text-fg"}>
-                  {m.displayName.ar}
+              {language !== "en" && <span className="truncate text-fg">{m.displayName.ar}</span>}
+              {language !== "ar" && (
+                <span dir="ltr" className={language === "both" ? "truncate text-muted" : "truncate text-fg"}>
+                  {m.displayName.en}
                 </span>
               )}
             </li>
@@ -173,21 +125,30 @@ export function SelectedNamesLegend() {
 export function HoverReadout() {
   const hovered = useEditor((s) => s.hoveredMuscleId);
   const selected = useEditor((s) => (s.hoveredMuscleId ? Boolean(s.doc.selections[s.hoveredMuscleId]) : false));
+  const structureKey = useAssetStore((s) => s.hoveredStructure);
   const m = hovered ? getMuscle(hovered) : null;
+  const structure = !m && structureKey ? structureName(structureKey) : null;
   return (
-    <div className="pointer-events-none absolute bottom-3 right-3 z-10 flex flex-col items-end gap-1 text-right">
+    <div className="pointer-events-none absolute bottom-12 end-3 z-10 flex flex-col items-end gap-1 text-end">
       {m && (
         <div className="rounded-lg border border-line bg-bg/85 px-3 py-1.5 backdrop-blur">
-          <p className="text-sm font-medium text-fg">{m.displayName.en}</p>
-          <p dir="rtl" className="text-xs text-muted">
-            {m.displayName.ar}
+          <p className="text-sm font-medium text-fg">{m.displayName.ar}</p>
+          <p dir="ltr" className="text-xs text-muted">
+            {m.displayName.en}
           </p>
-          <p className="text-[10px] text-muted">{selected ? "Click to change / remove" : "Click to highlight"}</p>
+          <p className="text-[10px] text-muted">{selected ? "النقر للتغيير أو الإزالة" : "النقر للتلوين"}</p>
         </div>
       )}
-      <p className="hidden text-[10px] text-muted/80 sm:block">
-        Drag: orbit · Scroll: zoom · Right-drag: pan
-      </p>
+      {structure && (
+        <div className="rounded-lg border border-line bg-bg/85 px-3 py-1.5 backdrop-blur">
+          <p className="text-sm font-medium text-fg">{withSide(structure.ar, structure.side)}</p>
+          <p dir="ltr" className="text-xs text-muted">
+            {structure.en}
+          </p>
+          <p className="text-[10px] text-muted">بنية غير عضلية — للعرض فقط</p>
+        </div>
+      )}
+      <p className="hidden text-[10px] text-muted/80 sm:block">السحب: تدوير · العجلة: تكبير · الزر الأيمن: تحريك</p>
     </div>
   );
 }

@@ -27,12 +27,12 @@ export function StoragePanel() {
   if (!configured) {
     return (
       <div className="rounded-2xl border border-line bg-panel p-5">
-        <p className="text-sm font-semibold">Local storage (active)</p>
+        <p className="text-sm font-semibold">التخزين المحلي (مفعّل)</p>
         <p className="mt-1 text-sm text-muted">
-          Projects are saved in this browser&apos;s local storage. To enable accounts and cloud projects, set{" "}
-          <code className="font-mono text-xs text-fg">NEXT_PUBLIC_SUPABASE_URL</code> and{" "}
-          <code className="font-mono text-xs text-fg">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> and apply{" "}
-          <code className="font-mono text-xs text-fg">supabase/migrations/0001_projects.sql</code>.
+          تُحفظ المشاريع في هذا المتصفح. لتفعيل الحسابات والحفظ السحابي يلزم ضبط{" "}
+          <code dir="ltr" className="font-mono text-xs text-fg">NEXT_PUBLIC_SUPABASE_URL</code> و{" "}
+          <code dir="ltr" className="font-mono text-xs text-fg">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> وتطبيق{" "}
+          <code dir="ltr" className="font-mono text-xs text-fg">supabase/migrations/0001_projects.sql</code>.
         </p>
       </div>
     );
@@ -48,25 +48,25 @@ export function StoragePanel() {
     });
     setSending(false);
     if (error) toast.error(error.message);
-    else toast.success("Check your inbox for the sign-in link.");
+    else toast.success("أُرسل رابط الدخول إلى البريد الإلكتروني.");
   };
 
   return (
     <div className="rounded-2xl border border-line bg-panel p-5">
-      <p className="text-sm font-semibold">Supabase cloud storage (configured)</p>
+      <p className="text-sm font-semibold">التخزين السحابي Supabase (مُعَدّ)</p>
       {session ? (
         <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm text-muted">
-            Signed in as <span className="text-fg">{session.user.email}</span>. New saves go to your cloud projects.
+            تم الدخول بالحساب <span dir="ltr" className="text-fg">{session.user.email}</span>. يُحفظ كل جديد في السحابة.
           </p>
           <Button size="sm" onClick={() => void client.auth.signOut()}>
-            Sign out
+            تسجيل الخروج
           </Button>
         </div>
       ) : (
         <form onSubmit={signIn} className="mt-3 flex flex-wrap gap-2">
           <label htmlFor="signin-email" className="sr-only">
-            Email
+            البريد الإلكتروني
           </label>
           <input
             id="signin-email"
@@ -75,12 +75,13 @@ export function StoragePanel() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
+            dir="ltr"
             className="h-9 min-w-0 flex-1 rounded-lg border border-line bg-panel-2 px-3 text-sm"
           />
           <Button type="submit" variant="primary" disabled={sending}>
-            {sending ? "Sending…" : "Email sign-in link"}
+            {sending ? "جارٍ الإرسال…" : "إرسال رابط الدخول"}
           </Button>
-          <p className="w-full text-xs text-muted">Until you sign in, projects are saved in this browser.</p>
+          <p className="w-full text-xs text-muted">قبل تسجيل الدخول تُحفظ المشاريع في هذا المتصفح.</p>
         </form>
       )}
     </div>

@@ -6,10 +6,11 @@ import { Brand } from "@/components/ui/Brand";
 import { cn } from "@/components/ui/cn";
 
 const NAV = [
-  { href: "/", label: "Dashboard" },
-  { href: "/projects", label: "Illustrations" },
-  { href: "/library", label: "Anatomy library" },
-  { href: "/setup", label: "Setup" },
+  { href: "/", label: "الرئيسية" },
+  { href: "/projects", label: "الرسوم المحفوظة" },
+  { href: "/library", label: "مكتبة العضلات" },
+  { href: "/setup", label: "الإعدادات" },
+  { href: "/credits", label: "المصادر والترخيص" },
 ];
 
 export function AppHeader() {
@@ -18,7 +19,7 @@ export function AppHeader() {
     <header className="sticky top-0 z-30 border-b border-line bg-bg/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-4 sm:px-6">
         <Brand />
-        <nav aria-label="Main" className="scroll-thin -mx-2 flex flex-1 items-center gap-1 overflow-x-auto px-2">
+        <nav aria-label="التنقل الرئيسي" className="scroll-thin -mx-2 flex flex-1 items-center gap-1 overflow-x-auto px-2">
           {NAV.map((n) => {
             const active = n.href === "/" ? pathname === "/" : pathname.startsWith(n.href);
             return (
@@ -38,11 +39,30 @@ export function AppHeader() {
         </nav>
         <Link
           href="/editor?new=1&gender=male"
-          className="hidden h-9 items-center rounded-lg bg-accent px-3.5 text-sm font-medium text-white hover:bg-[#f06d3a] sm:inline-flex"
+          className="hidden h-9 items-center whitespace-nowrap rounded-lg bg-accent px-3.5 text-sm font-medium text-white hover:bg-[#f06d3a] sm:inline-flex"
         >
-          Open studio
+          فتح الاستوديو
         </Link>
       </div>
     </header>
+  );
+}
+
+/** Site-wide footer carrying the CC BY 4.0 credit for the anatomical models. */
+export function AppFooter() {
+  return (
+    <footer className="border-t border-line px-4 py-6 text-center text-xs leading-relaxed text-muted">
+      <p>
+        النماذج التشريحية: Open Anatomy 3D — مبنية على BodyParts3D © DBCLS و HuBMAP HRA و MakeHuman، برخصة{" "}
+        <a href="https://creativecommons.org/licenses/by/4.0/" className="text-accent-2 hover:underline" target="_blank" rel="noreferrer">
+          CC BY 4.0
+        </a>
+        .{" "}
+        <Link href="/credits" className="text-accent-2 hover:underline">
+          المصادر الكاملة
+        </Link>
+      </p>
+      <p className="mt-1">للتعليم والتوضيح فقط، وليست صالحة للتشخيص أو القرارات الطبية.</p>
+    </footer>
   );
 }

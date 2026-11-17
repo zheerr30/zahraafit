@@ -63,7 +63,7 @@ export function Dialog({
             <button
               type="button"
               onClick={onClose}
-              aria-label="Close dialog"
+              aria-label="إغلاق"
               className="rounded-md p-1 text-muted hover:bg-panel-2 hover:text-fg"
             >
               <IconX />

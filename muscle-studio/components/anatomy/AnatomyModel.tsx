@@ -7,12 +7,14 @@ import type { Group, Material } from "three";
 import { getMuscle } from "@/data/muscles/muscles";
 import {
   anchorWorldPosition,
+  applyLayers,
   applyMaterials,
   buildAnchors,
   highlightColor,
   mapPreparedModel,
   nearestAnchor,
   prepareModel,
+  releaseBvh,
   type LabelAnchor,
   type PreparedModel,
 } from "@/lib/three/anatomyModel";
@@ -60,6 +62,8 @@ export function AnatomyModel({ asset }: { asset: AnatomyAssetDefinition }) {
     })
       .then((gltf) => {
         prepared = prepareModel(gltf.scene, asset);
+        // Visibility + picking structures before the first frame (muscles only by default).
+        applyLayers(prepared, editorStore.getState().doc.layers);
         setModel(prepared);
         setLoadState({ loadStatus: "ready", progress: 1 });
       })
@@ -80,6 +84,7 @@ export function AnatomyModel({ asset }: { asset: AnatomyAssetDefinition }) {
       useAssetStore.getState().setLoadState({ loadStatus: "idle", progress: 0, error: null });
       if (prepared) {
         restoreOriginalMaterials(prepared);
+        releaseBvh(prepared);
         disposeObject3D(prepared.root);
       }
     };
@@ -104,7 +109,7 @@ export function AnatomyModel({ asset }: { asset: AnatomyAssetDefinition }) {
     setSummary({
       assetId: asset.id,
       label: asset.label,
-      diagnostic: Boolean(asset.diagnostic),
+      attribution: asset.attribution ?? null,
       meshCount: model.meshes.length,
       mappedMuscleIds: [...report.byMuscle.keys()],
       unmappedMeshNames: report.unmapped.map((m) => m.name),
@@ -113,6 +118,19 @@ export function AnatomyModel({ asset }: { asset: AnatomyAssetDefinition }) {
     });
     invalidate();
   }, [model, report, anchors, asset, setSummary, invalidate]);
+
+  // ── Body-system layers ─────────────────────────────────────────────
+  useEffect(() => {
+    if (!model) return;
+    applyLayers(model, editorStore.getState().doc.layers);
+    invalidate();
+    return editorStore.subscribe((st, prev) => {
+      if (st.doc.layers !== prev.doc.layers) {
+        applyLayers(model, st.doc.layers);
+        invalidate();
+      }
+    });
+  }, [model, invalidate]);
 
   // ── Materials (cached per model, disposed with it) ────────────────
   const library = useMemo(() => (model ? new MaterialLibrary() : null), [model]);
@@ -156,11 +174,15 @@ export function AnatomyModel({ asset }: { asset: AnatomyAssetDefinition }) {
     e.stopPropagation();
     const mapping = report?.byMesh.get(e.object.uuid);
     editorStore.getState().setHovered(mapping?.muscleId ?? null);
+    // Non-muscle structures (bones, organs…) show their name but are not paintable.
+    const structure = mapping ? null : (model?.meshNames.get(e.object.uuid) ?? null);
+    useAssetStore.getState().setHoveredStructure(structure);
     setCursor(mapping ? "pointer" : "grab");
   };
 
   const handleOut = () => {
     editorStore.getState().setHovered(null);
+    useAssetStore.getState().setHoveredStructure(null);
     setCursor("grab");
   };
 
@@ -239,10 +261,10 @@ function MuscleLabel({
           className="whitespace-nowrap rounded-md border bg-panel/90 px-2 py-1 text-[11px] font-medium leading-tight text-fg shadow-lg backdrop-blur-sm"
           style={{ borderColor: color }}
         >
-          {language !== "ar" && <div>{muscle.displayName.en}</div>}
-          {language !== "en" && (
-            <div dir="rtl" className={language === "both" ? "text-[10px] text-muted" : ""}>
-              {muscle.displayName.ar}
+          {language !== "en" && <div dir="rtl">{muscle.displayName.ar}</div>}
+          {language !== "ar" && (
+            <div dir="ltr" className={language === "both" ? "text-[10px] text-muted" : ""}>
+              {muscle.displayName.en}
             </div>
           )}
         </div>

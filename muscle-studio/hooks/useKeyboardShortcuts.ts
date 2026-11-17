@@ -17,16 +17,16 @@ export interface ShortcutHandlers {
 }
 
 export const SHORTCUTS: { keys: string; action: string }[] = [
-  { keys: "Ctrl/⌘ + Z", action: "Undo" },
-  { keys: "Ctrl/⌘ + Shift + Z  ·  Ctrl + Y", action: "Redo" },
-  { keys: "Ctrl/⌘ + S", action: "Save project" },
-  { keys: "Ctrl/⌘ + E", action: "Export image" },
-  { keys: "R  ·  Home", action: "Reset camera" },
-  { keys: "1 / 2 / 3 / 4", action: "Front / Back / Left / Right view" },
-  { keys: "F", action: "Frame selected muscles" },
-  { keys: "X", action: "Swap paint tone (primary ↔ secondary)" },
-  { keys: "/", action: "Search muscles" },
-  { keys: "?", action: "Show shortcuts" },
+  { keys: "Ctrl/⌘ + Z", action: "تراجع" },
+  { keys: "Ctrl/⌘ + Shift + Z  ·  Ctrl + Y", action: "إعادة" },
+  { keys: "Ctrl/⌘ + S", action: "حفظ المشروع" },
+  { keys: "Ctrl/⌘ + E", action: "تصدير صورة" },
+  { keys: "R  ·  Home", action: "إعادة ضبط الكاميرا" },
+  { keys: "1 / 2 / 3 / 4", action: "منظر أمامي / خلفي / أيسر / أيمن" },
+  { keys: "F", action: "تأطير العضلات المحددة" },
+  { keys: "X", action: "التبديل بين التلوين المستهدف والثانوي" },
+  { keys: "/", action: "البحث عن عضلة" },
+  { keys: "?", action: "عرض الاختصارات" },
 ];
 
 function isTyping(target: EventTarget | null): boolean {

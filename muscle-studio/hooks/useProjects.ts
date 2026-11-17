@@ -63,8 +63,8 @@ export function useProjects() {
     error,
     backend: repo?.kind ?? null,
     refresh,
-    rename: (id: string, name: string) => run((r) => r.rename(id, name), "Project renamed"),
-    duplicate: (id: string) => run((r) => r.duplicate(id), "Project duplicated"),
-    remove: (id: string) => run((r) => r.remove(id), "Project deleted"),
+    rename: (id: string, name: string) => run((r) => r.rename(id, name), "تمت إعادة التسمية"),
+    duplicate: (id: string) => run((r) => r.duplicate(id), "تم إنشاء نسخة"),
+    remove: (id: string) => run((r) => r.remove(id), "تم الحذف"),
   };
 }

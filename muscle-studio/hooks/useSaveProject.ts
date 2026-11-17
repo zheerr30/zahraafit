@@ -62,10 +62,10 @@ export function useSaveProject() {
       editorStore.getState().markSaved(project.id, project.name);
       // Keep the URL shareable/reloadable without re-initializing the editor.
       window.history.replaceState(null, "", `/editor?project=${encodeURIComponent(project.id)}`);
-      toast.success(`Saved “${project.name}”${repo.kind === "local" ? " in this browser" : " to the cloud"}.`);
+      toast.success(`حُفظ «${project.name}»${repo.kind === "local" ? " في هذا المتصفح" : " في السحابة"}.`);
       return project;
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Saving failed.");
+      toast.error(e instanceof Error ? e.message : "تعذّر الحفظ.");
       return null;
     } finally {
       setSaving(false);

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { ANATOMY_ASSETS, TEST_RIG_ASSET } from "@/data/models/manifest";
+import { ANATOMY_ASSETS } from "@/data/models/manifest";
 import type { AnatomyAssetDefinition } from "@/types/anatomy";
 
 export type LoadStatus = "idle" | "loading" | "ready" | "error";
@@ -7,7 +7,8 @@ export type LoadStatus = "idle" | "loading" | "ready" | "error";
 export interface AssetSummary {
   assetId: string;
   label: string;
-  diagnostic: boolean;
+  /** Present for bundled third-party assets that require credit (CC BY). */
+  attribution: AnatomyAssetDefinition["attribution"] | null;
   meshCount: number;
   mappedMuscleIds: string[];
   unmappedMeshNames: string[];
@@ -29,6 +30,8 @@ interface AssetState {
   inspectedMesh: string | null;
   /** Incremented to force the current model to reload. */
   reloadToken: number;
+  /** Mesh key of a hovered non-muscle structure (bone, organ…), for the readout. */
+  hoveredStructure: string | null;
 
   checkAvailability: (force?: boolean) => Promise<void>;
   setLoadState: (s: Partial<Pick<AssetState, "loadStatus" | "progress" | "error">>) => void;
@@ -36,6 +39,7 @@ interface AssetState {
   assignMesh: (assetId: string, meshName: string, muscleId: string | null) => void;
   setInspectedMesh: (name: string | null) => void;
   reload: () => void;
+  setHoveredStructure: (key: string | null) => void;
 }
 
 const USER_MAP_KEY = "muscle-studio.mesh-maps.v1";
@@ -86,11 +90,12 @@ export const useAssetStore = create<AssetState>()((set, get) => ({
   userMeshMaps: readUserMaps(),
   inspectedMesh: null,
   reloadToken: 0,
+  hoveredStructure: null,
 
   checkAvailability: async (force = false) => {
     if (get().availabilityChecked && !force) return;
     if (inflight && !force) return inflight;
-    const assets: AnatomyAssetDefinition[] = [...ANATOMY_ASSETS, TEST_RIG_ASSET];
+    const assets: AnatomyAssetDefinition[] = ANATOMY_ASSETS;
     inflight = (async () => {
       const entries = await Promise.all(
         assets.map(async (a) => [a.id, await assetExists(a.url)] as const),
@@ -115,4 +120,7 @@ export const useAssetStore = create<AssetState>()((set, get) => ({
   },
   setInspectedMesh: (name) => set({ inspectedMesh: name }),
   reload: () => set({ reloadToken: get().reloadToken + 1 }),
+  setHoveredStructure: (key) => {
+    if (get().hoveredStructure !== key) set({ hoveredStructure: key });
+  },
 }));

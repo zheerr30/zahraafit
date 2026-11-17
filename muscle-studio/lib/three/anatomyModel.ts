@@ -1,22 +1,42 @@
-import { Box3, Group, Mesh, Vector3, type Material, type Object3D } from "three";
+import { Box3, Group, Mesh, Raycaster, Vector3, type Material, type Object3D } from "three";
+import { acceleratedRaycast, computeBoundsTree, disposeBoundsTree } from "three-mesh-bvh";
 import { MUSCLES } from "@/data/muscles/muscles";
+import catalog from "@/data/models/open-anatomy-3d/catalog.json";
 import { mapMeshesToMuscles, type MappingReport } from "@/lib/anatomy/resolver";
-import type { IllustrationDoc } from "@/lib/storage/schema";
-import type { AnatomyAssetDefinition, BodySide } from "@/types/anatomy";
+import type { IllustrationDoc, Layers } from "@/lib/storage/schema";
+import { SYSTEMS, type AnatomyAssetDefinition, type BodySide, type SystemId } from "@/types/anatomy";
 import type { MaterialLibrary } from "./materials";
 
 /** Normalized model height in scene units (meters). */
 export const MODEL_HEIGHT = 1.8;
 
 const GENERIC_NAME = /^(mesh|object|primitive|node|geometry|polysurface)?[\s_.-]*\d*$/i;
+const SYSTEM_SET = new Set<string>(SYSTEMS);
+
+/** Fallback display colours per system ("anatomical" colour mode and non-muscle systems). */
+export const SYSTEM_COLORS: Record<Exclude<SystemId, "skin">, string> = {
+  muscles: "#B5463D",
+  skeleton: "#E8E1D1",
+  organs: "#C96F5D",
+  vessels: "#B8322A",
+  nerves: "#E9C04E",
+};
+
+const CATALOG_COLOR = new Map((catalog as { key: string; color: string }[]).map((c) => [c.key, c.color]));
+
+const noRaycast: Mesh["raycast"] = () => {};
 
 export interface PreparedModel {
   /** Normalized root: upright, feet at y=0, centered on X/Z, height = MODEL_HEIGHT. */
   root: Group;
   meshes: Mesh[];
   meshByUid: Map<string, Mesh>;
-  /** Name used for mapping (mesh name, or parent node name for generic mesh names). */
+  /** Name used for mapping (authored node name, or parent node name for generic mesh names). */
   meshNames: Map<string, string>;
+  /** Body system of each mesh (null for assets without system groups). */
+  systemOf: Map<string, SystemId | null>;
+  systemGroups: Map<SystemId, Object3D>;
+  hasSystems: boolean;
 }
 
 /**
@@ -41,11 +61,33 @@ export function meaningfulName(mesh: Object3D): string {
   return own || mesh.uuid;
 }
 
+function findSystem(mesh: Object3D, groups: Map<SystemId, Object3D>): SystemId | null {
+  let p: Object3D | null = mesh.parent;
+  while (p) {
+    for (const [id, g] of groups) if (g === p) return id;
+    p = p.parent;
+  }
+  return null;
+}
+
+function ensureBvh(mesh: Mesh) {
+  const g = mesh.geometry as Mesh["geometry"] & { boundsTree?: unknown };
+  if (!g.boundsTree) computeBoundsTree.call(g);
+}
+
 /**
  * Normalize a loaded scene into a predictable frame and collect its meshes.
  * Original materials are preserved on `mesh.userData.originalMaterial`.
  */
 export function prepareModel(scene: Group, asset: AnatomyAssetDefinition): PreparedModel {
+  // Open Anatomy 3D: top-level children of the glTF scene are the body systems.
+  const systemGroups = new Map<SystemId, Object3D>();
+  for (const child of scene.children) {
+    const name = authoredName(child);
+    if (SYSTEM_SET.has(name)) systemGroups.set(name as SystemId, child);
+  }
+  const hasSystems = systemGroups.has("muscles");
+
   const inner = new Group();
   inner.name = "AssetOrientation";
   inner.add(scene);
@@ -68,19 +110,63 @@ export function prepareModel(scene: Group, asset: AnatomyAssetDefinition): Prepa
   const meshes: Mesh[] = [];
   const meshByUid = new Map<string, Mesh>();
   const meshNames = new Map<string, string>();
+  const systemOf = new Map<string, SystemId | null>();
   root.traverse((obj) => {
     if (!(obj instanceof Mesh)) return;
-    obj.castShadow = true;
-    obj.receiveShadow = true;
+    const system = hasSystems ? findSystem(obj, systemGroups) : null;
+    const isSkin = system === "skin";
+    obj.castShadow = !isSkin;
+    obj.receiveShadow = !isSkin;
+    if (isSkin) obj.renderOrder = 10; // translucent, drawn last
     if (!obj.geometry.attributes.normal) obj.geometry.computeVertexNormals();
     obj.geometry.computeBoundingBox();
     obj.userData.originalMaterial = obj.material;
+    obj.userData.pickable = !isSkin;
     meshes.push(obj);
     meshByUid.set(obj.uuid, obj);
     meshNames.set(obj.uuid, meaningfulName(obj));
+    systemOf.set(obj.uuid, system);
   });
 
-  return { root, meshes, meshByUid, meshNames };
+  return { root, meshes, meshByUid, meshNames, systemOf, systemGroups, hasSystems };
+}
+
+/**
+ * Show/hide body systems. Hidden systems are also excluded from picking, and
+ * BVH acceleration structures are built lazily the first time a system is shown.
+ */
+export function applyLayers(model: PreparedModel, layers: Layers): void {
+  if (!model.hasSystems) {
+    for (const mesh of model.meshes) {
+      ensureBvh(mesh);
+      mesh.raycast = acceleratedRaycast;
+    }
+    return;
+  }
+  for (const [system, group] of model.systemGroups) group.visible = layers[system];
+  for (const mesh of model.meshes) {
+    const system = model.systemOf.get(mesh.uuid);
+    const visible = system ? layers[system] : true;
+    const pickable = visible && system !== "skin";
+    mesh.userData.pickable = pickable;
+    if (pickable) {
+      ensureBvh(mesh);
+      mesh.raycast = acceleratedRaycast;
+    } else {
+      mesh.raycast = noRaycast;
+    }
+  }
+}
+
+export function isPickable(mesh: Mesh): boolean {
+  return mesh.userData.pickable === true;
+}
+
+export function releaseBvh(model: PreparedModel): void {
+  for (const mesh of model.meshes) {
+    const g = mesh.geometry as Mesh["geometry"] & { boundsTree?: unknown };
+    if (g.boundsTree) disposeBoundsTree.call(g);
+  }
 }
 
 export function mapPreparedModel(
@@ -88,7 +174,11 @@ export function mapPreparedModel(
   asset: AnatomyAssetDefinition,
   userMap: Record<string, string> | undefined,
 ): MappingReport {
-  const descriptors = model.meshes.map((m) => ({
+  // In system-structured assets only meshes of the muscle system can be muscles.
+  const candidates = model.hasSystems
+    ? model.meshes.filter((m) => model.systemOf.get(m.uuid) === "muscles")
+    : model.meshes;
+  const descriptors = candidates.map((m) => ({
     uid: m.uuid,
     name: model.meshNames.get(m.uuid) ?? m.name,
   }));
@@ -114,10 +204,15 @@ export function highlightColor(
   return sel.color ?? doc.palette[sel.tone];
 }
 
+function structureColor(model: PreparedModel, mesh: Mesh, system: Exclude<SystemId, "skin">): string {
+  const key = model.meshNames.get(mesh.uuid) ?? "";
+  return CATALOG_COLOR.get(key) ?? SYSTEM_COLORS[system];
+}
+
 /**
- * Assign materials to every mesh based on selection state. Highlighted meshes
- * use cached studio materials; unselected meshes either use the studio base
- * color or their preserved original material.
+ * Assign materials to every mesh. Highlighted muscles use cached studio
+ * materials; unselected muscles use the base (or anatomical) colour; other
+ * systems use their anatomical colours and the skin a translucent shader.
  */
 export function applyMaterials(
   model: PreparedModel,
@@ -128,23 +223,30 @@ export function applyMaterials(
   const { doc, hoveredMuscleId } = ctx;
   const anySelected = Object.keys(doc.selections).length > 0;
   for (const mesh of model.meshes) {
-    const mapping = report.byMesh.get(mesh.uuid);
-    const original = mesh.userData.originalMaterial as Material | Material[];
-    const hovered = mapping !== undefined && mapping.muscleId === hoveredMuscleId;
-    const variant = hovered ? "hover" : "normal";
-
+    const system = model.systemOf.get(mesh.uuid) ?? null;
     let next: Material | Material[];
-    const hl = mapping ? highlightColor(mapping.muscleId, doc) : null;
-    if (hl) {
-      next = library.get(hl, variant);
-    } else if (doc.materialMode === "original") {
-      next = hovered ? library.get(doc.palette.base, "hover") : original;
-    } else if (!mapping) {
-      // Non-muscle structures (tendons, bones, unmapped meshes).
-      next = library.get(doc.palette.shadow, "normal");
+
+    if (system === "skin") {
+      next = library.skin();
+    } else if (system && system !== "muscles") {
+      next = library.get(structureColor(model, mesh, system), "normal");
     } else {
-      const base = doc.dimUnselected && anySelected ? doc.palette.shadow : doc.palette.base;
-      next = library.get(base, variant);
+      const mapping = report.byMesh.get(mesh.uuid);
+      const hovered = mapping !== undefined && mapping.muscleId === hoveredMuscleId;
+      const variant = hovered ? "hover" : "normal";
+      const hl = mapping ? highlightColor(mapping.muscleId, doc) : null;
+      if (hl) {
+        next = library.get(hl, variant);
+      } else if (!mapping) {
+        // Muscle-system meshes that are not mapped, or meshes of unstructured assets.
+        next = library.get(doc.palette.shadow, "normal");
+      } else if (doc.dimUnselected && anySelected) {
+        next = library.get(doc.palette.shadow, variant);
+      } else if (doc.materialMode === "anatomical") {
+        next = library.get(model.hasSystems ? structureColor(model, mesh, "muscles") : SYSTEM_COLORS.muscles, variant);
+      } else {
+        next = library.get(doc.palette.base, variant);
+      }
     }
     if (mesh.material !== next) mesh.material = next;
   }
@@ -171,7 +273,6 @@ export function buildAnchors(model: PreparedModel, report: MappingReport): Map<s
   }
   const out = new Map<string, LabelAnchor[]>();
   for (const g of groups.values()) {
-    // Use the largest mesh of the group as the anchor.
     let best = g.meshes[0];
     let bestVol = -1;
     for (const mesh of g.meshes) {
@@ -231,4 +332,21 @@ export function boundsForMuscles(
     }
   }
   return any ? box : null;
+}
+
+/** Bounds of visible geometry only (hidden systems do not affect framing). */
+export function visibleBounds(model: PreparedModel): Box3 {
+  const box = new Box3();
+  for (const mesh of model.meshes) {
+    const system = model.systemOf.get(mesh.uuid);
+    if (system && model.systemGroups.get(system)?.visible === false) continue;
+    box.expandByObject(mesh, true);
+  }
+  return box.isEmpty() ? new Box3().setFromObject(model.root, true) : box;
+}
+
+/** Nearest pickable hit of a ray, honouring layer visibility (used for export occlusion). */
+export function raycastPickable(model: PreparedModel, raycaster: Raycaster) {
+  const targets = model.meshes.filter(isPickable);
+  return raycaster.intersectObjects(targets, false)[0];
 }

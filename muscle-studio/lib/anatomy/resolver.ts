@@ -148,10 +148,10 @@ export function mapMeshesToMuscles(
   let unsuitableReason: string | null = null;
   if (meshes.length <= 1) {
     unsuitableReason =
-      "The model is a single combined mesh. Individual muscles cannot be selected or highlighted.";
+      "النموذج شبكة واحدة مدموجة؛ لا يمكن تحديد العضلات أو تلوينها منفردة.";
   } else if (mapped.length === 0) {
     unsuitableReason =
-      "None of the meshes could be matched to a muscle. Rename meshes using the naming convention or assign them in the asset inspector.";
+      "لم تُطابَق أي شبكة مع عضلة. يمكن إعادة تسمية الشبكات وفق الأسماء القياسية أو ربطها من فاحص ربط الشبكات.";
   }
 
   return {

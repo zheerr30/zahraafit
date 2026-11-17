@@ -1,12 +1,12 @@
 import { createStore, useStore } from "zustand";
 import { MUSCLES, musclesInRegion } from "@/data/muscles/muscles";
-import { TEST_RIG_ASSET } from "@/data/models/manifest";
 import {
   createDefaultDoc,
   DEFAULT_PALETTE,
   HEX_COLOR,
   type CameraState,
   type IllustrationDoc,
+  type Layers,
   type MuscleTone,
   type Palette,
   type Project,
@@ -23,7 +23,7 @@ export type CameraCommand =
   | { type: "frame-selection"; nonce: number }
   | { type: "restore"; camera: CameraState; nonce: number };
 
-export type AssetMode = "manifest" | "test-rig" | "local-file";
+export type AssetMode = "manifest" | "local-file";
 
 export interface EditorState {
   doc: IllustrationDoc;
@@ -70,6 +70,7 @@ export interface EditorState {
   setLabelLanguage: (value: IllustrationDoc["labelLanguage"]) => void;
   setDimUnselected: (value: boolean) => void;
   setMaterialMode: (value: IllustrationDoc["materialMode"]) => void;
+  setLayer: (system: keyof Layers, visible: boolean) => void;
 
   // History
   undo: () => void;
@@ -87,7 +88,8 @@ export interface EditorState {
 
   // Project lifecycle
   newDocument: (gender?: Gender) => void;
-  loadProject: (project: Project) => void;
+  /** Loads a project; returns how many saved selections no longer exist and were dropped. */
+  loadProject: (project: Project) => number;
   markSaved: (id: string, name: string) => void;
   setProjectName: (name: string) => void;
   setExporting: (value: boolean) => void;
@@ -153,7 +155,7 @@ export function createEditorStore(options: EditorStoreOptions = {}) {
       hoveredMuscleId: null,
       focusedMuscleId: null,
       projectId: null,
-      projectName: "Untitled illustration",
+      projectName: "رسم توضيحي جديد",
       dirty: false,
       currentView: "front",
       assetView: "front",
@@ -269,6 +271,10 @@ export function createEditorStore(options: EditorStoreOptions = {}) {
       setLabelLanguage: (v) => setField("labelLanguage", v),
       setDimUnselected: (v) => setField("dimUnselected", v),
       setMaterialMode: (v) => setField("materialMode", v),
+      setLayer: (system, visible) =>
+        commit((doc) =>
+          doc.layers[system] === visible ? doc : { ...doc, layers: { ...doc.layers, [system]: visible } },
+        ),
 
       undo: () => {
         const { past, future, doc } = get();
@@ -317,7 +323,7 @@ export function createEditorStore(options: EditorStoreOptions = {}) {
           future: [],
           lastCommit: { key: null, at: 0 },
           projectId: null,
-          projectName: "Untitled illustration",
+          projectName: "رسم توضيحي جديد",
           dirty: false,
           focusedMuscleId: null,
           hoveredMuscleId: null,
@@ -326,23 +332,14 @@ export function createEditorStore(options: EditorStoreOptions = {}) {
           assetView: "front",
         }),
 
-      loadProject: (project) =>
+      loadProject: (project) => {
+        const entries = Object.entries(project.doc.selections);
+        // Drop selections for muscle ids that do not exist in the current database.
+        const kept = entries.filter(([id]) => KNOWN_IDS.has(id));
         set((state) => ({
-          // Restore the asset source the project was authored with. A file loaded
-          // from disk cannot be reopened automatically, so keep whatever is loaded.
-          assetMode:
-            project.assetId === TEST_RIG_ASSET.id
-              ? "test-rig"
-              : state.assetMode === "local-file"
-                ? "local-file"
-                : "manifest",
-          doc: {
-            ...project.doc,
-            // Drop selections for muscle ids that no longer exist in the database.
-            selections: Object.fromEntries(
-              Object.entries(project.doc.selections).filter(([id]) => KNOWN_IDS.has(id)),
-            ),
-          },
+          // A file loaded from disk cannot be reopened automatically; keep it if loaded.
+          assetMode: state.assetMode === "local-file" ? "local-file" : "manifest",
+          doc: { ...project.doc, selections: Object.fromEntries(kept) },
           past: [],
           future: [],
           lastCommit: { key: null, at: 0 },
@@ -356,7 +353,9 @@ export function createEditorStore(options: EditorStoreOptions = {}) {
             : { type: "reset", nonce: nextNonce() },
           currentView: project.camera?.view ?? "front",
           assetView: project.camera?.view ?? "front",
-        })),
+        }));
+        return entries.length - kept.length;
+      },
 
       markSaved: (id, name) => set({ projectId: id, projectName: name, dirty: false }),
       setProjectName: (name) => set({ projectName: name, dirty: true }),

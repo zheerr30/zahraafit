@@ -12,6 +12,7 @@ import type { AnatomyAssetDefinition } from "@/types/anatomy";
 import { AnatomyModel } from "./AnatomyModel";
 import { CameraRig } from "./CameraRig";
 import { StudioLights } from "./StudioLights";
+import { TestHooks } from "./TestHooks";
 import { ViewportErrorBoundary } from "./ViewportErrorBoundary";
 
 export function detectWebGL(): boolean {
@@ -75,10 +76,10 @@ export default function AnatomyViewport({ asset }: { asset: AnatomyAssetDefiniti
       <div role="alert" className="absolute inset-0 flex items-center justify-center p-6">
         <div className="max-w-md rounded-2xl border border-line bg-panel p-6 text-center">
           <IconWarning className="mx-auto mb-3 text-warn" size={28} />
-          <h2 className="text-base font-semibold">WebGL is not available</h2>
+          <h2 className="text-base font-semibold">تقنية WebGL غير متاحة</h2>
           <p className="mt-2 text-sm text-muted">
-            MUSCLE STUDIO 3D needs WebGL to render anatomy. Enable hardware acceleration in your
-            browser settings or try a recent version of Chrome, Edge, Firefox or Safari.
+            يحتاج الاستوديو إلى WebGL لعرض النموذج التشريحي. يُرجى تفعيل تسريع العتاد في إعدادات المتصفح
+            أو استخدام إصدار حديث من Chrome أو Edge أو Firefox أو Safari.
           </p>
         </div>
       </div>
@@ -105,8 +106,10 @@ export default function AnatomyViewport({ asset }: { asset: AnatomyAssetDefiniti
           preserveDrawingBuffer: true,
           powerPreference: "high-performance",
         }}
+        // BVH-accelerated meshes return only their nearest hit; R3F sorts across meshes.
+        raycaster={{ firstHitOnly: true } as never}
         onPointerMissed={() => editorStore.getState().setHovered(null)}
-        aria-label="3D anatomy viewport. Drag to orbit, scroll to zoom, right-drag to pan, click a muscle to select it."
+        aria-label="العارض التشريحي ثلاثي الأبعاد: السحب للتدوير، والتمرير للتكبير، والسحب بالزر الأيمن للتحريك، والنقر على عضلة لتحديدها."
         role="img"
         style={{ touchAction: "none" }}
       >
@@ -114,16 +117,17 @@ export default function AnatomyViewport({ asset }: { asset: AnatomyAssetDefiniti
         <StudioLights />
         {asset && <AnatomyModel asset={asset} />}
         <CameraRig />
+        <TestHooks />
       </Canvas>
       {contextLost && (
         <div role="alert" className="absolute inset-0 z-30 flex items-center justify-center bg-bg/80 p-6">
           <div className="max-w-sm rounded-2xl border border-line bg-panel p-6 text-center">
-            <h2 className="text-base font-semibold">Graphics context lost</h2>
+            <h2 className="text-base font-semibold">فُقد سياق الرسوميات</h2>
             <p className="mt-2 text-sm text-muted">
-              The GPU reset the 3D context (often caused by memory pressure or a driver update).
+              أعاد معالج الرسوميات ضبط السياق ثلاثي الأبعاد (غالبًا بسبب ضغط الذاكرة أو تحديث التعريف).
             </p>
             <Button variant="primary" className="mt-4" onClick={restart}>
-              Restart viewport
+              إعادة تشغيل العارض
             </Button>
           </div>
         </div>

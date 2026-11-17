@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { MUSCLES, REGION_DEFINITIONS } from "@/data/muscles/muscles";
 import { ANATOMY_ASSETS, resolveAsset } from "@/data/models/manifest";
+import { normalizeKey } from "@/lib/anatomy/normalize";
 import { buildKeyIndex } from "@/lib/anatomy/resolver";
 import { searchMuscles } from "@/lib/anatomy/search";
 import { REGIONS } from "@/types/anatomy";
@@ -21,29 +22,34 @@ describe("muscle database", () => {
     expect(REGION_DEFINITIONS.map((r) => r.id)).toEqual([...REGIONS]);
   });
 
-  it("includes all required muscles", () => {
-    expect(MUSCLES).toHaveLength(32);
+  it("has one entry per selectable muscle unit of the model", () => {
+    expect(MUSCLES).toHaveLength(22);
+    for (const m of MUSCLES) {
+      expect(m.includes.length, m.id).toBeGreaterThan(0);
+      for (const i of m.includes) expect(i.ar).toMatch(/[\u0600-\u06ff]/);
+      expect(m.granularity === "single" ? m.includes.length : 2).toBeGreaterThanOrEqual(1);
+    }
   });
 
   it("has no canonical mesh name colliding between muscles", () => {
     const index = buildKeyIndex(MUSCLES);
     for (const m of MUSCLES) {
       for (const name of m.meshNames) {
-        const key = name.toLowerCase().replace(/_/g, " ");
-        expect(index.meshKeys.get(key)).toBe(m.id);
+        expect(index.meshKeys.get(normalizeKey(name))).toBe(m.id);
       }
     }
   });
 });
 
 describe("searchMuscles", () => {
-  it("finds muscles by English name, alias and Arabic name", () => {
-    expect(searchMuscles(MUSCLES, "lats")[0].id).toBe("latissimus-dorsi");
-    expect(searchMuscles(MUSCLES, "rear delt")[0].id).toBe("posterior-deltoid");
-    expect(searchMuscles(MUSCLES, "الصدرية")[0].id).toBe("pectoralis-major");
-    // Arabic normalization: hamza-less query still matches "الألوية".
-    expect(searchMuscles(MUSCLES, "الالويه").length).toBeGreaterThan(0);
-    expect(searchMuscles(MUSCLES, "الالوية الكبرى")[0].id).toBe("gluteus-maximus");
+  it("finds units by Arabic name, English name, constituent muscle and gym slang", () => {
+    expect(searchMuscles(MUSCLES, "الصدرية الكبرى")[0].id).toBe("pectoralis-major");
+    expect(searchMuscles(MUSCLES, "traps")[0].id).toBe("trapezius");
+    expect(searchMuscles(MUSCLES, "biceps brachii")[0].id).toBe("upper-arm");
+    expect(searchMuscles(MUSCLES, "ذات الرأسين العضدية")[0].id).toBe("upper-arm");
+    expect(searchMuscles(MUSCLES, "السمانة")[0].id).toBe("calf");
+    expect(searchMuscles(MUSCLES, "الالوية الكبرى")[0].id).toBe("gluteal");
+    expect(searchMuscles(MUSCLES, "Musculus deltoideus")[0].id).toBe("deltoid");
   });
 
   it("returns everything for an empty query and nothing for nonsense", () => {
@@ -53,14 +59,9 @@ describe("searchMuscles", () => {
 });
 
 describe("resolveAsset", () => {
-  it("prefers a dedicated posterior asset for the back view when installed", () => {
-    const all = new Set(ANATOMY_ASSETS.map((a) => a.id));
-    expect(resolveAsset("male", "back", all)?.id).toBe("male-superficial-posterior");
-    expect(resolveAsset("male", "front", all)?.id).toBe("male-superficial");
-  });
-
-  it("falls back to the full-body asset and returns null when nothing is installed", () => {
-    expect(resolveAsset("female", "back", new Set(["female-superficial"]))?.id).toBe("female-superficial");
-    expect(resolveAsset("female", "front", new Set())).toBeNull();
+  it("resolves the bundled Open Anatomy 3D body for each gender", () => {
+    expect(resolveAsset("male", "back")?.id).toBe("open-anatomy-3d-male");
+    expect(resolveAsset("female", "front")?.id).toBe("open-anatomy-3d-female");
+    expect(ANATOMY_ASSETS.every((a) => a.attribution?.license === "CC BY 4.0")).toBe(true);
   });
 });

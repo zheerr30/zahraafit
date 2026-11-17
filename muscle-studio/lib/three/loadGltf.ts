@@ -60,8 +60,8 @@ export function loadGltf(url: string, { renderer, onProgress, signal }: LoadOpti
         reject(
           new AssetLoadError(
             notFound
-              ? `Model file not found at ${url}.`
-              : `Could not load model ${url}: ${msg}`,
+              ? `ملف النموذج غير موجود على المسار ${url}.`
+              : `تعذّر تحميل النموذج ${url}: ${msg}`,
             url,
             notFound ? "not-found" : /fetch|network/i.test(msg) ? "network" : "parse",
           ),

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AppHeader } from "@/components/dashboard/AppHeader";
+import { AppFooter, AppHeader } from "@/components/dashboard/AppHeader";
 import { DashboardHero } from "@/components/dashboard/DashboardHero";
 import { AssetStatusList, ModelShortcuts } from "@/components/dashboard/ModelShortcuts";
 import { ProjectGrid } from "@/components/dashboard/ProjectGrid";
@@ -14,7 +14,7 @@ export default function DashboardPage() {
 
         <section aria-labelledby="models-heading">
           <h2 id="models-heading" className="mb-4 text-lg font-semibold">
-            Start from a model
+            البدء من نموذج
           </h2>
           <ModelShortcuts />
         </section>
@@ -22,10 +22,10 @@ export default function DashboardPage() {
         <section aria-labelledby="recent-heading">
           <div className="mb-4 flex items-end justify-between">
             <h2 id="recent-heading" className="text-lg font-semibold">
-              Recent illustrations
+              أحدث الرسوم
             </h2>
             <Link href="/projects" className="text-sm text-muted hover:text-fg">
-              View all →
+              عرض الكل ←
             </Link>
           </div>
           <ProjectGrid limit={4} />
@@ -35,10 +35,10 @@ export default function DashboardPage() {
           <div>
             <div className="mb-4 flex items-end justify-between">
               <h2 id="library-heading" className="text-lg font-semibold">
-                Anatomy library
+                مكتبة العضلات
               </h2>
               <Link href="/library" className="text-sm text-muted hover:text-fg">
-                Browse all →
+                تصفح المكتبة ←
               </Link>
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
@@ -50,28 +50,23 @@ export default function DashboardPage() {
                     href={`/library?region=${r.id}`}
                     className="group rounded-2xl border border-line bg-panel p-4 transition-colors hover:border-line-strong"
                   >
-                    <p className="text-sm font-semibold">{r.displayName.en}</p>
-                    <p dir="rtl" className="text-right text-xs text-muted">
-                      {r.displayName.ar}
+                    <p className="text-sm font-semibold">{r.displayName.ar}</p>
+                    <p dir="ltr" className="text-end text-xs text-muted">
+                      {r.displayName.en}
                     </p>
-                    <p className="mt-3 text-xs text-muted">
-                      {muscles.length} muscles
-                      <span className="ml-1 text-accent opacity-0 transition-opacity group-hover:opacity-100">→</span>
-                    </p>
+                    <p className="mt-3 text-xs text-muted">{muscles.length} وحدة عضلية</p>
                   </Link>
                 );
               })}
             </div>
           </div>
           <div>
-            <h2 className="mb-4 text-lg font-semibold">Asset status</h2>
+            <h2 className="mb-4 text-lg font-semibold">حالة النماذج</h2>
             <AssetStatusList />
           </div>
         </section>
       </main>
-      <footer className="border-t border-line py-6 text-center text-xs text-muted">
-        MUSCLE STUDIO 3D · Anatomical accuracy depends on the licensed model assets you install.
-      </footer>
+      <AppFooter />
     </>
   );
 }

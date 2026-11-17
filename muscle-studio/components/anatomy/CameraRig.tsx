@@ -4,7 +4,7 @@ import { CameraControls } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
 import { Box3, Vector3, type PerspectiveCamera } from "three";
-import { MODEL_HEIGHT, boundsForMuscles } from "@/lib/three/anatomyModel";
+import { MODEL_HEIGHT, boundsForMuscles, visibleBounds } from "@/lib/three/anatomyModel";
 import { poseForBox, poseForView, type CameraPose } from "@/lib/three/cameraPoses";
 import { viewportBridge } from "@/lib/three/viewportBridge";
 import { editorStore, useEditor } from "@/stores/editorStore";
@@ -14,7 +14,7 @@ const DEFAULT_BOX = new Box3(new Vector3(-0.35, 0, -0.18), new Vector3(0.35, MOD
 
 function modelBox(): Box3 {
   const loaded = viewportBridge.loaded;
-  return loaded ? new Box3().setFromObject(loaded.model.root, true) : DEFAULT_BOX.clone();
+  return loaded ? visibleBounds(loaded.model) : DEFAULT_BOX.clone();
 }
 
 /**

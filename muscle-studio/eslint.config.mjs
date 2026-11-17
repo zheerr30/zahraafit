@@ -13,6 +13,8 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "public/decoders/**",
+    // Plain Node (CommonJS) end-to-end scripts.
+    "e2e/**",
   ]),
 ]);
 

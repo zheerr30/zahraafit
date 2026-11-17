@@ -1,4 +1,5 @@
-import { Color, MeshStandardMaterial } from "three";
+import { Color, MeshStandardMaterial, type ShaderMaterial } from "three";
+import { createSkinMaterial } from "./skinMaterial";
 
 export type MaterialVariant = "normal" | "hover";
 
@@ -9,6 +10,13 @@ export type MaterialVariant = "normal" | "hover";
  */
 export class MaterialLibrary {
   private cache = new Map<string, MeshStandardMaterial>();
+  private skinMaterial: ShaderMaterial | null = null;
+
+  /** Shared translucent skin material. */
+  skin(): ShaderMaterial {
+    this.skinMaterial ??= createSkinMaterial();
+    return this.skinMaterial;
+  }
 
   get(hex: string, variant: MaterialVariant = "normal"): MeshStandardMaterial {
     const key = `${hex.toLowerCase()}|${variant}`;
@@ -37,5 +45,7 @@ export class MaterialLibrary {
   dispose(): void {
     for (const mat of this.cache.values()) mat.dispose();
     this.cache.clear();
+    this.skinMaterial?.dispose();
+    this.skinMaterial = null;
   }
 }

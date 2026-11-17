@@ -85,8 +85,8 @@ export function Switch({
       >
         <span
           className={cn(
-            "absolute left-0.5 top-0.5 h-3.5 w-3.5 rounded-full bg-white transition-transform",
-            checked ? "translate-x-4" : "translate-x-0",
+            "absolute start-0.5 top-0.5 h-3.5 w-3.5 rounded-full bg-white transition-transform",
+            checked ? "translate-x-4 rtl:-translate-x-4" : "translate-x-0",
           )}
         />
       </button>
@@ -118,7 +118,7 @@ export function SliderField({
         <label htmlFor={id} className="text-sm text-fg">
           {label}
         </label>
-        <span className="font-mono text-xs tabular-nums text-muted">{format(value)}</span>
+        <span dir="ltr" className="font-mono text-xs tabular-nums text-muted">{format(value)}</span>
       </div>
       <input
         id={id}
@@ -153,14 +153,14 @@ export function ColorField({
         {hint && <span className="block text-xs text-muted">{hint}</span>}
       </label>
       <div className="flex items-center gap-2">
-        <span className="font-mono text-xs uppercase text-muted">{value}</span>
+        <span dir="ltr" className="font-mono text-xs uppercase text-muted">{value}</span>
         <input
           id={id}
           type="color"
           value={value.toLowerCase()}
           onChange={(e) => onChange(e.target.value.toUpperCase())}
           className="h-7 w-9"
-          aria-label={`${label} color`}
+          aria-label={`لون ${label}`}
         />
       </div>
     </div>
@@ -179,7 +179,7 @@ export function Section({
   return (
     <section className="border-b border-line px-4 py-4">
       <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">{title}</h3>
+        <h3 className="text-xs font-semibold text-muted">{title}</h3>
         {action}
       </div>
       {children}

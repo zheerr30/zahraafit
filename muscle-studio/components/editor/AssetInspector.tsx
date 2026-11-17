@@ -30,16 +30,16 @@ export function AssetInspector() {
   }, [summary, assignedNames, filter]);
 
   if (!summary) {
-    return <p className="text-xs text-muted">Load a model to inspect its mesh mapping.</p>;
+    return <p className="text-xs text-muted">بعد تحميل النموذج يظهر هنا ربط شبكاته بالعضلات.</p>;
   }
 
   const copyJson = async () => {
     const json = JSON.stringify(userMap, null, 2);
     try {
       await navigator.clipboard.writeText(`meshMap: ${json},`);
-      toast.success("Mapping copied. Paste it into the asset entry in data/models/manifest.ts.");
+      toast.success("نُسخ الربط. يُلصق في مدخل النموذج في data/models/manifest.ts.");
     } catch {
-      toast.error("Clipboard is not available. Select and copy the mapping manually.");
+      toast.error("الحافظة غير متاحة في هذا المتصفح.");
     }
   };
 
@@ -48,17 +48,17 @@ export function AssetInspector() {
     <div className="space-y-3 text-xs">
       <dl className="grid grid-cols-3 gap-2">
         <div className="rounded-lg bg-panel-2 p-2">
-          <dt className="text-muted">Meshes</dt>
+          <dt className="text-muted">الشبكات</dt>
           <dd className="font-mono text-sm text-fg">{summary.meshCount}</dd>
         </div>
         <div className="rounded-lg bg-panel-2 p-2">
-          <dt className="text-muted">Muscles</dt>
+          <dt className="text-muted">الوحدات العضلية</dt>
           <dd className="font-mono text-sm text-fg">
             {mappedCount}/{MUSCLES.length}
           </dd>
         </div>
         <div className="rounded-lg bg-panel-2 p-2">
-          <dt className="text-muted">Unmapped</dt>
+          <dt className="text-muted">غير مرتبطة</dt>
           <dd className={cn("font-mono text-sm", summary.unmappedMeshNames.length ? "text-warn" : "text-fg")}>
             {summary.unmappedMeshNames.length}
           </dd>
@@ -72,10 +72,10 @@ export function AssetInspector() {
       {summary.missingMuscleIds.length > 0 && (
         <details className="rounded-lg bg-panel-2 p-2">
           <summary className="cursor-pointer text-muted">
-            {summary.missingMuscleIds.length} muscles have no mesh in this asset
+            {summary.missingMuscleIds.length} وحدة عضلية بلا شبكة في هذا النموذج
           </summary>
           <p className="mt-2 leading-relaxed text-muted">
-            {summary.missingMuscleIds.map((id) => getMuscle(id)?.displayName.en ?? id).join(", ")}
+            {summary.missingMuscleIds.map((id) => getMuscle(id)?.displayName.ar ?? id).join("، ")}
           </p>
         </details>
       )}
@@ -83,24 +83,24 @@ export function AssetInspector() {
       {(summary.unmappedMeshNames.length > 0 || assignedNames.length > 0) && (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <span className="font-medium text-fg">Assign meshes</span>
+            <span className="font-medium text-fg">ربط الشبكات يدويًا</span>
             {assignedNames.length > 0 && (
               <Button size="sm" variant="ghost" onClick={copyJson}>
-                <IconCopy size={13} /> Copy meshMap
+                <IconCopy size={13} /> نسخ meshMap
               </Button>
             )}
           </div>
           {inspected && (
             <p className="rounded-md border border-accent/40 bg-accent/10 p-2 text-fg">
-              Clicked unmapped mesh: <span className="font-mono">{inspected}</span>
+              شبكة غير مرتبطة نُقر عليها: <span dir="ltr" className="font-mono">{inspected}</span>
             </p>
           )}
           <input
             type="search"
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            placeholder="Filter mesh names"
-            aria-label="Filter mesh names"
+            placeholder="تصفية أسماء الشبكات"
+            aria-label="تصفية أسماء الشبكات"
             className="h-8 w-full rounded-md border border-line bg-panel-2 px-2 text-xs focus:border-accent/60 focus:outline-none"
           />
           <ul className="scroll-thin max-h-64 space-y-1 overflow-y-auto pr-1">
@@ -112,21 +112,21 @@ export function AssetInspector() {
                   inspected === name && "ring-1 ring-accent/60",
                 )}
               >
-                <div className="mb-1 truncate font-mono text-[11px] text-fg" title={name}>
+                <div dir="ltr" className="mb-1 truncate text-start font-mono text-[11px] text-fg" title={name}>
                   {name}
                 </div>
                 <select
                   value={userMap[name] ?? ""}
                   onChange={(e) => assign(summary.assetId, name, e.target.value || null)}
-                  aria-label={`Muscle for mesh ${name}`}
+                  aria-label={`العضلة المرتبطة بالشبكة ${name}`}
                   className="h-7 w-full rounded border border-line bg-panel-3 px-1 text-xs text-fg"
                 >
-                  <option value="">— not a muscle / unassigned —</option>
+                  <option value="">— ليست عضلة / غير مرتبطة —</option>
                   {REGION_DEFINITIONS.map((r) => (
-                    <optgroup key={r.id} label={r.displayName.en}>
+                    <optgroup key={r.id} label={r.displayName.ar}>
                       {MUSCLES.filter((m) => m.region === r.id).map((m) => (
                         <option key={m.id} value={m.id}>
-                          {m.displayName.en}
+                          {m.displayName.ar}
                         </option>
                       ))}
                     </optgroup>
@@ -135,7 +135,7 @@ export function AssetInspector() {
               </li>
             ))}
           </ul>
-          {unmapped.length > 300 && <p className="text-muted">Showing 300 of {unmapped.length}. Use the filter.</p>}
+          {unmapped.length > 300 && <p className="text-muted">يُعرض 300 من {unmapped.length}. يمكن استخدام التصفية.</p>}
         </div>
       )}
     </div>

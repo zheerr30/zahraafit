@@ -22,14 +22,14 @@ export interface ProjectRepository {
 
 export class ProjectNotFoundError extends Error {
   constructor(id: string) {
-    super(`Project "${id}" was not found.`);
+    super(`المشروع «${id}» غير موجود.`);
     this.name = "ProjectNotFoundError";
   }
 }
 
 export function sanitizeName(name: string): string {
   const trimmed = name.replace(/\s+/g, " ").trim().slice(0, 120);
-  return trimmed || "Untitled illustration";
+  return trimmed || "رسم بلا عنوان";
 }
 
 export function newId(): string {

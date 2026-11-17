@@ -5,6 +5,7 @@ import {
   MemoryStorage,
   StorageQuotaError,
 } from "@/lib/storage/localRepository";
+import { ProjectNotFoundError } from "@/lib/storage/repository";
 import { createDefaultDoc } from "@/lib/storage/schema";
 import { createEditorStore } from "@/stores/editorStore";
 
@@ -16,13 +17,13 @@ function repo(storage = new MemoryStorage()) {
 function input(name = "Leg day") {
   const doc = createDefaultDoc("female");
   doc.selections = {
-    "gluteus-maximus": { tone: "primary", color: null },
-    "biceps-femoris": { tone: "secondary", color: "#123456" },
+    "gluteal": { tone: "primary", color: null },
+    "hamstrings": { tone: "secondary", color: "#123456" },
   };
   doc.background = "transparent";
   return {
     name,
-    assetId: "female-superficial",
+    assetId: "open-anatomy-3d-female",
     doc,
     camera: { view: "back" as const, position: [0, 1, -3] as [number, number, number], target: [0, 0.9, 0] as [number, number, number] },
     thumbnail: null,
@@ -36,7 +37,7 @@ describe("LocalProjectRepository", () => {
     const loaded = await r.get(created.id);
     expect(loaded).toEqual(created);
     expect(loaded?.doc.gender).toBe("female");
-    expect(loaded?.doc.selections["biceps-femoris"]).toEqual({ tone: "secondary", color: "#123456" });
+    expect(loaded?.doc.selections["hamstrings"]).toEqual({ tone: "secondary", color: "#123456" });
     expect(loaded?.camera?.view).toBe("back");
     expect(loaded?.doc.background).toBe("transparent");
   });
@@ -48,12 +49,12 @@ describe("LocalProjectRepository", () => {
     expect(renamed.name).toBe("Posterior chain");
     const copy = await r.duplicate(p.id);
     expect(copy.id).not.toBe(p.id);
-    expect(copy.name).toBe("Posterior chain (copy)");
+    expect(copy.name).toBe("Posterior chain (نسخة)");
     expect(copy.doc).toEqual(renamed.doc);
     await r.remove(p.id);
     const list = await r.list();
     expect(list.map((x) => x.id)).toEqual([copy.id]);
-    await expect(r.remove("missing")).rejects.toThrow(/not found/);
+    await expect(r.remove("missing")).rejects.toBeInstanceOf(ProjectNotFoundError);
   });
 
   it("lists most recently updated first", async () => {
@@ -91,8 +92,8 @@ describe("LocalProjectRepository", () => {
     const { repo: r } = repo();
     const store = createEditorStore();
     store.getState().setGender("female");
-    store.getState().selectMuscles(["soleus", "gastrocnemius"]);
-    store.getState().setMuscleColor("soleus", "#abcdef");
+    store.getState().selectMuscles(["calf", "anterior-leg"]);
+    store.getState().setMuscleColor("calf", "#abcdef");
     store.getState().setLighting(1.7);
     const saved = await r.create({
       name: "Calves",
@@ -113,15 +114,30 @@ describe("LocalProjectRepository", () => {
   });
 });
 
-describe("asset source restore", () => {
-  it("reopens test-rig projects with the test rig and others with installed assets", async () => {
+describe("project migration", () => {
+  it("drops selections of muscle ids that no longer exist and reports how many", async () => {
     const { repo: r } = repo();
-    const rig = await r.create({ ...input("Rig"), assetId: "pipeline-test-rig" });
-    const real = await r.create({ ...input("Real"), assetId: "female-superficial" });
+    const doc = createDefaultDoc("male");
+    doc.selections = {
+      "biceps-brachii": { tone: "primary", color: null },
+      trapezius: { tone: "secondary", color: null },
+    };
+    const saved = await r.create({ name: "Old", assetId: null, doc, camera: null, thumbnail: null });
     const store = createEditorStore();
-    store.getState().loadProject(rig);
-    expect(store.getState().assetMode).toBe("test-rig");
-    store.getState().loadProject(real);
-    expect(store.getState().assetMode).toBe("manifest");
+    expect(store.getState().loadProject(saved)).toBe(1);
+    expect(Object.keys(store.getState().doc.selections)).toEqual(["trapezius"]);
+  });
+
+  it("reads pre-integration projects without layers and with the old material mode", async () => {
+    const { repo: r, storage } = repo();
+    const p = await r.create(input());
+    const raw = JSON.parse(storage.getItem(LOCAL_STORAGE_KEY)!);
+    delete raw[0].doc.layers;
+    raw[0].doc.materialMode = "original";
+    storage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(raw));
+    const loaded = await r.get(p.id);
+    expect(loaded?.doc.layers.muscles).toBe(true);
+    expect(loaded?.doc.layers.skin).toBe(false);
+    expect(loaded?.doc.materialMode).toBe("anatomical");
   });
 });

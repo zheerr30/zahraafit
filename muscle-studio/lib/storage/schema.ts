@@ -21,6 +21,25 @@ export const paletteSchema = z.object({
 
 export const viewSchema = z.enum(["front", "back", "left", "right"]);
 
+export const layersSchema = z.object({
+  muscles: z.boolean(),
+  skeleton: z.boolean(),
+  skin: z.boolean(),
+  organs: z.boolean(),
+  vessels: z.boolean(),
+  nerves: z.boolean(),
+});
+
+/** Muscles only, as required on first load; other systems are opt-in. */
+export const DEFAULT_LAYERS: z.infer<typeof layersSchema> = {
+  muscles: true,
+  skeleton: false,
+  skin: false,
+  organs: false,
+  vessels: false,
+  nerves: false,
+};
+
 export const illustrationDocSchema = z.object({
   gender: z.enum(["male", "female"]),
   selections: z.record(z.string(), muscleSelectionSchema),
@@ -33,7 +52,12 @@ export const illustrationDocSchema = z.object({
   showSelectedNames: z.boolean(),
   labelLanguage: z.enum(["en", "ar", "both"]),
   dimUnselected: z.boolean(),
-  materialMode: z.enum(["studio", "original"]),
+  // "original" was the pre-Open-Anatomy name of the anatomical colour mode.
+  materialMode: z.preprocess(
+    (v) => (v === "original" ? "anatomical" : v),
+    z.enum(["studio", "anatomical"]),
+  ),
+  layers: layersSchema.default(DEFAULT_LAYERS),
 });
 
 export const cameraStateSchema = z.object({
@@ -62,6 +86,7 @@ export type MuscleTone = z.infer<typeof toneSchema>;
 export type MuscleSelection = z.infer<typeof muscleSelectionSchema>;
 export type Palette = z.infer<typeof paletteSchema>;
 export type IllustrationDoc = z.infer<typeof illustrationDocSchema>;
+export type Layers = z.infer<typeof layersSchema>;
 export type CameraState = z.infer<typeof cameraStateSchema>;
 export type Project = z.infer<typeof projectSchema>;
 
@@ -83,8 +108,9 @@ export function createDefaultDoc(gender: IllustrationDoc["gender"] = "male"): Il
     modelOffsetY: 0,
     showLabels: false,
     showSelectedNames: true,
-    labelLanguage: "en",
+    labelLanguage: "ar",
     dimUnselected: false,
     materialMode: "studio",
+    layers: { ...DEFAULT_LAYERS },
   };
 }

@@ -121,7 +121,7 @@ export class SupabaseProjectRepository implements ProjectRepository {
     const source = await this.get(id);
     if (!source) throw new ProjectNotFoundError(id);
     return this.create({
-      name: `${source.name} (copy)`,
+      name: `${source.name} (نسخة)`,
       assetId: source.assetId,
       doc: source.doc,
       camera: source.camera,

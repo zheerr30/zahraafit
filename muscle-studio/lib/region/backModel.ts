@@ -3,6 +3,8 @@ import { acceleratedRaycast, computeBoundsTree, disposeBoundsTree } from "three-
 import { REGION_MUSCLE_BY_ID, type RegionLayer } from "@/data/region/backShoulders";
 import { dequantizeMesh } from "@/lib/three/anatomyModel";
 import { createMuscleMaterial, HIGHLIGHT_LOOK, REALISTIC_LOOK, setMuscleLook } from "@/lib/three/muscleMaterial";
+import { axisTangents, createMuscleMaterialHD, createTissueMaterialHD, muscleDetail, principalAxis, setMuscleLookHD } from "@/lib/three/hdMaterials";
+import { fibreTangents, orientFibres, refineGeometry } from "@/lib/three/refine";
 import { createTissueMaterial, muscleTone, TISSUE, tissueOf } from "@/lib/three/tissue";
 import type { DepthMode, PickedStructure } from "@/stores/backStore";
 
@@ -94,8 +96,23 @@ type Extras = {
   definition?: string; materials?: string[]; fibre?: string;
 };
 
+/**
+ * HD rendering options (prototype). `refineRegions`: muscles of these study
+ * regions get the interpolating PN refinement (original vertices unchanged).
+ */
+export interface PrepareOptions {
+  hd?: boolean;
+  refineRegions?: ReadonlySet<string>;
+}
+
+/** Base colour of fresh skeletal muscle in the HD standard (natural red, not brown, not pink). */
+export const HD_MUSCLE = "#B9474E";
+
+/** Totals of the PN refinement applied while preparing (for reports / tests). */
+export const refineReport = { meshes: 0, trianglesBefore: 0, trianglesAfter: 0, maxOffsetMm: 0, meanOffsetMm: 0 };
+
 /** Prepare the meshes of one loaded file (core, attachments or nerves). */
-export function prepareMeshes(scene: Object3D): RegionMesh[] {
+export function prepareMeshes(scene: Object3D, opts: PrepareOptions = {}): RegionMesh[] {
   const out: RegionMesh[] = [];
   scene.updateMatrixWorld(true);
   const all: Mesh[] = [];
@@ -111,9 +128,39 @@ export function prepareMeshes(scene: Object3D): RegionMesh[] {
     const source = x.source ?? x.id;
     let baseHex: string;
     let material: Material;
-    if (kind === "unit") {
+    if (kind === "unit" && opts.hd) {
+      baseHex = muscleTone(x.id, HD_MUSCLE);
+      orientFibres(mesh.geometry);
+      if (opts.refineRegions?.has(x.region ?? "") && mesh.geometry.getIndex()) {
+        const { geometry, stats } = refineGeometry(mesh.geometry);
+        mesh.geometry.dispose();
+        mesh.geometry = geometry;
+        refineReport.meshes++;
+        refineReport.trianglesBefore += stats.trianglesBefore;
+        refineReport.trianglesAfter += stats.trianglesAfter;
+        refineReport.maxOffsetMm = Math.max(refineReport.maxOffsetMm, stats.maxOffset * 1000);
+        refineReport.meanOffsetMm += (stats.meanOffset * 1000 - refineReport.meanOffsetMm) / refineReport.meshes;
+      }
+      fibreTangents(mesh.geometry);
+      material = createMuscleMaterialHD(baseHex, REALISTIC_LOOK, false, muscleDetail(x.id + (x.source ?? ""), mesh.geometry));
+      // Where layers nearly coincide, the more superficial muscle wins the depth test
+      // (render order only — no geometry is moved).
+      const d = (x.depth ?? 1) - 1;
+      if (d > 0) {
+        material.polygonOffset = true;
+        material.polygonOffsetFactor = d;
+        material.polygonOffsetUnits = 2 * d;
+      }
+    } else if (kind === "unit") {
       baseHex = muscleTone(x.id);
       material = createMuscleMaterial(baseHex, REALISTIC_LOOK, false);
+    } else if (opts.hd) {
+      const t = tissueOf(kind, source, x.role)!;
+      const fibrous = t === "tendon" || t === "ligament" || t === "fascia" || t === "nerve";
+      const axis = fibrous ? principalAxis(mesh.geometry) : undefined;
+      if (axis) axisTangents(mesh.geometry, axis);
+      material = createTissueMaterialHD(t, { vertexColors: kind === "bone" && !!mesh.geometry.getAttribute("color"), axis });
+      baseHex = `#${(material as MeshPhysicalMaterial).color.getHexString()}`;
     } else {
       const t = tissueOf(kind, source, x.role)!;
       material = createTissueMaterial(t, { vertexColors: kind === "bone" && !!mesh.geometry.getAttribute("color") });
@@ -174,9 +221,9 @@ export function addMeshes(model: RegionModel, meshes: RegionMesh[]): void {
 }
 
 /** Back-compat helper (tests): prepare a whole scene as one model. */
-export function prepareRegionModel(scene: Object3D): RegionModel {
+export function prepareRegionModel(scene: Object3D, opts: PrepareOptions = {}): RegionModel {
   const model = createRegionModel();
-  addMeshes(model, prepareMeshes(scene));
+  addMeshes(model, prepareMeshes(scene, opts));
   return model;
 }
 
@@ -237,7 +284,7 @@ export function applyStyle(m: RegionMesh, selected: PickedStructure | null, hove
   m.styleKey = key;
   const mat = m.mesh.material as MeshPhysicalMaterial;
   if (m.kind === "unit") {
-    setMuscleLook(mat, isSel ? highlight : m.baseHex, isSel ? HIGHLIGHT_LOOK : REALISTIC_LOOK, isHover);
+    (mat.userData.hd ? setMuscleLookHD : setMuscleLook)(mat, isSel ? highlight : m.baseHex, isSel ? HIGHLIGHT_LOOK : REALISTIC_LOOK, isHover);
   } else if (m.kind !== "attachment") {
     const c = new Color(isSel ? highlight : m.baseHex);
     mat.color.copy(c);

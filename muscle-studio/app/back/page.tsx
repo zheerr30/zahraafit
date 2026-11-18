@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function BackPage() {
-  return <BackStudio initialRegion="back" />;
+  return <BackStudio initialRegion="back" hd />;
 }

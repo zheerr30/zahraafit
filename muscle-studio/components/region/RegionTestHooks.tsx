@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { Raycaster, Vector2, Vector3 } from "three";
-import { pick } from "@/lib/region/backModel";
+import { pick, refineReport } from "@/lib/region/backModel";
 import { backStore } from "@/stores/backStore";
 import { regionBridge } from "./BackViewport";
 
@@ -82,6 +82,8 @@ export function RegionTestHooks() {
         return mat?.color ? `#${mat.color.getHexString()}` : null;
       },
       ready: () => !!regionBridge.model,
+      /** Totals of the HD surface refinement (triangles, offsets in mm). */
+      refine: () => ({ ...refineReport }),
       /** The loaded model object (identity changes when the body is swapped). */
       rawModel: () => regionBridge.model,
       /** Camera position (to wait until a transition has settled). */

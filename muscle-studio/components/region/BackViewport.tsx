@@ -20,6 +20,7 @@ import {
   type RegionMesh,
   type RegionModel,
 } from "@/lib/region/backModel";
+import { HDPipeline } from "@/components/region/HDPipeline";
 import { loadGltf } from "@/lib/three/loadGltf";
 import { configureRenderer } from "@/lib/three/rendererSetup";
 import { backStore, useBack, type PickedStructure, type RegionView } from "@/stores/backStore";
@@ -41,6 +42,15 @@ export const regionBridge: {
   invalidate: () => void;
 } = { model: null, camera: null, controls: null, canvas: null, invalidate: () => {} };
 
+/** HD prototype scope: surface refinement for the back & shoulder muscles (`?refine=0` disables it). */
+const HD_OPTIONS = {
+  hd: true,
+  get refineRegions(): ReadonlySet<string> {
+    const off = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("refine") === "0";
+    return new Set(off ? [] : ["back", "shoulders"]);
+  },
+};
+
 export type LoadState = { status: "loading"; progress: number } | { status: "ready" } | { status: "error"; message: string };
 
 const asPicked = (m: RegionMesh): PickedStructure => ({ kind: m.kind, id: m.id, side: m.side, ar: m.ar, en: m.en });
@@ -49,6 +59,7 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
   const gl = useThree((s) => s.gl);
   const invalidate = useThree((s) => s.invalidate);
   const sex = useBack((s) => s.sex);
+  const hd = useBack((s) => s.hd);
   const [roots, setRoots] = useState<Object3D[]>([]);
   const modelRef = useRef<RegionModel | null>(null);
   const loaded = useRef(new Set<string>());
@@ -66,13 +77,14 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
   };
 
   useEffect(() => {
+    if (hd === null) return; // the page has not chosen the rendering quality yet
     const ctrl = new AbortController();
     const model = createRegionModel();
     loaded.current = new Set(["core"]);
     onState({ status: "loading", progress: 0 });
     loadGltf(modelUrl(sex, "core"), { renderer: gl, signal: ctrl.signal, onProgress: (p) => onState({ status: "loading", progress: p }) })
       .then((gltf) => {
-        const meshes = prepareMeshes(gltf.scene);
+        const meshes = prepareMeshes(gltf.scene, hd ? HD_OPTIONS : {});
         addMeshes(model, meshes);
         modelRef.current = model;
         regionBridge.model = model;
@@ -94,7 +106,7 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
       if (regionBridge.model === model) regionBridge.model = null;
       modelRef.current = null;
     };
-  }, [gl, onState, sex]);
+  }, [gl, onState, sex, hd]);
 
   // Optional layers (attachment patches, nerves) are loaded the first time they are needed.
   useEffect(() => {
@@ -110,7 +122,7 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
       loadGltf(modelUrl(forSex, LAZY_PARTS[part]), { renderer: gl })
         .then((gltf) => {
           if (modelRef.current !== model) return;
-          const meshes = prepareMeshes(gltf.scene);
+          const meshes = prepareMeshes(gltf.scene, backStore.getState().hd ? HD_OPTIONS : {});
           addMeshes(model, meshes);
           syncNew(model, meshes);
           setRoots((r) => [...r, gltf.scene]);
@@ -322,6 +334,18 @@ function Pointer() {
   return null;
 }
 
+function Lighting() {
+  const hd = useBack((s) => s.hd);
+  return hd === true ? (
+    <>
+      <AtlasLighting keyLight={false} warmFill />
+      <HDPipeline />
+    </>
+  ) : (
+    <AtlasLighting />
+  );
+}
+
 function Background() {
   const bg = useBack((s) => s.background);
   return <color attach="background" args={[BACKGROUNDS[bg]]} />;
@@ -338,7 +362,7 @@ export function BackViewport({ onState }: { onState: (s: LoadState) => void }) {
       data-viewport=""
     >
       <Background />
-      <AtlasLighting />
+      <Lighting />
       <Model onState={onState} />
       <Rig />
       <Pointer />

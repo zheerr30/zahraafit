@@ -46,6 +46,8 @@ interface BackState {
   /** Colour of the selected structure (user-chosen). */
   highlightColor: string;
   sex: Sex;
+  /** HD rendering (prototype): refined surfaces, detailed tissue materials, AO and shadows. */
+  hd: boolean | null;
   /** Bumped when a model has loaded (the unit list is read from the model). */
   unitsVersion: number;
   /** Study region the list and camera are focused on (null = whole body). */
@@ -66,6 +68,7 @@ interface BackState {
   setAutoRotate: (v: boolean) => void;
   setHighlightColor: (hex: string) => void;
   setSex: (s: Sex) => void;
+  setHd: (v: boolean) => void;
   focusRegion: (region: string | null) => void;
   view: (v: RegionView) => void;
   focus: (unitId: string, side?: "l" | "r" | "m" | null) => void;
@@ -90,6 +93,7 @@ export const backStore = createStore<BackState>()((set, get) => ({
   autoRotate: false,
   highlightColor: "#E8602C",
   sex: "male",
+  hd: null,
   unitsVersion: 0,
   region: null,
   cameraCommand: null,
@@ -133,6 +137,7 @@ export const backStore = createStore<BackState>()((set, get) => ({
   setAutoRotate: (v) => set({ autoRotate: v }),
   setHighlightColor: (hex) => set({ highlightColor: /^#[0-9a-fA-F]{6}$/.test(hex) ? hex : "#E8602C" }),
   setSex: (sex) => set({ sex, selected: null, hovered: null, isolate: false }),
+  setHd: (hd) => set({ hd, selected: null, hovered: null, isolate: false }),
   focusRegion: (region) =>
     set({ region, autoRotate: false, cameraCommand: region ? { type: "region", region, nonce: ++nonce } : { type: "view", view: "front", nonce: ++nonce } }),
   view: (v) => set({ cameraCommand: { type: "view", view: v, nonce: ++nonce }, autoRotate: false }),

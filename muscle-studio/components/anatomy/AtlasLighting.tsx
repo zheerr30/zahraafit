@@ -3,7 +3,10 @@
 import { Environment, Lightformer } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo } from "react";
-import { Group, Object3D, type Camera } from "three";
+import { Group, Object3D, Vector3, type Camera } from "three";
+
+/** The key light (camera space), shared with the HD pipeline's shadow-casting key. */
+export const KEY_LIGHT = { position: new Vector3(1.6, 1.8, 0.6), intensity: 2.4, color: "#fff3e8" };
 
 /** The light rig of the mounted viewer (used by exports to aim it at the export camera). */
 export const lightRig: { group: Group | null } = { group: null };
@@ -21,9 +24,10 @@ export function alignLightRig(camera: Camera): void {
  * ONE lighting standard for the atlas and the editor: key, fill, rim and under
  * lights that travel with the camera (every angle of a 360° turn is lit alike),
  * a soft hemisphere + ambient base and a procedural studio environment for the
- * satin / moist reflections. `intensity` scales everything.
+ * satin / moist reflections. `intensity` scales everything. With
+ * `keyLight={false}` the key is provided elsewhere (HD pipeline: shadow-casting key).
  */
-export function AtlasLighting({ intensity = 1 }: { intensity?: number }) {
+export function AtlasLighting({ intensity = 1, keyLight = true, warmFill = false }: { intensity?: number; keyLight?: boolean; warmFill?: boolean }) {
   const camera = useThree((s) => s.camera);
   const group = useMemo(() => new Group(), []);
   const target = useMemo(() => {
@@ -45,9 +49,9 @@ export function AtlasLighting({ intensity = 1 }: { intensity?: number }) {
   return (
     <>
       <ambientLight intensity={0.22 * intensity} />
-      <hemisphereLight args={["#fff8f2", "#20232a", 0.45 * intensity]} />
+      <hemisphereLight args={["#fff8f2", warmFill ? "#3a2c2a" : "#20232a", 0.45 * intensity]} />
       <primitive object={group}>
-        <directionalLight position={[1.6, 1.8, 0.6]} intensity={2.4 * intensity} color="#fff3e8" target={target} />
+        {keyLight && <directionalLight position={KEY_LIGHT.position.toArray()} intensity={KEY_LIGHT.intensity * intensity} color={KEY_LIGHT.color} target={target} />}
         <directionalLight position={[-2.2, 0.6, 0.8]} intensity={0.85 * intensity} color="#f2f5ff" target={target} />
         <directionalLight position={[0, 2.5, -3]} intensity={1.3 * intensity} color="#eef2ff" target={target} />
         <directionalLight position={[-1.5, -1.2, -1.5]} intensity={0.45 * intensity} target={target} />

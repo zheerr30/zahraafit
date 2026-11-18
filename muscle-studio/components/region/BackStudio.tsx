@@ -413,6 +413,7 @@ function ViewBar() {
   const autoRotate = useBack((s) => s.autoRotate);
   const bg = useBack((s) => s.background);
   const showEnglish = useBack((s) => s.showEnglish);
+  const hd = useBack((s) => s.hd);
   const st = backStore.getState();
   const views: [RegionView, string, string][] = [
     ["back", "خلفي", "1"],
@@ -446,15 +447,28 @@ function ViewBar() {
         <button type="button" aria-pressed={showEnglish} onClick={() => st.setShowEnglish(!showEnglish)} className={cn(btn, showEnglish ? "bg-[#0B2E6B] text-white" : "text-[#0B2E6B] hover:bg-[#eef2f8]")}>
           English
         </button>
+        <button
+          type="button"
+          aria-pressed={!!hd}
+          title="تفاصيل عالية: أسطح منعّمة للظهر والكتفين، ألياف وأنسجة مفصّلة، إظلال محيطي وظلال"
+          onClick={() => st.setHd(!hd)}
+          className={cn(btn, hd ? "bg-[#0B2E6B] text-white" : "text-[#0B2E6B] hover:bg-[#eef2f8]")}
+        >
+          تفاصيل عالية HD
+        </button>
       </div>
     </div>
   );
 }
 
-export function BackStudio({ initialRegion = null }: { initialRegion?: string | null }) {
+export function BackStudio({ initialRegion = null, hd = false }: { initialRegion?: string | null; hd?: boolean }) {
+  // The viewer waits for this (hd: null) so the model is prepared once, with the right quality.
+  // `?hd=0` / `?hd=1` override the page default (before/after comparison).
   useEffect(() => {
-    backStore.setState({ region: initialRegion });
-  }, [initialRegion]);
+    const q = new URLSearchParams(window.location.search).get("hd");
+    backStore.setState({ region: initialRegion, hd: q === null ? hd : q === "1" });
+    return () => backStore.setState({ hd: null });
+  }, [initialRegion, hd]);
   const [load, setLoad] = useState<LoadState>({ status: "loading", progress: 0 });
   const onState = useCallback((s: LoadState) => setLoad(s), []);
   const isolate = useBack((s) => s.isolate);

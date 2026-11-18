@@ -65,6 +65,9 @@ const BASE = process.env.BASE || 'http://localhost:3001';
       }
     }
   }
+  console.log('clicks', JSON.stringify({ clicked: Object.keys(result.clicked).length, of: ids.length * 2, retried: result.retried ?? [] }));
+  // Software GL renders the ghosted (transparent) scenes slowly: allow long waits for the UI clicks below.
+  page.setDefaultTimeout(180000);
   // Per-muscle hide / show from the list.
   await T(() => { const s = window.__backStudioTest.store.getState(); s.resetAll(); s.focusRegion('back'); }); await page.waitForTimeout(800);
   const all = (await T(() => window.__backStudioTest.visibleUnits())).length;

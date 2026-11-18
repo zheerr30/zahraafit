@@ -63,6 +63,8 @@ export function HDPipeline() {
     l.shadow.mapSize.set(4096, 4096);
     l.shadow.radius = 3;
     l.shadow.bias = -0.0004;
+    // Soft-tissue shadows are never black: keep 30 % of the key light in shadow.
+    l.shadow.intensity = 0.7;
     return l;
   }, []);
 

@@ -85,7 +85,18 @@ switches live. `/atlas` and `/editor` are unchanged until approval.
 - **Interaction unchanged**: same meshes, ids, picking (BVH rebuilt on the refined geometry), selection colours,
   isolation, layers; `tests/realism.test.ts` + the existing suites and click tests.
 
+Verification: `tests/realism.test.ts` (original vertices identical, ×4 triangles, offsets ≤ 0.5 mm, no new open
+edges, HD materials on every structure, highlight colour applied/removed) and the full suite (66/66). Real-click test
+`e2e/back-select-each.cjs` on the HD page: hide / show / isolate / skeleton-only / nerves & tendons / reset all pass;
+46 of 58 back & shoulder muscles clicked directly in the first pass; the deep ones it missed (multifidus,
+semispinalis thoracis, rhomboid major) were then all clicked successfully once the camera was given time to settle —
+software rendering in the test machine draws HD at well under 1 frame/s. No page errors.
+
 Comparisons (same camera states): `docs/realism/`.
+
+Known limits of the prototype: surfaces facing away from the key light in extreme close-ups still read a deep
+maroon; a few thin bright lines in macro views are where two source meshes interpenetrate (geometry, not shading);
+HD costs about 4× the muscle triangles of the region and a GTAO + shadow pass per frame.
 
 ## 3. Applying it to the whole body (after approval)
 

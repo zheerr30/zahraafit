@@ -205,7 +205,7 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
           float ht = (bF - 0.625) * 0.05e-3 + (bM - 0.625) * 0.02e-3 + mott * 0.04e-3;
           hzH = mix(hm, ht, t);
           float k = (bF - 0.625) * 0.85 * wF + (bB - 0.625) * 0.75 * wB + (bM - 0.625) * 0.3 * wM
-                  + (tF - 0.5) * 0.4 + (tB - 0.5) * 0.35 + mott * 0.5 + mott2 * 0.1;
+                  + (tF - 0.5) * 0.4 + (tB - 0.5) * 0.35 + mott * 0.32 + mott2 * 0.08;
           hzK = k;
           hzTendon = t;
           hzWet = clamp(0.5 + mott * 0.9 + (bF - 0.625) * 0.8, 0.0, 1.0);

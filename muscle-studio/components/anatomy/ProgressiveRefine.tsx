@@ -3,7 +3,7 @@
 import { useFrame, useThree } from "@react-three/fiber";
 import { useRef } from "react";
 import { Sphere, Vector3, type Mesh, type PerspectiveCamera } from "three";
-import { refineMeshInPlace } from "@/lib/three/refine";
+import { refineMeshInPlace, unrefineMeshInPlace } from "@/lib/three/refine";
 
 /**
  * On-demand surface refinement (HD): the interpolating PN refinement of
@@ -11,7 +11,8 @@ import { refineMeshInPlace } from "@/lib/three/refine";
  * inspecting — those around the orbit target once the camera is close
  * (closer than `nearDistance`), plus an optional priority set (e.g. the study
  * region chosen in the atlas). A few meshes per frame within a small time
- * budget, and a cap on the triangles added, keep it smooth on phones.
+ * budget, and a cap on the triangles added — refinement of muscles that are
+ * no longer in view is released first — keep it smooth on phones.
  * Refined meshes keep their identity (ids, picking, selection, colours).
  */
 export interface ProgressiveRefineProps {
@@ -29,13 +30,23 @@ const BUDGET_MS = 12;
 
 interface RefineState {
   added: number;
+  refined: Set<Mesh>;
   t: Vector3;
   sphere: Sphere;
 }
 
+function distTo(st: RefineState, m: Mesh): number {
+  const g = m.geometry;
+  if (!g.boundingSphere) g.computeBoundingSphere();
+  st.sphere.copy(g.boundingSphere!).applyMatrix4(m.matrixWorld);
+  return st.sphere.center.distanceTo(st.t) - st.sphere.radius;
+}
+function inView(st: RefineState, m: Mesh, radius: number): boolean {
+  return distTo(st, m) < radius;
+}
+
 /** One frame of work; returns true when more meshes are waiting. */
 function step(st: RefineState, camera: PerspectiveCamera, p: Required<Pick<ProgressiveRefineProps, "nearDistance" | "cap">> & ProgressiveRefineProps): boolean {
-  if (st.added >= p.cap) return false;
   p.getTarget(st.t);
   const dist = camera.position.distanceTo(st.t);
   const near = dist < p.nearDistance;
@@ -53,18 +64,32 @@ function step(st: RefineState, camera: PerspectiveCamera, p: Required<Pick<Progr
   }
   if (!todo.length) return false;
   todo.sort((a, b) => a.d - b.d);
+  const wanted = new Set(todo.map((x) => x.mesh));
   const start = performance.now();
   for (const { mesh } of todo) {
+    const est = (mesh.geometry.getIndex()!.count / 3) * 3;
+    if (st.added + est > p.cap) {
+      // Release the refinement of meshes that are out of view, farthest first.
+      const out = [...st.refined].filter((m) => !wanted.has(m) && !(m.visible && inView(st, m, radius * 1.2)));
+      out.sort((a, b) => distTo(st, b) - distTo(st, a));
+      while (st.added + est > p.cap && out.length) {
+        const m = out.shift()!;
+        st.added -= unrefineMeshInPlace(m);
+        st.refined.delete(m);
+      }
+      if (st.added + est > p.cap) break;
+    }
     st.added += refineMeshInPlace(mesh);
-    if (st.added >= p.cap || performance.now() - start > BUDGET_MS) break;
+    st.refined.add(mesh);
+    if (performance.now() - start > BUDGET_MS) break;
   }
   return true;
 }
 
-export function ProgressiveRefine({ nearDistance = 1.1, cap = 2_600_000, ...rest }: ProgressiveRefineProps) {
+export function ProgressiveRefine({ nearDistance = 1.3, cap = 1_500_000, ...rest }: ProgressiveRefineProps) {
   const camera = useThree((s) => s.camera) as PerspectiveCamera;
   const invalidate = useThree((s) => s.invalidate);
-  const state = useRef<RefineState>({ added: 0, t: new Vector3(), sphere: new Sphere() });
+  const state = useRef<RefineState>({ added: 0, refined: new Set(), t: new Vector3(), sphere: new Sphere() });
   useFrame(() => {
     // continue next frame (and show the refined surfaces)
     if (step(state.current, camera, { nearDistance, cap, ...rest })) invalidate();

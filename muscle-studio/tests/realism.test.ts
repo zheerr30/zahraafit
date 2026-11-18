@@ -6,7 +6,7 @@ import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.j
 import { beforeAll, describe, expect, it } from "vitest";
 import { applyStyle, prepareRegionModel, refineReport, type RegionModel } from "@/lib/region/backModel";
 import { dequantizeMesh } from "@/lib/three/anatomyModel";
-import { refineGeometry } from "@/lib/three/refine";
+import { refineGeometry, refineMeshInPlace, unrefineMeshInPlace } from "@/lib/three/refine";
 
 const PUBLIC = join(__dirname, "../public");
 
@@ -89,6 +89,21 @@ describe("PN surface refinement keeps the anatomy", () => {
     const tris = (model: RegionModel, ids: Set<string>) => model.meshes.filter((m) => m.kind === "unit" && ids.has(`${m.id}:${m.side}:${m.meta.zaName}`)).reduce((a, m) => a + m.mesh.geometry.getIndex()!.count / 3, 0);
     const otherIds = new Set(other.map((m) => `${m.id}:${m.side}:${m.meta.zaName}`));
     expect(tris(hd, otherIds)).toBe(tris(plain, otherIds));
+  });
+});
+
+describe("on-demand refinement can be released", () => {
+  it("refine → unrefine restores the very same original geometry", () => {
+    const mesh = findMesh(scene, /^Teres major muscle\.l$/).clone();
+    mesh.geometry = mesh.geometry.clone();
+    dequantizeMesh(mesh);
+    const original = mesh.geometry;
+    const tris = original.getIndex()!.count / 3;
+    expect(refineMeshInPlace(mesh)).toBe(tris * 3);
+    expect(mesh.geometry).not.toBe(original);
+    expect(refineMeshInPlace(mesh)).toBe(0); // idempotent
+    expect(unrefineMeshInPlace(mesh)).toBe(tris * 3);
+    expect(mesh.geometry).toBe(original);
   });
 });
 

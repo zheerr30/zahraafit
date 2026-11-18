@@ -211,6 +211,7 @@ export const refineReport = { meshes: 0, trianglesBefore: 0, trianglesAfter: 0, 
 /**
  * Refine a muscle mesh in place (same Mesh object, so ids, selection, mapping and
  * materials are untouched): new geometry, fibre tangents, BVH rebuilt for picking.
+ * The original geometry (and its BVH) is kept so the refinement can be released.
  * Returns the number of triangles added.
  */
 export function refineMeshInPlace(mesh: Mesh): number {
@@ -218,16 +219,29 @@ export function refineMeshInPlace(mesh: Mesh): number {
   if (old.userData.refined || !old.getIndex()) return 0;
   const { geometry, stats } = refineGeometry(old);
   geometry.userData.refined = true;
+  geometry.userData.original = old;
   if (geometry.getAttribute("_fiber")) fibreTangents(geometry);
-  const hadTree = !!(old as unknown as { boundsTree?: unknown }).boundsTree;
-  if (hadTree) disposeBoundsTree.call(old);
   mesh.geometry = geometry;
-  old.dispose();
-  if (hadTree) computeBoundsTree.call(geometry);
+  if ((old as unknown as { boundsTree?: unknown }).boundsTree) computeBoundsTree.call(geometry);
   refineReport.meshes++;
   refineReport.trianglesBefore += stats.trianglesBefore;
   refineReport.trianglesAfter += stats.trianglesAfter;
   refineReport.maxOffsetMm = Math.max(refineReport.maxOffsetMm, stats.maxOffset * 1000);
   refineReport.meanOffsetMm += (stats.meanOffset * 1000 - refineReport.meanOffsetMm) / refineReport.meshes;
   return stats.trianglesAfter - stats.trianglesBefore;
+}
+
+/** Undo refineMeshInPlace (restore the original geometry); returns the triangles removed. */
+export function unrefineMeshInPlace(mesh: Mesh): number {
+  const g = mesh.geometry;
+  const original = g.userData.original as BufferGeometry | undefined;
+  if (!g.userData.refined || !original) return 0;
+  const removed = (g.getIndex()!.count - original.getIndex()!.count) / 3;
+  if ((g as unknown as { boundsTree?: unknown }).boundsTree) {
+    disposeBoundsTree.call(g);
+    if (!(original as unknown as { boundsTree?: unknown }).boundsTree) computeBoundsTree.call(original);
+  }
+  mesh.geometry = original;
+  g.dispose();
+  return removed;
 }

@@ -141,8 +141,8 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
     color,
     roughness: 0.4,
     metalness: 0,
-    clearcoat: 0.5,
-    clearcoatRoughness: 0.18,
+    clearcoat: 0.4,
+    clearcoatRoughness: 0.22,
     sheen: 0.35,
     sheenRoughness: 0.5,
     sheenColor: light.clone().lerp(new Color(1, 0.85, 0.85), 0.4),
@@ -452,7 +452,7 @@ export function setMuscleLookHD(mat: MeshPhysicalMaterial, hex: string, look: Mu
   const color = new Color(hex);
   const { groove, light } = fibreColors(hex);
   mat.color.copy(color);
-  mat.clearcoat = look.clearcoat * 1.65;
+  mat.clearcoat = look.clearcoat * 1.33;
   mat.sheen = look.sheen * 0.8;
   mat.sheenColor.copy(light).lerp(new Color(1, 0.85, 0.85), 0.4);
   mat.emissive.copy(hover ? color.clone().multiplyScalar(0.25) : new Color(0, 0, 0));

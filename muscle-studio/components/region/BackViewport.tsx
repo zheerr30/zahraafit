@@ -338,7 +338,7 @@ function Lighting() {
   const hd = useBack((s) => s.hd);
   return hd === true ? (
     <>
-      <AtlasLighting keyLight={false} warmFill intensity={1.12} />
+      <AtlasLighting keyLight={false} warmFill intensity={0.85} />
       <HDPipeline />
     </>
   ) : (

@@ -1,8 +1,8 @@
 import { BufferAttribute, Color, DoubleSide, FrontSide, MeshPhysicalMaterial, Vector3, type BufferGeometry } from "three";
 import type { MuscleLook } from "@/lib/three/muscleMaterial";
 
-/** Tendon / aponeurosis colour of the HD standard: pearly ivory, not paper white. */
-const HD_TENDON = "#DCD2C2";
+/** Tendon / aponeurosis colour of the HD standard: glossy silver-white (reference: medical atlas apps). */
+const HD_TENDON = "#D3D0CC";
 import { TISSUE, type TissueKind } from "@/lib/three/tissue";
 
 /**
@@ -106,8 +106,9 @@ varying vec3 vObjNrm;
 function fibreColors(hex: string): { groove: Color; light: Color } {
   const s = new Color(hex).convertLinearToSRGB();
   // Perimysium grooves: deeper, slightly bluish crimson; crests: lighter, pinker.
-  const groove = new Color(s.r * 0.64, s.g * 0.5, s.b * 0.52).convertSRGBToLinear();
-  const light = new Color(Math.min(1, s.r * 1.1 + 0.04), Math.min(1, s.g * 1.13 + 0.035), Math.min(1, s.b * 1.08 + 0.03)).convertSRGBToLinear();
+  // Grooves: a little deeper and redder; crests: paler, towards a pinkish white (no saturation boost).
+  const groove = new Color(s.r * 0.7, s.g * 0.6, s.b * 0.6).convertSRGBToLinear();
+  const light = new Color(s.r + (1 - s.r) * 0.22, s.g + (1 - s.g) * 0.2, s.b + (1 - s.b) * 0.2).convertSRGBToLinear();
   return { groove, light };
 }
 
@@ -135,16 +136,16 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
   const { groove, light } = fibreColors(hex);
   const mat = new MeshPhysicalMaterial({
     color,
-    roughness: 0.46,
+    roughness: 0.4,
     metalness: 0,
-    clearcoat: 0.18,
-    clearcoatRoughness: 0.32,
-    sheen: 0.45,
+    clearcoat: 0.5,
+    clearcoatRoughness: 0.18,
+    sheen: 0.35,
     sheenRoughness: 0.5,
     sheenColor: light.clone().lerp(new Color(1, 0.85, 0.85), 0.4),
-    specularIntensity: 0.6,
+    specularIntensity: 0.85,
     anisotropy: 0.35,
-    envMapIntensity: 0.85,
+    envMapIntensity: 1.35,
   });
   if (hover) mat.emissive = color.clone().multiplyScalar(0.25);
   const uniforms = {
@@ -204,8 +205,8 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
           // Tendon: fine parallel collagen striation, much lower relief.
           float ht = (bF - 0.625) * 0.05e-3 + (bM - 0.625) * 0.02e-3 + mott * 0.04e-3;
           hzH = mix(hm, ht, t);
-          float k = (bF - 0.625) * 0.85 * wF + (bB - 0.625) * 0.75 * wB + (bM - 0.625) * 0.3 * wM
-                  + (tF - 0.5) * 0.4 + (tB - 0.5) * 0.35 + mott * 0.32 + mott2 * 0.08;
+          float k = (bF - 0.625) * 0.7 * wF + (bB - 0.625) * 0.6 * wB + (bM - 0.625) * 0.25 * wM
+                  + (tF - 0.5) * 0.3 + (tB - 0.5) * 0.25 + mott * 0.25 + mott2 * 0.06;
           hzK = k;
           hzTendon = t;
           hzWet = clamp(0.5 + mott * 0.9 + (bF - 0.625) * 0.8, 0.0, 1.0);
@@ -225,7 +226,7 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
       .replace(
         "#include <roughnessmap_fragment>",
         `#include <roughnessmap_fragment>
-        roughnessFactor = mix(clamp(roughnessFactor + (0.5 - hzWet) * 0.16, 0.3, 0.62), 0.36, hzTendon);`,
+        roughnessFactor = mix(clamp(roughnessFactor + (0.5 - hzWet) * 0.14, 0.26, 0.56), 0.16, hzTendon);`,
       )
       .replace(
         "#include <normal_fragment_maps>",
@@ -241,7 +242,7 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
           material.alphaT = mix(pow2(material.roughness), 1.0, pow2(material.anisotropy));
         #endif
         #ifdef USE_CLEARCOAT
-          material.clearcoat = mix(material.clearcoat, 0.45, hzTendon);
+          material.clearcoat = mix(material.clearcoat, 0.95, hzTendon);
         #endif`,
       )
       .replace(
@@ -262,8 +263,8 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
 /** PBR parameters of the other tissues (HD standard). */
 const HD_TISSUE: Record<TissueKind, { hex: string; roughness: number; clearcoat: number; sheen: number; specular: number; anisotropy: number; opacity: number; relief: number; period: number }> = {
   bone: { hex: "#E3D6BC", roughness: 0.62, clearcoat: 0.05, sheen: 0.2, specular: 0.45, anisotropy: 0, opacity: 1, relief: 0.03e-3, period: 0.0006 },
-  tendon: { hex: "#E2DACB", roughness: 0.36, clearcoat: 0.4, sheen: 0.25, specular: 0.65, anisotropy: 0.75, opacity: 1, relief: 0.05e-3, period: 0.0007 },
-  ligament: { hex: "#DDD3BF", roughness: 0.42, clearcoat: 0.3, sheen: 0.2, specular: 0.6, anisotropy: 0.6, opacity: 1, relief: 0.04e-3, period: 0.0008 },
+  tendon: { hex: "#D3D0CC", roughness: 0.16, clearcoat: 0.9, sheen: 0.25, specular: 0.65, anisotropy: 0.75, opacity: 1, relief: 0.05e-3, period: 0.0007 },
+  ligament: { hex: "#CFC8BD", roughness: 0.32, clearcoat: 0.55, sheen: 0.2, specular: 0.6, anisotropy: 0.6, opacity: 1, relief: 0.04e-3, period: 0.0008 },
   fascia: { hex: "#E4E1DA", roughness: 0.32, clearcoat: 0.45, sheen: 0.15, specular: 0.7, anisotropy: 0.4, opacity: 0.5, relief: 0.015e-3, period: 0.0006 },
   bursa: { hex: "#C3D5E0", roughness: 0.22, clearcoat: 0.6, sheen: 0, specular: 0.8, anisotropy: 0, opacity: 0.5, relief: 0, period: 0.001 },
   nerve: { hex: TISSUE.nerve, roughness: 0.42, clearcoat: 0.3, sheen: 0, specular: 0.5, anisotropy: 0.3, opacity: 1, relief: 0.02e-3, period: 0.0006 },
@@ -317,7 +318,7 @@ export function createTissueMaterialHD(t: TissueKind, opts: { vertexColors?: boo
     sheenRoughness: 0.5,
     sheenColor: new Color("#fff4e8"),
     specularIntensity: P.specular,
-    envMapIntensity: 0.85,
+    envMapIntensity: t === "tendon" || t === "ligament" || t === "fascia" ? 1.6 : t === "bone" ? 0.8 : 1,
     side: t === "tendon" || t === "fascia" || t === "bursa" || t === "ligament" ? DoubleSide : FrontSide,
   });
   if (t === "origin" || t === "insertion") {
@@ -443,7 +444,7 @@ export function setMuscleLookHD(mat: MeshPhysicalMaterial, hex: string, look: Mu
   const color = new Color(hex);
   const { groove, light } = fibreColors(hex);
   mat.color.copy(color);
-  mat.clearcoat = look.clearcoat * 0.6;
+  mat.clearcoat = look.clearcoat * 1.65;
   mat.sheen = look.sheen * 0.8;
   mat.sheenColor.copy(light).lerp(new Color(1, 0.85, 0.85), 0.4);
   mat.emissive.copy(hover ? color.clone().multiplyScalar(0.25) : new Color(0, 0, 0));

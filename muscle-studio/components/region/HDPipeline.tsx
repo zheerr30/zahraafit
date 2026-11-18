@@ -61,10 +61,10 @@ export function HDPipeline() {
     const l = new DirectionalLight(KEY_LIGHT.color, KEY_LIGHT.intensity);
     l.castShadow = true;
     l.shadow.mapSize.set(4096, 4096);
-    l.shadow.radius = 3;
+    l.shadow.radius = 6;
     l.shadow.bias = -0.0004;
     // Soft-tissue shadows are never black: keep 30 % of the key light in shadow.
-    l.shadow.intensity = 0.7;
+    l.shadow.intensity = 0.45;
     return l;
   }, []);
 
@@ -73,8 +73,8 @@ export function HDPipeline() {
     const composer = new EffectComposer(gl, rt);
     composer.addPass(new RenderPass(scene, camera));
     const gtao = new GTAOPass(scene, camera, 1, 1);
-    gtao.blendIntensity = 0.9;
-    gtao.updateGtaoMaterial({ radius: 0.03, distanceExponent: 1.6, thickness: 1, scale: 1.15, samples: 16 });
+    gtao.blendIntensity = 1;
+    gtao.updateGtaoMaterial({ radius: 0.03, distanceExponent: 1.6, thickness: 1, scale: 1.45, samples: 16 });
     gtao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 6, rings: 2, samples: 16 });
     // Hide ghosted / translucent meshes from the AO depth-normal pass.
     const hidden: Object3D[] = [];

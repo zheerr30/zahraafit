@@ -105,8 +105,8 @@ export interface PrepareOptions {
   refineRegions?: ReadonlySet<string>;
 }
 
-/** Base colour of fresh skeletal muscle in the HD standard (natural red, not brown, not pink). */
-export const HD_MUSCLE = "#B9474E";
+/** Base colour of skeletal muscle in the HD standard: muted rose (reference: professional atlas apps). */
+export const HD_MUSCLE = "#A0605F";
 
 /** Totals of the PN refinement applied while preparing (for reports / tests). */
 export const refineReport = { meshes: 0, trianglesBefore: 0, trianglesAfter: 0, maxOffsetMm: 0, meanOffsetMm: 0 };

@@ -1,11 +1,12 @@
 "use client";
 
-import { ContactShadows, Environment, Lightformer } from "@react-three/drei";
+import { ContactShadows } from "@react-three/drei";
+import { AtlasLighting } from "./AtlasLighting";
 import { useEditor } from "@/stores/editorStore";
 
 /**
- * Three-point studio lighting with a procedural environment (no HDR download)
- * and soft contact shadows under the model.
+ * The shared atlas lighting (camera-following key/fill/rim + studio
+ * environment) plus soft contact shadows under the standing figure.
  */
 export function StudioLights() {
   const intensity = useEditor((s) => s.doc.lighting);
@@ -14,37 +15,7 @@ export function StudioLights() {
 
   return (
     <>
-      <ambientLight intensity={0.24 * intensity} />
-      <hemisphereLight args={["#fff8f2", "#2a2b2e", 0.5 * intensity]} />
-      {/* Key light */}
-      <directionalLight
-        position={[2.6, 4.2, 3.4]}
-        color="#fff3e8"
-        intensity={2.6 * intensity}
-        castShadow
-        shadow-mapSize={[2048, 2048]}
-        shadow-bias={-0.0004}
-        shadow-normalBias={0.02}
-        shadow-camera-left={-1.5}
-        shadow-camera-right={1.5}
-        shadow-camera-top={2.4}
-        shadow-camera-bottom={-0.4}
-        shadow-camera-near={0.5}
-        shadow-camera-far={12}
-      />
-      {/* Fill light */}
-      <directionalLight position={[-3, 2, 2]} intensity={0.85 * intensity} />
-      {/* Rim lights for silhouette separation on a dark background */}
-      <directionalLight position={[-2.5, 3, -3.5]} color="#eef2ff" intensity={1.2 * intensity} />
-      <directionalLight position={[2.5, 2, -3]} intensity={0.7 * intensity} />
-
-      <Environment resolution={128} frames={1}>
-        <Lightformer form="rect" intensity={1.6} position={[0, 4, 2]} scale={[6, 2, 1]} />
-        <Lightformer form="rect" intensity={0.7} position={[-4, 1.5, 1]} rotation-y={Math.PI / 2} scale={[4, 3, 1]} />
-        <Lightformer form="rect" intensity={0.9} position={[4, 1.5, -1]} rotation-y={-Math.PI / 2} scale={[4, 3, 1]} />
-        <Lightformer form="ring" intensity={0.6} position={[0, 2, -4]} scale={2} />
-      </Environment>
-
+      <AtlasLighting intensity={intensity} />
       <ContactShadows
         position={[0, offsetY + 0.001, 0]}
         opacity={background === "white" ? 0.35 : 0.7}

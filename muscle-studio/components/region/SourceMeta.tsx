@@ -80,7 +80,7 @@ export function SourceMeta({ picked }: { picked: PickedStructure }) {
             <dd dir="ltr" className="text-start text-[11px]">{first.hierarchy.join(" › ")}</dd>
           </>
         )}
-        {fn && (picked.kind === "unit" || picked.kind === "context") && (
+        {fn && picked.kind === "unit" && (
           <>
             <dt className="text-[#6b7891]">تصنيف المؤلف</dt>
             <dd>

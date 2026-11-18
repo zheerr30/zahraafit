@@ -1,33 +1,35 @@
 <div dir="rtl">
 
-# الظهر والكتفان: مجسمات Z-Anatomy الأصلية
+# Z-Anatomy للجسم كاملًا
 
-الصفحة `/back` تعرض الملف `public/models/back-shoulders/back-shoulders-za.glb`، المصدَّر من ملف Blender الأصلي لمشروع
-Z-Anatomy (`Startup.blend`) **دون تعديل الهندسة**. تفاصيل الفحص والتقرير عن الأصول في
-[`docs/ASSETS-back-shoulder.md`](../../docs/ASSETS-back-shoulder.md).
+يصدِّر هذا الخط ملف Blender الأصلي لمشروع Z-Anatomy (`Startup.blend`) **دون تعديل الهندسة** إلى
+`public/models/zanatomy/{male,female}/*.glb`، المستخدمة في الأطلس (`/atlas`, `/back`) والمحرّر (`/editor`).
 
-- `back-config.mjs`: قائمة البنى (16 عضلة قابلة للتحديد، العضلات المرجعية، العظام، الأوتار والأربطة، الأعصاب) وأسماؤها العربية.
-- `../blender/selection.mjs` ← `../blender/export_back.py` (Blender) ← `../blender/postprocess.mjs` (Node).
+- `../blender/export_body.py` (Blender): يصدّر كل بنية كشبكة مستقلة مع نوعها، اسمها، جانبها، معرّف TA2، الاسم اللاتيني، التسلسل
+  التشريحي، خانات المواد (Tendon/Cartilage) والتعريف. يستبعد النماذج غير التجارية (الأذن الداخلية، الكلية).
+- `../blender/postprocess-body.mjs` (Node): المنطقة وطبقة العمق، ربط بصمات المنشأ/المرتكز بعضلاتها، بيانات المظهر (إظلال، أوتار
+  المؤلف، اتجاه الألياف)، النموذج الأنثوي (ICP + Thin-Plate Spline على الهيكل الأنثوي من `pipeline/data/open-anatomy-3d`)، الضغط،
+  و`build-report.json`.
+- `lexicon-ar.mjs`: الاسم العربي لكل بنية. `editor-units.mjs`: وحدات المحرّر الـ54 وشبكاتها. `back-config.mjs`: البطاقات المفصّلة.
+- `../bodyparts3d/bake.mjs`, `tps.mjs`, `lib.mjs`: أدوات مشتركة (حساب الألياف والإظلال، TPS).
 
 ## الترخيص
 
-Z-Anatomy مرخّص **CC BY-SA 4.0** (ومبني على BodyParts3D). الاستخدام التجاري مسموح مع ذكر المصدر، لكن شرط المشاركة بالمثل يسري
-على الملف المشتق وأي تعديل عليه (`public/models/back-shoulders/LICENSE.md`). نصوص التعريف من Wikipedia (CC BY-SA 3.0).
+Z-Anatomy مرخّص **CC BY-SA 4.0** (مبني على BodyParts3D، CC BY 4.0). الاستخدام التجاري مسموح مع ذكر المصدر، وشرط المشاركة بالمثل
+يسري على الملفات المشتقة. التعريفات من Wikipedia ‏(CC BY-SA 3.0).
 
 ## التشغيل
 
 </div>
 
 ```bash
-# 1) Blender 4.x (+ numpy لمصدِّر glTF) والملف الأصلي
+# 1) Blender 4.x (+ python3-numpy لمصدِّر glTF) والملف الأصلي
 GIT_LFS_SKIP_SMUDGE=1 git clone --depth 1 https://github.com/Z-Anatomy/Models-of-human-anatomy za
 unzip za/Z-Anatomy.zip -d za-extract            # → za-extract/Z-Anatomy/Startup.blend
-# 2) التصدير
-node pipeline/blender/selection.mjs selection.json
-blender -b za-extract/Z-Anatomy/Startup.blend --python pipeline/blender/export_back.py -- \
-  selection.json za/TA2.csv back-raw.glb definitions.json
-# 3) التحضير للويب (لا تبسيط ولا تقسيم)
-node --max-old-space-size=12000 pipeline/blender/postprocess.mjs back-raw.glb definitions.json public/models/back-shoulders
+# 2) التصدير (~1 دقيقة)
+blender -b za-extract/Z-Anatomy/Startup.blend --python pipeline/blender/export_body.py -- za/TA2.csv body-export
+# 3) التحضير للويب (~20 دقيقة، ذاكرة كبيرة)
+node --max-old-space-size=14000 pipeline/blender/postprocess-body.mjs body-export public/models/zanatomy
 ```
 
 <div dir="rtl">
@@ -35,7 +37,7 @@ node --max-old-space-size=12000 pipeline/blender/postprocess.mjs back-raw.glb de
 ## ملاحظات على المصدر
 
 - Z-Anatomy يسمّي جزأي شبه المنحرفة العلوي والسفلي بالعكس؛ يُربطان بالموضع ويتحقق البناء من الترتيب.
-- بعض بصمات المنشأ/المرتكز غير موجودة في المصدر (مرتكز الظهرية العريضة والمدورة الكبرى على العضد، منشأ المعينيتين). لا تُولَّد.
-- الأوتار مرسومة وجهًا بوجه في المصدر للعضلات السطحية؛ للكفة المدورة والناصبة للفقار لا توجد، فتُقدَّر من سماكة النسيج.
+- بعض بصمات المنشأ/المرتكز غير موجودة في المصدر أو لا تُنسب لعضلة (`unownedPatches` في التقرير). لا تُولَّد.
+- اتجاه الألياف من أوتار المؤلف أولًا، ثم من بصمات الارتكاز، ثم من محور العضلة (`fibreSource` في التقرير).
 
 </div>

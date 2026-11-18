@@ -82,6 +82,8 @@ export function RegionTestHooks() {
         return mat?.color ? `#${mat.color.getHexString()}` : null;
       },
       ready: () => !!regionBridge.model,
+      /** The loaded model object (identity changes when the body is swapped). */
+      rawModel: () => regionBridge.model,
       /** Camera position (to wait until a transition has settled). */
       cameraPos: () => regionBridge.camera?.position.toArray().map((x) => +x.toFixed(4)) ?? null,
       /** The viewer store, for scripted states in visual checks. */

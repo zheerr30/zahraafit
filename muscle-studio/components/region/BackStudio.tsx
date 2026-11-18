@@ -2,13 +2,14 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { DEPTH_NAMES, LAYER_NAMES, REGION_MUSCLES, REGION_MUSCLE_BY_ID, type RegionLayer, type RegionMuscle } from "@/data/region/backShoulders";
-import { COLORS } from "@/lib/region/backModel";
+import { useCallback, useEffect, useState } from "react";
+import { DEPTH_NAMES, LAYER_NAMES, REGION_MUSCLE_BY_ID, type RegionLayer, type RegionMuscle } from "@/data/region/backShoulders";
+import { COLORS, REGIONS, type RegionUnit } from "@/lib/region/backModel";
+import { normalizeSearchText } from "@/lib/anatomy/normalize";
 import { backStore, useBack, type DepthMode, type RegionView } from "@/stores/backStore";
 import { cn } from "@/components/ui/cn";
 import { IconEye, IconEyeOff, IconFocus, IconReset, IconRotate, IconX } from "@/components/ui/icons";
-import type { LoadState } from "./BackViewport";
+import { regionBridge, type LoadState } from "./BackViewport";
 import { SourceMeta } from "./SourceMeta";
 import { RegionTestHooks } from "./RegionTestHooks";
 
@@ -18,12 +19,14 @@ const NAVY = "#0B2E6B";
 
 const KIND_AR: Record<string, string> = {
   unit: "عضلة",
-  context: "عضلة (مرجع)",
-  bone: "عظم",
-  tendon: "وتر / رباط / لفافة",
+  bone: "عظم / غضروف",
+  tendon: "وتر / سفاق",
+  ligament: "رباط / محفظة مفصلية",
+  fascia: "لفافة / جراب",
   nerve: "عصب",
   attachment: "موضع ارتكاز",
 };
+const REGION_AR = Object.fromEntries(REGIONS.map((r) => [r.id, r.ar]));
 const SIDE_AR = { l: "الأيسر", r: "الأيمن", m: "" } as const;
 
 function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) {
@@ -53,10 +56,11 @@ function Section({ title, children, action }: { title: string; children: React.R
   );
 }
 
-function MuscleRow({ m }: { m: RegionMuscle }) {
+function MuscleRow({ m }: { m: RegionUnit }) {
   const hidden = useBack((s) => !!s.hiddenUnits[m.id]);
   const selected = useBack((s) => s.selected?.kind === "unit" && s.selected.id === m.id);
   const showEnglish = useBack((s) => s.showEnglish);
+  const detailed = REGION_MUSCLE_BY_ID.has(m.id);
   return (
     <li className={cn("flex items-center gap-1 rounded-lg", selected && "bg-[#fdeee7]")}>
       <button
@@ -68,7 +72,10 @@ function MuscleRow({ m }: { m: RegionMuscle }) {
       >
         <span className="size-2.5 shrink-0 rounded-full" style={{ background: selected ? COLORS.highlight : "#B9545A" }} />
         <span className="min-w-0">
-          <span className={cn("block truncate text-sm", hidden ? "text-[#9aa5b8] line-through" : "text-[#13213d]")}>{m.ar}</span>
+          <span className={cn("block truncate text-sm", hidden ? "text-[#9aa5b8] line-through" : "text-[#13213d]")}>
+            {m.ar}
+            {detailed && <span className="ms-1 text-[10px] text-[#c44a1c]" title="بطاقة عربية مفصلة">●</span>}
+          </span>
           {showEnglish && <span className="block truncate text-[11px] text-[#6b7891]" dir="ltr">{m.en}</span>}
         </span>
         <span className="ms-auto shrink-0 rounded bg-[#eef2f8] px-1.5 py-0.5 text-[10px] text-[#4b5d80]">{DEPTH_NAMES[m.depth]}</span>
@@ -86,25 +93,84 @@ function MuscleRow({ m }: { m: RegionMuscle }) {
   );
 }
 
+function MuscleList() {
+  useBack((s) => s.unitsVersion);
+  const region = useBack((s) => s.region);
+  const [q, setQ] = useState("");
+  const units = [...(regionBridge.model?.units.values() ?? [])];
+  const nq = normalizeSearchText(q);
+  const match = (u: RegionUnit) => !nq || normalizeSearchText(`${u.ar} ${u.en}`).includes(nq);
+  const groups = REGIONS.filter((r) => !region || r.id === region).map((r) => ({
+    ...r,
+    units: units.filter((u) => u.region === r.id && match(u)).sort((a, b) => a.depth - b.depth || a.ar.localeCompare(b.ar, "ar")),
+  }));
+  const total = units.length;
+  return (
+    <Section title={`العضلات (${total} عضلة لكل جانب)`}>
+      <input
+        type="search"
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        placeholder="ابحث بالعربية أو الإنجليزية…"
+        aria-label="بحث في العضلات"
+        className="mb-2 w-full rounded-lg border border-[#cfd6e4] px-3 py-1.5 text-sm outline-none focus:border-[#173F8A]"
+      />
+      {groups.map((g) =>
+        g.units.length ? (
+          <details key={g.id} open={!!region || !!nq} className="mb-1">
+            <summary className="cursor-pointer rounded-md px-2 py-1 text-[12px] font-semibold text-[#0B2E6B] hover:bg-[#f2f5fa]">
+              {g.ar} <span className="font-normal text-[#6b7891]">({g.units.length})</span>
+            </summary>
+            <ul className="space-y-0.5">{g.units.map((u) => <MuscleRow key={u.id} m={u} />)}</ul>
+          </details>
+        ) : null,
+      )}
+    </Section>
+  );
+}
+
+function RegionPicker() {
+  const region = useBack((s) => s.region);
+  const sex = useBack((s) => s.sex);
+  const st = backStore.getState();
+  return (
+    <Section title="النموذج والمنطقة">
+      <div role="radiogroup" aria-label="الجنس" className="mb-3 grid grid-cols-2 gap-1 rounded-lg bg-[#eef2f8] p-1">
+        {(["male", "female"] as const).map((v) => (
+          <button key={v} type="button" role="radio" aria-checked={sex === v} onClick={() => st.setSex(v)} className={cn("rounded-md py-1.5 text-xs", sex === v ? "bg-white font-semibold text-[#0B2E6B] shadow-sm" : "text-[#4b5d80]")}>
+            {v === "male" ? "ذكر" : "أنثى"}
+          </button>
+        ))}
+      </div>
+      {sex === "female" && (
+        <p className="mb-2 rounded-md bg-[#fff6e5] p-2 text-[11px] leading-relaxed text-[#7a5a12]">
+          تقريب: تشريح Z-Anatomy (ذكر) بعد ملاءمته لنِسَب هيكل عظمي أنثوي. لا يوجد مصدر مفتوح لعضلات أنثوية.
+        </p>
+      )}
+      <div className="flex flex-wrap gap-1">
+        <button type="button" aria-pressed={!region} onClick={() => st.focusRegion(null)} className={cn("rounded-full border px-2.5 py-1 text-[11px]", !region ? "border-[#0B2E6B] bg-[#0B2E6B] text-white" : "border-[#cfd6e4] text-[#0B2E6B]")}>
+          الجسم كاملًا
+        </button>
+        {REGIONS.map((r) => (
+          <button key={r.id} type="button" data-region={r.id} aria-pressed={region === r.id} onClick={() => st.focusRegion(r.id)} className={cn("rounded-full border px-2.5 py-1 text-[11px]", region === r.id ? "border-[#0B2E6B] bg-[#0B2E6B] text-white" : "border-[#cfd6e4] text-[#0B2E6B] hover:bg-[#f2f5fa]")}>
+            {r.ar}
+          </button>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
 function LayersPanel() {
   const layers = useBack((s) => s.layers);
   const depthMode = useBack((s) => s.depthMode);
   const st = backStore.getState();
-  const byId = new Map(REGION_MUSCLES.map((m) => [m.id, m]));
-  const sections: [string, string[]][] = [
-    ["شبه المنحرفة", ["trapezius-upper", "trapezius-middle", "trapezius-lower"]],
-    ["الظهرية العريضة", ["latissimus-dorsi"]],
-    ["مثبتات لوح الكتف", ["rhomboid-major", "rhomboid-minor", "levator-scapulae"]],
-    ["الكفة المدورة", ["supraspinatus", "infraspinatus", "teres-minor", "subscapularis"]],
-    ["المدورة الكبرى", ["teres-major"]],
-    ["الدالية", ["deltoid-anterior", "deltoid-lateral", "deltoid-posterior"]],
-    ["عضلات العمود الفقري", ["erector-spinae"]],
-  ];
   return (
     <aside
       aria-label="الطبقات التشريحية"
       className="scroll-thin flex shrink-0 flex-col overflow-y-auto border-e border-[#e3e8f2] bg-white text-[#13213d] max-lg:max-h-[42dvh] max-lg:border-t lg:w-[340px]"
     >
+      <RegionPicker />
       <Section title="الطبقات">
         <ul className="space-y-2">
           {(Object.keys(LAYER_NAMES) as RegionLayer[]).map((l) => (
@@ -162,18 +228,11 @@ function LayersPanel() {
           ))}
         </div>
         <p className="mt-2 text-[11px] leading-relaxed text-[#6b7891]">
-          «بدون السطحية» يخفي شبه المنحرفة والظهرية العريضة والدالية لتظهر المعينيتان والرافعة وعضلات الكفة المدورة.
+          الطبقات محسوبة من الهندسة نفسها: «سطحية» ما يُرى من الخارج، و«متوسطة» ما يظهر بعد إزالتها، والباقي «عميقة».
         </p>
       </Section>
 
-      <Section title="العضلات (16 لكل جانب)">
-        {sections.map(([title, ids]) => (
-          <div key={title} className="mb-2">
-            <h3 className="px-2 pb-0.5 pt-1 text-[11px] font-semibold text-[#6b7891]">{title}</h3>
-            <ul className="space-y-0.5">{ids.map((id) => <MuscleRow key={id} m={byId.get(id)!} />)}</ul>
-          </div>
-        ))}
-      </Section>
+      <MuscleList />
       <div className="px-4 py-4 text-[11px] leading-relaxed text-[#6b7891]">
         المجسمات الأصلية: <a className="underline" href="https://github.com/Z-Anatomy/Models-of-human-anatomy" target="_blank" rel="noreferrer">Z-Anatomy</a>{" "}
         (ملف Blender الأصلي، مبني على BodyParts3D)، مصدّرة دون تعديل الهندسة — رخصة{" "}
@@ -247,7 +306,8 @@ function InfoCard() {
           <p className="mt-0.5 text-[11px] text-[#6b7891]">
             {KIND_AR[selected.kind]}
             {unit && ` · ${unit.group === "back" ? "الظهر" : "الكتف"} · طبقة ${DEPTH_NAMES[unit.depth]}`}
-            {!unit && selected.side !== "m" && ` · الجانب ${SIDE_AR[selected.side]}`}
+            {!unit && selected.kind === "unit" && ` · ${REGION_AR[regionBridge.model?.units.get(selected.id)?.region ?? ""] ?? ""}`}
+            {!unit && selected.kind !== "unit" && selected.side !== "m" && ` · الجانب ${SIDE_AR[selected.side]}`}
           </p>
         </div>
         <button type="button" aria-label="إغلاق البطاقة" onClick={() => st.select(null)} className="grid size-7 place-items-center rounded-lg text-[#6b7891] hover:bg-[#f2f5fa]">
@@ -314,7 +374,9 @@ function InfoCard() {
         </dl>
       ) : (
         <p className="px-4 py-3 text-sm leading-relaxed text-[#4b5d80]">
-          بنية مرجعية في المنطقة. البطاقات العربية التفصيلية (المنشأ والمرتكز والوظيفة والتعصيب) متاحة للعضلات الست عشرة في القائمة.
+          {selected.kind === "unit"
+            ? `${REGION_AR[regionBridge.model?.units.get(selected.id)?.region ?? ""] ?? ""} · طبقة ${DEPTH_NAMES[regionBridge.model?.units.get(selected.id)?.depth ?? 1]}. البطاقة العربية المفصلة (الوظيفة والتعصيب والعضلات المساعدة والمضادة) غير مكتوبة بعد لهذه العضلة؛ بيانات المصدر وبصمات المنشأ والمرتكز أدناه.`
+            : "بنية تشريحية من نموذج Z-Anatomy."}
         </p>
       )}
       <SourceMeta picked={selected} />
@@ -389,7 +451,10 @@ function ViewBar() {
   );
 }
 
-export function BackStudio() {
+export function BackStudio({ initialRegion = null }: { initialRegion?: string | null }) {
+  useEffect(() => {
+    backStore.setState({ region: initialRegion });
+  }, [initialRegion]);
   const [load, setLoad] = useState<LoadState>({ status: "loading", progress: 0 });
   const onState = useCallback((s: LoadState) => setLoad(s), []);
   const isolate = useBack((s) => s.isolate);
@@ -409,7 +474,8 @@ export function BackStudio() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  const unitCount = useMemo(() => REGION_MUSCLES.length, []);
+  useBack((s) => s.unitsVersion);
+  const unitCount = regionBridge.model?.units.size ?? 0;
 
   return (
     <div className="flex h-dvh flex-col bg-white">
@@ -418,9 +484,9 @@ export function BackStudio() {
           MUSCLE STUDIO <span className="text-[#E8602C]">3D</span>
         </Link>
         <span className="hidden h-5 w-px bg-white/25 sm:block" />
-        <h1 className="truncate text-sm font-medium">الظهر والكتفان — مجسمات Z-Anatomy الأصلية</h1>
+        <h1 className="truncate text-sm font-medium">الأطلس التشريحي — مجسمات Z-Anatomy الأصلية للجسم كاملًا</h1>
         <span className="ms-auto hidden text-xs text-white/70 md:block">
-          {unitCount} عضلة مفصولة لكل جانب · عظام · أوتار · أعصاب
+          {unitCount || "…"} عضلة مستقلة لكل جانب · عظام · أوتار · أربطة · أعصاب
         </span>
       </header>
       <div className="flex min-h-0 flex-1 max-lg:flex-col-reverse">

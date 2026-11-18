@@ -1,6 +1,6 @@
 /**
  * Phase 1 — back and shoulders. Muscle units of the Z-Anatomy region model
- * (public/models/back-shoulders/back-shoulders.glb) with Arabic anatomy cards.
+ * (public/models/zanatomy/{male,female}/core.glb) with Arabic anatomy cards.
  * Content follows standard anatomy references (Gray's Anatomy, Moore's
  * Clinically Oriented Anatomy); spinal segments are the commonly cited ranges.
  */
@@ -267,11 +267,11 @@ export const REGION_MUSCLES: RegionMuscle[] = [
 export const REGION_MUSCLE_BY_ID = new Map(REGION_MUSCLES.map((m) => [m.id, m]));
 
 export const LAYER_NAMES = {
-  muscles: "العضلات المحددة",
-  muscles_context: "عضلات أخرى للمنطقة",
-  bones: "العظام",
+  muscles: "العضلات",
+  tendons: "الأوتار والأربطة",
+  bones: "العظام والغضاريف",
+  fasciae: "اللفافات والجرابات",
   attachments: "مواضع المنشأ والمرتكز",
-  tendons: "الأوتار والأربطة والمحافظ",
   nerves: "الأعصاب الطرفية",
 } as const;
 export type RegionLayer = keyof typeof LAYER_NAMES;

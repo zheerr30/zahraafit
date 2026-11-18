@@ -28,6 +28,8 @@ export const layersSchema = z.object({
   // Skull only: BodyParts3D has no head muscles, so this completes the figure.
   head: z.boolean().default(true),
   skeleton: z.boolean(),
+  // Fasciae, bursae and tendon sheaths (Z-Anatomy model); they cover the muscles, so off by default.
+  fasciae: z.boolean().default(false),
   skin: z.boolean(),
   organs: z.boolean(),
   vessels: z.boolean(),
@@ -40,6 +42,7 @@ export const DEFAULT_LAYERS: z.infer<typeof layersSchema> = {
   muscles_context: true,
   head: true,
   skeleton: false,
+  fasciae: false,
   skin: false,
   organs: false,
   vessels: false,

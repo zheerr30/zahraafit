@@ -25,8 +25,8 @@ describe("mapMeshesToMuscles", () => {
   });
 
   it("never guesses: a whole-muscle name does not map to one of its parts", () => {
-    const report = mapMeshesToMuscles([d("Deltoid_L"), d("Latissimus_Dorsi_L"), d("ctx_hand_l")], MUSCLES);
-    expect(report.unmapped.map((m) => m.name)).toEqual(["Deltoid_L", "Latissimus_Dorsi_L", "ctx_hand_l"]);
+    const report = mapMeshesToMuscles([d("Deltoid_L"), d("Trapezius_L"), d("ctx_hand_l")], MUSCLES);
+    expect(report.unmapped.map((m) => m.name)).toEqual(["Deltoid_L", "Trapezius_L", "ctx_hand_l"]);
   });
 
   it("applies user and asset overrides before name matching", () => {

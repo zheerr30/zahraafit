@@ -122,12 +122,17 @@ export function SelectedNamesLegend() {
   );
 }
 
+function zaStructure(key: string) {
+  const x = JSON.parse(key.slice(3)) as { ar: string; en: string; side: string };
+  return { ar: x.ar, en: x.en, side: (x.side === "l" ? "left" : x.side === "r" ? "right" : "center") as "left" | "right" | "center" };
+}
+
 export function HoverReadout() {
   const hovered = useEditor((s) => s.hoveredMuscleId);
   const selected = useEditor((s) => (s.hoveredMuscleId ? Boolean(s.doc.selections[s.hoveredMuscleId]) : false));
   const structureKey = useAssetStore((s) => s.hoveredStructure);
   const m = hovered ? getMuscle(hovered) : null;
-  const structure = !m && structureKey ? structureName(structureKey) : null;
+  const structure = !m && structureKey ? (structureKey.startsWith("za:") ? zaStructure(structureKey) : structureName(structureKey)) : null;
   return (
     <div className="pointer-events-none absolute bottom-12 end-3 z-10 flex flex-col items-end gap-1 text-end">
       {m && (

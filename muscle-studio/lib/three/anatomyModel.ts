@@ -6,6 +6,7 @@ import { mapMeshesToMuscles, type MappingReport } from "@/lib/anatomy/resolver";
 import type { IllustrationDoc, Layers } from "@/lib/storage/schema";
 import { SYSTEMS, type AnatomyAssetDefinition, type BodySide, type SystemId } from "@/types/anatomy";
 import type { MaterialLibrary, MaterialVariant, MuscleLookName } from "./materials";
+import { muscleTone, tissueOf, TISSUE } from "./tissue";
 
 /** Normalized model height in scene units (meters). */
 export const MODEL_HEIGHT = 1.8;
@@ -18,6 +19,7 @@ export const SYSTEM_COLORS: Record<Exclude<SystemId, "skin">, string> = {
   muscles: "#B5463D",
   muscles_context: "#8E4038",
   skeleton: "#E8E1D1",
+  fasciae: "#D9D6D0",
   organs: "#C96F5D",
   vessels: "#B8322A",
   nerves: "#E9C04E",
@@ -29,17 +31,26 @@ const noRaycast: Mesh["raycast"] = () => {};
 
 /** Bones shown by the "head" layer. */
 export const HEAD_BONES = new Set(["skull", "mandible", "teeth"]);
+/** Skull bones, jaws, teeth and the hyoid of the Z-Anatomy model (shown by the "head" layer). */
+const HEAD_BONE_SOURCE = /^(Frontal|Parietal|Temporal|Occipital|Sphenoid|Ethmoid|Sinus_of|Anterior_cells|Middle_cells|Posterior_cells|Mandible|Maxilla|Zygomatic|Nasal_bone|Lacrimal|Palatine|Vomer|Inferior_nasal|Upper_|Lower_|Hyoid|Malleus|Incus|Stapes|Major_alar|Nasal_septal|Lateral_process_of_nasal)/;
+function isHeadBone(mesh: Mesh, name: string): boolean {
+  const src = mesh.userData.source as string | undefined;
+  if (src) return mesh.userData.kind === "bone" && HEAD_BONE_SOURCE.test(src);
+  return HEAD_BONES.has(name);
+}
 
 export interface PreparedModel {
   /** Normalized root: upright, feet at y=0, centered on X/Z, height = MODEL_HEIGHT. */
   root: Group;
+  /** The asset's own scene inside the normalisation (optional system files are added here). */
+  content: Object3D;
   meshes: Mesh[];
   meshByUid: Map<string, Mesh>;
   /** Name used for mapping (authored node name, or parent node name for generic mesh names). */
   meshNames: Map<string, string>;
   /** Body system of each mesh (null for assets without system groups). */
   systemOf: Map<string, SystemId | null>;
-  systemGroups: Map<SystemId, Object3D>;
+  systemGroups: Map<SystemId, Object3D[]>;
   hasSystems: boolean;
 }
 
@@ -65,10 +76,10 @@ export function meaningfulName(mesh: Object3D): string {
   return own || mesh.uuid;
 }
 
-function findSystem(mesh: Object3D, groups: Map<SystemId, Object3D>): SystemId | null {
+function findSystem(mesh: Object3D, groups: Map<SystemId, Object3D[]>): SystemId | null {
   let p: Object3D | null = mesh.parent;
   while (p) {
-    for (const [id, g] of groups) if (g === p) return id;
+    for (const [id, list] of groups) if (list.includes(p)) return id;
     p = p.parent;
   }
   return null;
@@ -143,13 +154,27 @@ export function combineBodyAndMuscles(body: Group, muscles: Group): Object3D[] {
  * Normalize a loaded scene into a predictable frame and collect its meshes.
  * Original materials are preserved on `mesh.userData.originalMaterial`.
  */
-export function prepareModel(scene: Group, asset: AnatomyAssetDefinition): PreparedModel {
-  // Open Anatomy 3D: top-level children of the glTF scene are the body systems.
-  const systemGroups = new Map<SystemId, Object3D>();
+/** Top-level groups of the Z-Anatomy files that belong to an editor system. */
+const SYSTEM_ALIASES: Record<string, SystemId> = { tendons: "muscles_context", ligaments: "skeleton" };
+
+function systemOfGroup(name: string): SystemId | null {
+  if (SYSTEM_SET.has(name)) return name as SystemId;
+  return SYSTEM_ALIASES[name] ?? null;
+}
+
+function collectSystemGroups(scene: Object3D, into: Map<SystemId, Object3D[]>): void {
   for (const child of scene.children) {
-    const name = authoredName(child);
-    if (SYSTEM_SET.has(name)) systemGroups.set(name as SystemId, child);
+    const sys = systemOfGroup(authoredName(child));
+    if (!sys) continue;
+    if (!into.has(sys)) into.set(sys, []);
+    into.get(sys)!.push(child);
   }
+}
+
+export function prepareModel(scene: Group, asset: AnatomyAssetDefinition): PreparedModel {
+  // Top-level children of the glTF scene are the body systems.
+  const systemGroups = new Map<SystemId, Object3D[]>();
+  collectSystemGroups(scene, systemGroups);
   const hasSystems = systemGroups.has("muscles");
 
   const inner = new Group();
@@ -171,12 +196,36 @@ export function prepareModel(scene: Group, asset: AnatomyAssetDefinition): Prepa
   root.add(inner);
   root.updateMatrixWorld(true);
 
-  const meshes: Mesh[] = [];
-  const meshByUid = new Map<string, Mesh>();
-  const meshNames = new Map<string, string>();
-  const systemOf = new Map<string, SystemId | null>();
-  root.traverse((obj) => {
-    if (!(obj instanceof Mesh)) return;
+  const model: PreparedModel = { root, content: scene, meshes: [], meshByUid: new Map(), meshNames: new Map(), systemOf: new Map(), systemGroups, hasSystems };
+  registerMeshes(model, root);
+  return model;
+}
+
+/**
+ * Add an optional system file (nerves, organs, vessels, skin) to a prepared
+ * model: its groups join the asset content, so they share the normalisation.
+ */
+export function attachSystemFile(model: PreparedModel, scene: Object3D): Object3D[] {
+  const added: Object3D[] = [];
+  const groups = new Map<SystemId, Object3D[]>();
+  collectSystemGroups(scene, groups);
+  for (const [sys, list] of groups) {
+    for (const g of list) {
+      model.content.add(g);
+      added.push(g);
+    }
+    model.systemGroups.set(sys, [...(model.systemGroups.get(sys) ?? []), ...list]);
+  }
+  model.root.updateMatrixWorld(true);
+  for (const g of added) registerMeshes(model, g);
+  return added;
+}
+
+function registerMeshes(model: PreparedModel, from: Object3D): void {
+  const { meshes, meshByUid, meshNames, systemOf, systemGroups, hasSystems } = model;
+  from.traverse((obj) => {
+    if (!(obj instanceof Mesh) || meshByUid.has(obj.uuid)) return;
+    if (obj.geometry.getAttribute("_fiber")) dequantizeMesh(obj);
     const system = hasSystems ? findSystem(obj, systemGroups) : null;
     const isSkin = system === "skin";
     obj.castShadow = !isSkin;
@@ -191,8 +240,6 @@ export function prepareModel(scene: Group, asset: AnatomyAssetDefinition): Prepa
     meshNames.set(obj.uuid, meaningfulName(obj));
     systemOf.set(obj.uuid, system);
   });
-
-  return { root, meshes, meshByUid, meshNames, systemOf, systemGroups, hasSystems };
 }
 
 /**
@@ -209,14 +256,14 @@ export function applyLayers(model: PreparedModel, layers: Layers): void {
   }
   // The source has no head muscles; the skull can complete the head on its own
   // ("head" layer) even when the rest of the skeleton is hidden.
-  for (const [system, group] of model.systemGroups) {
-    group.visible = layers[system] || (system === "skeleton" && layers.head);
+  for (const [system, groups] of model.systemGroups) {
+    for (const group of groups) group.visible = layers[system] || (system === "skeleton" && layers.head);
   }
   for (const mesh of model.meshes) {
     const system = model.systemOf.get(mesh.uuid);
     let visible = system ? layers[system] : true;
     if (system === "skeleton") {
-      visible = layers.skeleton || (layers.head && HEAD_BONES.has(model.meshNames.get(mesh.uuid) ?? ""));
+      visible = layers.skeleton || (layers.head && isHeadBone(mesh, model.meshNames.get(mesh.uuid) ?? ""));
       mesh.visible = visible;
     }
     const pickable = visible && system !== "skin";
@@ -291,11 +338,11 @@ function structureColor(model: PreparedModel, mesh: Mesh, system: Exclude<System
  * sampled from the reference écorché images (#B0565A mid-tone); with a small
  * per-muscle variation.
  */
-export const REALISTIC_MUSCLE = "#C2575E";
+export const REALISTIC_MUSCLE = TISSUE.muscle;
 /** Deeper, non-separated muscles: slightly darker tissue. */
 export const REALISTIC_CONTEXT = "#AE5257";
 /** Unselected muscles when "dim unselected" is on: the same tissue, muted. */
-export const DIMMED_MUSCLE = "#7A4C4E";
+export const DIMMED_MUSCLE = TISSUE.dimmed;
 const toneCache = new Map<string, string>();
 function realisticTone(muscleId: string): string {
   let hex = toneCache.get(muscleId);
@@ -328,11 +375,18 @@ export function applyMaterials(
     const system = model.systemOf.get(mesh.uuid) ?? null;
     let next: Material | Material[];
 
-    if (system === "skin") {
+    const zKind = mesh.userData.kind as string | undefined;
+    const tissue = zKind && zKind !== "unit" ? tissueOf(zKind, mesh.userData.source as string | undefined, mesh.userData.role as string | undefined) : null;
+    // Natural tone of a Z-Anatomy muscle: same per-muscle variation as the atlas.
+    const zTone = typeof mesh.userData.id === "string" ? muscleTone(mesh.userData.id) : null;
+    if (tissue) {
+      // Z-Anatomy tendons, ligaments, fasciae, bones, nerves, vessels, organs, skin: the shared tissue standard.
+      next = library.tissue(tissue, zKind === "bone" && !!mesh.geometry.getAttribute("color"));
+    } else if (system === "skin") {
       next = library.skin();
     } else if (system === "muscles_context") {
-      // Non-separated muscles: shown for anatomical completeness, never painted.
-      next = muscleMat(library, mesh, dim ? DIMMED_MUSCLE : REALISTIC_CONTEXT, "realistic", "normal");
+      // Muscles that are not editor units: shown for anatomical completeness, never painted.
+      next = muscleMat(library, mesh, dim ? DIMMED_MUSCLE : (zTone ?? REALISTIC_CONTEXT), "realistic", "normal");
     } else if (system && system !== "muscles") {
       next = library.get(structureColor(model, mesh, system), "normal");
     } else {
@@ -344,11 +398,11 @@ export function applyMaterials(
         next = muscleMat(library, mesh, hl, "highlight", variant);
       } else if (!mapping) {
         // Muscle-system meshes that are not mapped, or meshes of unstructured assets.
-        next = muscleMat(library, mesh, REALISTIC_CONTEXT, "realistic", "normal");
+        next = muscleMat(library, mesh, zTone ?? REALISTIC_CONTEXT, "realistic", "normal");
       } else if (dim) {
         next = muscleMat(library, mesh, DIMMED_MUSCLE, "realistic", variant);
       } else {
-        next = muscleMat(library, mesh, realisticTone(mapping.muscleId), "realistic", variant);
+        next = muscleMat(library, mesh, zTone ?? realisticTone(mapping.muscleId), "realistic", variant);
       }
     }
     if (mesh.material !== next) mesh.material = next;
@@ -442,7 +496,8 @@ export function visibleBounds(model: PreparedModel): Box3 {
   const box = new Box3();
   for (const mesh of model.meshes) {
     const system = model.systemOf.get(mesh.uuid);
-    if (system && model.systemGroups.get(system)?.visible === false) continue;
+    if (system && model.systemGroups.get(system)?.every((g) => !g.visible)) continue;
+    if (!mesh.visible) continue;
     box.expandByObject(mesh, true);
   }
   return box.isEmpty() ? new Box3().setFromObject(model.root, true) : box;

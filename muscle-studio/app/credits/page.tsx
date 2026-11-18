@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { AppFooter, AppHeader } from "@/components/dashboard/AppHeader";
-import { BODYPARTS3D_CREDIT, OPEN_ANATOMY_COMMIT, OPEN_ANATOMY_CREDIT, SOURCES } from "@/lib/attribution";
+import { BODYPARTS3D_CREDIT, SOURCES, ZANATOMY_CREDIT } from "@/lib/attribution";
 
 export const metadata: Metadata = { title: "المصادر والترخيص" };
 
@@ -12,23 +12,23 @@ export default function CreditsPage() {
         <header>
           <h1 className="text-2xl font-bold text-fg">المصادر والترخيص</h1>
           <p className="mt-1">
-            العضلات مستخرجة من قاعدة بيانات BodyParts3D، والجسم المرجعي من مشروع Open Anatomy 3D. كلاهما مرخّص بموجب{" "}
-            <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer" className="text-accent-2 hover:underline">
-              <bdi dir="ltr">Creative Commons Attribution 4.0 International (CC BY 4.0)</bdi>
+            النموذج التشريحي في التطبيق كله هو Z-Anatomy (مبني على BodyParts3D)، مرخّص بموجب{" "}
+            <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer" className="text-accent-2 hover:underline">
+              <bdi dir="ltr">Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0)</bdi>
             </a>
-            . يجب ذكر المصدر عند عرض النماذج أو نشر صور مأخوذة منها.
+            . يجب ذكر المصدر عند عرض النماذج أو نشر صور منها، وأي ملف نموذج مشتق يُنشر بالرخصة نفسها.
           </p>
         </header>
 
         <section>
           <h2 className="mb-2 text-base font-semibold text-fg">أسطر النسبة المطلوبة</h2>
-          <p className="mb-1">BodyParts3D (بالصيغة التي يحددها المرخِّص):</p>
+          <p className="mb-1">Z-Anatomy:</p>
+          <blockquote dir="ltr" className="rounded-xl border border-line bg-panel p-4 text-start font-mono text-xs leading-relaxed text-fg">
+            {ZANATOMY_CREDIT}
+          </blockquote>
+          <p className="mb-1 mt-3">BodyParts3D (بالصيغة التي يحددها المرخِّص):</p>
           <blockquote dir="ltr" className="rounded-xl border border-line bg-panel p-4 text-start font-mono text-xs leading-relaxed text-fg">
             {BODYPARTS3D_CREDIT}
-          </blockquote>
-          <p className="mb-1 mt-3">Open Anatomy 3D:</p>
-          <blockquote dir="ltr" className="rounded-xl border border-line bg-panel p-4 text-start font-mono text-xs leading-relaxed text-fg">
-            {OPEN_ANATOMY_CREDIT}
           </blockquote>
           <p className="mt-2">
             يُضاف سطر نسبة مختصر تلقائيًا أسفل كل صورة مُصدَّرة (يمكن إيقافه من نافذة التصدير، وعندها يجب ذكر المصدر في مكان
@@ -60,41 +60,36 @@ export default function CreditsPage() {
           <h2 className="mb-2 text-base font-semibold text-fg">ما الذي تغيّر</h2>
           <ul className="list-disc space-y-1 ps-5">
             <li>
-              عضلات BodyParts3D: دُمجت ملفات كل عضلة أو جزء مسمّى في شبكة مستقلة لكل جانب، وحُوّلت الإحداثيات إلى المتر مع محور Y
-              للأعلى، وخُفّف عدد المثلثات مع بقاء الشكل ضمن 0.15 مم في المتوسط من السطح الأصلي (التقرير في
-              <span dir="ltr" className="font-mono"> build-report.json</span>).
+              صُدِّر نموذج Z-Anatomy من ملف Blender الأصلي (<span dir="ltr" className="font-mono">Startup.blend</span>) بخط
+              <span dir="ltr" className="font-mono"> pipeline/blender/export_body.py</span>: الهندسة نفسها دون تبسيط أو تقسيم، مع
+              تطبيق معدِّلات المؤلف على بصمات الارتكاز واللفافات وتحويل منحنيات الأعصاب والأوعية إلى شبكات كما تُعرض.
             </li>
             <li>
-              النموذج الأنثوي: لُوئمت العضلات المفصولة (والهيكل العظمي) مع نِسَب الهيكل العظمي الأنثوي في Open Anatomy 3D بتحويل
-              Thin-Plate Spline منتظم على معالم عظمية متطابقة بين النموذجين. وهو التشريح الذكري بنِسَب هيكل أنثوي، وليس تشريحًا أنثويًا مستقلًا.
+              أُضيفت لكل رأس بيانات مظهر (إظلال، أوتار المؤلف، اتجاه الألياف من الأوتار أو من مواضع الارتكاز)، وطبقة عمق محسوبة من
+              الهندسة، وأسماء عربية، ثم ضُغطت الملفات (تكميم + meshopt).
             </li>
             <li>
-              ملفا Open Anatomy 3D (<span dir="ltr" className="font-mono">anatomy-male.glb</span> و
-              <span dir="ltr" className="font-mono">anatomy-female.glb</span>) منسوخان دون تعديل من الإيداع{" "}
-              <span dir="ltr" className="font-mono text-xs">{OPEN_ANATOMY_COMMIT.slice(0, 12)}</span>؛ أثناء العرض تُستبدل مجموعاتهما
-              العضلية المدموجة بالعضلات المفصولة، وتتغير الألوان وشفافية الجلد.
+              النموذج الأنثوي: التشريح نفسه بعد ملاءمته لنِسَب الهيكل العظمي الأنثوي في open-anatomy-3d بتحويل Thin-Plate Spline
+              منتظم. هو تقريب وليس تشريحًا أنثويًا مستقلًا، ولا يتضمن أعضاء تناسلية.
             </li>
-            <li>الأسماء العربية ومعجم المصطلحات من إعداد هذا التطبيق.</li>
-            <li>تظليل الجلد الشفاف مقتبس من حزمة open-anatomy-3d-react ‏(© 2026 MervinR07، رخصة MIT).</li>
+            <li>الأسماء العربية ومعجم المصطلحات وبطاقات العضلات من إعداد هذا التطبيق.</li>
           </ul>
         </section>
 
         <section>
           <h2 className="mb-2 text-base font-semibold text-fg">ملاحظة عن الترخيص والاستخدام التجاري</h2>
           <p>
-            ينص ملف README الرسمي لقاعدة BodyParts3D (المحدّث في 25 فبراير 2025) على رخصة CC BY 4.0، التي تسمح بإعادة التوزيع
-            والأعمال المشتقة والاستخدام التجاري بشرط ذكر المصدر. ما زالت ترويسات ملفات OBJ الصادرة عام 2013 تذكر الرخصة الأقدم
-            (CC BY-SA 2.1 Japan)؛ يُعتمد النص الحالي للمرخِّص، ونسخة منه محفوظة في المستودع
-            (<span dir="ltr" className="font-mono">data/models/bodyparts3d/README_e.html</span>). للاستخدامات خارج هذه الرخصة يجب
-            التواصل مع DBCLS.
+            رخصة CC BY-SA 4.0 تسمح بالاستخدام التجاري وإعادة التوزيع والتعديل، بشرطين: ذكر المصدر، ونشر أي نموذج مشتق بالرخصة
+            نفسها. الشرط الثاني يسري على ملفات النماذج (<span dir="ltr" className="font-mono">public/models/zanatomy</span>) وما
+            يُشتق منها، لا على كود التطبيق. الصور المُصدَّرة تحمل سطر النسبة تلقائيًا. نماذج الأذن الداخلية والكلية في Z-Anatomy
+            مرخّصة لغير الأغراض التجارية، ولذلك لا تُصدَّر.
           </p>
         </section>
 
         <section>
           <h2 className="mb-2 text-base font-semibold text-fg">تنبيه</h2>
           <p>
-            النماذج مخصّصة للتعليم والتوضيح، وليست صالحة للتشخيص أو لأي قرار طبي. أربع عضلات غير موجودة في المصدر (الظهرية
-            العريضة، والمستقيمة البطنية، والمائلة الداخلية، والمستعرضة البطنية) — التفاصيل في مكتبة العضلات.
+            النماذج مخصّصة للتعليم والتوضيح، وليست صالحة للتشخيص أو لأي قرار طبي. المصدر ذكوري؛ النموذج الأنثوي تقريب.
           </p>
         </section>
 

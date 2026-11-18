@@ -5,13 +5,14 @@ import type { LocalizedName, MuscleDefinition, RegionDefinition, RegionId, ViewI
  * by pipeline/bodyparts3d (see units.mjs there for the exact source parts).
  *
  * - `id` is the stable key stored in projects. Never rename an id.
- * - `meshNames[0]` is the mesh key in public/models/bodyparts3d/muscles-*.glb
- *   (`_l` / `_r` suffix per side).
+ * - `meshNames[0]` is the node name in public/models/zanatomy/<sex>/core.glb
+ *   (`_l` / `_r` suffix per side); pipeline/zanatomy/editor-units.mjs lists
+ *   the Z-Anatomy muscle objects of each unit.
  * - Arabic names follow standard Arabic anatomical terminology
  *   (المعجم الطبي الموحد and common Arabic anatomy references).
  *
- * Not available in BodyParts3D 4.0 (verified against every OBJ header):
- * latissimus dorsi, rectus abdominis, internal oblique, transversus abdominis.
+ * Every other Z-Anatomy muscle (≈ 180 more) is selectable in the atlas (/atlas)
+ * and shown here as reference anatomy.
  */
 
 export const REGION_DEFINITIONS: RegionDefinition[] = [
@@ -101,6 +102,7 @@ export const MUSCLES: MuscleDefinition[] = [
     id: "rhomboids", mesh: "rhomboids", ar: "العضلتان المعينيتان", en: "Rhomboids", latin: "Musculi rhomboidei", region: "back", granularity: "group", views: ["back"], deep: true,
     includes: [n("العضلة المعينية الكبرى", "Rhomboid major"), n("العضلة المعينية الصغرى", "Rhomboid minor")], search: ["معينية", "المعينية", "وسط الظهر"],
   }),
+  unit({ id: "latissimus-dorsi", mesh: "latissimus_dorsi", ar: "العضلة الظهرية العريضة", en: "Latissimus dorsi", latin: "Musculus latissimus dorsi", region: "back", views: BACK, search: ["لاتس", "lats", "الظهر", "جناح"] }),
   unit({
     id: "erector-spinae", mesh: "erector_spinae", ar: "العضلة الناصبة للفقار", en: "Erector spinae", latin: "Musculus erector spinae", region: "back", granularity: "group", views: ["back"], deep: true,
     includes: [n("العضلة الحرقفية الضلعية (العنقية والصدرية والقطنية)", "Iliocostalis"), n("العضلة الطويلة (الرأسية والعنقية والصدرية)", "Longissimus"), n("العضلة الشوكية", "Spinalis")],
@@ -132,6 +134,8 @@ export const MUSCLES: MuscleDefinition[] = [
   }),
 
   // ───────────── البطن ─────────────
+  unit({ id: "rectus-abdominis", mesh: "rectus_abdominis", ar: "العضلة المستقيمة البطنية", en: "Rectus abdominis", latin: "Musculus rectus abdominis", region: "core", views: FRONT, search: ["بطن", "سكس باك", "six pack", "abs", "البطن"] }),
+  unit({ id: "internal-oblique", mesh: "internal_oblique", ar: "العضلة المائلة الداخلية للبطن", en: "Internal oblique", latin: "Musculus obliquus internus abdominis", region: "core", views: FRONT, deep: true, search: ["خواصر", "obliques", "المائلة"] }),
   unit({ id: "external-oblique", mesh: "external_oblique", ar: "العضلة المائلة الخارجية للبطن", en: "External oblique", latin: "Musculus obliquus externus abdominis", region: "core", views: FRONT, search: ["خواصر", "الخواصر", "obliques", "بطن", "المائلة"] }),
 
   // ───────────── الورك والأرداف ─────────────
@@ -202,7 +206,7 @@ export const LEGACY_GROUP_IDS: Record<string, string[]> = {
   "deep-back": ["erector-spinae", "splenius"],
   "upper-arm": ["biceps-brachii", "brachialis", "coracobrachialis", "triceps-brachii"],
   forearm: ["brachioradialis", "forearm-flexors", "forearm-extensors"],
-  "abdominal-wall": ["external-oblique"],
+  "abdominal-wall": ["rectus-abdominis", "external-oblique", "internal-oblique"],
   gluteal: ["gluteus-maximus", "gluteus-medius", "gluteus-minimus", "tensor-fasciae-latae"],
   quadriceps: ["rectus-femoris", "vastus-lateralis", "vastus-medialis", "vastus-intermedius", "sartorius"],
   hamstrings: ["biceps-femoris", "semitendinosus", "semimembranosus"],

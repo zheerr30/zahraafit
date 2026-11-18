@@ -1,14 +1,18 @@
 "use client";
 
-import { CameraControls, Environment, Lightformer } from "@react-three/drei";
+import { CameraControls } from "@react-three/drei";
+import { AtlasLighting } from "@/components/anatomy/AtlasLighting";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Box3, Group, Object3D, Sphere, Vector2, Vector3, type PerspectiveCamera, type Raycaster } from "three";
+import { useEffect, useRef, useState } from "react";
+import { Box3, Object3D, Sphere, Vector2, Vector3, type PerspectiveCamera, type Raycaster } from "three";
 import {
   applyStyle,
   disposeRegionModel,
+  addMeshes,
+  createRegionModel,
   pick,
-  prepareRegionModel,
+  prepareMeshes,
+  regionBounds,
   targetOpacity,
   stepFades,
   structureBounds,
@@ -20,9 +24,12 @@ import { loadGltf } from "@/lib/three/loadGltf";
 import { configureRenderer } from "@/lib/three/rendererSetup";
 import { backStore, useBack, type PickedStructure, type RegionView } from "@/stores/backStore";
 
-/** Original Z-Anatomy geometry exported from Blender (pipeline/blender/export_back.py + postprocess.mjs). */
-export const MODEL_URL = "/models/back-shoulders/back-shoulders-za.glb";
-export const DEFINITIONS_URL = "/models/back-shoulders/definitions.json";
+/** Original Z-Anatomy geometry exported from Blender (pipeline/blender/export_body.py + postprocess-body.mjs). */
+export const MODEL_BASE = "/models/zanatomy";
+export const modelUrl = (sex: "male" | "female", part: string) => `${MODEL_BASE}/${sex}/${part}.glb`;
+export const DEFINITIONS_URL = `${MODEL_BASE}/definitions.json`;
+/** Optional layers loaded on first use. */
+const LAZY_PARTS = { attachments: "attachments", nerves: "nerves" } as const;
 export const BACKGROUNDS = { black: "#000000", navy: "#06142f" } as const;
 
 /** Shared handles for overlays, tests and exports (one viewer per page). */
@@ -41,27 +48,41 @@ const asPicked = (m: RegionMesh): PickedStructure => ({ kind: m.kind, id: m.id, 
 function Model({ onState }: { onState: (s: LoadState) => void }) {
   const gl = useThree((s) => s.gl);
   const invalidate = useThree((s) => s.invalidate);
-  const [root, setRoot] = useState<Object3D | null>(null);
+  const sex = useBack((s) => s.sex);
+  const [roots, setRoots] = useState<Object3D[]>([]);
   const modelRef = useRef<RegionModel | null>(null);
+  const loaded = useRef(new Set<string>());
+
+  const syncNew = (model: RegionModel, meshes: RegionMesh[]) => {
+    const st = backStore.getState();
+    for (const m of meshes) {
+      m.target = targetOpacity(m, st);
+      m.opacity = m.target;
+      m.mesh.visible = m.target > 0;
+      (m.mesh.material as { opacity: number }).opacity = ((m.mesh.material as { userData: { baseOpacity?: number } }).userData.baseOpacity ?? 1) * m.opacity;
+      applyStyle(m, st.selected, st.hovered, st.highlightColor);
+    }
+    void model;
+  };
 
   useEffect(() => {
     const ctrl = new AbortController();
-    let model: RegionModel | null = null;
-    loadGltf(MODEL_URL, { renderer: gl, signal: ctrl.signal, onProgress: (p) => onState({ status: "loading", progress: p }) })
+    const model = createRegionModel();
+    loaded.current = new Set(["core"]);
+    onState({ status: "loading", progress: 0 });
+    loadGltf(modelUrl(sex, "core"), { renderer: gl, signal: ctrl.signal, onProgress: (p) => onState({ status: "loading", progress: p }) })
       .then((gltf) => {
-        model = prepareRegionModel(gltf.scene);
+        const meshes = prepareMeshes(gltf.scene);
+        addMeshes(model, meshes);
         modelRef.current = model;
         regionBridge.model = model;
-        const st = backStore.getState();
-        for (const m of model.meshes) {
-          m.target = targetOpacity(m, st);
-          m.opacity = m.target;
-          m.mesh.visible = m.target > 0;
-          applyStyle(m, st.selected, st.hovered, st.highlightColor);
-        }
-        setRoot(gltf.scene);
+        syncNew(model, meshes);
+        setRoots([gltf.scene]); // replaces the previous body's roots
         onState({ status: "ready" });
-        backStore.getState().view("back");
+        backStore.setState({ unitsVersion: Date.now() });
+        const st = backStore.getState();
+        if (st.region) st.focusRegion(st.region);
+        else st.view("front");
       })
       .catch((err: unknown) => {
         if (ctrl.signal.aborted) return;
@@ -69,10 +90,43 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
       });
     return () => {
       ctrl.abort();
-      if (model) disposeRegionModel(model);
-      regionBridge.model = null;
+      disposeRegionModel(model);
+      if (regionBridge.model === model) regionBridge.model = null;
+      modelRef.current = null;
     };
-  }, [gl, onState]);
+  }, [gl, onState, sex]);
+
+  // Optional layers (attachment patches, nerves) are loaded the first time they are needed.
+  useEffect(() => {
+    const need = (st: ReturnType<typeof backStore.getState>) => [
+      ...(st.layers.attachments || st.selected?.kind === "unit" ? ["attachments"] : []),
+      ...(st.layers.nerves ? ["nerves"] : []),
+    ];
+    const load = (part: keyof typeof LAZY_PARTS) => {
+      const model = modelRef.current;
+      if (!model || loaded.current.has(part)) return;
+      loaded.current.add(part);
+      const forSex = backStore.getState().sex;
+      loadGltf(modelUrl(forSex, LAZY_PARTS[part]), { renderer: gl })
+        .then((gltf) => {
+          if (modelRef.current !== model) return;
+          const meshes = prepareMeshes(gltf.scene);
+          addMeshes(model, meshes);
+          syncNew(model, meshes);
+          setRoots((r) => [...r, gltf.scene]);
+          invalidate();
+        })
+        .catch((err: unknown) => {
+          loaded.current.delete(part);
+          console.error("[atlas] optional layer failed", part, err);
+        });
+    };
+    const check = () => { for (const p of need(backStore.getState())) load(p as keyof typeof LAZY_PARTS); };
+    check();
+    return backStore.subscribe((st, prev) => {
+      if (st.layers !== prev.layers || st.selected !== prev.selected) check();
+    });
+  }, [gl, invalidate, sex]);
 
   // Visibility targets and styles follow the store.
   useEffect(() => {
@@ -98,32 +152,12 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
     if (model && stepFades(model, Math.min(dt, 0.25))) invalidate();
   });
 
-  return root ? <primitive object={root} /> : null;
-}
-
-/** Key, fill and rim lights that travel with the camera: every angle of the 360° turn is lit alike. */
-function CameraLights() {
-  const camera = useThree((s) => s.camera);
-  const group = useMemo(() => new Group(), []);
-  const targets = useMemo(() => {
-    const t = new Object3D();
-    t.position.set(0, 0, -3);
-    return t;
-  }, []);
-  useEffect(() => {
-    group.add(targets);
-  }, [group, targets]);
-  useFrame(() => {
-    group.position.copy(camera.position);
-    group.quaternion.copy(camera.quaternion);
-  });
   return (
-    <primitive object={group}>
-      <directionalLight position={[1.6, 1.8, 0.6]} intensity={2.4} color="#fff3e8" target={targets} />
-      <directionalLight position={[-2.2, 0.6, 0.8]} intensity={0.85} color="#f2f5ff" target={targets} />
-      <directionalLight position={[0, 2.5, -3]} intensity={1.3} color="#eef2ff" target={targets} />
-      <directionalLight position={[-1.5, -1.2, -1.5]} intensity={0.45} target={targets} />
-    </primitive>
+    <>
+      {roots.map((r) => (
+        <primitive key={r.uuid} object={r} />
+      ))}
+    </>
   );
 }
 
@@ -161,6 +195,14 @@ function Rig() {
       const pos = center.clone().addScaledVector(dir, dist);
       void c.setLookAt(pos.x, pos.y, pos.z, center.x, center.y, center.z, true);
     };
+    if (command.type === "region") {
+      const box = regionBounds(model, command.region);
+      if (!box) return;
+      const back = ["back", "pelvis", "legs"].includes(command.region);
+      fit(box, new Vector3(0, 0.1, back ? -1 : 1).normalize(), 1.15);
+      invalidate();
+      return;
+    }
     if (command.type === "view" && command.view === "closeup") {
       // Close-up: the selected structure, or the left shoulder (rotator cuff + deltoid) from behind and outside.
       const sel = backStore.getState().selected;
@@ -179,9 +221,9 @@ function Rig() {
         left: new Vector3(1, 0.05, 0).normalize(),
         right: new Vector3(-1, 0.05, 0).normalize(),
       };
-      // Frame the back & shoulders: muscles of the region (not the skull).
-      const box = new Box3();
-      for (const m of model.meshes) if (m.kind === "unit") box.expandByObject(m.mesh);
+      // Frame the current study region, or the whole body.
+      const region = backStore.getState().region;
+      const box = (region && regionBounds(model, region)) || model.bounds.clone();
       fit(box, dirs[command.view as Exclude<RegionView, "closeup">], 1.22);
     } else {
       const box = command.type === "focus" ? unitBounds(model, command.unitId, command.side) : null;
@@ -296,15 +338,7 @@ export function BackViewport({ onState }: { onState: (s: LoadState) => void }) {
       data-viewport=""
     >
       <Background />
-      <ambientLight intensity={0.22} />
-      <hemisphereLight args={["#fff8f2", "#20232a", 0.45]} />
-      <CameraLights />
-      <Environment resolution={128} frames={1}>
-        <Lightformer form="rect" intensity={1.4} position={[0, 4, -2]} scale={[6, 2, 1]} />
-        <Lightformer form="rect" intensity={0.8} position={[-4, 1.5, 0]} rotation-y={Math.PI / 2} scale={[4, 3, 1]} />
-        <Lightformer form="rect" intensity={0.8} position={[4, 1.5, 0]} rotation-y={-Math.PI / 2} scale={[4, 3, 1]} />
-        <Lightformer form="rect" intensity={0.6} position={[0, 2, 4]} scale={[5, 3, 1]} />
-      </Environment>
+      <AtlasLighting />
       <Model onState={onState} />
       <Rig />
       <Pointer />

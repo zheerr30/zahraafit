@@ -139,7 +139,7 @@ export function bakeAppearance(meshes, { aoRays = 24, aoDistance = 0.045 } = {})
     }
     const tendon = new Float32Array(n);
     for (let v = 0; v < n; v++) tendon[v] = anat[v * 2 + 1];
-    const { dir, seeded } = fibreFlow(m.pos, m.nrm, m.idx, tendon, principalAxis(m.pos));
+    const { dir, seeded } = fibreFlow(m.pos, m.nrm, m.idx, tendon, principalAxis(m.pos), m.flowSeeds);
     return { anat, fibre: dir, seeded };
   });
 }
@@ -200,7 +200,7 @@ class MinHeap {
  * pos/nrm: Float32Array, idx: Uint32Array, tendon: Float32Array (0..1 per vertex).
  * Returns { dir: Float32Array(n*3) unit fibre direction, seeded: "tendon" | "axis" }.
  */
-export function fibreFlow(pos, nrm, idx, tendon, axis) {
+export function fibreFlow(pos, nrm, idx, tendon, axis, seedOverride) {
   const n = pos.length / 3;
   const nb = adjacency(idx, n);
   const P = (i) => [pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]];
@@ -212,7 +212,12 @@ export function fibreFlow(pos, nrm, idx, tendon, axis) {
   let seeds = [];
   for (let v = 0; v < n; v++) if (tendon[v] > 0.6) seeds.push(v);
   let seeded = "tendon";
-  if (seeds.length < Math.max(8, n * 0.01)) {
+  // Without tendon faces: seed from the muscle's real attachment sites (origin / insertion patches).
+  if (seeds.length < Math.max(8, n * 0.01) && seedOverride && seedOverride.length >= 8) {
+    seeds = Array.from(seedOverride);
+    seeded = "attachments";
+  }
+  if (seeds.length < Math.max(8, n * 0.01) && seeded !== "attachments") {
     seeded = "axis";
     const proj = [...Array(n).keys()].map((v) => [dot(P(v), axis), v]).sort((a, b) => a[0] - b[0]);
     seeds = proj.slice(0, Math.max(8, Math.floor(n * 0.03))).map((x) => x[1]);

@@ -4,7 +4,7 @@ import { REGION_MUSCLES, type RegionLayer } from "@/data/region/backShoulders";
 
 /** What the user picked on the model: a muscle unit (full card) or any other structure (name only). */
 export interface PickedStructure {
-  kind: "unit" | "context" | "bone" | "tendon" | "nerve" | "attachment";
+  kind: "unit" | "bone" | "tendon" | "ligament" | "fascia" | "nerve" | "attachment";
   id: string;
   side: "l" | "r" | "m";
   ar: string;
@@ -17,16 +17,19 @@ export type RegionView = "back" | "left" | "right" | "front" | "closeup";
 export type CameraCommand =
   | { type: "view"; view: RegionView; nonce: number }
   | { type: "focus"; unitId: string; side: "l" | "r" | "m" | null; nonce: number }
-  | { type: "focus-structure"; key: string; nonce: number };
+  | { type: "focus-structure"; key: string; nonce: number }
+  | { type: "region"; region: string; nonce: number };
 
 export const DEFAULT_LAYERS: Record<RegionLayer, boolean> = {
   muscles: true,
-  muscles_context: true,
-  bones: true,
-  attachments: false,
   tendons: true,
+  bones: true,
+  fasciae: false,
+  attachments: false,
   nerves: false,
 };
+
+export type Sex = "male" | "female";
 
 interface BackState {
   selected: PickedStructure | null;
@@ -42,6 +45,11 @@ interface BackState {
   autoRotate: boolean;
   /** Colour of the selected structure (user-chosen). */
   highlightColor: string;
+  sex: Sex;
+  /** Bumped when a model has loaded (the unit list is read from the model). */
+  unitsVersion: number;
+  /** Study region the list and camera are focused on (null = whole body). */
+  region: string | null;
   cameraCommand: CameraCommand | null;
   select: (p: PickedStructure | null) => void;
   selectUnit: (id: string, side?: "l" | "r" | "m") => void;
@@ -57,6 +65,8 @@ interface BackState {
   setBackground: (b: "black" | "navy") => void;
   setAutoRotate: (v: boolean) => void;
   setHighlightColor: (hex: string) => void;
+  setSex: (s: Sex) => void;
+  focusRegion: (region: string | null) => void;
   view: (v: RegionView) => void;
   focus: (unitId: string, side?: "l" | "r" | "m" | null) => void;
   resetAll: () => void;
@@ -79,6 +89,9 @@ export const backStore = createStore<BackState>()((set, get) => ({
   background: "black",
   autoRotate: false,
   highlightColor: "#E8602C",
+  sex: "male",
+  unitsVersion: 0,
+  region: null,
   cameraCommand: null,
   select: (p) => set({ selected: p, isolate: p ? get().isolate : false }),
   selectUnit: (id, side = "l") => {
@@ -102,7 +115,7 @@ export const backStore = createStore<BackState>()((set, get) => ({
   setIsolate: (v) => set({ isolate: v && get().selected !== null }),
   skeletonOnly: () =>
     set({
-      layers: { muscles: false, muscles_context: false, bones: true, attachments: false, tendons: false, nerves: false },
+      layers: { muscles: false, tendons: false, bones: true, fasciae: false, attachments: false, nerves: false },
       isolate: false,
       selected: null,
     }),
@@ -119,6 +132,9 @@ export const backStore = createStore<BackState>()((set, get) => ({
   setBackground: (b) => set({ background: b }),
   setAutoRotate: (v) => set({ autoRotate: v }),
   setHighlightColor: (hex) => set({ highlightColor: /^#[0-9a-fA-F]{6}$/.test(hex) ? hex : "#E8602C" }),
+  setSex: (sex) => set({ sex, selected: null, hovered: null, isolate: false }),
+  focusRegion: (region) =>
+    set({ region, autoRotate: false, cameraCommand: region ? { type: "region", region, nonce: ++nonce } : { type: "view", view: "front", nonce: ++nonce } }),
   view: (v) => set({ cameraCommand: { type: "view", view: v, nonce: ++nonce }, autoRotate: false }),
   focus: (unitId, side = null) => set({ cameraCommand: { type: "focus", unitId, side, nonce: ++nonce } }),
   resetAll: () =>
@@ -130,7 +146,7 @@ export const backStore = createStore<BackState>()((set, get) => ({
       depthMode: "all",
       isolate: false,
       autoRotate: false,
-      cameraCommand: { type: "view", view: "back", nonce: ++nonce },
+      cameraCommand: get().region ? { type: "region", region: get().region!, nonce: ++nonce } : { type: "view", view: "front", nonce: ++nonce },
     }),
 }));
 

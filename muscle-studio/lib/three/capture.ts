@@ -1,3 +1,4 @@
+import { alignLightRig } from "@/components/anatomy/AtlasLighting";
 import { Color, MathUtils, PerspectiveCamera, Raycaster, Vector2, Vector3 } from "three";
 import { getMuscle } from "@/data/muscles/muscles";
 import type { IllustrationDoc } from "@/lib/storage/schema";
@@ -122,12 +123,14 @@ export function renderSceneToCanvas(
         camera.setViewOffset(width, height, x, y, tw, th);
         camera.updateProjectionMatrix();
         gl.setSize(tw, th, false);
+        alignLightRig(camera);
         gl.render(scene, camera);
         // Copy synchronously, in the same task as the render.
         ctx.drawImage(gl.domElement, 0, 0, tw, th, x, y, tw, th);
       }
     }
   } finally {
+    if (viewportBridge.handles?.camera) alignLightRig(viewportBridge.handles.camera);
     camera.clearViewOffset();
     camera.updateProjectionMatrix();
     scene.background = prevBackground;

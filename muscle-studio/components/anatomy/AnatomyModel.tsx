@@ -10,7 +10,7 @@ import {
   applyLayers,
   applyMaterials,
   buildAnchors,
-  combineBodyAndMuscles,
+  attachSystemFile,
   highlightColor,
   mapPreparedModel,
   nearestAnchor,
@@ -27,6 +27,7 @@ import { viewportBridge } from "@/lib/three/viewportBridge";
 import { useAssetStore } from "@/stores/assetStore";
 import { editorStore, useEditor } from "@/stores/editorStore";
 import type { AnatomyAssetDefinition } from "@/types/anatomy";
+import type { IllustrationDoc } from "@/lib/storage/schema";
 
 /** Pixels the pointer may travel between down/up and still count as a click (not an orbit drag). */
 const CLICK_TOLERANCE = 6;
@@ -56,22 +57,9 @@ export function AnatomyModel({ asset }: { asset: AnatomyAssetDefinition }) {
     let prepared: PreparedModel | null = null;
     setLoadState({ loadStatus: "loading", progress: 0, error: null });
 
-    // Body + separated muscles load in parallel; progress is their average.
-    const progress = asset.musclesUrl ? [0, 0] : [0];
-    const report = (i: number) => (p: number) => {
-      progress[i] = p;
-      setLoadState({ progress: progress.reduce((a, b) => a + b, 0) / progress.length });
-    };
-    Promise.all([
-      loadGltf(asset.url, { renderer: gl, signal: controller.signal, onProgress: report(0) }),
-      asset.musclesUrl
-        ? loadGltf(asset.musclesUrl, { renderer: gl, signal: controller.signal, onProgress: report(1) })
-        : Promise.resolve(null),
-    ])
-      .then(([body, muscles]) => {
-        if (muscles) {
-          for (const node of combineBodyAndMuscles(body.scene, muscles.scene)) disposeObject3D(node);
-        }
+    // Core file (muscles, tendons, ligaments, fasciae, bones); other systems load with their layer.
+    loadGltf(asset.url, { renderer: gl, signal: controller.signal, onProgress: (p) => setLoadState({ progress: p }) })
+      .then((body) => {
         prepared = prepareModel(body.scene, asset);
         // Visibility + picking structures before the first frame (muscles only by default).
         applyLayers(prepared, editorStore.getState().doc.layers);
@@ -130,18 +118,39 @@ export function AnatomyModel({ asset }: { asset: AnatomyAssetDefinition }) {
     invalidate();
   }, [model, report, anchors, asset, setSummary, invalidate]);
 
-  // ── Body-system layers ─────────────────────────────────────────────
+  // ── Body-system layers (optional system files are loaded on first use) ──
+  const [extraVersion, setExtraVersion] = useState(0);
   useEffect(() => {
     if (!model) return;
+    const loaded = new Set<string>();
+    const ensureFiles = (layers: IllustrationDoc["layers"]) => {
+      for (const [sys, url] of Object.entries(asset.layerUrls ?? {})) {
+        if (!url || loaded.has(sys) || !layers[sys as keyof typeof layers]) continue;
+        loaded.add(sys);
+        loadGltf(url, { renderer: gl })
+          .then((gltf) => {
+            attachSystemFile(model, gltf.scene);
+            applyLayers(model, editorStore.getState().doc.layers);
+            setExtraVersion((v) => v + 1);
+            invalidate();
+          })
+          .catch((err: unknown) => {
+            loaded.delete(sys);
+            console.error("[muscle-studio] optional layer failed", sys, err);
+          });
+      }
+    };
     applyLayers(model, editorStore.getState().doc.layers);
+    ensureFiles(editorStore.getState().doc.layers);
     invalidate();
     return editorStore.subscribe((st, prev) => {
       if (st.doc.layers !== prev.doc.layers) {
+        ensureFiles(st.doc.layers);
         applyLayers(model, st.doc.layers);
         invalidate();
       }
     });
-  }, [model, invalidate]);
+  }, [model, asset, gl, invalidate]);
 
   // ── Materials (cached per model, disposed with it) ────────────────
   const library = useMemo(() => (model ? new MaterialLibrary() : null), [model]);
@@ -175,7 +184,7 @@ export function AnatomyModel({ asset }: { asset: AnatomyAssetDefinition }) {
       unsubscribe();
       restoreOriginalMaterials(model);
     };
-  }, [model, report, library, invalidate]);
+  }, [model, report, library, invalidate, extraVersion]);
 
   // ── Pointer interaction ───────────────────────────────────────────
   const setCursor = (c: string) => setCanvasCursor(gl, c);
@@ -185,7 +194,13 @@ export function AnatomyModel({ asset }: { asset: AnatomyAssetDefinition }) {
     const mapping = report?.byMesh.get(e.object.uuid);
     editorStore.getState().setHovered(mapping?.muscleId ?? null);
     // Non-muscle structures (bones, organs…) show their name but are not paintable.
-    const structure = mapping ? null : (model?.meshNames.get(e.object.uuid) ?? null);
+    const ud = e.object.userData as { ar?: string; source?: string; side?: string };
+    // Z-Anatomy structures carry their Arabic name in the file.
+    const structure = mapping
+      ? null
+      : ud.ar
+        ? `za:${JSON.stringify({ ar: ud.ar, en: (ud.source ?? "").replace(/_/g, " ").replace(/[()]/g, ""), side: ud.side ?? "m" })}`
+        : (model?.meshNames.get(e.object.uuid) ?? null);
     useAssetStore.getState().setHoveredStructure(structure);
     setCursor(mapping ? "pointer" : "grab");
   };

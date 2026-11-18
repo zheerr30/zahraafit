@@ -23,7 +23,16 @@ export const STUDIO_ANATOMY_CREDIT =
 
 /** Short credit used on exported images, where space is limited. */
 export const OPEN_ANATOMY_SHORT_CREDIT =
-  "Anatomy: BodyParts3D © DBCLS (CC BY 4.0) · open-anatomy-3d · HuBMAP HRA · MakeHuman";
+  "Anatomy: Z-Anatomy (CC BY-SA 4.0) · BodyParts3D © DBCLS · female proportions: open-anatomy-3d";
+
+export const ZANATOMY_ATTRIBUTION: AssetAttribution = {
+  credit:
+    "Z-Anatomy — The libre 3D atlas of anatomy (Gauthier Kervyn et al.), CC BY-SA 4.0, based on BodyParts3D © DBCLS. " +
+    "Female variant: skeletal proportions from open-anatomy-3d (CC BY 4.0).",
+  license: "CC BY-SA 4.0",
+  licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
+  sourceUrl: "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+};
 
 export const OPEN_ANATOMY_ATTRIBUTION: AssetAttribution = {
   credit: STUDIO_ANATOMY_CREDIT,
@@ -35,48 +44,33 @@ export const OPEN_ANATOMY_ATTRIBUTION: AssetAttribution = {
 /** Upstream commit the bundled files were copied from (see data/models/open-anatomy-3d/SOURCE_COMMIT). */
 export const OPEN_ANATOMY_COMMIT = "c050aa7b1bc56ceed668199b01ea017341928d7b";
 
-/** Phase 1 region model (back & shoulders): Z-Anatomy, share-alike. */
+/** The anatomical model of the whole app: Z-Anatomy, share-alike. */
 export const ZANATOMY_CREDIT =
-  "Z-Anatomy models (Gauthier Kervyn / Z-Anatomy, CC BY-SA 4.0), based on BodyParts3D © DBCLS. " +
-  "Region extract, subdivision and appearance data by MUSCLE STUDIO 3D, CC BY-SA 4.0.";
+  "Z-Anatomy — The libre 3D atlas of anatomy — CC-BY-SA 4.0 (Gauthier Kervyn, Marcin Zielinski, Lluis Vinent), " +
+  "based on BodyParts3D — The Database Center for Life Science. Exported and prepared for the web by MUSCLE STUDIO 3D, CC BY-SA 4.0.";
 
 export const SOURCES = [
   {
     name: "Z-Anatomy",
-    owner: "Gauthier Kervyn / Z-Anatomy (تطبيق Lluís Vinent Juanico) — مبني على BodyParts3D",
+    owner: "Gauthier Kervyn / Z-Anatomy (Marcin Zielinski, Lluis Vinent) — built on BodyParts3D",
     license: "CC BY-SA 4.0",
     url: "https://github.com/Z-Anatomy/Models-of-human-anatomy",
     usage:
-      "نموذج الظهر والكتفين: مصدَّر من ملف Blender الأصلي دون تعديل الهندسة — العضلات المفصولة وأوتارها المرسومة والعظام ومواضع المنشأ والمرتكز والأربطة والأعصاب، مع معرّفات TA2 والأسماء اللاتينية والتسلسل التشريحي. الملف المشتق back-shoulders-za.glb مرخّص CC BY-SA 4.0 (شرط المشاركة بالمثل). التعريفات الإنجليزية من Wikipedia (CC BY-SA 3.0).",
+      "النموذج التشريحي للتطبيق كله (الأطلس والمحرّر، ذكر وأنثى): مصدَّر من ملف Blender الأصلي دون تعديل الهندسة — كل عضلة مستقلة بأوتارها المرسومة، والعظام والغضاريف، والأربطة، واللفافات، ومواضع المنشأ والمرتكز، والأعصاب، والأعضاء، والأوعية، والجلد، مع معرّفات TA2 والأسماء اللاتينية والتسلسل التشريحي. ملفات public/models/zanatomy مرخّصة CC BY-SA 4.0 (شرط المشاركة بالمثل). التعريفات الإنجليزية من Wikipedia (CC BY-SA 3.0).",
   },
   {
     name: "BodyParts3D 4.0",
     owner: "© The Database Center for Life Science (DBCLS)",
     license: "CC BY 4.0",
     url: "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/",
-    usage:
-      "المصدر الأساسي: العضلات المفصولة (51 وحدة لكل جانب) والعضلات الأخرى، استُخرجت مباشرة من ملفات OBJ الأصلية، ومنها أيضًا العظام والأعضاء والأوعية في النموذجين.",
-  },
-  {
-    name: "Human Reference Atlas — 3D Reference Organ Set (united female v1.10)",
-    owner: "HuBMAP / CNS, Indiana University",
-    license: "CC BY 4.0",
-    url: "https://cdn.humanatlas.io/digital-objects/ref-organ/united-female/v1.10/",
-    usage: "الأعضاء الأنثوية الخاصة في النموذج الأنثوي.",
-  },
-  {
-    name: "MakeHuman (hm08 base mesh)",
-    owner: "MakeHuman community",
-    license: "CC0 1.0",
-    url: "https://github.com/makehumancommunity/makehuman",
-    usage: "سطح جسم النموذج الأنثوي.",
+    usage: "النموذج الأصلي الذي بُني عليه Z-Anatomy.",
   },
   {
     name: "open-anatomy-3d",
-    owner: "MervinR07",
-    license: "النماذج والفهرس: CC BY 4.0 · الكود: MIT",
+    owner: "MervinR07 (female body from MakeHuman, CC0)",
+    license: "CC BY 4.0",
     url: "https://github.com/MervinR07/open-anatomy-3d",
     usage:
-      "الجسم المرجعي (العظام والجلد والأعضاء والأوعية والأعصاب)، ونِسَب الهيكل العظمي الأنثوي التي لُوئمت معها العضلات المفصولة. يُستخدم ملفاه الأصليان دون تعديل.",
+      "نِسَب الهيكل العظمي الأنثوي فقط: يُلاءم تشريح Z-Anatomy مع هيكله الأنثوي بتحويل Thin-Plate Spline لإنتاج النموذج الأنثوي (تقريب). ملفاته لا تُعرض في التطبيق.",
   },
 ] as const;

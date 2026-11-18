@@ -7,7 +7,7 @@ import { cn } from "@/components/ui/cn";
 
 const NAV = [
   { href: "/", label: "الرئيسية" },
-  { href: "/back", label: "الظهر والكتفان" },
+  { href: "/atlas", label: "الأطلس التشريحي" },
   { href: "/projects", label: "الرسوم المحفوظة" },
   { href: "/library", label: "مكتبة العضلات" },
   { href: "/setup", label: "الإعدادات" },
@@ -54,10 +54,9 @@ export function AppFooter() {
   return (
     <footer className="border-t border-line px-4 py-6 text-center text-xs leading-relaxed text-muted">
       <p>
-        العضلات: BodyParts3D © The Database Center for Life Science. الجسم المرجعي وشكل الجسم الأنثوي: Open Anatomy 3D
-        (BodyParts3D و HuBMAP HRA و MakeHuman). الرخصة{" "}
-        <a href="https://creativecommons.org/licenses/by/4.0/" className="text-accent-2 hover:underline" target="_blank" rel="noreferrer">
-          CC BY 4.0
+        النموذج التشريحي: Z-Anatomy (مبني على BodyParts3D © DBCLS)، ونِسَب الهيكل الأنثوي من open-anatomy-3d. الرخصة{" "}
+        <a href="https://creativecommons.org/licenses/by-sa/4.0/" className="text-accent-2 hover:underline" target="_blank" rel="noreferrer">
+          CC BY-SA 4.0
         </a>
         .{" "}
         <Link href="/credits" className="text-accent-2 hover:underline">

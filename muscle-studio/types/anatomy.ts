@@ -16,7 +16,7 @@ export type Gender = "male" | "female";
  * selectable BodyParts3D muscles; "muscles_context" the remaining BodyParts3D
  * muscles (not separated); the rest come from the Open Anatomy 3D body.
  */
-export const SYSTEMS = ["muscles", "muscles_context", "skeleton", "skin", "organs", "vessels", "nerves"] as const;
+export const SYSTEMS = ["muscles", "muscles_context", "skeleton", "fasciae", "skin", "organs", "vessels", "nerves"] as const;
 export type SystemId = (typeof SYSTEMS)[number];
 
 /** Which side of the body a mesh belongs to (from the model's perspective). */
@@ -90,6 +90,8 @@ export interface AnatomyAssetDefinition {
   rotation?: [number, number, number];
   /** Optional GLB holding the separated muscles; it replaces the body's own "muscles" node. */
   musclesUrl?: string;
+  /** Optional system files (nerves, organs, vessels, skin), loaded when their layer is shown. */
+  layerUrls?: Partial<Record<"nerves" | "organs" | "vessels" | "skin", string>>;
   /** Model-specific mesh name → muscle id overrides (exact mesh names). */
   meshMap?: Record<string, string>;
   /** Mesh names that should be treated as non-muscle structures. */

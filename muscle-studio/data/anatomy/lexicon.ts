@@ -15,6 +15,7 @@ export const SYSTEM_NAMES: Record<SystemId, LocalizedName> = {
   muscles: { ar: "العضلات المفصولة", en: "Separated muscles" },
   muscles_context: { ar: "عضلات أخرى غير مفصولة", en: "Other muscles (not separated)" },
   skeleton: { ar: "الهيكل العظمي", en: "Skeleton" },
+  fasciae: { ar: "اللفافات والجرابات", en: "Fasciae & bursae" },
   skin: { ar: "الجلد", en: "Skin" },
   organs: { ar: "الأعضاء الداخلية", en: "Organs" },
   vessels: { ar: "الأوعية الدموية", en: "Vessels" },
@@ -26,7 +27,7 @@ export const SIDE_NAMES: Record<Exclude<BodySide, "center">, LocalizedName> = {
   right: { ar: "الجانب الأيمن", en: "right" },
 };
 
-/** Non-separated BodyParts3D muscle groups (pipeline/bodyparts3d/units.mjs CONTEXT). */
+/** Non-separated BodyParts3D muscle groups (legacy BodyParts3D build, kept for old saved projects). */
 const CONTEXT_AR: Record<string, { ar: string; en: string }> = {
   ctx_neck_other: { ar: "عضلات العنق الأخرى (الأخمعية واللامية والجلدية العنقية…)", en: "Other neck muscles" },
   ctx_shoulder_other: { ar: "العضلة تحت الكتف والمنشاريتان الخلفيتان وتحت الترقوة", en: "Subscapularis, serratus posterior, subclavius" },

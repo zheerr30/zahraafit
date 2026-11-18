@@ -1,42 +1,35 @@
-import { OPEN_ANATOMY_ATTRIBUTION } from "@/lib/attribution";
+import { ZANATOMY_ATTRIBUTION } from "@/lib/attribution";
 import type { AnatomyAssetDefinition, Gender, ViewId } from "@/types/anatomy";
 
 /**
- * Anatomical asset manifest.
+ * Anatomical asset manifest — one model, one visual standard for the whole app.
  *
- * Each body = the original, unmodified Open Anatomy 3D GLB (skin, skeleton,
- * organs, vessels, nerves) + a BodyParts3D muscles GLB built by
- * pipeline/bodyparts3d, whose "muscles" (separated, selectable) and
- * "muscles_context" nodes replace the body's own merged muscle groups. Both
- * files share one coordinate frame. If either file fails to load the editor
- * shows an error; it never substitutes other geometry.
+ * Both bodies are the original Z-Anatomy Blender model exported without
+ * changing the geometry (pipeline/blender/export_body.py + postprocess-body.mjs):
+ * core.glb holds muscles, tendons, ligaments, fasciae and bones; nerves,
+ * organs, vessels and skin are separate files loaded when their layer is
+ * switched on. The female body is the same anatomy warped to female skeletal
+ * proportions (approximation; no open female musculature exists). If a file
+ * fails to load the editor shows an error; it never substitutes other geometry.
  */
-export const ANATOMY_ASSETS: AnatomyAssetDefinition[] = [
-  {
-    id: "bodyparts3d-male",
-    label: "BodyParts3D · نموذج ذكر",
-    gender: "male",
-    layer: "full-body",
-    url: "/models/open-anatomy-3d/anatomy-male.glb",
-    musclesUrl: "/models/bodyparts3d/muscles-male.glb",
-    views: ["front", "back", "left", "right"],
-    priority: 10,
-    hasSystems: true,
-    attribution: OPEN_ANATOMY_ATTRIBUTION,
-  },
-  {
-    id: "bodyparts3d-female",
-    label: "BodyParts3D · نموذج أنثى",
-    gender: "female",
-    layer: "full-body",
-    url: "/models/open-anatomy-3d/anatomy-female.glb",
-    musclesUrl: "/models/bodyparts3d/muscles-female.glb",
-    views: ["front", "back", "left", "right"],
-    priority: 10,
-    hasSystems: true,
-    attribution: OPEN_ANATOMY_ATTRIBUTION,
-  },
-];
+const zaParts = (sex: Gender) => ({
+  nerves: `/models/zanatomy/${sex}/nerves.glb`,
+  organs: `/models/zanatomy/${sex}/organs.glb`,
+  vessels: `/models/zanatomy/${sex}/vessels.glb`,
+  skin: `/models/zanatomy/${sex}/skin.glb`,
+});
+export const ANATOMY_ASSETS: AnatomyAssetDefinition[] = (["male", "female"] as Gender[]).map((g) => ({
+  id: `zanatomy-${g}`,
+  label: g === "male" ? "Z-Anatomy · نموذج ذكر" : "Z-Anatomy · نموذج أنثى (تقريب)",
+  gender: g,
+  layer: "full-body",
+  url: `/models/zanatomy/${g}/core.glb`,
+  layerUrls: zaParts(g),
+  views: ["front", "back", "left", "right"],
+  priority: 10,
+  hasSystems: true,
+  attribution: ZANATOMY_ATTRIBUTION,
+}));
 
 export function assetsForGender(gender: Gender): AnatomyAssetDefinition[] {
   return ANATOMY_ASSETS.filter((a) => a.gender === gender).sort((a, b) => a.priority - b.priority);

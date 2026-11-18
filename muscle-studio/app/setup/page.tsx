@@ -23,8 +23,8 @@ export default function SetupPage() {
           <header>
             <h1 className="text-2xl font-bold text-fg">الإعدادات والنماذج</h1>
             <p className="mt-1">
-              العضلات مستخرجة من BodyParts3D كشبكات مستقلة بشكلها التشريحي الأصلي، والجسم المرجعي (العظام والجلد والأعضاء) من
-              Open Anatomy 3D. إذا تعذّر تحميل أي ملف تظهر رسالة خطأ واضحة، ولا يُستبدل أبدًا بمجسّم هندسي أو بديل.
+              النموذج التشريحي للتطبيق كله هو Z-Anatomy، مصدَّرًا من ملف Blender الأصلي دون تعديل الهندسة. إذا تعذّر تحميل أي ملف
+              تظهر رسالة خطأ واضحة، ولا يُستبدل أبدًا بمجسّم هندسي أو بديل.
             </p>
           </header>
 
@@ -32,13 +32,15 @@ export default function SetupPage() {
             <h2 className="mb-2 text-base font-semibold text-fg">الملفات</h2>
             <ul className="space-y-1">
               <li>
-                <Code>public/models/bodyparts3d/muscles-male.glb</Code> و<Code>muscles-female.glb</Code> — العضلات المفصولة
+                <Code>public/models/zanatomy/male/core.glb</Code> و<Code>female/core.glb</Code> — العضلات والأوتار والأربطة
+                واللفافات والعظام
               </li>
               <li>
-                <Code>public/models/open-anatomy-3d/anatomy-male.glb</Code> و<Code>anatomy-female.glb</Code> — الجسم المرجعي
+                <Code>attachments.glb</Code>، <Code>nerves.glb</Code>، <Code>organs.glb</Code>، <Code>vessels.glb</Code>،{" "}
+                <Code>skin.glb</Code> — تُحمَّل عند تشغيل طبقتها
               </li>
               <li>
-                تقرير البناء: <Code>public/models/bodyparts3d/build-report.json</Code>
+                تقرير البناء: <Code>public/models/zanatomy/build-report.json</Code>
               </li>
             </ul>
           </section>
@@ -46,31 +48,18 @@ export default function SetupPage() {
           <section>
             <h2 className="mb-2 text-base font-semibold text-fg">ما يحتويه النموذج</h2>
             <ul className="list-disc space-y-1 ps-5">
-              <li>
-                51 عضلة أو جزءًا مسمّى، شبكة مستقلة لكل جانب (102 شبكة)، منها أجزاء الدالية الثلاثة وأجزاء شبه المنحرفة الثلاثة
-                وأجزاء الصدرية الكبرى الثلاثة.
-              </li>
-              <li>بقية عضلات BodyParts3D (378 ملفًا مستخدمًا إجمالًا) تظهر للعرض فقط في طبقة «عضلات أخرى غير مفصولة».</li>
-              <li>
-                غير موجودة في BodyParts3D 4.0 أصلًا: العضلة الظهرية العريضة، والمستقيمة البطنية، والمائلة الداخلية، والمستعرضة
-                البطنية.{" "}
-                <Link href="/library" className="text-accent-2 hover:underline">
-                  جدول التغطية الكامل
-                </Link>
-                .
-              </li>
-              <li>
-                BodyParts3D جسم ذكر واحد. النموذج الأنثوي هو العضلات نفسها بعد نقل تشوّه الجسم الأنثوي من Open Anatomy 3D إليها،
-                وليس تشريحًا أنثويًا مستقلًا.
-              </li>
+              <li>233 عضلة مستقلة لكل جانب في المناطق العشر، كلها قابلة للتحديد في <Link href="/atlas" className="text-accent-2 hover:underline">الأطلس التشريحي</Link>.</li>
+              <li>المحرّر يربط منها 54 وحدة قابلة للتلوين (منها الظهرية العريضة والمستقيمة البطنية والمائلة الداخلية).</li>
+              <li>النموذج الأنثوي تقريب: التشريح نفسه بنِسَب هيكل عظمي أنثوي.</li>
             </ul>
           </section>
 
           <section>
             <h2 className="mb-2 text-base font-semibold text-fg">إعادة البناء</h2>
             <p>
-              <Code>node pipeline/bodyparts3d/build.mjs --bp3d &lt;مجلد BodyParts3D&gt;</Code> — التفاصيل في
-              <Code>pipeline/bodyparts3d/README.md</Code>.
+              <Code>blender -b Startup.blend --python pipeline/blender/export_body.py -- TA2.csv &lt;out&gt;</Code> ثم{" "}
+              <Code>node pipeline/blender/postprocess-body.mjs &lt;out&gt; public/models/zanatomy</Code> — التفاصيل في
+              <Code>pipeline/zanatomy/README.md</Code>.
             </p>
           </section>
         </article>

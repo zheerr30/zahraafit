@@ -14,9 +14,10 @@ import { IconReset, IconUpload } from "@/components/ui/icons";
 import { AssetInspector } from "./AssetInspector";
 
 const SYSTEM_HINTS: Record<(typeof SYSTEMS)[number], string> = {
-  muscles: "51 عضلة وجزءًا قابلة للتلوين، لكل جانب",
-  muscles_context: "بقية عضلات BodyParts3D للعرض فقط",
-  skeleton: "العظام والفقرات",
+  muscles: "54 عضلة وجزءًا قابلة للتلوين، لكل جانب",
+  muscles_context: "بقية عضلات Z-Anatomy والأوتار، للعرض",
+  skeleton: "العظام والغضاريف والأربطة",
+  fasciae: "اللفافات والجرابات وأغماد الأوتار (تغطي العضلات)",
   skin: "سطح الجسم بشفافية",
   organs: "القلب والرئتان والأحشاء",
   vessels: "الشرايين والأوردة",

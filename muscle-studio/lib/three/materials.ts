@@ -1,6 +1,7 @@
 import { Color, MeshStandardMaterial, type MeshPhysicalMaterial, type ShaderMaterial } from "three";
 import { createMuscleMaterial, HIGHLIGHT_LOOK, REALISTIC_LOOK } from "./muscleMaterial";
 import { createSkinMaterial } from "./skinMaterial";
+import { createTissueMaterial, type TissueKind } from "./tissue";
 
 export type MaterialVariant = "normal" | "hover";
 export type MuscleLookName = "realistic" | "highlight";
@@ -24,6 +25,19 @@ export class MaterialLibrary {
     if (!mat) {
       mat = createMuscleMaterial(hex, LOOKS[look], variant === "hover");
       this.muscleCache.set(key, mat);
+    }
+    return mat;
+  }
+
+  private tissueCache = new Map<string, MeshPhysicalMaterial>();
+
+  /** Shared material of a non-muscle tissue (the same standard as the atlas). */
+  tissue(t: TissueKind, vertexColors = false): MeshPhysicalMaterial {
+    const key = `${t}|${vertexColors}`;
+    let mat = this.tissueCache.get(key);
+    if (!mat) {
+      mat = createTissueMaterial(t, { vertexColors });
+      this.tissueCache.set(key, mat);
     }
     return mat;
   }
@@ -63,6 +77,8 @@ export class MaterialLibrary {
     this.cache.clear();
     for (const mat of this.muscleCache.values()) mat.dispose();
     this.muscleCache.clear();
+    for (const mat of this.tissueCache.values()) mat.dispose();
+    this.tissueCache.clear();
     this.skinMaterial?.dispose();
     this.skinMaterial = null;
   }

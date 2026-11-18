@@ -87,9 +87,6 @@ export function AssetStatusList() {
             <div className="min-w-0">
               <p className="truncate text-sm text-fg">{a.label}</p>
               <p dir="ltr" className="truncate text-end font-mono text-[11px] text-muted">
-                public{a.musclesUrl}
-              </p>
-              <p dir="ltr" className="truncate text-end font-mono text-[11px] text-muted">
                 public{a.url}
               </p>
             </div>

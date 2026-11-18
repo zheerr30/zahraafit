@@ -22,8 +22,8 @@ describe("muscle database", () => {
     expect(REGION_DEFINITIONS.map((r) => r.id)).toEqual([...REGIONS]);
   });
 
-  it("has one entry per separated BodyParts3D unit", () => {
-    expect(MUSCLES).toHaveLength(51);
+  it("has one entry per editor unit (Z-Anatomy meshes)", () => {
+    expect(MUSCLES).toHaveLength(54);
     for (const m of MUSCLES) {
       expect(m.includes.length, m.id).toBeGreaterThan(0);
       for (const i of m.includes) expect(i.ar).toMatch(/[\u0600-\u06ff]/);
@@ -60,10 +60,10 @@ describe("searchMuscles", () => {
 });
 
 describe("resolveAsset", () => {
-  it("resolves the BodyParts3D muscles + reference body for each gender", () => {
-    expect(resolveAsset("male", "back")?.id).toBe("bodyparts3d-male");
-    expect(resolveAsset("female", "front")?.id).toBe("bodyparts3d-female");
-    expect(ANATOMY_ASSETS.every((a) => a.musclesUrl?.startsWith("/models/bodyparts3d/"))).toBe(true);
-    expect(ANATOMY_ASSETS.every((a) => a.attribution?.license === "CC BY 4.0")).toBe(true);
+  it("resolves the Z-Anatomy body for each gender", () => {
+    expect(resolveAsset("male", "back")?.id).toBe("zanatomy-male");
+    expect(resolveAsset("female", "front")?.id).toBe("zanatomy-female");
+    expect(ANATOMY_ASSETS.every((a) => a.url.startsWith("/models/zanatomy/"))).toBe(true);
+    expect(ANATOMY_ASSETS.every((a) => a.attribution?.license === "CC BY-SA 4.0")).toBe(true);
   });
 });

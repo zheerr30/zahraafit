@@ -1,18 +1,9 @@
-import {
-  Box3,
-  Color,
-  DoubleSide,
-  Mesh,
-  MeshPhysicalMaterial,
-  Raycaster,
-  Vector3,
-  type Material,
-  type Object3D,
-} from "three";
+import { Box3, Color, Mesh, MeshPhysicalMaterial, Raycaster, Vector3, type Material, type Object3D } from "three";
 import { acceleratedRaycast, computeBoundsTree, disposeBoundsTree } from "three-mesh-bvh";
 import { REGION_MUSCLE_BY_ID, type RegionLayer } from "@/data/region/backShoulders";
 import { dequantizeMesh } from "@/lib/three/anatomyModel";
 import { createMuscleMaterial, HIGHLIGHT_LOOK, REALISTIC_LOOK, setMuscleLook } from "@/lib/three/muscleMaterial";
+import { createTissueMaterial, muscleTone, TISSUE, tissueOf } from "@/lib/three/tissue";
 import type { DepthMode, PickedStructure } from "@/stores/backStore";
 
 export type RegionKind = PickedStructure["kind"];
@@ -20,13 +11,15 @@ export type RegionKind = PickedStructure["kind"];
 export interface RegionMesh {
   mesh: Mesh;
   kind: RegionKind;
-  /** Unit id (units, attachments) or Z-Anatomy source name (everything else). */
+  /** Unit id (muscles, attachments) or Z-Anatomy source name (everything else). */
   id: string;
   side: "l" | "r" | "m";
   ar: string;
   en: string;
   layer: RegionLayer;
   depth: 1 | 2 | 3;
+  /** Study region (head-neck, chest, back, shoulders, arms, abdomen, pelvis, thigh, adductors, legs). */
+  region: string;
   role?: "origin" | "insertion";
   bone?: string;
   /** Preserved Z-Anatomy metadata (node extras of the Blender export). */
@@ -37,6 +30,7 @@ export interface RegionMesh {
     latin?: string;
     definition?: string;
     materials: string[];
+    fibre?: string;
   };
   baseHex: string;
   /** Current / target opacity for fades. */
@@ -45,130 +39,99 @@ export interface RegionMesh {
   styleKey: string;
 }
 
+/** One selectable muscle (both sides). */
+export interface RegionUnit {
+  id: string;
+  ar: string;
+  en: string;
+  region: string;
+  depth: 1 | 2 | 3;
+}
+
 export interface RegionModel {
   meshes: RegionMesh[];
   byUnit: Map<string, RegionMesh[]>;
+  units: Map<string, RegionUnit>;
   bounds: Box3;
 }
 
 export const COLORS = {
   highlight: "#E8602C",
-  origin: "#B0203A",
-  insertion: "#2F6BDB",
-  muscle: "#C2575E",
-  context: "#AE5257",
-  bone: "#E6DCC5",
-  disc: "#C9CFC4",
-  tendon: "#E9E2D6",
-  bursa: "#B9CEDB",
-  nerve: "#E8C94C",
+  origin: TISSUE.origin,
+  insertion: TISSUE.insertion,
+  nerve: TISSUE.nerve,
 } as const;
+
+export const REGIONS: { id: string; ar: string }[] = [
+  { id: "head-neck", ar: "الرأس والعنق" },
+  { id: "chest", ar: "الصدر" },
+  { id: "back", ar: "الظهر" },
+  { id: "shoulders", ar: "الكتفان" },
+  { id: "arms", ar: "الذراعان والساعدان" },
+  { id: "abdomen", ar: "البطن والجذع" },
+  { id: "pelvis", ar: "الحوض والألوية" },
+  { id: "thigh", ar: "الفخذ: الرباعية وأوتار المأبض" },
+  { id: "adductors", ar: "المقرِّبات" },
+  { id: "legs", ar: "الساق والقدم" },
+];
 
 const LAYER_OF: Record<RegionKind, RegionLayer> = {
   unit: "muscles",
-  context: "muscles_context",
+  tendon: "tendons",
+  ligament: "tendons",
+  fascia: "fasciae",
   bone: "bones",
   attachment: "attachments",
-  tendon: "tendons",
   nerve: "nerves",
 };
-
-/** Depth of the non-selectable muscles, seen from behind (1 superficial … 3 deep). */
-const CONTEXT_DEPTH: [RegExp, 1 | 2 | 3][] = [
-  [/^(Multifidus|Interspinales|Levatores|Semispinalis|Rectus_posterior|Obliquus_(superior|inferior)_capitis|Quadratus_lumborum|External_intercostal)/, 3],
-  [/^(Splenius|Scalenus|Serratus|Pectoralis_minor|Subclavius|Brachialis|Coracobrachialis|Medial_head_of_triceps)/, 2],
-];
-const contextDepth = (src: string): 1 | 2 | 3 => CONTEXT_DEPTH.find(([re]) => re.test(src))?.[1] ?? 1;
 
 /** Readable English from a Z-Anatomy name: "Long_head_of_triceps_brachii" → "Long head of triceps brachii". */
 const english = (src: string) => src.replace(/[()]/g, "").replace(/_/g, " ");
 
-/** Small deterministic tone variation so neighbouring muscles read as separate tissue. */
-function tone(base: string, key: string): string {
-  let h = 0;
-  for (const ch of key) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
-  const c = new Color(base);
-  c.offsetHSL(((h % 7) - 3) * 0.004, (((h >> 3) % 5) - 2) * 0.02, (((h >> 6) % 7) - 3) * 0.01);
-  return `#${c.getHexString()}`;
-}
+type Extras = {
+  kind?: string; id?: string; side?: "l" | "r" | "m"; source?: string; ar?: string; depth?: 1 | 2 | 3; region?: string;
+  role?: "origin" | "insertion"; bone?: string; za_name?: string; hierarchy?: string[]; ta2?: number; latin?: string;
+  definition?: string; materials?: string[]; fibre?: string;
+};
 
-function plainMaterial(kind: RegionKind, src: string, role?: string): MeshPhysicalMaterial {
-  const bursa = /bursa|sheath/i.test(src);
-  const disc = /Intervertebral_disc/.test(src);
-  const hex =
-    kind === "bone" ? (disc ? COLORS.disc : COLORS.bone)
-    : kind === "attachment" ? (role === "insertion" ? COLORS.insertion : COLORS.origin)
-    : kind === "nerve" ? COLORS.nerve
-    : bursa ? COLORS.bursa
-    : COLORS.tendon;
-  const mat = new MeshPhysicalMaterial({
-    color: new Color(hex),
-    roughness: kind === "bone" ? 0.62 : kind === "nerve" ? 0.42 : kind === "attachment" ? 0.55 : 0.34,
-    metalness: 0,
-    clearcoat: kind === "tendon" ? 0.45 : kind === "nerve" ? 0.3 : kind === "bone" ? 0.08 : 0,
-    clearcoatRoughness: 0.35,
-    sheen: kind === "bone" ? 0.25 : 0,
-    sheenColor: new Color("#fff6e6"),
-    envMapIntensity: 0.9,
-    side: kind === "tendon" ? DoubleSide : undefined,
-  });
-  if (kind === "attachment") {
-    // footprints are lifted 0.3 mm off the bone; polygon offset removes any remaining z-fighting
-    mat.polygonOffset = true;
-    mat.polygonOffsetFactor = -2;
-    mat.polygonOffsetUnits = -2;
-  }
-  if (bursa) {
-    mat.transparent = true;
-    mat.opacity = 0.55;
-  }
-  mat.userData.baseOpacity = bursa ? 0.55 : 1;
-  return mat;
-}
-
-export function prepareRegionModel(scene: Object3D): RegionModel {
-  const meshes: RegionMesh[] = [];
+/** Prepare the meshes of one loaded file (core, attachments or nerves). */
+export function prepareMeshes(scene: Object3D): RegionMesh[] {
+  const out: RegionMesh[] = [];
   scene.updateMatrixWorld(true);
   const all: Mesh[] = [];
   scene.traverse((o) => {
     if ((o as Mesh).isMesh) all.push(o as Mesh);
   });
   for (const mesh of all) {
-    const x = mesh.userData as {
-      kind?: RegionKind; id?: string; side?: "l" | "r" | "m"; source?: string; ar?: string; depth?: 1 | 2 | 3;
-      role?: "origin" | "insertion"; bone?: string;
-      za_name?: string; hierarchy?: string[]; ta2?: number; latin?: string; definition?: string; materials?: string[];
-    };
-    if (!x.kind || !x.id) continue;
+    const x = mesh.userData as Extras;
+    if (!x.kind || !x.id || !(x.kind in LAYER_OF)) continue;
+    const kind = x.kind as RegionKind;
     if (mesh.geometry.getAttribute("_fiber")) dequantizeMesh(mesh);
-    const unit = x.kind === "unit" || x.kind === "attachment" ? REGION_MUSCLE_BY_ID.get(x.id) : undefined;
+    const card = kind === "unit" || kind === "attachment" ? REGION_MUSCLE_BY_ID.get(x.id) : undefined;
     const source = x.source ?? x.id;
-    let baseHex = "";
+    let baseHex: string;
     let material: Material;
-    if (x.kind === "unit" || x.kind === "context") {
-      baseHex = tone(x.kind === "unit" ? COLORS.muscle : COLORS.context, x.kind === "unit" ? x.id : source);
+    if (kind === "unit") {
+      baseHex = muscleTone(x.id);
       material = createMuscleMaterial(baseHex, REALISTIC_LOOK, false);
     } else {
-      material = plainMaterial(x.kind, source, x.role);
-      if (x.kind === "bone" && mesh.geometry.getAttribute("color")) {
-        // the author's Bone / Cartilage faces travel as vertex colours
-        (material as MeshPhysicalMaterial).vertexColors = true;
-        (material as MeshPhysicalMaterial).color.set("#ffffff");
-      }
+      const t = tissueOf(kind, source, x.role)!;
+      material = createTissueMaterial(t, { vertexColors: kind === "bone" && !!mesh.geometry.getAttribute("color") });
       baseHex = `#${(material as MeshPhysicalMaterial).color.getHexString()}`;
     }
     mesh.material = material;
     mesh.raycast = acceleratedRaycast;
     computeBoundsTree.call(mesh.geometry);
-    meshes.push({
+    out.push({
       mesh,
-      kind: x.kind,
+      kind,
       id: x.id,
       side: x.side ?? "m",
-      ar: unit && x.kind === "unit" ? unit.ar : x.kind === "attachment" ? `${x.role === "insertion" ? "مرتكز" : "منشأ"} ${unit?.ar ?? x.id}` : (x.ar ?? english(source)),
-      en: unit && x.kind === "unit" ? unit.en : english(source),
-      layer: LAYER_OF[x.kind],
-      depth: x.kind === "unit" ? (x.depth ?? 1) : x.kind === "context" ? contextDepth(source) : 1,
+      ar: kind === "unit" ? (card?.ar ?? x.ar ?? english(source)) : (x.ar ?? english(source)),
+      en: kind === "unit" && card ? card.en : english(source),
+      layer: LAYER_OF[kind],
+      depth: kind === "unit" ? (x.depth ?? 1) : 1,
+      region: x.region ?? "other",
       role: x.role,
       bone: x.bone,
       meta: {
@@ -178,6 +141,7 @@ export function prepareRegionModel(scene: Object3D): RegionModel {
         latin: x.latin,
         definition: x.definition,
         materials: x.materials ?? [],
+        fibre: x.fibre,
       },
       baseHex,
       opacity: 1,
@@ -185,15 +149,35 @@ export function prepareRegionModel(scene: Object3D): RegionModel {
       styleKey: "",
     });
   }
-  const byUnit = new Map<string, RegionMesh[]>();
+  return out;
+}
+
+export function createRegionModel(): RegionModel {
+  return { meshes: [], byUnit: new Map(), units: new Map(), bounds: new Box3() };
+}
+
+/** Add prepared meshes (a newly loaded file) to the model. */
+export function addMeshes(model: RegionModel, meshes: RegionMesh[]): void {
   for (const m of meshes) {
-    if (m.kind !== "unit" && m.kind !== "attachment") continue;
-    if (!byUnit.has(m.id)) byUnit.set(m.id, []);
-    byUnit.get(m.id)!.push(m);
+    model.meshes.push(m);
+    if (m.kind === "unit" || m.kind === "attachment") {
+      if (!model.byUnit.has(m.id)) model.byUnit.set(m.id, []);
+      model.byUnit.get(m.id)!.push(m);
+    }
+    if (m.kind === "unit") {
+      const u = model.units.get(m.id);
+      if (!u) model.units.set(m.id, { id: m.id, ar: m.ar, en: m.en, region: m.region, depth: m.depth });
+      else if (m.depth < u.depth) u.depth = m.depth;
+      model.bounds.expandByObject(m.mesh);
+    }
   }
-  const bounds = new Box3();
-  for (const m of meshes) if (m.kind === "unit" || m.kind === "bone") bounds.expandByObject(m.mesh);
-  return { meshes, byUnit, bounds };
+}
+
+/** Back-compat helper (tests): prepare a whole scene as one model. */
+export function prepareRegionModel(scene: Object3D): RegionModel {
+  const model = createRegionModel();
+  addMeshes(model, prepareMeshes(scene));
+  return model;
 }
 
 export interface VisibilityState {
@@ -203,8 +187,6 @@ export interface VisibilityState {
   isolate: boolean;
   selected: PickedStructure | null;
 }
-
-const FASCIA = /thoracolumbar_fascia/i;
 
 /** Opacity of the surrounding anatomy while one structure is isolated. */
 export const GHOST = 0.13;
@@ -219,7 +201,7 @@ export function targetOpacity(m: RegionMesh, s: VisibilityState): number {
     if (m.kind === "bone") return s.layers.bones || s.layers.attachments ? 1 : GHOST; // the skeleton stays as reference
     if (m.kind === "attachment") return sel.kind === "unit" && m.id === sel.id ? 1 : 0;
     // the surrounding anatomy stays visible as a faint ghost (not pickable)
-    return shouldShow(m, { ...s, isolate: false }) ? GHOST : 0;
+    return m.kind === "unit" && shouldShow(m, { ...s, isolate: false }) ? GHOST : 0;
   }
   return shouldShow(m, s) ? 1 : 0;
 }
@@ -231,15 +213,15 @@ export function shouldShow(m: RegionMesh, s: VisibilityState): boolean {
   switch (m.kind) {
     case "unit":
       return s.layers.muscles && !s.hiddenUnits[m.id] && m.depth >= minDepth;
-    case "context":
-      return s.layers.muscles_context && m.depth >= minDepth;
     case "bone":
       return s.layers.bones;
     case "attachment":
       return s.layers.bones && (s.layers.attachments || (sel?.kind === "unit" && sel.id === m.id));
     case "tendon":
-      // the posterior thoracolumbar fascia covers the erector spinae
-      return s.layers.tendons && !(minDepth >= 2 && FASCIA.test(m.en.replace(/ /g, "_")));
+    case "ligament":
+      return s.layers.tendons && (m.kind === "ligament" ? s.layers.bones : true);
+    case "fascia":
+      return s.layers.fasciae;
     case "nerve":
       return s.layers.nerves;
   }
@@ -254,7 +236,7 @@ export function applyStyle(m: RegionMesh, selected: PickedStructure | null, hove
   if (key === m.styleKey) return false;
   m.styleKey = key;
   const mat = m.mesh.material as MeshPhysicalMaterial;
-  if (m.kind === "unit" || m.kind === "context") {
+  if (m.kind === "unit") {
     setMuscleLook(mat, isSel ? highlight : m.baseHex, isSel ? HIGHLIGHT_LOOK : REALISTIC_LOOK, isHover);
   } else if (m.kind !== "attachment") {
     const c = new Color(isSel ? highlight : m.baseHex);
@@ -286,7 +268,7 @@ export function stepFades(model: RegionModel, dt: number): boolean {
       mat.transparent = transparent;
       mat.needsUpdate = true;
     }
-    mat.depthWrite = m.opacity > 0.6 && m.target > GHOST;
+    mat.depthWrite = base >= 1 && m.opacity > 0.6 && m.target > GHOST;
     m.mesh.visible = m.opacity > 0.001;
   }
   return animating;
@@ -295,7 +277,7 @@ export function stepFades(model: RegionModel, dt: number): boolean {
 const raycaster = new Raycaster();
 raycaster.firstHitOnly = true;
 
-/** First visible structure under the pointer (fading-out meshes are not pickable). */
+/** First visible structure under the pointer (fading-out and ghosted meshes are not pickable). */
 export function pick(model: RegionModel, ray: Raycaster["ray"]): RegionMesh | null {
   raycaster.ray.copy(ray);
   let best: { m: RegionMesh; d: number } | null = null;
@@ -304,7 +286,6 @@ export function pick(model: RegionModel, ray: Raycaster["ray"]): RegionMesh | nu
     const hits = raycaster.intersectObject(m.mesh, false);
     if (hits.length && (!best || hits[0].distance < best.d)) best = { m, d: hits[0].distance };
   }
-  // A footprint is drawn on its bone: prefer it when it is hit at (almost) the same depth.
   return best?.m ?? null;
 }
 
@@ -315,6 +296,13 @@ export function unitBounds(model: RegionModel, unitId: string, side: "l" | "r" |
   const b = new Box3();
   for (const m of list) b.expandByObject(m.mesh);
   return b;
+}
+
+/** Bounds of all muscles of a study region. */
+export function regionBounds(model: RegionModel, region: string): Box3 | null {
+  const b = new Box3();
+  for (const m of model.meshes) if (m.kind === "unit" && m.region === region) b.expandByObject(m.mesh);
+  return b.isEmpty() ? null : b;
 }
 
 export function structureBounds(model: RegionModel, p: PickedStructure): Box3 | null {

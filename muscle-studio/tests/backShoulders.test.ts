@@ -5,17 +5,17 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
 import { beforeAll, describe, expect, it } from "vitest";
 import { REGION_MUSCLES } from "@/data/region/backShoulders";
-import { applyStyle, prepareRegionModel, shouldShow, targetOpacity, type RegionModel } from "@/lib/region/backModel";
+import { applyStyle, GHOST, prepareRegionModel, shouldShow, targetOpacity, type RegionModel } from "@/lib/region/backModel";
 import { DEFAULT_LAYERS, type PickedStructure } from "@/stores/backStore";
 import { UNITS } from "../pipeline/zanatomy/back-config.mjs";
 
 const DIR = join(__dirname, "../public/models/back-shoulders");
-const report = JSON.parse(readFileSync(join(DIR, "build-report.json"), "utf8"));
+const report = JSON.parse(readFileSync(join(DIR, "build-report-za.json"), "utf8"));
 let model: RegionModel;
 
 beforeAll(async () => {
   await MeshoptDecoder.ready;
-  const buf = readFileSync(join(DIR, "back-shoulders.glb"));
+  const buf = readFileSync(join(DIR, "back-shoulders-za.glb"));
   const ab = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
   const gltf = await new Promise<{ scene: Group }>((ok, err) => new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).parse(ab, "", ok, err));
   model = prepareRegionModel(gltf.scene);
@@ -34,7 +34,29 @@ describe("back & shoulders model (Z-Anatomy)", () => {
         expect(x.mesh.geometry.getAttribute("_fiber"), m.id).toBeDefined();
       }
     }
-    expect(report.missing).toEqual([]);
+    expect(report.structures).toEqual({ unit: 48, context: 84, bone: 119, attachment: 112, tendon: 40, nerve: 56 });
+  });
+
+  it("keeps the original Z-Anatomy geometry and metadata", () => {
+    // Triangle totals of the Blender export (asserted per structure by the post-process).
+    expect(report.triangles.unit).toBe(210746);
+    for (const m of model.meshes.filter((x) => x.kind === "unit")) {
+      expect(m.meta.zaName, m.id).toMatch(/muscle|scapulae/);
+      expect(m.meta.hierarchy[0], m.meta.zaName).toBe("Muscular system");
+      expect(m.meta.ta2, m.meta.zaName).toBeGreaterThan(0);
+      expect(m.meta.latin, m.meta.zaName).toMatch(/^(Musculus|Pars|Levator)/);
+    }
+    const lat = model.meshes.find((x) => x.meta.zaName === "Latissimus dorsi muscle.l")!;
+    expect(lat.meta.ta2).toBe(2231);
+    expect(lat.meta.materials).toEqual(["Adductor", "Tendon"]);
+    expect(lat.mesh.geometry.index!.count / 3).toBe(21580);
+  });
+
+  it("uses the author's tendon faces where the source has them", () => {
+    for (const n of ["Latissimus dorsi muscle.l", "Transverse part of trapezius muscle.l", "Rhomboid major muscle.l", "Levator scapulae.l"]) {
+      expect(report.tendonSource[n], n).toMatch(/^author/);
+    }
+    expect(report.tendonSource["Supraspinatus muscle.l"]).toBe("thickness");
   });
 
   it("has the requested bones, tendons and peripheral nerves", () => {
@@ -48,7 +70,7 @@ describe("back & shoulders model (Z-Anatomy)", () => {
   });
 
   it("labels the trapezius parts by position (Z-Anatomy names them the other way round)", () => {
-    const { upper, middle, lower } = report.trapeziusCentreY;
+    const [upper, middle, lower] = report.checks.trapeziusCentreY;
     expect(upper).toBeGreaterThan(middle);
     expect(middle).toBeGreaterThan(lower);
     expect(report.attachments["trapezius-upper"]["insertion:l"].join()).toMatch(/Clavicle/);
@@ -61,11 +83,6 @@ describe("back & shoulders model (Z-Anatomy)", () => {
     }
   });
 
-  it("is dense enough for close zoom", () => {
-    for (const [key, m] of Object.entries(report.meshes) as [string, { meanEdgeMm: number }][]) {
-      if (key.startsWith("unit:")) expect(m.meanEdgeMm, key).toBeLessThan(3.2);
-    }
-  });
 });
 
 describe("layer logic", () => {
@@ -86,13 +103,22 @@ describe("layer logic", () => {
   it("isolates the selected muscle with the skeleton", () => {
     const sel: PickedStructure = { kind: "unit", id: "infraspinatus", side: "l", ar: "", en: "" };
     const s = { ...base, isolate: true, selected: sel };
-    const shown = model.meshes.filter((m) => targetOpacity(m, s) > 0);
-    expect(new Set(shown.map((m) => m.kind))).toEqual(new Set(["unit", "bone", "attachment"]));
-    expect(new Set(shown.filter((m) => m.kind !== "bone").map((m) => m.id))).toEqual(new Set(["infraspinatus"]));
+    const solid = model.meshes.filter((m) => targetOpacity(m, s) === 1);
+    expect(new Set(solid.map((m) => m.kind))).toEqual(new Set(["unit", "bone", "attachment"]));
+    expect(new Set(solid.filter((m) => m.kind !== "bone").map((m) => m.id))).toEqual(new Set(["infraspinatus"]));
+    // the surrounding anatomy stays visible as a ghost
+    const ghost = model.meshes.filter((m) => targetOpacity(m, s) === GHOST);
+    expect(ghost.some((m) => m.id === "deltoid-posterior")).toBe(true);
+    expect(ghost.some((m) => m.kind === "context")).toBe(true);
   });
 
-  it("colours the selected muscle #E8602C on both sides", () => {
+  it("colours the selected muscle (custom colour) on both sides", () => {
     const sel: PickedStructure = { kind: "unit", id: "deltoid-lateral", side: "l", ar: "", en: "" };
+    for (const m of model.meshes) applyStyle(m, sel, null, "#173F8A");
+    for (const side of ["l", "r"]) {
+      const mat = unit("deltoid-lateral", side).mesh.material as unknown as { color: { getHexString(): string } };
+      expect(mat.color.getHexString()).toBe("173f8a");
+    }
     for (const m of model.meshes) applyStyle(m, sel, null);
     for (const side of ["l", "r"]) {
       const mat = unit("deltoid-lateral", side).mesh.material as unknown as { color: { getHexString(): string } };

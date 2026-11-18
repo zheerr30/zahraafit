@@ -29,6 +29,15 @@ export interface RegionMesh {
   depth: 1 | 2 | 3;
   role?: "origin" | "insertion";
   bone?: string;
+  /** Preserved Z-Anatomy metadata (node extras of the Blender export). */
+  meta: {
+    zaName: string;
+    hierarchy: string[];
+    ta2?: number;
+    latin?: string;
+    definition?: string;
+    materials: string[];
+  };
   baseHex: string;
   /** Current / target opacity for fades. */
   opacity: number;
@@ -125,7 +134,11 @@ export function prepareRegionModel(scene: Object3D): RegionModel {
     if ((o as Mesh).isMesh) all.push(o as Mesh);
   });
   for (const mesh of all) {
-    const x = mesh.userData as { kind?: RegionKind; id?: string; side?: "l" | "r" | "m"; source?: string; ar?: string; depth?: 1 | 2 | 3; role?: "origin" | "insertion"; bone?: string };
+    const x = mesh.userData as {
+      kind?: RegionKind; id?: string; side?: "l" | "r" | "m"; source?: string; ar?: string; depth?: 1 | 2 | 3;
+      role?: "origin" | "insertion"; bone?: string;
+      za_name?: string; hierarchy?: string[]; ta2?: number; latin?: string; definition?: string; materials?: string[];
+    };
     if (!x.kind || !x.id) continue;
     if (mesh.geometry.getAttribute("_fiber")) dequantizeMesh(mesh);
     const unit = x.kind === "unit" || x.kind === "attachment" ? REGION_MUSCLE_BY_ID.get(x.id) : undefined;
@@ -137,6 +150,11 @@ export function prepareRegionModel(scene: Object3D): RegionModel {
       material = createMuscleMaterial(baseHex, REALISTIC_LOOK, false);
     } else {
       material = plainMaterial(x.kind, source, x.role);
+      if (x.kind === "bone" && mesh.geometry.getAttribute("color")) {
+        // the author's Bone / Cartilage faces travel as vertex colours
+        (material as MeshPhysicalMaterial).vertexColors = true;
+        (material as MeshPhysicalMaterial).color.set("#ffffff");
+      }
       baseHex = `#${(material as MeshPhysicalMaterial).color.getHexString()}`;
     }
     mesh.material = material;
@@ -153,6 +171,14 @@ export function prepareRegionModel(scene: Object3D): RegionModel {
       depth: x.kind === "unit" ? (x.depth ?? 1) : x.kind === "context" ? contextDepth(source) : 1,
       role: x.role,
       bone: x.bone,
+      meta: {
+        zaName: x.za_name ?? source,
+        hierarchy: x.hierarchy ?? [],
+        ta2: x.ta2,
+        latin: x.latin,
+        definition: x.definition,
+        materials: x.materials ?? [],
+      },
       baseHex,
       opacity: 1,
       target: 1,
@@ -180,6 +206,9 @@ export interface VisibilityState {
 
 const FASCIA = /thoracolumbar_fascia/i;
 
+/** Opacity of the surrounding anatomy while one structure is isolated. */
+export const GHOST = 0.13;
+
 /** Target opacity (0 hidden … 1 shown) for the current layer / depth / isolation state. */
 export function targetOpacity(m: RegionMesh, s: VisibilityState): number {
   const sel = s.selected;
@@ -187,8 +216,10 @@ export function targetOpacity(m: RegionMesh, s: VisibilityState): number {
   if (s.isolate && sel) {
     // Showing a muscle's attachments: the muscle turns translucent over its footprints.
     if (isSelected) return m.kind === "unit" && s.layers.attachments ? 0.32 : 1;
-    if (m.kind === "bone") return 1; // the skeleton stays as reference
-    return m.kind === "attachment" && sel.kind === "unit" && m.id === sel.id ? 1 : 0;
+    if (m.kind === "bone") return s.layers.bones || s.layers.attachments ? 1 : GHOST; // the skeleton stays as reference
+    if (m.kind === "attachment") return sel.kind === "unit" && m.id === sel.id ? 1 : 0;
+    // the surrounding anatomy stays visible as a faint ghost (not pickable)
+    return shouldShow(m, { ...s, isolate: false }) ? GHOST : 0;
   }
   return shouldShow(m, s) ? 1 : 0;
 }
@@ -214,19 +245,19 @@ export function shouldShow(m: RegionMesh, s: VisibilityState): boolean {
   }
 }
 
-/** Colour / look of a mesh for the current selection and hover. */
-export function applyStyle(m: RegionMesh, selected: PickedStructure | null, hovered: PickedStructure | null): boolean {
+/** Colour / look of a mesh for the current selection, hover and highlight colour. */
+export function applyStyle(m: RegionMesh, selected: PickedStructure | null, hovered: PickedStructure | null, highlight: string = COLORS.highlight): boolean {
   const same = (p: PickedStructure | null) => !!p && p.kind === m.kind && p.id === m.id && (m.kind === "unit" || p.side === m.side);
   const isSel = same(selected);
   const isHover = same(hovered);
-  const key = `${isSel}|${isHover}`;
+  const key = `${isSel}|${isHover}|${isSel ? highlight : ""}`;
   if (key === m.styleKey) return false;
   m.styleKey = key;
   const mat = m.mesh.material as MeshPhysicalMaterial;
   if (m.kind === "unit" || m.kind === "context") {
-    setMuscleLook(mat, isSel ? COLORS.highlight : m.baseHex, isSel ? HIGHLIGHT_LOOK : REALISTIC_LOOK, isHover);
+    setMuscleLook(mat, isSel ? highlight : m.baseHex, isSel ? HIGHLIGHT_LOOK : REALISTIC_LOOK, isHover);
   } else if (m.kind !== "attachment") {
-    const c = new Color(isSel ? COLORS.highlight : m.baseHex);
+    const c = new Color(isSel ? highlight : m.baseHex);
     mat.color.copy(c);
     mat.emissive.copy(isHover ? c.clone().multiplyScalar(0.22) : new Color(0, 0, 0));
   } else {
@@ -255,7 +286,7 @@ export function stepFades(model: RegionModel, dt: number): boolean {
       mat.transparent = transparent;
       mat.needsUpdate = true;
     }
-    mat.depthWrite = m.opacity > 0.6;
+    mat.depthWrite = m.opacity > 0.6 && m.target > GHOST;
     m.mesh.visible = m.opacity > 0.001;
   }
   return animating;

@@ -12,7 +12,7 @@ export interface PickedStructure {
 }
 
 export type DepthMode = "all" | "no-superficial" | "deep";
-export type RegionView = "back" | "left" | "right" | "front";
+export type RegionView = "back" | "left" | "right" | "front" | "closeup";
 
 export type CameraCommand =
   | { type: "view"; view: RegionView; nonce: number }
@@ -40,6 +40,8 @@ interface BackState {
   showEnglish: boolean;
   background: "black" | "navy";
   autoRotate: boolean;
+  /** Colour of the selected structure (user-chosen). */
+  highlightColor: string;
   cameraCommand: CameraCommand | null;
   select: (p: PickedStructure | null) => void;
   selectUnit: (id: string, side?: "l" | "r" | "m") => void;
@@ -54,6 +56,7 @@ interface BackState {
   setShowEnglish: (v: boolean) => void;
   setBackground: (b: "black" | "navy") => void;
   setAutoRotate: (v: boolean) => void;
+  setHighlightColor: (hex: string) => void;
   view: (v: RegionView) => void;
   focus: (unitId: string, side?: "l" | "r" | "m" | null) => void;
   resetAll: () => void;
@@ -75,6 +78,7 @@ export const backStore = createStore<BackState>()((set, get) => ({
   showEnglish: false,
   background: "black",
   autoRotate: false,
+  highlightColor: "#E8602C",
   cameraCommand: null,
   select: (p) => set({ selected: p, isolate: p ? get().isolate : false }),
   selectUnit: (id, side = "l") => {
@@ -114,6 +118,7 @@ export const backStore = createStore<BackState>()((set, get) => ({
   setShowEnglish: (v) => set({ showEnglish: v }),
   setBackground: (b) => set({ background: b }),
   setAutoRotate: (v) => set({ autoRotate: v }),
+  setHighlightColor: (hex) => set({ highlightColor: /^#[0-9a-fA-F]{6}$/.test(hex) ? hex : "#E8602C" }),
   view: (v) => set({ cameraCommand: { type: "view", view: v, nonce: ++nonce }, autoRotate: false }),
   focus: (unitId, side = null) => set({ cameraCommand: { type: "focus", unitId, side, nonce: ++nonce } }),
   resetAll: () =>

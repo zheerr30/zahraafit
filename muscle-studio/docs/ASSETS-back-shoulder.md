@@ -1,7 +1,7 @@
 # Back & shoulder — source asset investigation (Blender)
 
-Status: **investigation complete, conversion not started** (waiting for review of the Blender screenshots).
-Date: 2026-11-17. Blender used: 4.0.2 (Ubuntu 24.04 package), GUI under Xvfb with software OpenGL.
+Status: **converted — the /back viewer runs on the original Z-Anatomy geometry** (see §7–§8).
+Investigation: 2026-11-17 · Conversion & prototype: 2026-11-18. Blender used: 4.0.2 (Ubuntu 24.04 package), GUI under Xvfb with software OpenGL.
 
 ## 1. Sources and what could be obtained
 
@@ -87,7 +87,7 @@ Missing patches will **not** be generated; the app will show only the patches th
 | BodyParts3D 4.0 | CC BY 4.0 (current README, 2025); Z-Anatomy cites the older CC BY-SA 2.1 JP | Allowed | "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International". |
 | TA2.csv | from the Z-Anatomy repo (CC BY-SA 4.0); terms from Terminologia Anatomica 2 | Allowed | Attribute if shipped. |
 
-## 5. Proposed conversion (after approval)
+## 5. Conversion plan (implemented — see §8)
 
 Blender script, run headless on `Startup.blend`:
 1. Select the region objects by exact name (muscles, bones, insertion patches, ligaments, nerves).
@@ -103,3 +103,38 @@ Blender script, run headless on `Startup.blend`:
 01 full model (back) · 02 back & shoulder muscles, latissimus selected + its definition · 03 trapezius wireframe (original triangles) ·
 04 deep layer · 05 origin (crimson) / insertion (blue) patches on the bones · 06 three deltoid parts (lateral) ·
 07 author's tendon faces (ivory) vs muscle faces · 08 BodyParts3D 4.0 OBJ files of the region imported for comparison (no latissimus; 99 % reduced).
+
+## 7. Report on the 8 inspected assets
+
+| # | Asset (screenshot) | Formats available | Each muscle an independent mesh? | Anatomical metadata | Suitable for GLB? | What needed optimizing |
+|---|---|---|---|---|---|---|
+| 1 | Z-Anatomy full model (01) | `.blend` (Blender 3.5, original), FBX exports (LluisV/Z-Anatomy), `TA2.csv` | Yes — 4,569 meshes, one per structure and side | Names, 3,839 definitions, TA2 IDs (via TA2.csv), collection + group hierarchy, function materials, per-face tendon/cartilage | Yes, through Blender's glTF exporter | Region selection only (1.75 M of ≈ 8 M triangles); labels, curves, hooks and non-commercial models (inner ear, kidney) excluded |
+| 2 | Back & shoulder muscles (02) | `.blend` / FBX | Yes — 16 units × 2 sides = 48 meshes (erector spinae 9 per side) | Name, TA2 ID + Latin, hierarchy, function material, definition | Yes — closed (0 open edges), triangulated, smooth-shaded, identity transforms, no modifiers | Nothing geometric; compression only |
+| 3 | Trapezius geometry (03) | `.blend` / FBX | Yes — 3 parts per side | as above | Yes | Part names are reversed in the source → mapped by position (asserted) |
+| 4 | Deep layer (04) | `.blend` / FBX | Yes | as above | Yes (some meshes have 2–3 disconnected pieces, as authored) | — |
+| 5 | Origin / insertion patches (05) | `.blend` only (FBX has the un-thickened patches) | Yes — 112 patches, parented to their bone | Muscle name, `.o`/`.e` role, bone (parent), `Origin-`/`End-` material | Yes after applying the author's Solidify + Subdivision | Modifiers applied at export (patches grow 63 k → 274 k triangles for the region); trapezius & latissimus roles corrected by bone (§3) |
+| 6 | Deltoid parts (06) | `.blend` / FBX | Yes — 3 parts per side + deltoid fascia | as above; shared insertion patch | Yes | Shared insertion attached to all three parts |
+| 7 | Author's tendon faces (07) | `.blend` only (material per face) | — | Tendon segmentation per face (28–70 % of superficial muscles) | Yes — exported as one glTF primitive per material | Merged into one primitive per structure; tendon kept as vertex data `_ANAT.y` |
+| 8 | BodyParts3D 4.0 (08) | OBJ (one file per part, 99 %-reduced only) + name tables | Yes per part, but no latissimus dorsi | FMA/element tables only | Technically yes, but coarse | Not used for this region (Z-Anatomy is denser and complete) |
+
+## 8. What was done (export + web optimisation)
+
+1. `pipeline/blender/selection.mjs` → selection list from `pipeline/zanatomy/back-config.mjs`.
+2. `pipeline/blender/export_back.py` (Blender 4.0.2, headless) on the original `Startup.blend`:
+   459 structures (48 selectable muscle meshes, 84 context muscles, 119 bones/discs, 112 attachment patches,
+   40 ligaments/fasciae/bursae, 56 nerves). Nerves are Z-Anatomy bevelled curves, converted to meshes exactly as
+   displayed. Median, ulnar and musculocutaneous nerves were left out (they run into the forearm and hand, which
+   are outside the region; nothing is cut). Geometry is world-space, metres, Y-up. Node extras keep: Z-Anatomy name,
+   side, system, hierarchy, material slots, TA2 ID, Latin name, definition key. 189 definitions written to
+   `definitions.json`.
+3. `pipeline/blender/postprocess.mjs`: one primitive per structure (author's Tendon faces → `_ANAT.y`, Cartilage
+   faces → `COLOR_0`), baked occlusion and fibre direction (from the authored tendons where they exist, otherwise
+   from tissue thickness), attachment owner and role, then quantization (16-bit positions) + meshopt.
+   **No simplification, subdivision or re-meshing**: every triangle of the export is kept (asserted per structure).
+   Blender's glTF exporter itself dropped one face of *longissimus capitis* per side (1,574 → 1,573).
+4. Result: `public/models/back-shoulders/back-shoulders-za.glb` — 1,753,415 triangles, **13.5 MB** (raw export
+   36.5 MB); `definitions.json` 0.8 MB (0.17 MB gzipped), loaded only when a description is opened;
+   `build-report-za.json` with per-structure tendon source and attachment assignments.
+
+The earlier FBX-based build (Loop-subdivided muscles, rule-based aponeuroses) was removed; the viewer now uses
+only the original geometry.

@@ -134,7 +134,8 @@ export function bakeAppearance(meshes, { aoRays = 24, aoDistance = 0.045 } = {})
       const x = Math.min(1, Math.max(0, (thS[v] - tendonThin) / Math.max(1e-4, tendonThick - tendonThin)));
       // 1 = tendon/aponeurosis, 0 = muscle belly. Meshes that are entirely
       // tendinous (e.g. linea alba) are flagged by the caller.
-      anat[v * 2 + 1] = m.allTendon ? 1 : Math.max(1 - x * x * (3 - 2 * x), m.tendonFloor?.[v] ?? 0);
+      // tendonOverride: tendon map authored in the source (e.g. Z-Anatomy's per-face "Tendon" material).
+      anat[v * 2 + 1] = m.allTendon ? 1 : m.tendonOverride ? m.tendonOverride[v] : Math.max(1 - x * x * (3 - 2 * x), m.tendonFloor?.[v] ?? 0);
     }
     const tendon = new Float32Array(n);
     for (let v = 0; v < n; v++) tendon[v] = anat[v * 2 + 1];

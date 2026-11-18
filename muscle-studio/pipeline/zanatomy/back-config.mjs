@@ -18,7 +18,7 @@ export const UNITS = [
   // Z-Anatomy names the trapezius parts the other way round from the
   // Terminologia Anatomica: its "Ascending part" mesh is the upper (neck)
   // part — pars descendens — and its "Descending part" is the lower part.
-  // Mapped by position here; build-back.mjs asserts the vertical order.
+  // Mapped by position here; pipeline/blender/postprocess.mjs asserts the vertical order.
   { id: "trapezius-upper", depth: 1, meshes: ["Ascending_part_of_trapezius_muscle"], patches: [], insertionBones: ["Clavicle"] },
   { id: "trapezius-middle", depth: 1, meshes: ["Transverse_part_of_trapezius_muscle"], patches: [], insertionBones: ["Scapula"] },
   { id: "trapezius-lower", depth: 1, meshes: ["Descending_part_of_trapezius_muscle"], patches: [], insertionBones: ["Scapula"] },

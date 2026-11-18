@@ -20,7 +20,9 @@ import { loadGltf } from "@/lib/three/loadGltf";
 import { configureRenderer } from "@/lib/three/rendererSetup";
 import { backStore, useBack, type PickedStructure, type RegionView } from "@/stores/backStore";
 
-export const MODEL_URL = "/models/back-shoulders/back-shoulders.glb";
+/** Original Z-Anatomy geometry exported from Blender (pipeline/blender/export_back.py + postprocess.mjs). */
+export const MODEL_URL = "/models/back-shoulders/back-shoulders-za.glb";
+export const DEFINITIONS_URL = "/models/back-shoulders/definitions.json";
 export const BACKGROUNDS = { black: "#000000", navy: "#06142f" } as const;
 
 /** Shared handles for overlays, tests and exports (one viewer per page). */
@@ -55,7 +57,7 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
           m.target = targetOpacity(m, st);
           m.opacity = m.target;
           m.mesh.visible = m.target > 0;
-          applyStyle(m, st.selected, st.hovered);
+          applyStyle(m, st.selected, st.hovered, st.highlightColor);
         }
         setRoot(gltf.scene);
         onState({ status: "ready" });
@@ -84,8 +86,8 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
           if (t !== m.target) { m.target = t; changed = true; }
         }
       }
-      if (st.selected !== prev.selected || st.hovered !== prev.hovered) {
-        for (const m of model.meshes) changed = applyStyle(m, st.selected, st.hovered) || changed;
+      if (st.selected !== prev.selected || st.hovered !== prev.hovered || st.highlightColor !== prev.highlightColor) {
+        for (const m of model.meshes) changed = applyStyle(m, st.selected, st.hovered, st.highlightColor) || changed;
       }
       if (changed || st.background !== prev.background || st.autoRotate !== prev.autoRotate) invalidate();
     });
@@ -159,8 +161,19 @@ function Rig() {
       const pos = center.clone().addScaledVector(dir, dist);
       void c.setLookAt(pos.x, pos.y, pos.z, center.x, center.y, center.z, true);
     };
-    if (command.type === "view") {
-      const dirs: Record<RegionView, Vector3> = {
+    if (command.type === "view" && command.view === "closeup") {
+      // Close-up: the selected structure, or the left shoulder (rotator cuff + deltoid) from behind and outside.
+      const sel = backStore.getState().selected;
+      let box = sel ? structureBounds(model, sel) : null;
+      if (!box) {
+        box = new Box3();
+        for (const m of model.meshes) {
+          if (m.kind === "unit" && m.side === "l" && /^(deltoid|supraspinatus|infraspinatus|teres)/.test(m.id)) box.expandByObject(m.mesh);
+        }
+      }
+      fit(box, new Vector3(0.55, 0.18, -0.82).normalize(), 1.05);
+    } else if (command.type === "view") {
+      const dirs: Record<Exclude<RegionView, "closeup">, Vector3> = {
         back: new Vector3(0, 0.08, -1).normalize(),
         front: new Vector3(0, 0.08, 1).normalize(),
         left: new Vector3(1, 0.05, 0).normalize(),
@@ -169,7 +182,7 @@ function Rig() {
       // Frame the back & shoulders: muscles of the region (not the skull).
       const box = new Box3();
       for (const m of model.meshes) if (m.kind === "unit") box.expandByObject(m.mesh);
-      fit(box, dirs[command.view], 1.22);
+      fit(box, dirs[command.view as Exclude<RegionView, "closeup">], 1.22);
     } else {
       const box = command.type === "focus" ? unitBounds(model, command.unitId, command.side) : null;
       const sel = backStore.getState().selected;

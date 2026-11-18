@@ -18,11 +18,20 @@ export function RegionTestHooks() {
     const ray = new Raycaster();
     const v = new Vector3();
     const ndc = new Vector2();
-    const api = {
+    const api: {
+      pointFor: (id: string, side?: "l" | "r" | "m", kind?: string) => { x: number; y: number } | null;
+      pointsFor: (id: string, side?: "l" | "r" | "m", kind?: string, max?: number) => { x: number; y: number }[];
+      [k: string]: unknown;
+    } = {
       /** Screen point (client px) where `kind:id:side` is the first visible hit, or null. */
       pointFor(id: string, side: "l" | "r" | "m" = "l", kind = "unit") {
+        return api.pointsFor(id, side, kind, 1)[0] ?? null;
+      },
+      /** Up to `max` well-separated interior screen points of the structure. */
+      pointsFor(id: string, side: "l" | "r" | "m" = "l", kind = "unit", max = 5) {
+        const found: { x: number; y: number }[] = [];
         const { model, camera, canvas } = regionBridge;
-        if (!model || !camera || !canvas) return null;
+        if (!model || !camera || !canvas) return found;
         const r = canvas.getBoundingClientRect();
         const meshes = model.meshes.filter((m) => m.kind === kind && m.id === id && (side === "m" || m.side === side) && m.target > 0.3);
         for (const m of meshes) {
@@ -31,21 +40,34 @@ export function RegionTestHooks() {
           for (let i = 0; i < pos.count; i += step) {
             v.fromBufferAttribute(pos, i).applyMatrix4(m.mesh.matrixWorld).project(camera);
             if (Math.abs(v.x) > 0.95 || Math.abs(v.y) > 0.95 || v.z > 1) continue;
-            ndc.set(v.x, v.y);
-            ray.setFromCamera(ndc, camera);
-            const hit = pick(model, ray.ray);
-            if (hit && hit.kind === m.kind && hit.id === m.id && hit.side === m.side) {
-              return { x: r.left + ((v.x + 1) / 2) * r.width, y: r.top + ((1 - v.y) / 2) * r.height };
+            // Interior points only: the pixel and its ±2 px neighbours must all hit this structure,
+            // so a real mouse click (rounded to whole pixels) lands on it too.
+            const px = r.left + ((v.x + 1) / 2) * r.width, py = r.top + ((1 - v.y) / 2) * r.height;
+            const ok = [[0, 0], [2, 0], [-2, 0], [0, 2], [0, -2]].every(([dx, dy]) => {
+              ndc.set(((Math.round(px) + dx - r.left) / r.width) * 2 - 1, -((Math.round(py) + dy - r.top) / r.height) * 2 + 1);
+              ray.setFromCamera(ndc, camera);
+              const hit = pick(model, ray.ray);
+              return !!hit && hit.kind === m.kind && hit.id === m.id && hit.side === m.side;
+            });
+            if (ok && found.every((q) => Math.hypot(q.x - px, q.y - py) > 25)) {
+              found.push({ x: Math.round(px), y: Math.round(py) });
+              if (found.length >= max) return found;
             }
           }
         }
-        return null;
+        return found;
       },
       selected: () => backStore.getState().selected,
       /** Units whose meshes are currently shown (target opacity 1). */
       visibleUnits() {
         const out = new Set<string>();
         for (const m of regionBridge.model?.meshes ?? []) if (m.kind === "unit" && m.target > 0) out.add(m.id);
+        return [...out].sort();
+      },
+      /** Units drawn fully opaque (isolation leaves the rest as ghosts). */
+      solidUnits() {
+        const out = new Set<string>();
+        for (const m of regionBridge.model?.meshes ?? []) if (m.kind === "unit" && m.target === 1) out.add(m.id);
         return [...out].sort();
       },
       visibleKinds() {
@@ -60,6 +82,8 @@ export function RegionTestHooks() {
         return mat?.color ? `#${mat.color.getHexString()}` : null;
       },
       ready: () => !!regionBridge.model,
+      /** Camera position (to wait until a transition has settled). */
+      cameraPos: () => regionBridge.camera?.position.toArray().map((x) => +x.toFixed(4)) ?? null,
       /** The viewer store, for scripted states in visual checks. */
       store: backStore,
     };

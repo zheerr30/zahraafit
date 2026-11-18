@@ -1,0 +1,416 @@
+{
+ "source": "Z-Anatomy Startup.blend via Blender export (export_back.py)",
+ "triangles": {
+  "tendon": 26364,
+  "context": 447890,
+  "unit": 210746,
+  "nerve": 231216,
+  "bone": 562935,
+  "attachment": 274264
+ },
+ "structures": {
+  "unit": 48,
+  "context": 84,
+  "bone": 119,
+  "attachment": 112,
+  "tendon": 40,
+  "nerve": 56
+ },
+ "attachments": {
+  "erector-spinae": {
+   "origin:l": [
+    "Hip bone ← Erector spinae.ol"
+   ],
+   "origin:r": [
+    "Hip bone ← Erector spinae.or"
+   ],
+   "insertion:l": [
+    "Occipital bone ← Spinalis capitis muscle.el",
+    "Eighth rib ← Longissimus thoracis muscle.e10l",
+    "Eleventh rib ← Longissimus thoracis muscle.e4l",
+    "Twelfth rib ← Longissimus thoracis muscle.e26l",
+    "Ninth rib ← Longissimus thoracis muscle.e8l",
+    "Tenth rib ← Longissimus thoracis muscle.e6l",
+    "Fifth rib ← Longissimus thoracis muscle.e16l",
+    "First rib ← Longissimus thoracis muscle.e24l",
+    "Fourth rib ← Longissimus thoracis muscle.e18l",
+    "Second rib ← Longissimus thoracis muscle.e22l",
+    "Seventh rib ← Longissimus thoracis muscle.e12l",
+    "Sixth rib ← Longissimus thoracis muscle.e14l",
+    "Third rib ← Longissimus thoracis muscle.e20l",
+    "Vertebra C4 ← Iliocostalis colli muscle.el",
+    "Vertebra L1 ← Longissimus thoracis muscle.e2l",
+    "Vertebra L2 ← Longissimus thoracis muscle.e1l",
+    "Vertebra L3 ← Longissimus thoracis muscle.el",
+    "Vertebra T1 ← Longissimus thoracis muscle.e25l",
+    "Vertebra T10 ← Longissimus thoracis muscle.e7l",
+    "Vertebra T11 ← Longissimus thoracis muscle.e5l",
+    "Vertebra T12 ← Longissimus thoracis muscle.e3l",
+    "Vertebra T2 ← Longissimus thoracis muscle.e23l",
+    "Vertebra T3 ← Longissimus thoracis muscle.e21l",
+    "Vertebra T4 ← Longissimus thoracis muscle.e19l",
+    "Vertebra T5 ← Longissimus thoracis muscle.e17l",
+    "Vertebra T6 ← Longissimus thoracis muscle.e15l",
+    "Vertebra T7 ← Longissimus thoracis muscle.e13l",
+    "Vertebra T8 ← Longissimus thoracis muscle.e11l",
+    "Vertebra T9 ← Longissimus thoracis muscle.e9l"
+   ],
+   "insertion:r": [
+    "Occipital bone ← Spinalis capitis muscle.er",
+    "Eighth rib ← Longissimus thoracis muscle.e10r",
+    "Eleventh rib ← Longissimus thoracis muscle.e4r",
+    "Twelfth rib ← Longissimus thoracis muscle.e26r",
+    "Ninth rib ← Longissimus thoracis muscle.e8r",
+    "Tenth rib ← Longissimus thoracis muscle.e6r",
+    "Fifth rib ← Longissimus thoracis muscle.e16r",
+    "First rib ← Longissimus thoracis muscle.e24r",
+    "Fourth rib ← Longissimus thoracis muscle.e18r",
+    "Second rib ← Longissimus thoracis muscle.e22r",
+    "Seventh rib ← Longissimus thoracis muscle.e12r",
+    "Sixth rib ← Longissimus thoracis muscle.e14r",
+    "Third rib ← Longissimus thoracis muscle.e20r",
+    "Vertebra C4 ← Iliocostalis colli muscle.er",
+    "Vertebra L1 ← Longissimus thoracis muscle.e2r",
+    "Vertebra L2 ← Longissimus thoracis muscle.e1r",
+    "Vertebra L3 ← Longissimus thoracis muscle.er",
+    "Vertebra T1 ← Longissimus thoracis muscle.e25r",
+    "Vertebra T10 ← Longissimus thoracis muscle.e7r",
+    "Vertebra T11 ← Longissimus thoracis muscle.e5r",
+    "Vertebra T12 ← Longissimus thoracis muscle.e3r",
+    "Vertebra T2 ← Longissimus thoracis muscle.e23r",
+    "Vertebra T3 ← Longissimus thoracis muscle.e21r",
+    "Vertebra T4 ← Longissimus thoracis muscle.e19r",
+    "Vertebra T5 ← Longissimus thoracis muscle.e17r",
+    "Vertebra T6 ← Longissimus thoracis muscle.e15r",
+    "Vertebra T7 ← Longissimus thoracis muscle.e13r",
+    "Vertebra T8 ← Longissimus thoracis muscle.e11r",
+    "Vertebra T9 ← Longissimus thoracis muscle.e9r"
+   ]
+  },
+  "latissimus-dorsi": {
+   "origin:l": [
+    "Hip bone ← Latissimus dorsi muscle.ol",
+    "Scapula ← Latissimus dorsi muscle.el"
+   ],
+   "origin:r": [
+    "Hip bone ← Latissimus dorsi muscle.or",
+    "Scapula ← Latissimus dorsi muscle.er"
+   ]
+  },
+  "deltoid-anterior": {
+   "insertion:l": [
+    "Humerus ← Deltoid muscle.el"
+   ],
+   "insertion:r": [
+    "Humerus ← Deltoid muscle.er"
+   ],
+   "origin:l": [
+    "Clavicle ← Clavicular part of deltoid muscle.ol"
+   ],
+   "origin:r": [
+    "Clavicle ← Clavicular part of deltoid muscle.or"
+   ]
+  },
+  "deltoid-lateral": {
+   "insertion:l": [
+    "Humerus ← Deltoid muscle.el"
+   ],
+   "insertion:r": [
+    "Humerus ← Deltoid muscle.er"
+   ],
+   "origin:l": [
+    "Scapula ← Acromial part of deltoid muscle.ol"
+   ],
+   "origin:r": [
+    "Scapula ← Acromial part of deltoid muscle.or"
+   ]
+  },
+  "deltoid-posterior": {
+   "insertion:l": [
+    "Humerus ← Deltoid muscle.el"
+   ],
+   "insertion:r": [
+    "Humerus ← Deltoid muscle.er"
+   ],
+   "origin:l": [
+    "Scapula ← Scapular spinal part of deltoid muscle.ol"
+   ],
+   "origin:r": [
+    "Scapula ← Scapular spinal part of deltoid muscle.or"
+   ]
+  },
+  "infraspinatus": {
+   "insertion:l": [
+    "Humerus ← Infraspinatus muscle.el"
+   ],
+   "insertion:r": [
+    "Humerus ← Infraspinatus muscle.er"
+   ],
+   "origin:l": [
+    "Scapula ← Infraspinatus muscle.ol"
+   ],
+   "origin:r": [
+    "Scapula ← Infraspinatus muscle.or"
+   ]
+  },
+  "subscapularis": {
+   "insertion:l": [
+    "Humerus ← Subscapularis muscle.el"
+   ],
+   "insertion:r": [
+    "Humerus ← Subscapularis muscle.er"
+   ],
+   "origin:l": [
+    "Scapula ← Subscapularis muscle.ol"
+   ],
+   "origin:r": [
+    "Scapula ← Subscapularis muscle.or"
+   ]
+  },
+  "supraspinatus": {
+   "insertion:l": [
+    "Humerus ← Supraspinatus muscle.el"
+   ],
+   "insertion:r": [
+    "Humerus ← Supraspinatus muscle.er"
+   ],
+   "origin:l": [
+    "Scapula ← Supraspinatus muscle.ol"
+   ],
+   "origin:r": [
+    "Scapula ← Supraspinatus muscle.or"
+   ]
+  },
+  "teres-minor": {
+   "insertion:l": [
+    "Humerus ← Teres minor muscle.el"
+   ],
+   "insertion:r": [
+    "Humerus ← Teres minor muscle.er"
+   ],
+   "origin:l": [
+    "Scapula ← Teres minor muscle.ol"
+   ],
+   "origin:r": [
+    "Scapula ← Teres minor muscle.or"
+   ]
+  },
+  "trapezius-upper": {
+   "insertion:l": [
+    "Clavicle ← Ascending part of trapezius muscle.ol"
+   ],
+   "insertion:r": [
+    "Clavicle ← Ascending part of trapezius muscle.or"
+   ],
+   "origin:l": [
+    "Occipital bone ← Ascending part of trapezius muscle.el"
+   ],
+   "origin:r": [
+    "Occipital bone ← Ascending part of trapezius muscle.er"
+   ]
+  },
+  "trapezius-lower": {
+   "insertion:l": [
+    "Scapula ← Descending part of trapezius muscle.ol"
+   ],
+   "insertion:r": [
+    "Scapula ← Descending part of trapezius muscle.or"
+   ]
+  },
+  "levator-scapulae": {
+   "insertion:l": [
+    "Scapula ← Levator scapulae.el"
+   ],
+   "insertion:r": [
+    "Scapula ← Levator scapulae.er"
+   ],
+   "origin:l": [
+    "Atlas (C1) ← Levator scapulae.ol",
+    "Axis (C2) ← Levator scapulae.o1l",
+    "Vertebra C3 ← Levator scapulae.o2l",
+    "Vertebra C4 ← Levator scapulae.o3l"
+   ],
+   "origin:r": [
+    "Atlas (C1) ← Levator scapulae.or",
+    "Axis (C2) ← Levator scapulae.o1r",
+    "Vertebra C3 ← Levator scapulae.o2r",
+    "Vertebra C4 ← Levator scapulae.o3r"
+   ]
+  },
+  "rhomboid-major": {
+   "insertion:l": [
+    "Scapula ← Rhomboid major muscle.el"
+   ],
+   "insertion:r": [
+    "Scapula ← Rhomboid major muscle.er"
+   ]
+  },
+  "rhomboid-minor": {
+   "insertion:l": [
+    "Scapula ← Rhomboid minor muscle.el"
+   ],
+   "insertion:r": [
+    "Scapula ← Rhomboid minor muscle.er"
+   ]
+  },
+  "teres-major": {
+   "origin:l": [
+    "Scapula ← Teres major muscle.ol"
+   ],
+   "origin:r": [
+    "Scapula ← Teres major muscle.or"
+   ]
+  },
+  "trapezius-middle": {
+   "insertion:l": [
+    "Scapula ← Transverse part of trapezius muscle.ol"
+   ],
+   "insertion:r": [
+    "Scapula ← Transverse part of trapezius muscle.or"
+   ]
+  }
+ },
+ "tendonSource": {
+  "External abdominal oblique muscle.l": "thickness",
+  "External abdominal oblique muscle.r": "thickness",
+  "Quadratus lumborum muscle.l": "thickness",
+  "Quadratus lumborum muscle.r": "thickness",
+  "Rectus abdominis muscle.l": "author 32.1%",
+  "Rectus abdominis muscle.r": "author 32.1%",
+  "Omohyoid muscle.l": "thickness",
+  "Omohyoid muscle.r": "thickness",
+  "Scalenus anterior muscle.l": "thickness",
+  "Scalenus anterior muscle.r": "thickness",
+  "Scalenus medius muscle.l": "thickness",
+  "Scalenus medius muscle.r": "thickness",
+  "Scalenus posterior muscle.l": "thickness",
+  "Scalenus posterior muscle.r": "thickness",
+  "Sternocleidomastoid muscle.l": "author 33.7%",
+  "Sternocleidomastoid muscle.r": "author 33.7%",
+  "Iliocostalis colli muscle": "thickness",
+  "Iliocostalis colli muscle.r": "thickness",
+  "Iliocostalis lumborum muscle.l": "thickness",
+  "Iliocostalis lumborum muscle.r": "thickness",
+  "Iliocostalis thoracis muscle.l": "thickness",
+  "Iliocostalis thoracis muscle.r": "thickness",
+  "Longissimus capitis muscle.l": "thickness",
+  "Longissimus capitis muscle.r": "thickness",
+  "Longissimus colli muscle.l": "thickness",
+  "Longissimus colli muscle.r": "thickness",
+  "Longissimus thoracis muscle.l": "thickness",
+  "Longissimus thoracis muscle.r": "thickness",
+  "Spinalis capitis muscle.l": "author 24.8%",
+  "Spinalis capitis muscle.r": "author 24.8%",
+  "Spinalis colli muscle.l": "thickness",
+  "Spinalis colli muscle.r": "thickness",
+  "Spinalis thoracis muscle.l": "thickness",
+  "Spinalis thoracis muscle.r": "thickness",
+  "Interspinales colli muscles.l": "thickness",
+  "Interspinales colli muscles.r": "thickness",
+  "Interspinales lumborum muscles.l": "thickness",
+  "Interspinales lumborum muscles.r": "thickness",
+  "Interspinales thoracis muscles.l": "thickness",
+  "Interspinales thoracis muscles.r": "thickness",
+  "Splenius capitis muscle.l": "author 38.3%",
+  "Splenius capitis muscle.r": "author 38.3%",
+  "Splenius colli muscle.l": "thickness",
+  "Splenius colli muscle.r": "thickness",
+  "Obliquus inferior capitis muscle.l": "thickness",
+  "Obliquus inferior capitis muscle.r": "thickness",
+  "Obliquus superior capitis muscle.l": "thickness",
+  "Obliquus superior capitis muscle.r": "thickness",
+  "Rectus posterior major capitis muscle.l": "thickness",
+  "Rectus posterior major capitis muscle.r": "thickness",
+  "Rectus posterior minor capitis muscle.l": "thickness",
+  "Rectus posterior minor capitis muscle.r": "thickness",
+  "Multifidus colli muscle.l": "thickness",
+  "Multifidus colli muscle.r": "thickness",
+  "Multifidus lumborum muscle.l": "thickness",
+  "Multifidus lumborum muscle.r": "thickness",
+  "Multifidus thoracis muscle.l": "thickness",
+  "Multifidus thoracis muscle.r": "thickness",
+  "Semispinalis colli muscle.l": "thickness",
+  "Semispinalis colli muscle.r": "thickness",
+  "Semispinalis thoracis muscle.l": "thickness",
+  "Semispinalis thoracis muscle.r": "thickness",
+  "Latissimus dorsi muscle.l": "author 28.4%",
+  "Latissimus dorsi muscle.r": "author 28.4%",
+  "Levator scapulae.l": "author 45.6%",
+  "Levator scapulae.r": "author 45.6%",
+  "Rhomboid major muscle.l": "author 35.3%",
+  "Rhomboid major muscle.r": "author 35.3%",
+  "Rhomboid minor muscle.l": "author 30.1%",
+  "Rhomboid minor muscle.r": "author 30.1%",
+  "Serratus posterior inferior muscle.l": "author 46.7%",
+  "Serratus posterior inferior muscle.r": "author 46.7%",
+  "Serratus posterior superior muscle.l": "author 25.8%",
+  "Serratus posterior superior muscle.r": "author 25.8%",
+  "Ascending part of trapezius muscle.l": "author 53.3%",
+  "Ascending part of trapezius muscle.r": "author 53.3%",
+  "Descending part of trapezius muscle.l": "author 47.2%",
+  "Descending part of trapezius muscle.r": "author 47.2%",
+  "Transverse part of trapezius muscle.l": "author 69.5%",
+  "Transverse part of trapezius muscle.r": "author 69.5%",
+  "Gluteus maximus muscle.l": "thickness",
+  "Gluteus maximus muscle.r": "thickness",
+  "Gluteus medius muscle.l": "author 15.5%",
+  "Gluteus medius muscle.r": "author 15.5%",
+  "Long head of biceps brachii.l": "author 35.6%",
+  "Long head of biceps brachii.r": "author 35.6%",
+  "Short head of biceps brachii.l": "author 32.8%",
+  "Short head of biceps brachii.r": "author 32.8%",
+  "Brachialis muscle.l": "author 32.7%",
+  "Brachialis muscle.r": "author 32.7%",
+  "Coracobrachialis muscle.l": "author 25.2%",
+  "Coracobrachialis muscle.r": "author 25.2%",
+  "Lateral head of triceps brachii.l": "author 19.2%",
+  "Lateral head of triceps brachii.r": "author 19.2%",
+  "Long head of triceps brachii.l": "author 37.3%",
+  "Long head of triceps brachii.r": "author 37.3%",
+  "Medial head of triceps brachii.l": "author 27.0%",
+  "Medial head of triceps brachii.r": "author 27.0%",
+  "Acromial part of deltoid muscle.l": "author 4.4%",
+  "Acromial part of deltoid muscle.r": "author 4.4%",
+  "Clavicular part of deltoid muscle.l": "author 4.7%",
+  "Clavicular part of deltoid muscle.r": "author 4.7%",
+  "Scapular spinal part of deltoid muscle.l": "author 24.8%",
+  "Scapular spinal part of deltoid muscle.r": "author 24.8%",
+  "Infraspinatus muscle.l": "author 16.5%",
+  "Infraspinatus muscle.r": "author 16.5%",
+  "Subscapularis muscle.l": "thickness",
+  "Subscapularis muscle.r": "thickness",
+  "Supraspinatus muscle.l": "thickness",
+  "Supraspinatus muscle.r": "thickness",
+  "Teres minor muscle.l": "thickness",
+  "Teres minor muscle.r": "thickness",
+  "Teres major muscle.l": "thickness",
+  "Teres major muscle.r": "thickness",
+  "External intercostal muscles.l": "thickness",
+  "External intercostal muscles.r": "thickness",
+  "Levatores breves costarum.l": "thickness",
+  "Levatores breves costarum.r": "thickness",
+  "Levatores longi costarum.l": "thickness",
+  "Levatores longi costarum.r": "thickness",
+  "Pectoralis minor muscle.l": "thickness",
+  "Pectoralis minor muscle.r": "thickness",
+  "(Abdominal part of pectoralis major muscle).l": "author 47.9%",
+  "(Abdominal part of pectoralis major muscle).r": "author 47.9%",
+  "Clavicular head of pectoralis major muscle.l": "author 16.8%",
+  "Clavicular head of pectoralis major muscle.r": "author 16.8%",
+  "Sternocostal head of pectoralis major muscle.l": "author 11.7%",
+  "Sternocostal head of pectoralis major muscle.r": "author 11.7%",
+  "Serratus anterior muscle.l": "thickness",
+  "Serratus anterior muscle.r": "thickness",
+  "Subclavius muscle.l": "thickness",
+  "Subclavius muscle.r": "thickness"
+ },
+ "checks": {
+  "trapeziusCentreY": [
+   1.478,
+   1.414,
+   1.312
+  ]
+ },
+ "trianglesTotal": 1753415,
+ "bytes": 13452372
+}

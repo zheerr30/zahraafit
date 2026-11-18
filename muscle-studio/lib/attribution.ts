@@ -45,9 +45,9 @@ export const SOURCES = [
     name: "Z-Anatomy",
     owner: "Gauthier Kervyn / Z-Anatomy (تطبيق Lluís Vinent Juanico) — مبني على BodyParts3D",
     license: "CC BY-SA 4.0",
-    url: "https://github.com/LluisV/Z-Anatomy",
+    url: "https://github.com/Z-Anatomy/Models-of-human-anatomy",
     usage:
-      "نموذج المرحلة الأولى (الظهر والكتفان): العضلات المفصولة والعظام ومواضع المنشأ والمرتكز والأربطة والأعصاب. الملف المشتق public/models/back-shoulders/back-shoulders.glb مرخّص بالرخصة نفسها CC BY-SA 4.0 (شرط المشاركة بالمثل يسري على ملف النموذج وتعديلاته).",
+      "نموذج الظهر والكتفين: مصدَّر من ملف Blender الأصلي دون تعديل الهندسة — العضلات المفصولة وأوتارها المرسومة والعظام ومواضع المنشأ والمرتكز والأربطة والأعصاب، مع معرّفات TA2 والأسماء اللاتينية والتسلسل التشريحي. الملف المشتق back-shoulders-za.glb مرخّص CC BY-SA 4.0 (شرط المشاركة بالمثل). التعريفات الإنجليزية من Wikipedia (CC BY-SA 3.0).",
   },
   {
     name: "BodyParts3D 4.0",

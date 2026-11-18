@@ -9,6 +9,7 @@ import { backStore, useBack, type DepthMode, type RegionView } from "@/stores/ba
 import { cn } from "@/components/ui/cn";
 import { IconEye, IconEyeOff, IconFocus, IconReset, IconRotate, IconX } from "@/components/ui/icons";
 import type { LoadState } from "./BackViewport";
+import { SourceMeta } from "./SourceMeta";
 import { RegionTestHooks } from "./RegionTestHooks";
 
 const BackViewport = dynamic(() => import("./BackViewport").then((m) => m.BackViewport), { ssr: false });
@@ -89,8 +90,16 @@ function LayersPanel() {
   const layers = useBack((s) => s.layers);
   const depthMode = useBack((s) => s.depthMode);
   const st = backStore.getState();
-  const back = REGION_MUSCLES.filter((m) => m.group === "back");
-  const shoulder = REGION_MUSCLES.filter((m) => m.group === "shoulder");
+  const byId = new Map(REGION_MUSCLES.map((m) => [m.id, m]));
+  const sections: [string, string[]][] = [
+    ["شبه المنحرفة", ["trapezius-upper", "trapezius-middle", "trapezius-lower"]],
+    ["الظهرية العريضة", ["latissimus-dorsi"]],
+    ["مثبتات لوح الكتف", ["rhomboid-major", "rhomboid-minor", "levator-scapulae"]],
+    ["الكفة المدورة", ["supraspinatus", "infraspinatus", "teres-minor", "subscapularis"]],
+    ["المدورة الكبرى", ["teres-major"]],
+    ["الدالية", ["deltoid-anterior", "deltoid-lateral", "deltoid-posterior"]],
+    ["عضلات العمود الفقري", ["erector-spinae"]],
+  ];
   return (
     <aside
       aria-label="الطبقات التشريحية"
@@ -157,15 +166,17 @@ function LayersPanel() {
         </p>
       </Section>
 
-      <Section title="عضلات الظهر">
-        <ul className="space-y-0.5">{back.map((m) => <MuscleRow key={m.id} m={m} />)}</ul>
-      </Section>
-      <Section title="عضلات الكتف">
-        <ul className="space-y-0.5">{shoulder.map((m) => <MuscleRow key={m.id} m={m} />)}</ul>
+      <Section title="العضلات (16 لكل جانب)">
+        {sections.map(([title, ids]) => (
+          <div key={title} className="mb-2">
+            <h3 className="px-2 pb-0.5 pt-1 text-[11px] font-semibold text-[#6b7891]">{title}</h3>
+            <ul className="space-y-0.5">{ids.map((id) => <MuscleRow key={id} m={byId.get(id)!} />)}</ul>
+          </div>
+        ))}
       </Section>
       <div className="px-4 py-4 text-[11px] leading-relaxed text-[#6b7891]">
-        المجسمات: <a className="underline" href="https://github.com/LluisV/Z-Anatomy" target="_blank" rel="noreferrer">Z-Anatomy</a> (مبنية على
-        BodyParts3D) — رخصة{" "}
+        المجسمات الأصلية: <a className="underline" href="https://github.com/Z-Anatomy/Models-of-human-anatomy" target="_blank" rel="noreferrer">Z-Anatomy</a>{" "}
+        (ملف Blender الأصلي، مبني على BodyParts3D)، مصدّرة دون تعديل الهندسة — رخصة{" "}
         <a className="underline" href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer">
           CC BY-SA 4.0
         </a>
@@ -205,6 +216,7 @@ function InfoCard() {
   const selected = useBack((s) => s.selected);
   const isolate = useBack((s) => s.isolate);
   const showEnglish = useBack((s) => s.showEnglish);
+  const highlight = useBack((s) => s.highlightColor);
   if (!selected) return null;
   const st = backStore.getState();
   const unit: RegionMuscle | undefined = selected.kind === "unit" ? REGION_MUSCLE_BY_ID.get(selected.id) : undefined;
@@ -215,7 +227,15 @@ function InfoCard() {
       className="scroll-thin pointer-events-auto absolute end-3 top-3 z-20 max-h-[calc(100%-1.5rem)] w-[min(380px,calc(100%-1.5rem))] overflow-y-auto rounded-2xl bg-white/97 text-[#13213d] shadow-2xl ring-1 ring-black/5"
     >
       <div className="sticky top-0 flex items-start gap-2 border-b border-[#eef2f8] bg-white px-4 py-3">
-        <span className="mt-1.5 size-3 shrink-0 rounded-full" style={{ background: COLORS.highlight }} />
+        <label className="relative mt-1 size-5 shrink-0 cursor-pointer rounded-full ring-2 ring-white" style={{ background: highlight }} title="لون التمييز">
+          <input
+            type="color"
+            aria-label="لون تمييز العضلة"
+            value={highlight}
+            onChange={(e) => st.setHighlightColor(e.target.value)}
+            className="absolute inset-0 cursor-pointer opacity-0"
+          />
+        </label>
         <div className="min-w-0 flex-1">
           <h3 className="text-base font-semibold leading-snug text-[#0B2E6B]">{selected.ar}</h3>
           {showEnglish && (
@@ -252,6 +272,20 @@ function InfoCard() {
           </>
         )}
       </div>
+      <div className="flex items-center gap-2 px-4 pt-2 text-[11px] text-[#6b7891]">
+        لون التمييز:
+        {["#E8602C", "#EEA585", "#173F8A", "#2E9E6A", "#D4A017"].map((c) => (
+          <button
+            key={c}
+            type="button"
+            aria-label={`لون ${c}`}
+            aria-pressed={highlight.toLowerCase() === c.toLowerCase()}
+            onClick={() => st.setHighlightColor(c)}
+            className={cn("size-4 rounded-full ring-offset-1", highlight.toLowerCase() === c.toLowerCase() && "ring-2 ring-[#0B2E6B]")}
+            style={{ background: c }}
+          />
+        ))}
+      </div>
       {unit ? (
         <dl className="space-y-3 px-4 py-3 text-sm leading-relaxed">
           <div>
@@ -280,9 +314,10 @@ function InfoCard() {
         </dl>
       ) : (
         <p className="px-4 py-3 text-sm leading-relaxed text-[#4b5d80]">
-          بنية مرجعية في المنطقة. البطاقات التفصيلية (المنشأ والمرتكز والوظيفة والتعصيب) متاحة للعضلات الست عشرة في قائمة الظهر والكتف.
+          بنية مرجعية في المنطقة. البطاقات العربية التفصيلية (المنشأ والمرتكز والوظيفة والتعصيب) متاحة للعضلات الست عشرة في القائمة.
         </p>
       )}
+      <SourceMeta picked={selected} />
     </div>
   );
 }
@@ -322,6 +357,7 @@ function ViewBar() {
     ["left", "جانبي أيسر", "2"],
     ["right", "جانبي أيمن", "3"],
     ["front", "أمامي", "4"],
+    ["closeup", "قريب", "5"],
   ];
   const btn = "rounded-lg px-2.5 py-1.5 text-xs transition-colors";
   return (
@@ -363,7 +399,7 @@ export function BackStudio() {
     const onKey = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.ctrlKey || e.metaKey || e.altKey) return;
       const st = backStore.getState();
-      const map: Record<string, RegionView> = { "1": "back", "2": "left", "3": "right", "4": "front" };
+      const map: Record<string, RegionView> = { "1": "back", "2": "left", "3": "right", "4": "front", "5": "closeup" };
       if (map[e.key]) st.view(map[e.key]);
       else if (e.key === "Escape") st.select(null);
       else if (e.key.toLowerCase() === "i" && st.selected) st.setIsolate(!st.isolate);
@@ -382,7 +418,7 @@ export function BackStudio() {
           MUSCLE STUDIO <span className="text-[#E8602C]">3D</span>
         </Link>
         <span className="hidden h-5 w-px bg-white/25 sm:block" />
-        <h1 className="truncate text-sm font-medium">المرحلة الأولى — الظهر والكتفان</h1>
+        <h1 className="truncate text-sm font-medium">الظهر والكتفان — مجسمات Z-Anatomy الأصلية</h1>
         <span className="ms-auto hidden text-xs text-white/70 md:block">
           {unitCount} عضلة مفصولة لكل جانب · عظام · أوتار · أعصاب
         </span>

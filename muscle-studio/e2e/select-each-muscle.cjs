@@ -6,11 +6,13 @@ const { chromium } = require('playwright');
 const BASE = process.env.BASE || 'http://localhost:3001';
 (async () => {
   const b = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
-  const page = await b.newPage({ viewport: { width: 1600, height: 1000 } });
-  const errs = []; page.on('pageerror', (e) => errs.push(e.message));
+  const errs = [];
   const summary = {};
-  for (const g of ['male', 'female']) {
-    await page.goto(`${BASE}/editor?new=1&gender=${g}&e2e=1`);
+  for (const g of (process.env.GENDERS || 'male,female').split(',')) {
+    // A fresh page per body: unloading a 3.3M-triangle scene can stall a reused tab.
+    const page = await b.newPage({ viewport: { width: 1600, height: 1000 } });
+    page.on('pageerror', (e) => errs.push(e.message));
+    await page.goto(`${BASE}/editor?new=1&gender=${g}&e2e=1`, { timeout: 300000 });
     await page.getByText(/(\d+) من \1 وحدة عضلية مرتبطة/).waitFor({ timeout: 120000 });
     const IDS = await page.$$eval('aside[aria-label="مكتبة العضلات"] button[data-muscle-id]', (els) => [...new Set(els.map((e) => e.dataset.muscleId))]);
     await page.waitForTimeout(1000);
@@ -41,6 +43,8 @@ const BASE = process.env.BASE || 'http://localhost:3001';
       viaList.push(`${id}:${sel.length === 1 && sel[0] === id ? 'ok' : 'FAIL ' + sel}`);
     }
     summary[g] = { units: IDS.length, clicked: Object.keys(ok).length, byView: ok, notClickableFromOutside: viaList, mismatches: wrong };
+    console.log(g, JSON.stringify(summary[g]));
+    await page.close();
   }
   console.log(JSON.stringify(summary, null, 1));
   console.log('page errors', errs);

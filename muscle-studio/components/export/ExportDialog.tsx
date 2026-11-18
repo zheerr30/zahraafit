@@ -80,7 +80,7 @@ function ExportDialogContent({ onClose }: { onClose: () => void }) {
   const [legend, setLegend] = useState(selectionCount > 0);
   const [language, setLanguage] = useState(docLanguage);
   const [title, setTitle] = useState("");
-  // CC BY 4.0 requires credit wherever renders of the models are shared.
+  // CC BY-SA 4.0 requires credit wherever renders of the models are shared.
   const [credit, setCredit] = useState(true);
   const [busy, setBusy] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
@@ -312,8 +312,8 @@ function ExportDialogContent({ onClose }: { onClose: () => void }) {
               <Switch label="ذكر مصدر النموذج على الصورة" checked={credit} onChange={setCredit} />
               <p className="text-xs leading-relaxed text-muted">
                 {credit
-                  ? "يُكتب سطر النسبة (CC BY 4.0) أسفل الصورة."
-                  : "رخصة CC BY 4.0 تشترط ذكر المصدر عند نشر الصورة؛ يجب إضافته في مكان النشر."}
+                  ? "يُكتب سطر النسبة (CC BY-SA 4.0) أسفل الصورة."
+                  : "رخصة CC BY-SA 4.0 تشترط ذكر المصدر عند نشر الصورة؛ يجب إضافته في مكان النشر."}
               </p>
             </div>
           )}

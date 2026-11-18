@@ -84,7 +84,7 @@ export function ModelCredit() {
       className="absolute bottom-3 left-1/2 z-10 max-w-[min(520px,70%)] -translate-x-1/2 truncate rounded-full border border-line/70 bg-bg/70 px-3 py-1 text-[10px] text-muted backdrop-blur hover:text-fg"
       title={summary.attribution.credit}
     >
-      العضلات: BodyParts3D © DBCLS · الجسم: Open Anatomy 3D · رخصة CC BY 4.0 — المصادر
+      النموذج: Z-Anatomy (على أساس BodyParts3D © DBCLS) · رخصة CC BY-SA 4.0 — المصادر
     </Link>
   );
 }

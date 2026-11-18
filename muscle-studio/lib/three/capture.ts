@@ -473,7 +473,7 @@ export async function renderIllustration(opts: ExportOptions): Promise<HTMLCanva
   });
   if (opts.legend) drawLegend(ctx, { x: 0, y: 0, w: W, h: H }, opts);
   if (opts.watermark) {
-    // Licence credit line (CC BY 4.0), centred along the bottom edge.
+    // Licence credit line (CC BY-SA 4.0), centred along the bottom edge.
     let size = Math.max(9, Math.round(Math.min(W, H) * 0.013));
     ctx.font = `500 ${size}px ${FONT_STACK}`;
     const maxW = W * 0.94;

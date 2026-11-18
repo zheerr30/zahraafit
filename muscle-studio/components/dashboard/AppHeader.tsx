@@ -49,7 +49,7 @@ export function AppHeader() {
   );
 }
 
-/** Site-wide footer carrying the CC BY 4.0 credit for the anatomical models. */
+/** Site-wide footer carrying the CC BY-SA 4.0 credit for the anatomical models. */
 export function AppFooter() {
   return (
     <footer className="border-t border-line px-4 py-6 text-center text-xs leading-relaxed text-muted">

@@ -98,7 +98,7 @@ export function AssetStatusList() {
       </ul>
       <div className="border-t border-line px-4 py-3">
         <Link href="/credits" className="text-xs text-accent-2 hover:underline">
-          الترخيص: CC BY 4.0 — المصادر والنسب ←
+          الترخيص: CC BY-SA 4.0 — المصادر والنسب ←
         </Link>
       </div>
     </div>

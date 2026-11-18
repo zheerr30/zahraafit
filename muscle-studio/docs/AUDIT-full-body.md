@@ -84,3 +84,28 @@ forearm, hand and head muscles have never been built from the Z-Anatomy source. 
    region; fibre direction from the author's tendon faces, with a reviewed fallback for muscles without them.
 3. Arabic names and cards for the remaining ≈ 200 muscles (today 16 cards in `/back`, 51 units in `/editor`).
 4. Female: the only option remains adapting the male anatomy (no open female musculature exists); must stay labelled.
+
+## 6. Applied (same day): Z-Anatomy for the whole app
+
+Sections 1–5 describe the state *before* this change. After it, `/atlas`, `/back` and `/editor` all load the same
+files (`public/models/zanatomy/{male,female}/core.glb` + on-demand layers) and use one material/lighting standard
+(`lib/three/tissue.ts`, `components/anatomy/AtlasLighting.tsx`). Renders: `docs/zanatomy/`.
+
+| Region | Muscles (per side) | Status in `/atlas` and `/editor` |
+|---|---|---|
+| 1 Head & neck | 74 | ✔ face, mastication, neck muscles; Arabic names; semispinalis capitis absent in the source |
+| 2 Chest | 13 | ✔ |
+| 3 Back | 21 | ✔ (benchmark) |
+| 4 Shoulders | 8 | ✔ (benchmark) |
+| 5 Arms & forearms | 43 | ✔ forearm and hand intrinsic muscles included |
+| 6 Abdomen & core | 6 | ✔ rectus abdominis, internal oblique, transversus present |
+| 7 Pelvis & glutes | 16 | ✔ |
+| 8 Quadriceps & hamstrings | 9 | ✔ |
+| 9 Adductors & abductors | 7 | ✔ |
+| 10 Calves & lower legs | 29 | ✔ including foot muscles |
+| Female | same 233 | approximation: male anatomy fitted to the open-anatomy-3d female skeleton (ICP 3.9 mm, symmetric TPS), labelled in the UI |
+
+Remaining limits (reported in `build-report.json`): 68 muscles take their fibre direction from their own axis
+(no author tendon or attachment patch); 28 attachment patches have no identifiable owner muscle; detailed Arabic
+cards (origin, insertion, action, innervation) exist for the 16 back/shoulder muscles only — the others show
+name, region, layer, TA2, Latin name and the Wikipedia definition.

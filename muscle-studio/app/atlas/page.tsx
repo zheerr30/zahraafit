@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function AtlasPage() {
-  return <BackStudio />;
+  return <BackStudio hd />;
 }

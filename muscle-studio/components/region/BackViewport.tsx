@@ -4,7 +4,7 @@ import { CameraControls } from "@react-three/drei";
 import { AtlasLighting } from "@/components/anatomy/AtlasLighting";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
-import { Box3, Object3D, Sphere, Vector2, Vector3, type PerspectiveCamera, type Raycaster } from "three";
+import { Box3, Object3D, Sphere, Vector2, Vector3, type Mesh, type PerspectiveCamera, type Raycaster } from "three";
 import {
   applyStyle,
   disposeRegionModel,
@@ -20,7 +20,8 @@ import {
   type RegionMesh,
   type RegionModel,
 } from "@/lib/region/backModel";
-import { HDPipeline } from "@/components/region/HDPipeline";
+import { HDPipeline } from "@/components/anatomy/HDPipeline";
+import { ProgressiveRefine } from "@/components/anatomy/ProgressiveRefine";
 import { loadGltf } from "@/lib/three/loadGltf";
 import { configureRenderer } from "@/lib/three/rendererSetup";
 import { backStore, useBack, type PickedStructure, type RegionView } from "@/stores/backStore";
@@ -42,14 +43,8 @@ export const regionBridge: {
   invalidate: () => void;
 } = { model: null, camera: null, controls: null, canvas: null, invalidate: () => {} };
 
-/** HD prototype scope: surface refinement for the back & shoulder muscles (`?refine=0` disables it). */
-const HD_OPTIONS = {
-  hd: true,
-  get refineRegions(): ReadonlySet<string> {
-    const off = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("refine") === "0";
-    return new Set(off ? [] : ["back", "shoulders"]);
-  },
-};
+/** HD rendering: surfaces are refined on demand (ProgressiveRefine), not at load. */
+const HD_OPTIONS = { hd: true } as const;
 
 export type LoadState = { status: "loading"; progress: number } | { status: "ready" } | { status: "error"; message: string };
 
@@ -334,12 +329,34 @@ function Pointer() {
   return null;
 }
 
+const atlasTarget = (out: Vector3) => {
+  if (regionBridge.controls) regionBridge.controls.getTarget(out);
+  else out.set(0, 1, 0);
+};
+const atlasMeshes = () => (regionBridge.model?.meshes ?? []).map((m) => m.mesh);
+const atlasMuscles = () => (regionBridge.model?.meshes ?? []).filter((m) => m.kind === "unit").map((m) => m.mesh);
+const priorityCache: { key: string; set: Set<Mesh> } = { key: "", set: new Set() };
+/** The muscles of the chosen study region are refined first (`?refine=0` disables refinement). */
+const atlasPriority = (): ReadonlySet<Mesh> | null => {
+  const region = backStore.getState().region;
+  const model = regionBridge.model;
+  if (!region || !model) return null;
+  const key = `${region}|${model.meshes.length}`;
+  if (priorityCache.key !== key) {
+    priorityCache.key = key;
+    priorityCache.set = new Set(model.meshes.filter((m) => m.kind === "unit" && m.region === region).map((m) => m.mesh));
+  }
+  return priorityCache.set;
+};
+const refineOff = () => typeof window !== "undefined" && new URLSearchParams(window.location.search).get("refine") === "0";
+
 function Lighting() {
   const hd = useBack((s) => s.hd);
   return hd === true ? (
     <>
       <AtlasLighting keyLight={false} warmFill intensity={0.85} />
-      <HDPipeline />
+      <HDPipeline getTarget={atlasTarget} getMeshes={atlasMeshes} />
+      {!refineOff() && <ProgressiveRefine getTarget={atlasTarget} getCandidates={atlasMuscles} getPriority={atlasPriority} />}
     </>
   ) : (
     <AtlasLighting />

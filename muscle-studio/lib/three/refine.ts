@@ -1,4 +1,5 @@
-import { BufferAttribute, BufferGeometry } from "three";
+import { BufferAttribute, BufferGeometry, type Mesh } from "three";
+import { computeBoundsTree, disposeBoundsTree } from "three-mesh-bvh";
 
 /**
  * Interpolating surface refinement for close-up inspection, without changing
@@ -202,4 +203,31 @@ export function fibreTangents(g: BufferGeometry): void {
     t[i * 4] = f.getX(i); t[i * 4 + 1] = f.getY(i); t[i * 4 + 2] = f.getZ(i); t[i * 4 + 3] = 1;
   }
   g.setAttribute("tangent", new BufferAttribute(t, 4));
+}
+
+/** Totals of the refinement applied so far (for reports / tests). */
+export const refineReport = { meshes: 0, trianglesBefore: 0, trianglesAfter: 0, maxOffsetMm: 0, meanOffsetMm: 0 };
+
+/**
+ * Refine a muscle mesh in place (same Mesh object, so ids, selection, mapping and
+ * materials are untouched): new geometry, fibre tangents, BVH rebuilt for picking.
+ * Returns the number of triangles added.
+ */
+export function refineMeshInPlace(mesh: Mesh): number {
+  const old = mesh.geometry;
+  if (old.userData.refined || !old.getIndex()) return 0;
+  const { geometry, stats } = refineGeometry(old);
+  geometry.userData.refined = true;
+  if (geometry.getAttribute("_fiber")) fibreTangents(geometry);
+  const hadTree = !!(old as unknown as { boundsTree?: unknown }).boundsTree;
+  if (hadTree) disposeBoundsTree.call(old);
+  mesh.geometry = geometry;
+  old.dispose();
+  if (hadTree) computeBoundsTree.call(geometry);
+  refineReport.meshes++;
+  refineReport.trianglesBefore += stats.trianglesBefore;
+  refineReport.trianglesAfter += stats.trianglesAfter;
+  refineReport.maxOffsetMm = Math.max(refineReport.maxOffsetMm, stats.maxOffset * 1000);
+  refineReport.meanOffsetMm += (stats.meanOffset * 1000 - refineReport.meanOffsetMm) / refineReport.meshes;
+  return stats.trianglesAfter - stats.trianglesBefore;
 }

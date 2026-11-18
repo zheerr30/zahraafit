@@ -4,7 +4,7 @@ import { REGION_MUSCLE_BY_ID, type RegionLayer } from "@/data/region/backShoulde
 import { dequantizeMesh } from "@/lib/three/anatomyModel";
 import { createMuscleMaterial, HIGHLIGHT_LOOK, REALISTIC_LOOK, setMuscleLook } from "@/lib/three/muscleMaterial";
 import { axisTangents, createMuscleMaterialHD, createTissueMaterialHD, muscleDetail, principalAxis, setMuscleLookHD } from "@/lib/three/hdMaterials";
-import { fibreTangents, orientFibres, refineGeometry } from "@/lib/three/refine";
+import { fibreTangents, orientFibres, refineMeshInPlace } from "@/lib/three/refine";
 import { createTissueMaterial, muscleTone, TISSUE, tissueOf } from "@/lib/three/tissue";
 import type { DepthMode, PickedStructure } from "@/stores/backStore";
 
@@ -105,11 +105,10 @@ export interface PrepareOptions {
   refineRegions?: ReadonlySet<string>;
 }
 
-/** Base colour of skeletal muscle in the HD standard: muted rose (reference: professional atlas apps). */
-export const HD_MUSCLE = "#A0605F";
+export { HD_MUSCLE_COLOR as HD_MUSCLE } from "@/lib/three/hdMaterials";
+import { HD_MUSCLE_COLOR as HD_MUSCLE } from "@/lib/three/hdMaterials";
 
-/** Totals of the PN refinement applied while preparing (for reports / tests). */
-export const refineReport = { meshes: 0, trianglesBefore: 0, trianglesAfter: 0, maxOffsetMm: 0, meanOffsetMm: 0 };
+export { refineReport } from "@/lib/three/refine";
 
 /** Prepare the meshes of one loaded file (core, attachments or nerves). */
 export function prepareMeshes(scene: Object3D, opts: PrepareOptions = {}): RegionMesh[] {
@@ -131,17 +130,8 @@ export function prepareMeshes(scene: Object3D, opts: PrepareOptions = {}): Regio
     if (kind === "unit" && opts.hd) {
       baseHex = muscleTone(x.id, HD_MUSCLE);
       orientFibres(mesh.geometry);
-      if (opts.refineRegions?.has(x.region ?? "") && mesh.geometry.getIndex()) {
-        const { geometry, stats } = refineGeometry(mesh.geometry);
-        mesh.geometry.dispose();
-        mesh.geometry = geometry;
-        refineReport.meshes++;
-        refineReport.trianglesBefore += stats.trianglesBefore;
-        refineReport.trianglesAfter += stats.trianglesAfter;
-        refineReport.maxOffsetMm = Math.max(refineReport.maxOffsetMm, stats.maxOffset * 1000);
-        refineReport.meanOffsetMm += (stats.meanOffset * 1000 - refineReport.meanOffsetMm) / refineReport.meshes;
-      }
       fibreTangents(mesh.geometry);
+      if (opts.refineRegions?.has(x.region ?? "")) refineMeshInPlace(mesh);
       material = createMuscleMaterialHD(baseHex, REALISTIC_LOOK, false, muscleDetail(x.id + (x.source ?? ""), mesh.geometry));
       // Where layers nearly coincide, the more superficial muscle wins the depth test
       // (render order only — no geometry is moved).

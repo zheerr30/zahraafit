@@ -103,3 +103,31 @@ describe("HD materials keep the interaction", () => {
     expect((unit.mesh.material as MeshPhysicalMaterial).color.getHexString()).not.toBe("173f8a");
   });
 });
+
+describe("editor in HD keeps the per-muscle colouring", () => {
+  it("HD geometry prep + HD library: selecting a unit recolours only its own meshes", async () => {
+    const { ANATOMY_ASSETS } = await import("@/data/models/manifest");
+    const { prepareModel, mapPreparedModel, applyMaterials } = await import("@/lib/three/anatomyModel");
+    const { MaterialLibrary } = await import("@/lib/three/materials");
+    const { createDefaultDoc } = await import("@/lib/storage/schema");
+    const { createEditorStore } = await import("@/stores/editorStore");
+    const asset = ANATOMY_ASSETS.find((a) => a.gender === "female")!;
+    const model = prepareModel(await load(asset.url), asset, { hd: true });
+    const report = mapPreparedModel(model, asset, undefined);
+    const muscles = model.meshes.filter((m) => m.geometry.getAttribute("_fiber"));
+    expect(muscles.length).toBeGreaterThan(400);
+    for (const m of muscles) expect(m.geometry.getAttribute("tangent")).toBeDefined();
+    const library = new MaterialLibrary({ hd: true });
+    const doc = createDefaultDoc("female");
+    const highlight = library.muscle(doc.palette.primary, "highlight");
+    expect((highlight as MeshPhysicalMaterial).userData.hd).toBe(true);
+    for (const id of ["latissimus-dorsi", "gluteus-maximus", "infraspinatus"]) {
+      const store = createEditorStore({ initialDoc: doc });
+      store.getState().toggleMuscle(id);
+      applyMaterials(model, report, { doc: store.getState().doc, hoveredMuscleId: null }, library);
+      const own = new Set(report.byMuscle.get(id));
+      for (const mesh of model.meshes) expect(mesh.material === highlight, id).toBe(own.has(mesh.uuid));
+    }
+    library.dispose();
+  }, 120_000);
+});

@@ -8,10 +8,9 @@ import { GTAOPass } from "three/examples/jsm/postprocessing/GTAOPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { KEY_LIGHT } from "@/components/anatomy/AtlasLighting";
-import { regionBridge } from "@/components/region/BackViewport";
 
 /**
- * HD rendering for the atlas (prototype):
+ * HD rendering shared by the atlas and the editor:
  *  - multisampled half-float HDR render target, tone mapped once in OutputPass;
  *  - ground-truth ambient occlusion (GTAO) for the contact darkening between
  *    neighbouring muscles, tendons and bones; its radius follows the viewing
@@ -50,7 +49,14 @@ function fitKeyLight(key: DirectionalLight, subject: Vector3, dir: Vector3, half
   key.shadow.normalBias = ((2 * half) / 4096) * 1.5;
 }
 
-export function HDPipeline() {
+export interface HDPipelineProps {
+  /** Orbit target (what the user looks at); defaults to the scene centre. */
+  getTarget: (out: Vector3) => void;
+  /** Meshes that may cast / receive shadows (opaque, visible ones cast). */
+  getMeshes: () => Iterable<Mesh>;
+}
+
+export function HDPipeline({ getTarget, getMeshes }: HDPipelineProps) {
   const gl = useThree((s) => s.gl);
   const scene = useThree((s) => s.scene);
   const camera = useThree((s) => s.camera);
@@ -115,9 +121,7 @@ export function HDPipeline() {
 
   useFrame(() => {
     // Subject point: the orbit target (what the user is looking at).
-    const controls = regionBridge.controls;
-    if (controls) controls.getTarget(tmp.s);
-    else tmp.s.set(0, 1, 0);
+    getTarget(tmp.s);
     const dist = camera.position.distanceTo(tmp.s);
     const fov = ((camera as unknown as { fov?: number }).fov ?? 30) * (Math.PI / 180);
     const half = Math.max(0.05, dist * Math.tan(fov / 2) * 1.6);
@@ -126,12 +130,12 @@ export function HDPipeline() {
     fitKeyLight(key, tmp.s, tmp.d, half);
     // AO radius follows the viewing distance (≈ 2 cm at 1 m).
     gtao.updateGtaoMaterial({ radius: Math.min(0.06, Math.max(0.003, dist * 0.022)) });
-    // Ghosted / translucent / faded meshes do not cast shadows.
-    for (const m of regionBridge.model?.meshes ?? []) {
-      const mat = m.mesh.material as Material;
-      const cast = m.mesh.visible && !mat.transparent && m.kind !== "attachment";
-      m.mesh.castShadow = cast;
-      m.mesh.receiveShadow = m.kind !== "attachment";
+    // Ghosted / translucent / faded meshes and attachment patches do not cast shadows.
+    for (const mesh of getMeshes()) {
+      const mat = mesh.material as Material;
+      const patch = mesh.userData.kind === "attachment";
+      mesh.castShadow = mesh.visible && !mat.transparent && !patch;
+      mesh.receiveShadow = !patch;
     }
     composer.render();
   }, 1);

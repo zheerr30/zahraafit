@@ -2,6 +2,8 @@ import { Box3, BufferAttribute, Color, Group, Mesh, Raycaster, Vector3, type Mat
 import { acceleratedRaycast, computeBoundsTree, disposeBoundsTree } from "three-mesh-bvh";
 import { MUSCLES } from "@/data/muscles/muscles";
 import catalog from "@/data/models/open-anatomy-3d/catalog.json";
+import { axisTangents, HD_MUSCLE_COLOR as HD_MUSCLE, principalAxis } from "@/lib/three/hdMaterials";
+import { fibreTangents, orientFibres } from "@/lib/three/refine";
 import { mapMeshesToMuscles, type MappingReport } from "@/lib/anatomy/resolver";
 import type { IllustrationDoc, Layers } from "@/lib/storage/schema";
 import { SYSTEMS, type AnatomyAssetDefinition, type BodySide, type SystemId } from "@/types/anatomy";
@@ -52,6 +54,8 @@ export interface PreparedModel {
   systemOf: Map<string, SystemId | null>;
   systemGroups: Map<SystemId, Object3D[]>;
   hasSystems: boolean;
+  /** HD: geometry carries fibre / collagen tangents for the HD materials. */
+  hd?: boolean;
 }
 
 /**
@@ -171,7 +175,7 @@ function collectSystemGroups(scene: Object3D, into: Map<SystemId, Object3D[]>): 
   }
 }
 
-export function prepareModel(scene: Group, asset: AnatomyAssetDefinition): PreparedModel {
+export function prepareModel(scene: Group, asset: AnatomyAssetDefinition, opts: { hd?: boolean } = {}): PreparedModel {
   // Top-level children of the glTF scene are the body systems.
   const systemGroups = new Map<SystemId, Object3D[]>();
   collectSystemGroups(scene, systemGroups);
@@ -196,7 +200,7 @@ export function prepareModel(scene: Group, asset: AnatomyAssetDefinition): Prepa
   root.add(inner);
   root.updateMatrixWorld(true);
 
-  const model: PreparedModel = { root, content: scene, meshes: [], meshByUid: new Map(), meshNames: new Map(), systemOf: new Map(), systemGroups, hasSystems };
+  const model: PreparedModel = { root, content: scene, meshes: [], meshByUid: new Map(), meshNames: new Map(), systemOf: new Map(), systemGroups, hasSystems, hd: !!opts.hd };
   registerMeshes(model, root);
   return model;
 }
@@ -221,11 +225,24 @@ export function attachSystemFile(model: PreparedModel, scene: Object3D): Object3
   return added;
 }
 
+/** HD: consistently oriented fibres + tangents (muscles), collagen axis tangents (tendons, ligaments, fasciae, nerves). */
+function prepareHdGeometry(mesh: Mesh): void {
+  const g = mesh.geometry;
+  if (g.getAttribute("tangent")) return;
+  if (g.getAttribute("_fiber")) {
+    orientFibres(g);
+    fibreTangents(g);
+  } else if (/^(tendon|ligament|fascia|nerve)$/.test((mesh.userData.kind as string) ?? "") && g.getAttribute("normal")) {
+    axisTangents(g, principalAxis(g));
+  }
+}
+
 function registerMeshes(model: PreparedModel, from: Object3D): void {
   const { meshes, meshByUid, meshNames, systemOf, systemGroups, hasSystems } = model;
   from.traverse((obj) => {
     if (!(obj instanceof Mesh) || meshByUid.has(obj.uuid)) return;
     if (obj.geometry.getAttribute("_fiber")) dequantizeMesh(obj);
+    if (model.hd) prepareHdGeometry(obj);
     const system = hasSystems ? findSystem(obj, systemGroups) : null;
     const isSkin = system === "skin";
     obj.castShadow = !isSkin;
@@ -378,7 +395,7 @@ export function applyMaterials(
     const zKind = mesh.userData.kind as string | undefined;
     const tissue = zKind && zKind !== "unit" ? tissueOf(zKind, mesh.userData.source as string | undefined, mesh.userData.role as string | undefined) : null;
     // Natural tone of a Z-Anatomy muscle: same per-muscle variation as the atlas.
-    const zTone = typeof mesh.userData.id === "string" ? muscleTone(mesh.userData.id) : null;
+    const zTone = typeof mesh.userData.id === "string" ? muscleTone(mesh.userData.id, library.hd ? HD_MUSCLE : undefined) : null;
     if (tissue) {
       // Z-Anatomy tendons, ligaments, fasciae, bones, nerves, vessels, organs, skin: the shared tissue standard.
       next = library.tissue(tissue, zKind === "bone" && !!mesh.geometry.getAttribute("color"));

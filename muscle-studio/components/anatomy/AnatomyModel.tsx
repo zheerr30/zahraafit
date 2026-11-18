@@ -60,7 +60,7 @@ export function AnatomyModel({ asset }: { asset: AnatomyAssetDefinition }) {
     // Core file (muscles, tendons, ligaments, fasciae, bones); other systems load with their layer.
     loadGltf(asset.url, { renderer: gl, signal: controller.signal, onProgress: (p) => setLoadState({ progress: p }) })
       .then((body) => {
-        prepared = prepareModel(body.scene, asset);
+        prepared = prepareModel(body.scene, asset, { hd: true });
         // Visibility + picking structures before the first frame (muscles only by default).
         applyLayers(prepared, editorStore.getState().doc.layers);
         setModel(prepared);
@@ -153,7 +153,7 @@ export function AnatomyModel({ asset }: { asset: AnatomyAssetDefinition }) {
   }, [model, asset, gl, invalidate]);
 
   // ── Materials (cached per model, disposed with it) ────────────────
-  const library = useMemo(() => (model ? new MaterialLibrary() : null), [model]);
+  const library = useMemo(() => (model ? new MaterialLibrary({ hd: true }) : null), [model]);
   useEffect(() => () => library?.dispose(), [library]);
 
   useEffect(() => {

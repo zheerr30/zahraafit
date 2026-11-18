@@ -1,4 +1,5 @@
-import { Color, MeshStandardMaterial, type MeshPhysicalMaterial, type ShaderMaterial } from "three";
+import { Color, MeshStandardMaterial, Vector3, type MeshPhysicalMaterial, type ShaderMaterial } from "three";
+import { createMuscleMaterialHD, createTissueMaterialHD } from "./hdMaterials";
 import { createMuscleMaterial, HIGHLIGHT_LOOK, REALISTIC_LOOK } from "./muscleMaterial";
 import { createSkinMaterial } from "./skinMaterial";
 import { createTissueMaterial, type TissueKind } from "./tissue";
@@ -14,6 +15,11 @@ const LOOKS = { realistic: REALISTIC_LOOK, highlight: HIGHLIGHT_LOOK };
  * muscle's color can never leak into another mesh. Call dispose() on unmount.
  */
 export class MaterialLibrary {
+  /** HD: the detailed tissue materials of lib/three/hdMaterials.ts (same as the atlas). */
+  readonly hd: boolean;
+  constructor(opts: { hd?: boolean } = {}) {
+    this.hd = !!opts.hd;
+  }
   private cache = new Map<string, MeshStandardMaterial>();
   private skinMaterial: ShaderMaterial | null = null;
   private muscleCache = new Map<string, MeshPhysicalMaterial>();
@@ -23,7 +29,9 @@ export class MaterialLibrary {
     const key = `${hex.toLowerCase()}|${look}|${variant}`;
     let mat = this.muscleCache.get(key);
     if (!mat) {
-      mat = createMuscleMaterial(hex, LOOKS[look], variant === "hover");
+      mat = this.hd
+        ? createMuscleMaterialHD(hex, LOOKS[look], variant === "hover", { seed: new Vector3(), scale: 1 })
+        : createMuscleMaterial(hex, LOOKS[look], variant === "hover");
       this.muscleCache.set(key, mat);
     }
     return mat;
@@ -36,7 +44,7 @@ export class MaterialLibrary {
     const key = `${t}|${vertexColors}`;
     let mat = this.tissueCache.get(key);
     if (!mat) {
-      mat = createTissueMaterial(t, { vertexColors });
+      mat = this.hd ? createTissueMaterialHD(t, { vertexColors }) : createTissueMaterial(t, { vertexColors });
       this.tissueCache.set(key, mat);
     }
     return mat;

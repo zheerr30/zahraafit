@@ -1,6 +1,9 @@
 import { BufferAttribute, Color, DoubleSide, FrontSide, MeshPhysicalMaterial, Vector3, type BufferGeometry } from "three";
 import type { MuscleLook } from "@/lib/three/muscleMaterial";
 
+/** Base colour of skeletal muscle in the HD standard: muted rose (reference: professional atlas apps). */
+export const HD_MUSCLE_COLOR = "#A0605F";
+
 /** Tendon / aponeurosis colour of the HD standard: glossy silver-white (reference: medical atlas apps). */
 const HD_TENDON = "#D3D0CC";
 import { TISSUE, type TissueKind } from "@/lib/three/tissue";
@@ -349,8 +352,12 @@ export function createTissueMaterialHD(t: TissueKind, opts: { vertexColors?: boo
   mat.onBeforeCompile = (shader) => {
     Object.assign(shader.uniforms, uniforms);
     shader.vertexShader = shader.vertexShader
-      .replace("#include <common>", "#include <common>\nvarying vec3 vObjPos;\nvarying vec3 vObjNrm;")
-      .replace("#include <begin_vertex>", "#include <begin_vertex>\nvObjPos = transformed; vObjNrm = objectNormal;");
+      .replace("#include <common>", "#include <common>\nuniform vec3 uAxis;\nvarying vec3 vObjPos;\nvarying vec3 vObjNrm;\nvarying vec3 vObjAxis;")
+      .replace(
+        "#include <begin_vertex>",
+        // Per-mesh collagen direction: the tangent attribute (shared materials), else the uniform.
+        "#include <begin_vertex>\nvObjPos = transformed; vObjNrm = objectNormal;\n#ifdef USE_TANGENT\nvObjAxis = tangent.xyz;\n#else\nvObjAxis = uAxis;\n#endif",
+      );
     shader.fragmentShader = shader.fragmentShader
       .replace(
         "#include <common>",
@@ -359,6 +366,7 @@ export function createTissueMaterialHD(t: TissueKind, opts: { vertexColors?: boo
         uniform float uRelief, uPeriod;
         varying vec3 vObjPos;
         varying vec3 vObjNrm;
+        varying vec3 vObjAxis;
         ${NOISE}
         float hzH, hzK, hzCart;
         void hzTissue() {
@@ -376,7 +384,7 @@ export function createTissueMaterialHD(t: TissueKind, opts: { vertexColors?: boo
             hzK = mott * 0.7 + por * 0.25 * w;
           #else
             vec3 F, A, N;
-            hzFrame(vObjNrm, uAxis, F, A, N);
+            hzFrame(vObjNrm, normalize(vObjAxis + 1e-6), F, A, N);
             float bF = 0.625, bM = 0.625;
             if (w > 0.0) { vec3 r = hzPhasor(p, F, A, N, uPeriod * 3.4, f, vec3(1.6, 0.75, 1.3) * uPeriod); bF = mix(0.625, hzBulge(r), w); }
             float w2 = 1.0 - smoothstep(0.18, 0.4, px * f * 3.0);

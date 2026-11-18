@@ -45,7 +45,7 @@ function inView(st: RefineState, m: Mesh, radius: number): boolean {
   return distTo(st, m) < radius;
 }
 
-/** One frame of work; returns true when more meshes are waiting. */
+/** One frame of work; returns true when something was refined (more may be waiting). */
 function step(st: RefineState, camera: PerspectiveCamera, p: Required<Pick<ProgressiveRefineProps, "nearDistance" | "cap">> & ProgressiveRefineProps): boolean {
   p.getTarget(st.t);
   const dist = camera.position.distanceTo(st.t);
@@ -66,6 +66,7 @@ function step(st: RefineState, camera: PerspectiveCamera, p: Required<Pick<Progr
   todo.sort((a, b) => a.d - b.d);
   const wanted = new Set(todo.map((x) => x.mesh));
   const start = performance.now();
+  let did = false;
   for (const { mesh } of todo) {
     const est = (mesh.geometry.getIndex()!.count / 3) * 3;
     if (st.added + est > p.cap) {
@@ -81,9 +82,11 @@ function step(st: RefineState, camera: PerspectiveCamera, p: Required<Pick<Progr
     }
     st.added += refineMeshInPlace(mesh);
     st.refined.add(mesh);
+    did = true;
     if (performance.now() - start > BUDGET_MS) break;
   }
-  return true;
+  // Ask for another frame only when work was done (never spin when the budget is full).
+  return did;
 }
 
 export function ProgressiveRefine({ nearDistance = 1.3, cap = 1_500_000, ...rest }: ProgressiveRefineProps) {

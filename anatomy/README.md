@@ -1,13 +1,13 @@
-# Anatomy model data
+# ZahraaFit anatomy model
 
-Meshes used by `anatomy-3d.html`, decimated and packed from BodyParts3D v3.0
-(STL conversion: github.com/Kevin-Mattheus-Moerman/BodyParts3D).
+Original 3D anatomy used by `anatomy-3d.html`. Every muscle, bone and organ here is
+procedurally sculpted by `tools/anatomy/` (no third-party scan data):
+muscles are swept fibre bundles between anatomical origin and insertion landmarks,
+bones and organs are blended implicit shapes, all meshed with marching cubes.
 
-"BodyParts3D, (c) The Database Center for Life Science licensed under
-CC Attribution-Share Alike 2.1 Japan" — https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html
-
-Because of the share-alike licence, these derived files are distributed under the same licence.
+Rebuild: `cd tools/anatomy && python3 build.py` (needs numpy, scipy, scikit-image, trimesh, fast-simplification).
 
 Format: `parts.json` lists every part (`name`, selectable group `g`, `layer`, byte offsets).
-Each `*.wasm` file is raw binary (not WebAssembly): per part, uint16 xyz positions
-quantised to the global box `lo`..`hi` (metres, y up, front +z), then uint16/uint32 triangle indices.
+Each `*.wasm` file is raw binary (not WebAssembly — the extension is only so artifact hosting serves it):
+per part, uint16 xyz positions quantised to the box `lo`..`hi` (metres, y up, front +z),
+then uint16/uint32 triangle indices.

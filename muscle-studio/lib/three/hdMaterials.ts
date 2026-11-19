@@ -234,11 +234,12 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
         // Rectus sheath (lib/three/abdomen.ts): the external oblique aponeurosis is a
         // translucent pearly sheet over the rectus; the internal oblique lamina fused
         // into it is not drawn a second time. Alpha-to-coverage: no sorting needed.
-        float hzSheath = smoothstep(0.25, 0.85, abs(vSheath));
+        float hzSheath = smoothstep(0.25, 0.85, min(abs(vSheath), 1.0));
+        float hzOver = clamp(abs(vSheath) - 1.0, 0.0, 1.0); // in front of the rectus
         if (vSheath > 0.0) {
           vec3 sheathCol = uTendonColor * vec3(1.0, 0.9, 0.9) * (0.96 + 0.08 * hzK);
           diffuseColor.rgb = mix(diffuseColor.rgb, sheathCol, hzSheath);
-          diffuseColor.a *= 1.0 - 0.42 * hzSheath;
+          diffuseColor.a *= 1.0 - (0.42 + 0.36 * hzOver) * hzSheath;
         } else if (vSheath < 0.0) {
           diffuseColor.a *= 1.0 - hzSheath;
         }

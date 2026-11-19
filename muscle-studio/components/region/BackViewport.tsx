@@ -24,7 +24,7 @@ import { HDPipeline } from "@/components/anatomy/HDPipeline";
 import { ProgressiveRefine } from "@/components/anatomy/ProgressiveRefine";
 import { loadGltf } from "@/lib/three/loadGltf";
 import { configureRenderer } from "@/lib/three/rendererSetup";
-import { backStore, useBack, type PickedStructure, type RegionView } from "@/stores/backStore";
+import { backStore, unitNames, useBack, type PickedStructure, type RegionView } from "@/stores/backStore";
 
 /** Original Z-Anatomy geometry exported from Blender (pipeline/blender/export_body.py + postprocess-body.mjs). */
 export const MODEL_BASE = "/models/zanatomy";
@@ -68,7 +68,7 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
       m.opacity = m.target;
       m.mesh.visible = m.target > 0;
       (m.mesh.material as { opacity: number }).opacity = ((m.mesh.material as { userData: { baseOpacity?: number } }).userData.baseOpacity ?? 1) * m.opacity;
-      applyStyle(m, st.selected, st.hovered, st.highlightColor);
+      applyStyle(m, st.selected, st.hovered, st.highlightColor, st.spotlight ? { primary: new Set(st.spotlight.primary), secondary: new Set(st.spotlight.secondary) } : null);
     }
     void model;
   };
@@ -91,6 +91,7 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
         syncNew(model, meshes);
         setRoots([gltf.scene]); // replaces the previous body's roots
         onState({ status: "ready" });
+        for (const u of model.units.values()) unitNames.set(u.id, { ar: u.ar, en: u.en });
         backStore.setState({ unitsVersion: Date.now() });
         const st = backStore.getState();
         if (st.region) st.focusRegion(st.region);
@@ -152,8 +153,9 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
           if (t !== m.target) { m.target = t; changed = true; }
         }
       }
-      if (st.selected !== prev.selected || st.hovered !== prev.hovered || st.highlightColor !== prev.highlightColor) {
-        for (const m of model.meshes) changed = applyStyle(m, st.selected, st.hovered, st.highlightColor) || changed;
+      if (st.selected !== prev.selected || st.hovered !== prev.hovered || st.highlightColor !== prev.highlightColor || st.spotlight !== prev.spotlight) {
+        const spot = st.spotlight ? { primary: new Set(st.spotlight.primary), secondary: new Set(st.spotlight.secondary) } : null;
+        for (const m of model.meshes) changed = applyStyle(m, st.selected, st.hovered, st.highlightColor, spot) || changed;
       }
       if (changed || st.background !== prev.background || st.autoRotate !== prev.autoRotate) invalidate();
     });

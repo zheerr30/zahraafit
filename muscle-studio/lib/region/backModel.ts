@@ -267,17 +267,34 @@ export function shouldShow(m: RegionMesh, s: VisibilityState): boolean {
   }
 }
 
-/** Colour / look of a mesh for the current selection, hover and highlight colour. */
-export function applyStyle(m: RegionMesh, selected: PickedStructure | null, hovered: PickedStructure | null, highlight: string = COLORS.highlight): boolean {
+/** Target muscles of an exercise, as sets (see the store's `spotlight`). */
+export interface SpotlightSets {
+  primary: Set<string>;
+  secondary: Set<string>;
+}
+
+/** Colour of the helper (secondary) muscles of an exercise: the highlight, lightened. */
+export function secondaryHighlight(highlight: string): string {
+  return `#${new Color(highlight).lerp(new Color("#ffffff"), 0.5).getHexString()}`;
+}
+
+/**
+ * Colour / look of a mesh for the current selection, hover and highlight colour.
+ * With a spotlight (an exercise is being looked at) the prime movers take the
+ * highlight colour and the helpers a lighter tint of it, instead of the selection.
+ */
+export function applyStyle(m: RegionMesh, selected: PickedStructure | null, hovered: PickedStructure | null, highlight: string = COLORS.highlight, spot: SpotlightSets | null = null): boolean {
   const same = (p: PickedStructure | null) => !!p && p.kind === m.kind && p.id === m.id && (m.kind === "unit" || p.side === m.side);
-  const isSel = same(selected);
+  const role = spot && m.kind === "unit" ? (spot.primary.has(m.id) ? 2 : spot.secondary.has(m.id) ? 1 : 0) : -1;
+  const isSel = spot ? role === 2 : same(selected);
   const isHover = same(hovered);
-  const key = `${isSel}|${isHover}|${isSel ? highlight : ""}`;
+  const key = `${isSel}|${isHover}|${isSel || role === 1 ? highlight : ""}|${role}`;
   if (key === m.styleKey) return false;
   m.styleKey = key;
   const mat = m.mesh.material as MeshPhysicalMaterial;
   if (m.kind === "unit") {
-    (mat.userData.hd ? setMuscleLookHD : setMuscleLook)(mat, isSel ? highlight : m.baseHex, isSel ? HIGHLIGHT_LOOK : REALISTIC_LOOK, isHover);
+    const lit = isSel || role === 1;
+    (mat.userData.hd ? setMuscleLookHD : setMuscleLook)(mat, isSel ? highlight : role === 1 ? secondaryHighlight(highlight) : m.baseHex, lit ? HIGHLIGHT_LOOK : REALISTIC_LOOK, isHover);
   } else if (m.kind !== "attachment") {
     const c = new Color(isSel ? highlight : m.baseHex);
     mat.color.copy(c);

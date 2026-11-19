@@ -31,6 +31,15 @@ export const DEFAULT_LAYERS: Record<RegionLayer, boolean> = {
 
 export type Sex = "male" | "female";
 
+/** What the contextual panel of the selected structure shows. */
+export type PanelMode = "summary" | "details" | "exercises";
+
+/** Muscles lit on the model for an exercise: prime movers and helpers (unit ids). */
+export interface Spotlight {
+  primary: string[];
+  secondary: string[];
+}
+
 interface BackState {
   selected: PickedStructure | null;
   hovered: PickedStructure | null;
@@ -53,6 +62,16 @@ interface BackState {
   /** Study region the list and camera are focused on (null = whole body). */
   region: string | null;
   cameraCommand: CameraCommand | null;
+  /** Contextual panel of the selection: summary → "learn more" / "exercises". */
+  panel: PanelMode;
+  /** Target muscles of the exercise being looked at (overrides the selection colour). */
+  spotlight: Spotlight | null;
+  /** Exercise to open when the exercises panel appears (set by a link to one exercise). */
+  linkedExercise: string | null;
+  setPanel: (p: PanelMode) => void;
+  setSpotlight: (s: Spotlight | null) => void;
+  /** Back to the whole anatomy: no isolation, no region, front view. */
+  showFullBody: () => void;
   select: (p: PickedStructure | null) => void;
   selectUnit: (id: string, side?: "l" | "r" | "m") => void;
   setHovered: (p: PickedStructure | null) => void;
@@ -75,9 +94,12 @@ interface BackState {
   resetAll: () => void;
 }
 
+/** Names of the muscles of the loaded model (filled by the viewer), so a muscle chosen by id — from the list, a link or an exercise — is shown by its name. */
+export const unitNames = new Map<string, { ar: string; en: string }>();
+
 let nonce = 0;
 const unitPick = (id: string, side: "l" | "r" | "m" = "l"): PickedStructure => {
-  const m = REGION_MUSCLES.find((x) => x.id === id);
+  const m = unitNames.get(id) ?? REGION_MUSCLES.find((x) => x.id === id);
   return { kind: "unit", id, side, ar: m?.ar ?? id, en: m?.en ?? id };
 };
 
@@ -97,11 +119,31 @@ export const backStore = createStore<BackState>()((set, get) => ({
   unitsVersion: 0,
   region: null,
   cameraCommand: null,
-  select: (p) => set({ selected: p, isolate: p ? get().isolate : false }),
+  panel: "summary",
+  spotlight: null,
+  linkedExercise: null,
+  setPanel: (panel) => set({ panel, spotlight: panel === "exercises" ? get().spotlight : null }),
+  setSpotlight: (spotlight) => set({ spotlight }),
+  showFullBody: () =>
+    set({ isolate: false, region: null, spotlight: null, autoRotate: false, cameraCommand: { type: "view", view: "front", nonce: ++nonce } }),
+  select: (p) => {
+    const cur = get().selected;
+    const same = !!p && !!cur && p.kind === cur.kind && p.id === cur.id;
+    // a new structure opens its summary; re-picking the same one keeps the open panel
+    set({ selected: p, isolate: p ? get().isolate : false, panel: same ? get().panel : "summary", spotlight: same ? get().spotlight : null, linkedExercise: same ? get().linkedExercise : null });
+  },
   selectUnit: (id, side = "l") => {
     const hidden = { ...get().hiddenUnits };
     delete hidden[id];
-    set({ selected: unitPick(id, side), hiddenUnits: hidden, cameraCommand: { type: "focus", unitId: id, side, nonce: ++nonce } });
+    const same = get().selected?.kind === "unit" && get().selected?.id === id;
+    set({
+      selected: unitPick(id, side),
+      hiddenUnits: hidden,
+      panel: same ? get().panel : "summary",
+      spotlight: same ? get().spotlight : null,
+      linkedExercise: same ? get().linkedExercise : null,
+      cameraCommand: { type: "focus", unitId: id, side, nonce: ++nonce },
+    });
   },
   setHovered: (p) => {
     const h = get().hovered;
@@ -136,8 +178,8 @@ export const backStore = createStore<BackState>()((set, get) => ({
   setBackground: (b) => set({ background: b }),
   setAutoRotate: (v) => set({ autoRotate: v }),
   setHighlightColor: (hex) => set({ highlightColor: /^#[0-9a-fA-F]{6}$/.test(hex) ? hex : "#E8602C" }),
-  setSex: (sex) => set({ sex, selected: null, hovered: null, isolate: false }),
-  setHd: (hd) => set({ hd, selected: null, hovered: null, isolate: false }),
+  setSex: (sex) => set({ sex, selected: null, hovered: null, isolate: false, spotlight: null }),
+  setHd: (hd) => set({ hd, selected: null, hovered: null, isolate: false, spotlight: null }),
   focusRegion: (region) =>
     set({ region, autoRotate: false, cameraCommand: region ? { type: "region", region, nonce: ++nonce } : { type: "view", view: "front", nonce: ++nonce } }),
   view: (v) => set({ cameraCommand: { type: "view", view: v, nonce: ++nonce }, autoRotate: false }),
@@ -151,6 +193,8 @@ export const backStore = createStore<BackState>()((set, get) => ({
       depthMode: "all",
       isolate: false,
       autoRotate: false,
+      panel: "summary",
+      spotlight: null,
       cameraCommand: get().region ? { type: "region", region: get().region!, nonce: ++nonce } : { type: "view", view: "front", nonce: ++nonce },
     }),
 }));

@@ -184,3 +184,30 @@ export const IconRotate = (p: IconProps) => (
     <path d="M21 3v5h-5" />
   </Svg>
 );
+export const IconBookmark = ({ filled, ...p }: IconProps & { filled?: boolean }) => (
+  <Svg {...p} fill={filled ? "currentColor" : "none"}>
+    <path d="M6 4h12v17l-6-4.5L6 21z" />
+  </Svg>
+);
+export const IconDumbbell = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M3 9.5v5M6 7v10M18 7v10M21 9.5v5M6 12h12" />
+  </Svg>
+);
+/** "Back" in a right-to-left layout: the arrow points to the right. */
+export const IconBack = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M5 12h14M13 6l6 6-6 6" />
+  </Svg>
+);
+export const IconBody = (p: IconProps) => (
+  <Svg {...p}>
+    <circle cx="12" cy="4.5" r="2" />
+    <path d="M12 7v7M7 9.5l5-1.5 5 1.5M12 14l-3 7M12 14l3 7" />
+  </Svg>
+);
+export const IconCube = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9zM12 12l8-4.5M12 12L4 7.5M12 12v9" />
+  </Svg>
+);

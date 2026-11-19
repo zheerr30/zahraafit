@@ -25,12 +25,12 @@ export class MaterialLibrary {
   private muscleCache = new Map<string, MeshPhysicalMaterial>();
 
   /** Shaded muscle material (needs the baked _anat/_flow attributes on the geometry). */
-  muscle(hex: string, look: MuscleLookName, variant: MaterialVariant = "normal", layer = 0): MeshPhysicalMaterial {
-    const key = `${hex.toLowerCase()}|${look}|${variant}|${layer}`;
+  muscle(hex: string, look: MuscleLookName, variant: MaterialVariant = "normal", layer = 0, depthBias = 0): MeshPhysicalMaterial {
+    const key = `${hex.toLowerCase()}|${look}|${variant}|${layer}|${depthBias}`;
     let mat = this.muscleCache.get(key);
     if (!mat) {
       mat = this.hd
-        ? createMuscleMaterialHD(hex, LOOKS[look], variant === "hover", { seed: new Vector3(), scale: 1 })
+        ? createMuscleMaterialHD(hex, LOOKS[look], variant === "hover", { seed: new Vector3(), scale: 1, depthBias })
         : createMuscleMaterial(hex, LOOKS[look], variant === "hover");
       if (layer > 0) {
         mat.polygonOffset = true;

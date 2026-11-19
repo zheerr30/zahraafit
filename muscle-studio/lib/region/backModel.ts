@@ -4,7 +4,7 @@ import { REGION_MUSCLE_BY_ID, type RegionLayer } from "@/data/region/backShoulde
 import { dequantizeMesh } from "@/lib/three/anatomyModel";
 import { createMuscleMaterial, HIGHLIGHT_LOOK, REALISTIC_LOOK, setMuscleLook } from "@/lib/three/muscleMaterial";
 import { axisTangents, createMuscleMaterialHD, createTissueMaterialHD, muscleDetail, principalAxis, setCoverageBlending, setMuscleLookHD } from "@/lib/three/hdMaterials";
-import { markRectusSheath, renderDepth } from "@/lib/three/abdomen";
+import { abdominalDepthBias, markRectusSheath, renderDepth } from "@/lib/three/abdomen";
 import { fibreTangents, orientFibres, refineMeshInPlace } from "@/lib/three/refine";
 import { createTissueMaterial, muscleTone, TISSUE, tissueOf } from "@/lib/three/tissue";
 import type { DepthMode, PickedStructure } from "@/stores/backStore";
@@ -133,8 +133,7 @@ export function prepareMeshes(scene: Object3D, opts: PrepareOptions = {}): Regio
       orientFibres(mesh.geometry);
       fibreTangents(mesh.geometry);
       if (opts.refineRegions?.has(x.region ?? "")) refineMeshInPlace(mesh);
-      // Redesigned (sculpted) muscles: smooth organic surfaces with subtle fibres.
-      const detail = { ...muscleDetail(x.id + (x.source ?? ""), mesh.geometry), detail: mesh.userData.sculpt ? 0.45 : 1 };
+      const detail = { ...muscleDetail(x.id + (x.source ?? ""), mesh.geometry), depthBias: abdominalDepthBias(x.za_name ?? "") };
       material = createMuscleMaterialHD(baseHex, REALISTIC_LOOK, false, detail);
       // Where layers nearly coincide, the more superficial muscle wins the depth test
       // (render order only — no geometry is moved).

@@ -23,13 +23,14 @@ import {
 import { HDPipeline } from "@/components/anatomy/HDPipeline";
 import { ProgressiveRefine } from "@/components/anatomy/ProgressiveRefine";
 import { loadGltf } from "@/lib/three/loadGltf";
-import { applySculpt } from "@/lib/three/sculpt";
 import { configureRenderer } from "@/lib/three/rendererSetup";
 import { backStore, useBack, type PickedStructure, type RegionView } from "@/stores/backStore";
 
 /** Original Z-Anatomy geometry exported from Blender (pipeline/blender/export_body.py + postprocess-body.mjs). */
 export const MODEL_BASE = "/models/zanatomy";
 export const modelUrl = (sex: "male" | "female", part: string) => `${MODEL_BASE}/${sex}/${part}.glb`;
+/** The body shown by default: core.glb with refined muscle surfaces. */
+export const BODY_PART = "core-smooth";
 export const DEFINITIONS_URL = `${MODEL_BASE}/definitions.json`;
 /** Optional layers loaded on first use. */
 const LAZY_PARTS = { attachments: "attachments", nerves: "nerves" } as const;
@@ -78,15 +79,11 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
     const model = createRegionModel();
     loaded.current = new Set(["core"]);
     onState({ status: "loading", progress: 0 });
-    // The original Z-Anatomy geometry is the standard. The experimental smoothed
-    // chest & abdomen meshes (pipeline/sculpt) load only on request: `?sculpt=1`.
-    const sculptOn = hd && new URLSearchParams(window.location.search).get("sculpt") === "1";
-    Promise.all([
-      loadGltf(modelUrl(sex, "core"), { renderer: gl, signal: ctrl.signal, onProgress: (p) => onState({ status: "loading", progress: p }) }),
-      sculptOn ? loadGltf(modelUrl(sex, "sculpt-trunk"), { renderer: gl, signal: ctrl.signal }).catch(() => null) : Promise.resolve(null),
-    ])
-      .then(([gltf, sculpt]) => {
-        if (sculpt) applySculpt(gltf.scene, sculpt.scene);
+    // Muscle surfaces refined from the original Z-Anatomy meshes (pipeline/sculpt/body.mjs:
+    // same nodes and vertices, bellies smoothed by ≤ 2 mm); `?sculpt=0` shows the original.
+    const part = new URLSearchParams(window.location.search).get("sculpt") === "0" ? "core" : BODY_PART;
+    loadGltf(modelUrl(sex, part), { renderer: gl, signal: ctrl.signal, onProgress: (p) => onState({ status: "loading", progress: p }) })
+      .then((gltf) => {
         const meshes = prepareMeshes(gltf.scene, hd ? HD_OPTIONS : {});
         addMeshes(model, meshes);
         modelRef.current = model;

@@ -216,3 +216,15 @@ export function renderDepth(name: string, depth: number | undefined): number {
   if (/^Transversus abdominis/i.test(name)) return Math.max(3, depth ?? 1);
   return depth ?? 1;
 }
+
+/**
+ * Depth-test bias (metres, along the view axis) of the deep abdominal sheets. In
+ * the source the internal oblique pokes through the external oblique at the flank
+ * by fractions of a millimetre, which shows as a mottled patch; drawn slightly
+ * deeper, the superficial sheet wins everywhere. Rendering only — no vertex moves.
+ */
+export function abdominalDepthBias(name: string): number {
+  if (/^Internal abdominal oblique/i.test(name)) return 0.0015;
+  if (/^Transvers(us|e) abdomin(is|al)/i.test(name)) return 0.003;
+  return 0;
+}

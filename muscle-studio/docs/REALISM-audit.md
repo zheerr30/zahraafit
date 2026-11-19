@@ -139,10 +139,43 @@ border of the rectus (linea semilunaris). The opened layer is absent from colour
 shadow, ambient-occlusion and picking alike, so a click on a rectus segment
 selects the rectus. The rectus' baked AO (computed under the sheath) is lifted.
 
-**Geometry.** Unchanged: original Z-Anatomy meshes, plus the interpolating
-refinement (original vertices kept, ≤ 0.5 mm). The smoothed chest / abdomen meshes
-of the earlier prototype (`pipeline/sculpt`) are no longer loaded by default
-(`?sculpt=1` to compare).
+**Geometry.** See the next section (muscle surfaces refined; everything else unchanged).
 
 **Not changed:** selection, isolation, highlighting, labels, layers, camera,
 anatomy data. The non-HD mode keeps its previous look.
+
+## Muscle surface refinement (whole body)
+
+Feedback on the redesign: tendons and fasciae are fine; the muscle surfaces looked
+irregular, wrinkled, patchy and noisy, with harsh grooves — chest and abdomen most.
+
+Two causes, both addressed for all 466 muscles of both bodies in one pass:
+
+1. **Source mesh.** Z-Anatomy muscles are low resolution (the sternocostal pectoral
+   head has 1,653 vertices, ≈ 1 cm edges) with modelled ridges, lumps and ragged
+   facets. `pipeline/sculpt/body.mjs` fairs the muscle bellies (Taubin λ|μ, no
+   shrinkage) and writes `core-smooth.glb`, which the atlas and the editor now load
+   (`?sculpt=0` in the atlas shows the original `core.glb`).
+   - never moved: the author's tendon / aponeurosis faces, bone contact (origins,
+     insertions), open borders, seams where another structure lies side by side;
+   - no vertex moves more than 2 mm, and towards the nearest other structure by at
+     most 40 % of the original gap — layers cannot come to cross;
+   - same nodes, names, ids, vertex and triangle counts; tendons, ligaments,
+     fasciae and bones are byte-for-byte the same geometry (re-quantised only).
+
+   Measured (`core-smooth.json`): max displacement 2.0 mm, mean 0.51 mm (male) /
+   0.42 mm (female); tendon vertices 0 mm; bone attachments ≤ 0.02 mm; mean angle
+   between neighbouring facets 19.9° → 16.3°. Volume changes are within ± 0.5 % for
+   the large muscles; a handful of tiny ones (anal sphincter, intercostals, a thenar
+   head) change by 5–16 % of their very small volume.
+
+2. **Shading.** The fibre relief and colour contrast added in the redesign were too
+   strong and patchy. Relief is now 0.05–0.1 mm (was up to 0.55 mm), the fibre lines
+   are fine and regular, mottling and per-bundle tone patches are nearly removed, the
+   baked per-vertex ambient occlusion is smoothed over the surface and used gently,
+   and the screen-space AO and key shadow are softer (less harsh separations).
+
+Also: the internal oblique / transversus are drawn 1.5 / 3 mm deeper in the depth
+test only (no vertex moved), which removes the mottled patch where the internal
+oblique pokes through the external oblique at the flank; the edge where the
+aponeurosis fades in beside the rectus is crisp instead of dithered.

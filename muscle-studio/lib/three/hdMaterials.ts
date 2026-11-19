@@ -109,14 +109,15 @@ varying vec2 vAnat;
 varying vec3 vFib;
 varying vec3 vObjPos;
 varying vec3 vObjNrm;
+uniform float uDepthBias;
 `;
 
 function fibreColors(hex: string): { groove: Color; light: Color } {
   const s = new Color(hex).convertLinearToSRGB();
   // Grooves between fascicles: deeper, redder; crests: lighter, towards a warm
   // salmon (the sculpted-strand highlights of the references) — never white.
-  const groove = new Color(s.r * 0.64, s.g * 0.5, s.b * 0.5).convertSRGBToLinear();
-  const light = new Color(s.r + (1.0 - s.r) * 0.34, s.g + (0.8 - s.g) * 0.34, s.b + (0.7 - s.b) * 0.34).convertSRGBToLinear();
+  const groove = new Color(s.r * 0.72, s.g * 0.6, s.b * 0.6).convertSRGBToLinear();
+  const light = new Color(s.r + (1.0 - s.r) * 0.3, s.g + (0.8 - s.g) * 0.3, s.b + (0.7 - s.b) * 0.3).convertSRGBToLinear();
   return { groove, light };
 }
 
@@ -127,6 +128,8 @@ export interface MuscleDetail {
   scale: number;
   /** Strength of the surface detail (relief and fibre contrast), 1 = default. */
   detail?: number;
+  /** Depth-test bias in metres (deep sheets that nearly coincide with a superficial one). */
+  depthBias?: number;
 }
 
 /** Deterministic per-muscle detail parameters from its id and size. */
@@ -173,6 +176,7 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
     uSeed: { value: detail.seed },
     uScale: { value: detail.scale },
     uDetail: { value: detail.detail ?? 1 },
+    uDepthBias: { value: detail.depthBias ?? 0 },
   };
   mat.userData.msUniforms = uniforms;
   mat.userData.hd = true;
@@ -180,7 +184,15 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
     Object.assign(shader.uniforms, uniforms);
     shader.vertexShader = shader.vertexShader
       .replace("#include <common>", `#include <common>\n${VERTEX_HEAD}`)
-      .replace("#include <begin_vertex>", `#include <begin_vertex>\nvAnat = _anat; vFib = _fiber; vSheath = _sheath; vObjPos = transformed; vObjNrm = objectNormal;`);
+      .replace("#include <begin_vertex>", `#include <begin_vertex>\nvAnat = _anat; vFib = _fiber; vSheath = _sheath; vObjPos = transformed; vObjNrm = objectNormal;`)
+      .replace(
+        "#include <project_vertex>",
+        `#include <project_vertex>
+        if (uDepthBias > 0.0) {
+          vec4 hzDeep = projectionMatrix * (mvPosition + vec4(0.0, 0.0, -uDepthBias, 0.0));
+          gl_Position.z = hzDeep.z / hzDeep.w * gl_Position.w;
+        }`,
+      );
     shader.fragmentShader = shader.fragmentShader
       .replace(
         "#include <common>",
@@ -215,9 +227,9 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
           if (wM > 0.0) { vec3 r = hzPhasor(p + 0.71, F, A, N, 0.0014 * s, fM, vec3(0.0007, 0.00028, 0.0005) * s); bM = mix(0.625, hzBulge(r), wM); }
           // Large-scale mottling (cm): colour and moisture vary across the belly.
           float mott = hzFbm(p * 28.0) - 0.5;
-          float mott2 = hzValue(p * 110.0) - 0.5;
-          // Relief: strand groups 0.55 mm, bundles 0.32 mm, fascicles 0.1 mm, fibres 0.01 mm.
-          float hm = (bS - 0.625) * 0.55e-3 * s + (bB - 0.625) * 0.32e-3 * s + (bF - 0.625) * 0.1e-3 * s + (bM - 0.625) * 0.012e-3 * s;
+          // Relief — subtle, so the belly reads as a smooth form with a fine grain:
+          // strand groups 0.06 mm, bundles 0.1 mm, fascicles 0.05 mm, fibres 0.01 mm.
+          float hm = (bS - 0.625) * 0.06e-3 * s + (bB - 0.625) * 0.1e-3 * s + (bF - 0.625) * 0.05e-3 * s + (bM - 0.625) * 0.01e-3 * s;
           // Myotendinous junction: fascicles end at staggered positions.
           float t = clamp(vAnat.y * uTendon, 0.0, 1.0);
           // Long interdigitating fingers (bundle scale) with fine ones (fascicle scale).
@@ -225,8 +237,9 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
           // Tendon: fine parallel collagen striation, much lower relief.
           float ht = (bF - 0.625) * 0.05e-3 + (bM - 0.625) * 0.02e-3 + mott * 0.04e-3;
           hzH = mix(hm * uDetail, ht, t);
-          float k = (bS - 0.625) * 0.5 * wS + (bF - 0.625) * 0.65 * wF + (bB - 0.625) * 0.6 * wB + (bM - 0.625) * 0.25 * wM
-                  + (tS - 0.5) * 0.4 + (tF - 0.5) * 0.3 + (tB - 0.5) * 0.3 + mott * 0.3 + mott2 * 0.06;
+          // Colour: fine regular fibre lines; no patches (per-kernel tone and mottling kept minimal).
+          float k = (bS - 0.625) * 0.22 * wS + (bF - 0.625) * 0.4 * wF + (bB - 0.625) * 0.36 * wB + (bM - 0.625) * 0.15 * wM
+                  + (tS - 0.5) * 0.08 + (tF - 0.5) * 0.08 + (tB - 0.5) * 0.08 + mott * 0.06;
           hzMott = mott;
           hzK = k * mix(1.0, uDetail, 0.7);
           hzTendon = t;
@@ -242,7 +255,7 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
         // Natural variation across the belly: a slow drift between a warmer
         // (orange) and a deeper (crimson) red, a few percent only.
         float msDrift = clamp(hzMott * 2.2, -1.0, 1.0) * uStripe;
-        msTissue *= vec3(1.0 + 0.05 * msDrift, 1.0 - 0.07 * msDrift, 1.0 - 0.11 * msDrift);
+        msTissue *= vec3(1.0 + 0.015 * msDrift, 1.0 - 0.025 * msDrift, 1.0 - 0.04 * msDrift);
         // Junction: pale salmon where the last fascicles meet the tendon.
         vec3 msJunction = mix(msTissue, uTendonColor, 0.5);
         vec3 msTendonCol = uTendonColor * (0.9 + 0.14 * hzK);
@@ -257,16 +270,16 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
         if (vSheath > 0.0) {
           vec3 sheathCol = uTendonColor * (0.94 + 0.1 * hzK);
           diffuseColor.rgb = mix(diffuseColor.rgb, sheathCol, hzSheath);
-          diffuseColor.a *= 1.0 - smoothstep(0.1, 0.9, hzOver);
+          diffuseColor.a *= 1.0 - smoothstep(0.38, 0.62, hzOver);
         } else if (vSheath < 0.0) {
-          diffuseColor.a *= 1.0 - hzSheath;
+          diffuseColor.a *= 1.0 - smoothstep(0.42, 0.58, min(abs(vSheath), 1.0));
         }
         hzTendon = max(hzTendon, hzSheath);`,
       )
       .replace(
         "#include <roughnessmap_fragment>",
         `#include <roughnessmap_fragment>
-        roughnessFactor = mix(clamp(roughnessFactor + (0.5 - hzWet) * 0.12, 0.5, 0.74), 0.46, hzTendon);`,
+        roughnessFactor = mix(clamp(roughnessFactor + (0.5 - hzWet) * 0.05, 0.56, 0.7), 0.46, hzTendon);`,
       )
       .replace(
         "#include <normal_fragment_maps>",
@@ -288,7 +301,8 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
       .replace(
         "#include <aomap_fragment>",
         `#include <aomap_fragment>
-        float msAo = mix(1.0, smoothstep(0.0, 0.85, vAnat.x), uAo);
+        // Baked AO is per vertex (coarse): used gently; contact shading comes from the screen-space AO.
+        float msAo = mix(1.0, smoothstep(0.0, 0.85, vAnat.x), uAo * 0.6);
         reflectedLight.indirectDiffuse *= msAo;
         reflectedLight.indirectSpecular *= msAo;
         reflectedLight.directDiffuse *= mix(1.0, msAo, 0.55);
@@ -300,7 +314,7 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
   mat.alphaToCoverage = true;
   setCoverageBlending(mat);
   mat.userData.coverageBlend = true;
-  mat.customProgramCacheKey = () => "muscle-hd3";
+  mat.customProgramCacheKey = () => "muscle-hd5";
   mat.name = `muscle-hd:${hex}`;
   return mat;
 }

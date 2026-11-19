@@ -23,7 +23,8 @@ export const ANATOMY_ASSETS: AnatomyAssetDefinition[] = (["male", "female"] as G
   label: g === "male" ? "Z-Anatomy · نموذج ذكر" : "Z-Anatomy · نموذج أنثى (تقريب)",
   gender: g,
   layer: "full-body",
-  url: `/models/zanatomy/${g}/core.glb`,
+  // core.glb with refined muscle surfaces (pipeline/sculpt/body.mjs); same nodes and names
+  url: `/models/zanatomy/${g}/core-smooth.glb`,
   layerUrls: zaParts(g),
   views: ["front", "back", "left", "right"],
   priority: 10,

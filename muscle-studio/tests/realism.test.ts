@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import type { Group, Mesh, MeshPhysicalMaterial } from "three";
+import { Vector3, type Group, type Mesh, type MeshPhysicalMaterial } from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
 import { beforeAll, describe, expect, it } from "vitest";
@@ -179,43 +179,58 @@ describe("abdominal wall: rectus sheath from the oblique aponeuroses", () => {
   });
 });
 
-describe("chest & abdomen redesign (sculpt-trunk) keeps the anatomy", () => {
-  it("measured report: bone attachments fixed, bounded displacement, both bodies", () => {
+describe("muscle surface refinement (core-smooth) keeps the anatomy", () => {
+  it("measured report: ≤ 2 mm, tendons and bone attachments fixed, smoother, both bodies", () => {
     for (const sex of ["male", "female"]) {
-      const r = JSON.parse(readFileSync(join(PUBLIC, `models/zanatomy/${sex}/sculpt-trunk.json`), "utf8"));
-      expect(r.meshes).toHaveLength(18);
-      for (const m of r.meshes) {
-        expect(m.boneAttachmentMaxDisplacementMm, m.name).toBeLessThan(2.5);
-        expect(m.maxDisplacementMm, m.name).toBeLessThan(8);
-        expect(m.trianglesAfter, m.name).toBeGreaterThanOrEqual(m.trianglesBefore);
-      }
-      const rect = r.meshes.find((m: { name: string }) => m.name === "Rectus abdominis muscle.l");
-      expect(rect.intersectionsY).toHaveLength(3); // three tendinous intersections from the author's faces
+      const r = JSON.parse(readFileSync(join(PUBLIC, `models/zanatomy/${sex}/core-smooth.json`), "utf8"));
+      expect(r.summary.muscles).toBe(466);
+      expect(r.summary.maxDisplacementMm).toBeLessThanOrEqual(2.001);
+      expect(r.summary.tendonMaxDisplacementMm).toBeLessThan(0.01);
+      expect(r.summary.boneAttachmentMaxDisplacementMm).toBeLessThan(0.1);
+      expect(r.summary.roughnessDegAfter).toBeLessThan(r.summary.roughnessDegBefore);
+      for (const m of r.meshes) if (m.vertices > 800) expect(m.roughnessDegAfter, m.name).toBeLessThanOrEqual(m.roughnessDegBefore + 0.3);
     }
   });
 
-  it("swaps only the geometry: same nodes, names, sides, ids; fibres kept", async () => {
-    const { applySculpt } = await import("@/lib/three/sculpt");
-    const core = await load("models/zanatomy/male/core.glb");
-    const sculpt = await load("models/zanatomy/male/sculpt-trunk.glb");
-    const before = new Map<string, { id: string; side: string; uuid: string }>();
-    core.traverse((o) => { if ((o as Mesh).isMesh) before.set(o.userData.za_name, { id: o.userData.id, side: o.userData.side, uuid: o.uuid }); });
-    expect(applySculpt(core, sculpt)).toBe(18);
-    let swapped = 0;
-    core.traverse((o) => {
+  it("same nodes, names, ids, vertex and triangle counts as the original; only muscles moved", async () => {
+    const smooth = await load("models/zanatomy/male/core-smooth.glb");
+    const orig = new Map<string, Mesh>();
+    scene.traverse((o) => { if ((o as Mesh).isMesh) orig.set(o.name, o as Mesh); });
+    scene.updateMatrixWorld(true);
+    smooth.updateMatrixWorld(true);
+    let meshes = 0, movedMuscles = 0;
+    const a = new Vector3();
+    smooth.traverse((o) => {
       const m = o as Mesh;
       if (!m.isMesh) return;
-      const b = before.get(m.userData.za_name)!;
-      expect(m.uuid).toBe(b.uuid);
-      expect(m.userData.id).toBe(b.id);
-      if (m.userData.sculpt) {
-        swapped++;
-        expect(m.geometry.getAttribute("_fiber"), m.userData.za_name).toBeDefined();
-        expect(m.geometry.getAttribute("_anat"), m.userData.za_name).toBeDefined();
+      meshes++;
+      const q = orig.get(m.name)!;
+      expect(q, m.name).toBeDefined();
+      expect(m.userData.id).toBe(q.userData.id);
+      expect(m.userData.za_name).toBe(q.userData.za_name);
+      const pa = m.geometry.getAttribute("position"), pb = q.geometry.getAttribute("position");
+      expect(pa.count, m.name).toBe(pb.count);
+      expect(m.geometry.index!.count, m.name).toBe(q.geometry.index!.count);
+      // order-independent comparison (the files are re-indexed when compressed): centroid and bounds
+      const stat = (mesh: Mesh) => {
+        const p = mesh.geometry.getAttribute("position");
+        const c = new Vector3(), lo = new Vector3(Infinity, Infinity, Infinity), hi = new Vector3(-Infinity, -Infinity, -Infinity);
+        for (let i = 0; i < p.count; i++) { a.fromBufferAttribute(p, i).applyMatrix4(mesh.matrixWorld); c.add(a); lo.min(a); hi.max(a); }
+        return { c: c.divideScalar(p.count), lo, hi };
+      };
+      const A = stat(m), B = stat(q);
+      const shift = A.c.distanceTo(B.c), box = Math.max(A.lo.distanceTo(B.lo), A.hi.distanceTo(B.hi));
+      if (m.userData.kind === "unit") {
+        expect(shift, m.name).toBeLessThan(0.0021);
+        expect(box, m.name).toBeLessThan(0.0036); // ≤ 2 mm per axis
+        if (shift > 0.00002) movedMuscles++;
+      } else {
+        // every other tissue is where it was (quantisation only)
+        expect(shift, m.name).toBeLessThan(0.00005);
+        expect(box, m.name).toBeLessThan(0.0001);
       }
     });
-    expect(swapped).toBe(18);
-    const model = prepareRegionModel(core, { hd: true });
-    for (const id of ["rectus-abdominis", "external-oblique"]) expect(model.byUnit.has(id) || [...model.units.keys()].some((k) => k.includes("rectus")), id).toBe(true);
-  }, 120_000);
+    expect(meshes).toBe(orig.size);
+    expect(movedMuscles).toBeGreaterThan(100);
+  }, 180_000);
 });

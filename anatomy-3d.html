@@ -1,0 +1,707 @@
+<title>أطلس الجسم التشريحي</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Reem+Kufi:wght@500;700&family=Spectral:ital,wght@1,400;1,500&display=swap">
+<style>
+/* Layout: full-height atlas app; control rail on the reading side, 3D stage fills the rest, specimen card floats over the stage */
+:root{
+  --bg:#e9ecee;
+  --surface:#f9fafa;
+  --stage-hi:#ffffff;
+  --stage-lo:#dfe3e6;
+  --ink:#1a1e22;
+  --muted:#5b646d;
+  --line:#d3d8dc;
+  --accent:#d6402a;
+  --accent-ink:#ffffff;
+  --accent-soft:#f6ddd7;
+  --chip:#eef0f1;
+  --f-display:"Reem Kufi","IBM Plex Sans Arabic",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Arabic",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
+  --f-latin:"Spectral",Georgia,"Times New Roman",serif;
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101315;--surface:#171b1e;--stage-hi:#20262a;--stage-lo:#0d1012;--ink:#e7eaec;--muted:#98a2ab;--line:#2a3136;
+  --accent:#ff5b40;--accent-ink:#1a0d0a;--accent-soft:#3a1d18;--chip:#20262a;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101315;--surface:#171b1e;--stage-hi:#20262a;--stage-lo:#0d1012;--ink:#e7eaec;--muted:#98a2ab;--line:#2a3136;
+  --accent:#ff5b40;--accent-ink:#1a0d0a;--accent-soft:#3a1d18;--chip:#20262a;color-scheme:dark}
+
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);direction:rtl;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:12px;box-sizing:border-box;line-height:1.55}
+*,*::before,*::after{box-sizing:border-box}
+button{font:inherit;color:inherit}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.app{height:100%;display:grid;grid-template-columns:300px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:12px}
+header{grid-column:1/-1;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+header h1{font-family:var(--f-display);font-weight:700;font-size:1.6rem;margin:0;letter-spacing:0;text-wrap:balance}
+header .eyebrow{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-family:var(--f-latin);font-style:italic;direction:ltr}
+header p{margin:0;color:var(--muted);font-size:.88rem}
+
+aside{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:auto;min-height:0;display:flex;flex-direction:column}
+.sec{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.sec:last-child{border-bottom:0}
+.sec h2{font-size:.74rem;font-weight:600;color:var(--muted);margin:0;letter-spacing:.04em}
+.toggles{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.tog{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:transparent;cursor:pointer;font-size:.86rem;text-align:start}
+.tog .dot{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--muted);flex:none}
+.tog[aria-pressed="true"]{background:var(--chip);border-color:var(--ink)}
+.tog[aria-pressed="true"] .dot{background:var(--sw);border-color:var(--sw)}
+.range{display:flex;align-items:center;gap:10px;font-size:.82rem;color:var(--muted)}
+.range input{flex:1;accent-color:var(--accent)}
+.range output{font-variant-numeric:tabular-nums;min-width:3ch;text-align:end;color:var(--ink)}
+.seg{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.seg button{flex:1;padding:7px 4px;border:0;background:transparent;cursor:pointer;font-size:.84rem}
+.seg button+button{border-inline-start:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+
+.list{display:flex;flex-direction:column;gap:2px}
+.list h3{font-size:.7rem;color:var(--muted);font-weight:500;margin:10px 0 4px;letter-spacing:.04em}
+.list h3:first-child{margin-top:0}
+.item{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:6px 8px;border:0;border-radius:7px;background:transparent;cursor:pointer;text-align:start;font-size:.9rem}
+.item:hover{background:var(--chip)}
+.item .la{font-family:var(--f-latin);font-style:italic;color:var(--muted);font-size:.78rem;direction:ltr;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.item[aria-current="true"]{background:var(--accent-soft)}
+.item[aria-current="true"] .ar{color:var(--accent);font-weight:600}
+
+.main{position:relative;min-height:0;min-width:0}
+.stage{position:absolute;inset:0;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);
+  background:radial-gradient(ellipse 60% 70% at 50% 42%,var(--stage-hi),var(--stage-lo))}
+.stage canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.stage canvas.dragging{cursor:grabbing}
+.hud{position:absolute;top:12px;inset-inline:12px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;pointer-events:none}
+.hud>*{pointer-events:auto}
+.hud .seg{background:var(--surface)}
+.hint{font-size:.76rem;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--surface);font-size:.8rem;padding:3px 9px;border-radius:6px;white-space:nowrap;transform:translate(-50%,-140%)}
+
+.info{position:absolute;bottom:14px;left:14px;width:min(390px,calc(100% - 28px));max-height:calc(100% - 80px);overflow:auto;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:10px;
+  box-shadow:0 10px 30px rgb(0 0 0 / .12)}
+.info .top{display:flex;gap:12px;align-items:flex-start}
+.info .thumb{width:84px;aspect-ratio:590/640;flex:none;border-radius:8px;background:var(--stage-hi);object-fit:contain;max-width:100%}
+.info .kind{font-size:.7rem;color:var(--accent);font-weight:600;letter-spacing:.04em}
+.info h2{font-family:var(--f-display);font-weight:700;font-size:1.35rem;margin:0;line-height:1.3;text-wrap:balance}
+.info .latin{font-family:var(--f-latin);font-style:italic;color:var(--muted);direction:ltr;text-align:right;font-size:.95rem}
+.info p{margin:0;font-size:.9rem}
+.info dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:.84rem}
+.info dt{color:var(--muted)}
+.info dd{margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips span{font-size:.78rem;background:var(--chip);border:1px solid var(--line);border-radius:999px;padding:2px 10px}
+.info .lbl{font-size:.72rem;color:var(--muted);font-weight:600}
+.fallback{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--muted)}
+
+@media (max-width:760px){
+  html,body{height:auto}
+  .app{display:flex;flex-direction:column;height:auto}
+  .main{order:1;display:flex;flex-direction:column;gap:12px}
+  aside{order:2;overflow:visible}
+  .stage{position:relative;inset:auto;height:62svh;min-height:380px}
+  .info{position:static;width:auto;max-height:none;box-shadow:none}
+  header h1{font-size:1.35rem}
+}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<div class="app">
+  <header>
+    <h1>أطلس الجسم التشريحي</h1>
+    <span class="eyebrow">ZahraaFit · Atlas anatomicus</span>
+    <p>اضغطي على أي عضلة أو عظم أو عضو لمعرفة اسمه ووظيفته.</p>
+  </header>
+
+  <aside aria-label="أدوات النموذج">
+    <div class="sec">
+      <h2>الطبقات</h2>
+      <div class="toggles">
+        <button class="tog" id="t-skin" aria-pressed="false" style="--sw:#d9a98c"><span class="dot"></span>الجلد</button>
+        <button class="tog" id="t-muscles" aria-pressed="true" style="--sw:#c0473a"><span class="dot"></span>العضلات</button>
+        <button class="tog" id="t-bones" aria-pressed="true" style="--sw:#d8ccb0"><span class="dot"></span>الهيكل العظمي</button>
+        <button class="tog" id="t-organs" aria-pressed="false" style="--sw:#b85a6a"><span class="dot"></span>الأعضاء</button>
+      </div>
+      <label class="range" for="opacity">شفافية العضلات
+        <input type="range" id="opacity" min="10" max="100" value="100">
+        <output id="opacity-out">100٪</output>
+      </label>
+      <div class="seg" role="group" aria-label="ألوان العضلات">
+        <button id="c-atlas" aria-pressed="true">أسلوب الأطلس</button>
+        <button id="c-real" aria-pressed="false">ألوان طبيعية</button>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="seg" role="tablist" aria-label="القوائم">
+        <button id="tab-muscle" aria-pressed="true">العضلات</button>
+        <button id="tab-bone" aria-pressed="false">العظام</button>
+        <button id="tab-organ" aria-pressed="false">الأعضاء</button>
+      </div>
+      <div class="list" id="list"></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="stage" id="stage">
+      <div class="hud">
+        <div class="seg" role="group" aria-label="زاوية العرض">
+          <button id="v-front" aria-pressed="true">أمامي</button>
+          <button id="v-side" aria-pressed="false">جانبي</button>
+          <button id="v-back" aria-pressed="false">خلفي</button>
+          <button id="v-focus" aria-pressed="false">تقريب</button>
+          <button id="v-spin" aria-pressed="false">دوران</button>
+        </div>
+        <span class="hint">اسحبي للتدوير · مرّري أو قرّبي بإصبعين للتكبير</span>
+      </div>
+      <div class="tip" id="tip" hidden></div>
+    </div>
+    <section class="info" id="info" aria-live="polite"></section>
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+document.documentElement.lang = 'ar';
+document.documentElement.dir = 'rtl';
+
+/* ---------------- Reference data ---------------- */
+const DATA = {
+  // muscles
+  chest:{k:'m',r:'الجزء العلوي',ar:'العضلة الصدرية الكبرى',la:'Pectoralis major',img:1,view:0,
+    fn:'تقريب الذراع نحو الجسم، تدويره للداخل، ودفعه للأمام.',o:'الترقوة، عظم القص، الغضاريف الضلعية',i:'الشفة الوحشية للأخدود بين الحدبتين في العضد',ex:['ضغط البنش','تمرين الضغط','التفتيح بالدمبل']},
+  frontdelt:{k:'m',r:'الجزء العلوي',ar:'الدالية الأمامية',la:'Deltoideus, pars clavicularis',img:1,view:0.5,
+    fn:'رفع الذراع إلى الأمام وتدويره للداخل.',o:'الثلث الوحشي من الترقوة',i:'الحدبة الدالية في العضد',ex:['ضغط الكتف','الرفع الأمامي','أرنولد برس']},
+  sidedelt:{k:'m',r:'الجزء العلوي',ar:'الدالية الجانبية',la:'Deltoideus, pars acromialis',img:1,view:1.4,
+    fn:'تبعيد الذراع جانباً حتى مستوى الكتف.',o:'النتوء الأخرمي للوح الكتف',i:'الحدبة الدالية في العضد',ex:['الرفرفة الجانبية','السحب العمودي الواسع','الرفع الجانبي بالكابل']},
+  reardelt:{k:'m',r:'الجزء العلوي',ar:'الدالية الخلفية',la:'Deltoideus, pars spinalis',img:1,view:2.6,
+    fn:'مدّ الذراع للخلف وتدويره للخارج.',o:'شوك لوح الكتف',i:'الحدبة الدالية في العضد',ex:['الرفرفة العكسية','سحب الوجه','التجديف المائل']},
+  biceps:{k:'m',r:'الجزء العلوي',ar:'العضلة ذات الرأسين العضدية',la:'Biceps brachii',img:1,view:0.4,
+    fn:'ثني المرفق وقلب الساعد بحيث يتجه الكف للأعلى.',o:'الحدبة فوق الحُقّانية والناتئ الغرابي',i:'حدبة الكعبرة',ex:['ثني الذراع بالدمبل','تمرين المطرقة','العقلة بقبضة معكوسة']},
+  triceps:{k:'m',r:'الجزء العلوي',ar:'العضلة ثلاثية الرؤوس العضدية',la:'Triceps brachii',img:1,view:2.7,
+    fn:'مدّ المرفق، ويساعد الرأس الطويل في مدّ الكتف.',o:'الحدبة تحت الحُقّانية وخلف جسم العضد',i:'الناتئ المرفقي للزند',ex:['الغطس','الدفع بالكابل','التمديد فوق الرأس']},
+  forearm:{k:'m',r:'الجزء العلوي',ar:'عضلات الساعد',la:'Flexores et extensores antebrachii',view:0.4,
+    fn:'ثني الرسغ والأصابع ومدّها، وقوة القبضة.',o:'اللقيمتان الإنسية والوحشية للعضد',i:'عظام الرسغ والمشط والسلاميات',ex:['ثني الرسغ','مشي المزارع','التعلّق بالبار']},
+  neck:{k:'m',r:'الجزء العلوي',ar:'القصية الترقوية الخشائية',la:'Sternocleidomastoideus',view:0.3,
+    fn:'تدوير الرأس للجهة المقابلة وثني الرقبة.',o:'عظم القص والترقوة',i:'الناتئ الخشائي للعظم الصدغي',ex:['ثني الرقبة بالمقاومة','تمارين الرقبة الجانبية']},
+  absfront:{k:'m',r:'الجذع والظهر',ar:'العضلة المستقيمة البطنية',la:'Rectus abdominis',img:1,view:0,
+    fn:'ثني الجذع للأمام وتثبيت الحوض.',o:'العرف العاني وارتفاق العانة',i:'الغضاريف الضلعية 5–7 والناتئ الخنجري',ex:['الكرانش','رفع الأرجل معلّقاً','البلانك']},
+  absside:{k:'m',r:'الجذع والظهر',ar:'العضلات المائلة الخارجية',la:'Obliquus externus abdominis',img:1,view:0.8,
+    fn:'تدوير الجذع وثنيه جانبياً، وضغط البطن.',o:'السطح الخارجي للأضلاع 5–12',i:'العرف الحرقفي والصفاق البطني',ex:['الالتفاف الروسي','البلانك الجانبي','الحطّاب بالكابل']},
+  upperback:{k:'m',r:'الجذع والظهر',ar:'العضلة شبه المنحرفة',la:'Trapezius',img:1,view:Math.PI,
+    fn:'رفع لوح الكتف وتقريبه وخفضه وتدويره.',o:'القذال والنتوءات الشوكية من C7 إلى T12',i:'الترقوة والأخرم وشوك لوح الكتف',ex:['الهزّ بالدمبل','السحب العالي','التجديف']},
+  midback:{k:'m',r:'الجذع والظهر',ar:'العضلة الظهرية العريضة',la:'Latissimus dorsi',img:1,view:Math.PI,
+    fn:'سحب الذراع للأسفل والخلف، وتقريبه وتدويره للداخل.',o:'النتوءات الشوكية T7–L5، اللفافة الصدرية القطنية، العرف الحرقفي',i:'قاع الأخدود بين الحدبتين في العضد',ex:['العقلة','السحب الأمامي','التجديف بالبار']},
+  lowerback:{k:'m',r:'الجذع والظهر',ar:'ناصبة الفقار',la:'Erector spinae',view:Math.PI,
+    fn:'مدّ العمود الفقري وحفظ القوام المستقيم.',o:'العجز والعرف الحرقفي والنتوءات الشوكية القطنية',i:'الأضلاع والنتوءات المستعرضة والشوكية',ex:['الرفعة الميتة','تمرين السوبرمان','تمديد الظهر']},
+  glutes:{k:'m',r:'الجزء السفلي',ar:'العضلة الألوية الكبرى',la:'Gluteus maximus',img:1,view:Math.PI,
+    fn:'مدّ الورك وتدويره للخارج؛ أقوى عضلة عند الصعود والقفز.',o:'الحرقفة والعجز والعصعص',i:'الحدبة الألوية للفخذ والسبيل الحرقفي الظنبوبي',ex:['الهيب ثرست','السكوات','الرفعة الميتة الرومانية']},
+  quads:{k:'m',r:'الجزء السفلي',ar:'العضلة رباعية الرؤوس الفخذية',la:'Quadriceps femoris',img:1,view:0,
+    fn:'مدّ الركبة؛ والمستقيمة الفخذية تثني الورك أيضاً.',o:'الشوكة الحرقفية الأمامية السفلية وجسم الفخذ',i:'حدبة الظنبوب عبر وتر الرضفة',ex:['السكوات','الطعنات','مدّ الرجل']},
+  hamstrings:{k:'m',r:'الجزء السفلي',ar:'العضلات الخلفية للفخذ',la:'Biceps femoris, Semitendinosus, Semimembranosus',img:1,view:Math.PI,
+    fn:'ثني الركبة ومدّ الورك.',o:'الحدبة الإسكية',i:'رأس الشظية واللقمة الإنسية للظنبوب',ex:['الرفعة الميتة الرومانية','ثني الرجل','نوردك']},
+  adductors:{k:'m',r:'الجزء السفلي',ar:'العضلات المقرِّبة',la:'Adductor magnus, longus, brevis',img:1,view:0.25,
+    fn:'تقريب الفخذ نحو خط الجسم الأوسط وتثبيت الحوض.',o:'عظم العانة والحدبة الإسكية',i:'الخط الخشن للفخذ',ex:['سكوات السومو','جهاز التقريب','بلانك كوبنهاغن']},
+  calves:{k:'m',r:'الجزء السفلي',ar:'عضلات ربلة الساق',la:'Gastrocnemius et Soleus',img:1,view:Math.PI,
+    fn:'رفع الكعب (الوقوف على أطراف الأصابع)، والتوأمية تساعد في ثني الركبة.',o:'لقمتا الفخذ (التوأمية)، الظنبوب والشظية (النعلية)',i:'عظم العقب عبر وتر أخيل',ex:['رفع السمانة واقفاً','رفع السمانة جالساً','نطّ الحبل']},
+  tibialis:{k:'m',r:'الجزء السفلي',ar:'الظنبوبية الأمامية',la:'Tibialis anterior',view:0.3,
+    fn:'رفع مقدمة القدم للأعلى وقلبها للداخل.',o:'اللقمة الوحشية وجسم الظنبوب',i:'العظم الإسفيني الإنسي وقاعدة المشط الأول',ex:['رفع مقدمة القدم','المشي على الكعبين']},
+  // bones
+  b_skull:{k:'b',ar:'الجمجمة',la:'Cranium',view:0,fn:'تحمي الدماغ وأعضاء الحواس، وتشكّل هيكل الوجه.',fact:'22 عظماً: 8 للقحف و14 للوجه.'},
+  b_spine:{k:'b',ar:'العمود الفقري',la:'Columna vertebralis',view:Math.PI,fn:'يحمي الحبل الشوكي ويحمل وزن الجذع والرأس.',fact:'33 فقرة: 7 رقبية، 12 صدرية، 5 قطنية، والعجز والعصعص ملتحمان.'},
+  b_ribs:{k:'b',ar:'القفص الصدري',la:'Cavea thoracis',view:0,fn:'يحمي القلب والرئتين ويتحرك مع التنفس.',fact:'12 زوجاً من الأضلاع وعظم القص.'},
+  b_clavicle:{k:'b',ar:'الترقوة',la:'Clavicula',view:0,fn:'تربط الذراع بالجذع وتبعد الكتف عن الصدر.',fact:'أكثر عظام الجسم تعرّضاً للكسر.'},
+  b_scapula:{k:'b',ar:'لوح الكتف',la:'Scapula',view:Math.PI,fn:'قاعدة متحركة لمفصل الكتف.',fact:'ترتبط به 17 عضلة.'},
+  b_humerus:{k:'b',ar:'عظم العضد',la:'Humerus',view:0.5,fn:'عظم الذراع العلوي بين الكتف والمرفق.',fact:'أطول عظم في الطرف العلوي.'},
+  b_forearm:{k:'b',ar:'الكعبرة والزند',la:'Radius et Ulna',view:0.4,fn:'عظما الساعد؛ يسمحان بتدوير الكف للأعلى والأسفل.',fact:'الكعبرة في جهة الإبهام، والزند في جهة الخنصر.'},
+  b_hand:{k:'b',ar:'عظام اليد',la:'Ossa manus',view:0.4,fn:'تمنح اليد مرونتها ودقة حركتها.',fact:'27 عظماً في كل يد: 8 رسغية و5 مشطية و14 سلامية.'},
+  b_pelvis:{k:'b',ar:'الحوض',la:'Pelvis',view:0,fn:'ينقل وزن الجذع إلى الساقين ويحمي أعضاء الحوض.',fact:'يتكوّن من عظمي الورك والعجز والعصعص.'},
+  b_femur:{k:'b',ar:'عظم الفخذ',la:'Femur',view:0.3,fn:'يحمل وزن الجسم ويصل الورك بالركبة.',fact:'أطول وأقوى عظم في الجسم، نحو ربع طول القامة.'},
+  b_patella:{k:'b',ar:'الرضفة',la:'Patella',view:0,fn:'تحمي الركبة وتزيد قوة رافعة رباعية الرؤوس.',fact:'أكبر عظم سمسماني في الجسم.'},
+  b_shin:{k:'b',ar:'الظنبوب والشظية',la:'Tibia et Fibula',view:0.3,fn:'عظما الساق؛ الظنبوب يحمل معظم الوزن.',fact:'الشظية تحمل نحو 15٪ فقط من الوزن، ودورها الأكبر ربط العضلات.'},
+  b_foot:{k:'b',ar:'عظام القدم',la:'Ossa pedis',view:0.6,fn:'تحمل الجسم وتمتص الصدمات عند المشي والجري.',fact:'26 عظماً في كل قدم.'},
+  // organs
+  o_brain:{k:'o',ar:'الدماغ',la:'Encephalon',view:0.6,fn:'مركز التحكم في الحركة والإحساس والتفكير.',fact:'يزن نحو 1.4 كغ ويضم قرابة 86 مليار خلية عصبية.'},
+  o_lungs:{k:'o',ar:'الرئتان',la:'Pulmones',view:0,fn:'تبادل الأكسجين وثاني أكسيد الكربون.',fact:'الرئة اليمنى 3 فصوص، واليسرى فصّان لإفساح المجال للقلب.'},
+  o_heart:{k:'o',ar:'القلب والأوعية الكبرى',la:'Cor',view:0,fn:'يضخ الدم إلى الرئتين وسائر الجسم.',fact:'يضخ نحو 5 لترات في الدقيقة أثناء الراحة، وأكثر من 20 لتراً في الجهد الشديد.'},
+  o_liver:{k:'o',ar:'الكبد',la:'Hepar',view:0,fn:'يخزّن الجلايكوجين، يصنع العصارة الصفراوية، ويعالج السموم.',fact:'أكبر عضو داخلي، يزن نحو 1.5 كغ.'},
+  o_stomach:{k:'o',ar:'المعدة',la:'Gaster',view:0,fn:'تخلط الطعام بالعصارة الحمضية وتبدأ هضم البروتين.',fact:'تتسع لنحو لتر إلى لتر ونصف بعد الوجبة.'},
+  o_intestine:{k:'o',ar:'الأمعاء',la:'Intestinum',view:0,fn:'الدقيقة تمتص معظم الغذاء، والغليظة تمتص الماء.',fact:'الدقيقة بطول 6–7 م تقريباً، والغليظة نحو 1.5 م.'},
+  o_kidneys:{k:'o',ar:'الكليتان',la:'Renes',view:Math.PI,fn:'تصفيان الدم وتنظمان السوائل والأملاح وتنتجان البول.',fact:'تصفيان نحو 180 لتراً من البلازما يومياً.'},
+  o_bladder:{k:'o',ar:'المثانة',la:'Vesica urinaria',view:0,fn:'تخزّن البول حتى الإفراغ.',fact:'سعتها المريحة نحو 400–600 مل.'}
+};
+const KIND = {m:'عضلة',b:'عظم',o:'عضو داخلي'};
+const ORDER = {
+  m:['chest','frontdelt','sidedelt','reardelt','biceps','triceps','forearm','neck','absfront','absside','upperback','midback','lowerback','glutes','quads','hamstrings','adductors','calves','tibialis'],
+  b:['b_skull','b_spine','b_ribs','b_clavicle','b_scapula','b_humerus','b_forearm','b_hand','b_pelvis','b_femur','b_patella','b_shin','b_foot'],
+  o:['o_brain','o_lungs','o_heart','o_liver','o_stomach','o_intestine','o_kidneys','o_bladder']
+};
+
+const stage = document.getElementById('stage');
+if (!window.THREE) {
+  stage.insertAdjacentHTML('beforeend','<div class="fallback">تعذّر تحميل محرك العرض ثلاثي الأبعاد. أعيدي تحميل الصفحة.</div>');
+} else { init(); }
+
+function init(){
+/* ---------------- Renderer & scene ---------------- */
+const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+stage.prepend(renderer.domElement);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(30, 1, 0.05, 50);
+
+scene.add(new THREE.HemisphereLight(0xffffff, 0x4a525c, 0.6));
+const key = new THREE.DirectionalLight(0xfff4ea, 1.25); key.position.set(1.6,3,2.6); scene.add(key);
+const fill = new THREE.DirectionalLight(0xdfe8ff, 0.35); fill.position.set(-2.4,1.2,1.2); scene.add(fill);
+const rim = new THREE.DirectionalLight(0xffffff, 0.55); rim.position.set(-1,2.5,-3); scene.add(rim);
+
+const L = { skin:new THREE.Group(), muscles:new THREE.Group(), bones:new THREE.Group(), organs:new THREE.Group() };
+Object.values(L).forEach(g=>scene.add(g));
+L.skin.visible = false; L.organs.visible = false;
+
+/* ---------------- Textures ---------------- */
+function fiberTex(){
+  const c=document.createElement('canvas'); c.width=c.height=256; const g=c.getContext('2d');
+  g.fillStyle='#fff'; g.fillRect(0,0,256,256);
+  for(let i=0;i<260;i++){ const x=Math.random()*256, w=.5+Math.random()*1.8; g.fillStyle=`rgba(0,0,0,${.04+Math.random()*.12})`; g.fillRect(x,0,w,256); }
+  const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(3,1); return t;
+}
+function gyriTex(){
+  const c=document.createElement('canvas'); c.width=c.height=256; const g=c.getContext('2d');
+  g.fillStyle='#fff'; g.fillRect(0,0,256,256); g.strokeStyle='rgba(0,0,0,.55)'; g.lineWidth=3;
+  for(let i=0;i<70;i++){ g.beginPath(); let x=Math.random()*256,y=Math.random()*256; g.moveTo(x,y);
+    for(let k=0;k<4;k++){ g.quadraticCurveTo(x+(Math.random()-.5)*60,y+(Math.random()-.5)*60,x+=(Math.random()-.5)*50,y+=(Math.random()-.5)*50); } g.stroke(); }
+  const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; return t;
+}
+const FIBER = fiberTex(), GYRI = gyriTex();
+
+/* ---------------- Materials ---------------- */
+const C = h => new THREE.Color(h).convertSRGBToLinear();
+const PALETTE = {
+  atlas:{muscle:0xa7a4a3, sel:0xd93a22, selE:0x3a0a04, hov:0x3a1a10},
+  real:{muscle:0x9a3029, sel:0xf2a23c, selE:0x4a2600, hov:0x3a1a00}
+};
+let palette = 'atlas';
+const groups = {};               // id -> {meshes, mat, kind}
+function groupMat(id){
+  const k = DATA[id].k;
+  let m;
+  if(k==='m') m = new THREE.MeshStandardMaterial({color:C(PALETTE.atlas.muscle), roughness:.6, metalness:0, map:FIBER, bumpMap:FIBER, bumpScale:.012});
+  else if(k==='b') m = new THREE.MeshStandardMaterial({color:C(0xe6dcc4), roughness:.55});
+  else m = new THREE.MeshStandardMaterial({color:C(ORGANCOL[id]), roughness:.42, metalness:0});
+  if(id==='o_brain'){ m.bumpMap=GYRI; m.bumpScale=.02; }
+  groups[id] = {meshes:[], mat:m, kind:k};
+  return m;
+}
+const ORGANCOL = {o_brain:0xe2a7a6,o_lungs:0xd98c8f,o_heart:0xa52a2a,o_liver:0x7a2e24,o_stomach:0xd88f7f,o_intestine:0xdb9f8b,o_kidneys:0x8c2f2a,o_bladder:0xe2b48c};
+const DEF = new THREE.MeshBasicMaterial();
+const tendonMat = new THREE.MeshStandardMaterial({color:C(0xe9e3d6), roughness:.35});
+const darkMat = new THREE.MeshStandardMaterial({color:C(0x2a201c), roughness:.9});
+const veinMat = new THREE.MeshStandardMaterial({color:C(0x3a5a9a), roughness:.45});
+const skinMat = new THREE.MeshStandardMaterial({color:C(0xdcae92), roughness:.75, transparent:true, opacity:.2, depthWrite:false});
+
+function add(id, mesh, layer){
+  if(!groups[id]) groupMat(id);
+  if(mesh.material === DEF) mesh.material = groups[id].mat;
+  mesh.userData.id = id;
+  groups[id].meshes.push(mesh);
+  (layer || L[{m:'muscles',b:'bones',o:'organs'}[DATA[id].k]]).add(mesh);
+  return mesh;
+}
+
+/* ---------------- Geometry helpers ---------------- */
+const v=(x,y,z)=>new THREE.Vector3(x,y,z);
+const UP=v(0,1,0);
+function latheGeo(len, prof, n=20, seg=22){
+  const pts=[]; for(let i=0;i<=n;i++){ const t=i/n; pts.push(new THREE.Vector2(Math.max(prof(t),1e-4), t*len)); }
+  return new THREE.LatheGeometry(pts, seg);
+}
+function spindle(a,b,prof,o={}){
+  const len=a.distanceTo(b); const g=latheGeo(len,prof,o.n,o.seg);
+  g.scale(o.sx||1,1,o.sz||1); if(o.roll) g.rotateY(o.roll);
+  const m=new THREE.Mesh(g, o.mat||DEF); m.position.copy(a);
+  m.quaternion.setFromUnitVectors(UP, b.clone().sub(a).normalize()); return m;
+}
+const SPH = new THREE.SphereGeometry(1, 36, 24);
+function ell(c,r,rot=[0,0,0],mat){ const m=new THREE.Mesh(SPH, mat||DEF); m.position.copy(c); m.scale.set(r[0],r[1],r[2]); m.rotation.set(rot[0],rot[1],rot[2]); return m; }
+function tube(points, r, seg=40, mat){ const c=new THREE.CatmullRomCurve3(points); return new THREE.Mesh(new THREE.TubeGeometry(c, seg, r, 8, false), mat||DEF); }
+// profiles
+const fus=(R,p=.5,k=.85)=>t=>{ const w=t<p?.5*t/p:.5+.5*(t-p)/(1-p); return R*Math.pow(Math.sin(Math.PI*w),k); };
+const bone=(r,ka=0,kb=0)=>t=>(r+ka*Math.exp(-Math.pow(t/.09,2))+kb*Math.exp(-Math.pow((1-t)/.09,2)))*Math.pow(Math.sin(Math.PI*t),.28);
+const limb=(r0,r1,bulge=0,at=.4)=>t=>(r0+(r1-r0)*t+bulge*Math.exp(-Math.pow((t-at)/.22,2)))*Math.pow(Math.sin(Math.PI*t),.18);
+
+const SIDES=[-1,1];
+
+/* ---------------- Skeleton ---------------- */
+// skull
+add('b_skull', ell(v(0,1.662,-.008),[.074,.086,.094]));
+add('b_skull', ell(v(0,1.588,.034),[.052,.046,.056]));
+{ const jaw=new THREE.Mesh(new THREE.TorusGeometry(.044,.009,8,24,Math.PI),DEF); jaw.position.set(0,1.548,.026); jaw.rotation.x=Math.PI/2; jaw.scale.set(.95,1.05,1); add('b_skull', jaw); }
+SIDES.forEach(s=>add('b_skull', ell(v(s*.029,1.645,.079),[.015,.013,.006],[0,s*.25,0],darkMat)));
+add('b_skull', ell(v(0,1.607,.086),[.006,.011,.004],[0,0,0],darkMat));
+// spine
+const spineCurve = new THREE.CatmullRomCurve3([v(0,.9,-.085),v(0,.98,-.078),v(0,1.08,-.058),v(0,1.2,-.074),v(0,1.33,-.09),v(0,1.44,-.072),v(0,1.52,-.038),v(0,1.575,-.025)]);
+const spineZ = y=>{ let best=0,bd=1; for(let u=0;u<=1;u+=.01){ const p=spineCurve.getPointAt(u); const d=Math.abs(p.y-y); if(d<bd){bd=d;best=p.z;} } return best; };
+for(let i=0;i<24;i++){
+  const u=.18+i*(.78/23), p=spineCurve.getPointAt(u), t=spineCurve.getTangentAt(u);
+  const r = i<5 ? .021 : i<17 ? .016 : .012;
+  const body=new THREE.Mesh(new THREE.CylinderGeometry(r,r,.016,14),DEF); body.position.copy(p); body.quaternion.setFromUnitVectors(UP,t); add('b_spine',body);
+  const proc=ell(p.clone().add(v(0,-.004,-.022)),[.005,.008,.018],[-.4,0,0]); add('b_spine',proc);
+  if(i<17) SIDES.forEach(s=>add('b_spine', ell(p.clone().add(v(s*.02,0,-.012)),[.012,.005,.005],[0,0,0])));
+}
+add('b_spine', ell(v(0,.94,-.082),[.046,.06,.018],[-.35,0,0]));
+// ribs + sternum
+const RA=[.062,.084,.1,.112,.12,.126,.128,.127,.123,.116,.106,.094];
+for(let i=0;i<12;i++){
+  const yb=1.43-i*.022, a=RA[i], b=a*.78+.008;
+  const end = i<7 ? 82 : i<10 ? 62-(i-7)*10 : 18;
+  SIDES.forEach(s=>{
+    const pts=[v(s*.014, yb+.004, spineZ(yb)-.005)];
+    for(let k=0;k<=12;k++){
+      const f=k/12, ph=(-70+(end+70)*f)*Math.PI/180;
+      pts.push(v(s*(.02+(a-.02)*Math.cos(ph)), yb-(.05+i*.004)*Math.pow(f,1.4), .004+b*Math.sin(ph)));
+    }
+    add('b_ribs', tube(pts, .0052, 36));
+  });
+}
+add('b_ribs', ell(v(0,1.335,.097),[.017,.092,.008],[-.16,0,0]));
+SIDES.forEach(s=>{
+  // clavicle
+  add('b_clavicle', tube([v(s*.022,1.432,.074),v(s*.07,1.442,.072),v(s*.13,1.446,.034),v(s*.178,1.446,-.008)], .0068, 24));
+  // scapula
+  add('b_scapula', ell(v(s*.098,1.335,-.106),[.05,.074,.007],[.08,-s*.38,s*.12]));
+  add('b_scapula', spindle(v(s*.055,1.372,-.114),v(s*.172,1.43,-.03),bone(.006,.002,.006)));
+  // humerus
+  add('b_humerus', ell(v(s*.184,1.398,-.008),[.026,.026,.026]));
+  add('b_humerus', spindle(v(s*.19,1.39,-.008),v(s*.246,1.106,-.02),bone(.0105,.007,.014)));
+  // forearm
+  add('b_forearm', spindle(v(s*.238,1.118,-.032),v(s*.276,.866,.012),bone(.0065,.008,.003)));
+  add('b_forearm', spindle(v(s*.257,1.1,-.012),v(s*.302,.866,.024),bone(.007,.003,.009)));
+  // hand
+  add('b_hand', ell(v(s*.296,.826,.024),[.027,.036,.011]));
+  const F=[[.281,.068],[.292,.078],[.303,.073],[.314,.06]];
+  F.forEach(([x,l],k)=>add('b_hand', spindle(v(s*x,.797,.026),v(s*(x+ (k-1.5)*.004*0),.797-l,.032),bone(.0045,.0015,.0015))));
+  add('b_hand', spindle(v(s*.318,.838,.03),v(s*.343,.775,.05),bone(.005,.0015,.0015)));
+  // pelvis
+  add('b_pelvis', ell(v(s*.083,1.0,-.022),[.07,.058,.011],[0,-s*.8,s*.22]));
+  add('b_pelvis', spindle(v(s*.076,.905,.016),v(s*.012,.878,.058),bone(.011,.004,.004)));
+  add('b_pelvis', spindle(v(s*.078,.905,-.012),v(s*.062,.84,-.03),bone(.013,.003,.006)));
+  add('b_pelvis', spindle(v(s*.06,.842,-.026),v(s*.014,.866,.054),bone(.0075,.002,.002)));
+  add('b_pelvis', ell(v(s*.083,.92,-.002),[.03,.03,.03],[0,0,0]));
+  // femur
+  add('b_femur', ell(v(s*.086,.924,.002),[.024,.024,.024]));
+  add('b_femur', spindle(v(s*.086,.924,.002),v(s*.136,.904,-.006),bone(.013,0,.004)));
+  add('b_femur', ell(v(s*.142,.91,-.012),[.017,.022,.018]));
+  add('b_femur', spindle(v(s*.132,.9,-.006),v(s*.097,.513,0),bone(.012,.004,.022)));
+  add('b_patella', ell(v(s*.097,.512,.044),[.02,.025,.01]));
+  // shin
+  add('b_shin', spindle(v(s*.095,.5,.002),v(s*.093,.084,-.008),bone(.0125,.021,.012)));
+  add('b_shin', spindle(v(s*.124,.472,-.016),v(s*.12,.078,-.016),bone(.0055,.006,.007)));
+  // foot
+  add('b_foot', ell(v(s*.095,.05,-.03),[.022,.026,.042],[.2,0,0]));
+  for(let k=0;k<5;k++) add('b_foot', spindle(v(s*(.078+k*.011),.042,.008),v(s*(.07+k*.016),.014,.142-k*.014),bone(.005,.003,.002)));
+});
+
+/* ---------------- Muscles ---------------- */
+SIDES.forEach(s=>{
+  // chest
+  add('chest', ell(v(s*.078,1.362,.084),[.072,.034,.026],[0,s*.32,s*.12]));
+  add('chest', ell(v(s*.074,1.306,.092),[.086,.056,.031],[0,s*.3,-s*.08]));
+  add('chest', spindle(v(s*.07,1.315,.095),v(s*.188,1.372,.026),fus(.03,.35,.7),{sz:.6}));
+  // deltoids
+  add('frontdelt', ell(v(s*.178,1.374,.044),[.034,.07,.03],[.12,0,s*.18]));
+  add('sidedelt', ell(v(s*.214,1.376,-.002),[.031,.072,.042],[0,0,s*.2]));
+  add('reardelt', ell(v(s*.18,1.374,-.046),[.035,.068,.029],[-.12,0,s*.18]));
+  // arm
+  add('biceps', spindle(v(s*.196,1.33,.03),v(s*.244,1.122,.03),fus(.032,.55)));
+  add('triceps', spindle(v(s*.188,1.35,-.036),v(s*.244,1.118,-.052),fus(.036,.4),{sz:.85}));
+  add('triceps', spindle(v(s*.212,1.32,-.022),v(s*.248,1.14,-.04),fus(.027,.45)));
+  add('forearm', spindle(v(s*.246,1.104,.004),v(s*.284,.884,.022),fus(.03,.3)));
+  add('forearm', spindle(v(s*.262,1.13,-.006),v(s*.298,.89,.018),fus(.026,.28)));
+  add('forearm', spindle(v(s*.24,1.105,-.03),v(s*.282,.89,.0),fus(.022,.3)));
+  // neck
+  add('neck', spindle(v(s*.058,1.565,-.012),v(s*.016,1.44,.066),fus(.014,.5,.7)));
+  // abs
+  [[1.195,.026],[1.128,.03],[1.06,.03],[.985,.04]].forEach(([y,h],k)=>add('absfront', ell(v(s*.031,y,.085-k*.002),[.027,h,.019],[0,s*.1,0])));
+  add('absside', ell(v(s*.112,1.07,.036),[.036,.105,.058],[0,s*.62,-s*.06]));
+  [1.25,1.215,1.18].forEach((y,k)=>add('absside', ell(v(s*.128,y,.048),[.012,.016,.03],[0,s*.75,-s*.5])));
+  // back
+  add('upperback', spindle(v(s*.018,1.53,-.048),v(s*.178,1.435,-.03),fus(.03,.25,.8),{sz:.5}));
+  add('upperback', ell(v(s*.058,1.365,-.108),[.07,.062,.02],[.08,-s*.22,s*.12]));
+  add('upperback', spindle(v(s*.085,1.345,-.112),v(s*.004,1.16,-.093),fus(.032,.25),{sz:.45}));
+  add('midback', ell(v(s*.104,1.19,-.078),[.068,.128,.028],[.0,-s*.5,s*.32]));
+  add('midback', spindle(v(s*.092,1.09,-.082),v(s*.18,1.322,-.012),fus(.046,.35),{sz:.42,roll:s*.6}));
+  add('lowerback', spindle(v(s*.03,.955,-.095),v(s*.034,1.32,-.108),fus(.024,.3,.6),{sz:.9}));
+  // glutes
+  add('glutes', ell(v(s*.074,.925,-.086),[.074,.088,.06],[.1,-s*.2,s*.22]));
+  add('glutes', ell(v(s*.118,.99,-.04),[.042,.044,.042],[0,0,s*.3]));
+  // quads
+  add('quads', spindle(v(s*.1,.88,.058),v(s*.096,.54,.064),fus(.04,.45)));
+  add('quads', spindle(v(s*.136,.86,.012),v(s*.116,.53,.03),fus(.046,.45),{sz:.9}));
+  add('quads', spindle(v(s*.062,.71,.032),v(s*.08,.528,.05),fus(.038,.65)));
+  add('quads', spindle(v(s*.097,.535,.06),v(s*.096,.47,.05),fus(.012,.5,.6),{mat:tendonMat}));
+  // adductors
+  add('adductors', spindle(v(s*.034,.85,.008),v(s*.074,.6,-.004),fus(.04,.35)));
+  add('adductors', spindle(v(s*.04,.865,.042),v(s*.078,.66,.036),fus(.026,.35)));
+  // hamstrings
+  add('hamstrings', spindle(v(s*.078,.86,-.06),v(s*.07,.53,-.046),fus(.036,.45)));
+  add('hamstrings', spindle(v(s*.118,.85,-.054),v(s*.128,.52,-.036),fus(.035,.45)));
+  // calves
+  add('calves', spindle(v(s*.077,.49,-.046),v(s*.084,.25,-.05),fus(.036,.35)));
+  add('calves', spindle(v(s*.114,.49,-.042),v(s*.106,.28,-.046),fus(.032,.35)));
+  add('calves', spindle(v(s*.095,.41,-.028),v(s*.095,.13,-.04),fus(.034,.45),{sx:1.15,sz:.8}));
+  add('calves', spindle(v(s*.095,.22,-.048),v(s*.095,.042,-.06),fus(.009,.5,.4),{mat:tendonMat}));
+  add('tibialis', spindle(v(s*.113,.47,.032),v(s*.104,.12,.03),fus(.02,.3)));
+});
+
+/* ---------------- Organs ---------------- */
+add('o_brain', ell(v(0,1.672,-.008),[.064,.056,.082]));
+SIDES.forEach(s=>add('o_lungs', ell(v(s*.064,1.31,-.004),[s>0?.054:.062,.112,.07],[0,0,s*.06])));
+add('o_lungs', tube([v(0,1.5,.024),v(0,1.42,.01),v(0,1.37,0)],.009,12));
+SIDES.forEach(s=>add('o_lungs', tube([v(0,1.372,0),v(s*.03,1.35,-.005),v(s*.055,1.32,-.01)],.006,12)));
+add('o_heart', ell(v(.022,1.265,.034),[.044,.056,.04],[0,-.3,-.55]));
+add('o_heart', tube([v(.01,1.3,.035),v(.005,1.37,.03),v(.02,1.395,.0),v(.026,1.36,-.045),v(.022,1.2,-.052),v(.018,1.0,-.046)],.0105,48,new THREE.MeshStandardMaterial({color:C(0xb02a2a),roughness:.4})));
+add('o_heart', tube([v(-.026,1.0,-.03),v(-.028,1.15,-.02),v(-.024,1.29,.012),v(-.02,1.38,.02)],.011,32,veinMat));
+add('o_liver', ell(v(-.05,1.152,.02),[.098,.054,.072],[0,0,.2]));
+add('o_liver', ell(v(.03,1.165,.04),[.05,.032,.04],[0,0,-.1]));
+add('o_stomach', ell(v(.065,1.135,.034),[.048,.054,.036],[0,0,-.55]));
+add('o_stomach', spindle(v(.075,1.1,.04),v(-.01,1.085,.05),fus(.022,.3)));
+{ // small intestine: serpentine coil
+  const pts=[]; const rows=7;
+  for(let r=0;r<rows;r++){ const y=1.035-r*.019; for(let k=0;k<=6;k++){ const f=k/6; const x=(r%2?1:-1)*(-.068+.136*f); pts.push(v(x,y+Math.sin(f*Math.PI*3)*.006,.05+Math.sin(f*Math.PI*2+r)*.012)); } }
+  add('o_intestine', tube(pts,.0125,260));
+  add('o_intestine', tube([v(-.095,.93,.03),v(-.102,1.02,.032),v(-.09,1.082,.035),v(0,1.075,.055),v(.09,1.082,.035),v(.102,1.02,.032),v(.094,.93,.03),v(.05,.9,.025),v(.01,.905,.0)],.019,80,new THREE.MeshStandardMaterial({color:C(0xc98a6e),roughness:.5})));
+}
+SIDES.forEach(s=>add('o_kidneys', ell(v(s*.062,1.11,-.066),[.024,.044,.017],[0,s*.4,-s*.2])));
+add('o_bladder', ell(v(0,.888,.042),[.03,.026,.028]));
+
+/* ---------------- Skin ---------------- */
+const skinParts=[];
+function sk(m){ m.material=skinMat; m.renderOrder=10; L.skin.add(m); skinParts.push(m); }
+sk(ell(v(0,1.645,.002),[.085,.112,.1]));
+sk(spindle(v(0,1.43,-.02),v(0,1.6,-.01),limb(.055,.05),{mat:skinMat}));
+{ // torso
+  const prof=t=>{ const y=.82+t*.66; const K=[[.82,.13],[.9,.17],[.96,.168],[1.06,.138],[1.2,.152],[1.32,.17],[1.41,.19],[1.45,.15],[1.48,.06]];
+    for(let i=0;i<K.length-1;i++){ if(y<=K[i+1][0]){ const f=(y-K[i][0])/(K[i+1][0]-K[i][0]); const e=f*f*(3-2*f); return K[i][1]+(K[i+1][1]-K[i][1])*e; } } return .06; };
+  const g=latheGeo(.66,prof,40,40); g.scale(1,1,.66); const m=new THREE.Mesh(g,skinMat); m.position.set(0,.82,-.005); sk(m);
+}
+SIDES.forEach(s=>{
+  sk(spindle(v(s*.188,1.42,-.005),v(s*.246,1.09,-.02),limb(.054,.04,.008,.35),{mat:skinMat}));
+  sk(spindle(v(s*.244,1.13,-.02),v(s*.292,.85,.02),limb(.044,.028,.006,.2),{mat:skinMat}));
+  sk(ell(v(s*.3,.79,.028),[.036,.07,.016]));
+  sk(spindle(v(s*.09,.98,-.005),v(s*.096,.47,.01),limb(.092,.055,.004,.2),{mat:skinMat}));
+  sk(spindle(v(s*.096,.53,.0),v(s*.095,.055,-.012),limb(.052,.03,.016,.32),{mat:skinMat}));
+  sk(ell(v(s*.1,.032,.04),[.04,.032,.11]));
+});
+
+/* ---------------- Floor & height scale ---------------- */
+{
+  const c=document.createElement('canvas'); c.width=c.height=128; const g=c.getContext('2d');
+  const gr=g.createRadialGradient(64,64,4,64,64,64); gr.addColorStop(0,'rgba(0,0,0,.28)'); gr.addColorStop(1,'rgba(0,0,0,0)'); g.fillStyle=gr; g.fillRect(0,0,128,128);
+  const sh=new THREE.Mesh(new THREE.PlaneGeometry(.75,.75), new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false}));
+  sh.rotation.x=-Math.PI/2; sh.position.y=.001; scene.add(sh);
+}
+const ruler = new THREE.Group(); scene.add(ruler);
+function buildRuler(){
+  ruler.clear();
+  const col = getComputedStyle(document.documentElement).getPropertyValue('--muted').trim() || '#888';
+  const pts=[v(0,0,0),v(0,1.8,0)];
+  for(let cm=0;cm<=180;cm+=10){ const y=cm/100, w=cm%50===0?.04:.02; pts.push(v(0,y,0),v(w,y,0)); }
+  const g=new THREE.BufferGeometry().setFromPoints(pts);
+  ruler.add(new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:new THREE.Color(col),transparent:true,opacity:.7})));
+  [0,50,100,150].forEach(cm=>{
+    const c=document.createElement('canvas'); c.width=128; c.height=48; const x=c.getContext('2d');
+    x.fillStyle=col; x.font='500 28px "IBM Plex Sans Arabic", system-ui, sans-serif'; x.textAlign='left'; x.textBaseline='middle'; x.fillText(cm+' سم',4,24);
+    const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false}));
+    sp.scale.set(.16,.06,1); sp.position.set(.13,cm/100,0); ruler.add(sp);
+  });
+  ruler.position.set(-.5,0,0);
+}
+buildRuler();
+
+/* ---------------- Camera control ---------------- */
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const cam = {theta:.35, phi:1.48, dist:4.2, target:v(0,.92,0)};
+const goal = {theta:.35, phi:1.48, dist:4.2, target:v(0,.92,0)};
+let spin = !reduce, homeDist = 4.2;
+function fitDist(){
+  const a=camera.aspect, half=THREE.MathUtils.degToRad(camera.fov/2);
+  const dv=1.0/Math.tan(half), dh=.62/(Math.tan(half)*a);
+  return Math.max(dv,dh)*1.08;
+}
+function resize(){
+  const w=stage.clientWidth, h=stage.clientHeight; if(!w||!h) return;
+  renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix();
+  const nd=fitDist(); if(Math.abs(goal.dist-homeDist)<.01){ goal.dist=nd; cam.dist=nd; } homeDist=nd;
+}
+new ResizeObserver(resize).observe(stage); resize();
+const wrap=a=>Math.atan2(Math.sin(a),Math.cos(a));
+function setView(theta, opts={}){
+  goal.theta = cam.theta + wrap(theta - cam.theta);
+  if(opts.phi!=null) goal.phi=opts.phi;
+  if(opts.dist!=null) goal.dist=opts.dist;
+  if(opts.target) goal.target.copy(opts.target);
+}
+
+const el = renderer.domElement;
+const pointers = new Map(); let downAt=null, moved=0, pinch0=0;
+el.addEventListener('pointerdown',e=>{
+  el.setPointerCapture(e.pointerId); pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  downAt={x:e.clientX,y:e.clientY}; moved=0; stopSpin();
+  if(pointers.size===2){ const [a,b]=[...pointers.values()]; pinch0=Math.hypot(a.x-b.x,a.y-b.y); }
+  el.classList.add('dragging');
+});
+el.addEventListener('pointermove',e=>{
+  const p=pointers.get(e.pointerId);
+  if(!p){ hover(e); return; }
+  const dx=e.clientX-p.x, dy=e.clientY-p.y; p.x=e.clientX; p.y=e.clientY; moved+=Math.abs(dx)+Math.abs(dy);
+  if(pointers.size===1){
+    if(e.shiftKey || e.buttons===2){ goal.target.y=THREE.MathUtils.clamp(goal.target.y+dy*.0025*goal.dist/3,.1,1.75); }
+    else { goal.theta-=dx*.008; goal.phi=THREE.MathUtils.clamp(goal.phi-dy*.006,.25,2.9); }
+  } else if(pointers.size===2){
+    const [a,b]=[...pointers.values()]; const d=Math.hypot(a.x-b.x,a.y-b.y);
+    if(pinch0){ goal.dist=THREE.MathUtils.clamp(goal.dist*pinch0/d,.6,8); } pinch0=d;
+  }
+  tip.hidden=true;
+});
+function up(e){
+  pointers.delete(e.pointerId); if(pointers.size<2) pinch0=0;
+  if(pointers.size===0){ el.classList.remove('dragging'); if(downAt && moved<6) pick(e); downAt=null; }
+}
+el.addEventListener('pointerup',up); el.addEventListener('pointercancel',up);
+el.addEventListener('pointerleave',()=>{ tip.hidden=true; setHover(null); });
+el.addEventListener('contextmenu',e=>e.preventDefault());
+el.addEventListener('wheel',e=>{ e.preventDefault(); stopSpin(); goal.dist=THREE.MathUtils.clamp(goal.dist*Math.exp(e.deltaY*.0012),.6,8); },{passive:false});
+
+/* ---------------- Picking ---------------- */
+const ray=new THREE.Raycaster(), ndc=new THREE.Vector2();
+let muscleOpacity=1;
+function pickables(){
+  const out=[];
+  if(L.muscles.visible && muscleOpacity>.45) out.push(...L.muscles.children);
+  if(L.bones.visible) out.push(...L.bones.children);
+  if(L.organs.visible) out.push(...L.organs.children);
+  return out;
+}
+function hit(e){
+  const r=el.getBoundingClientRect(); ndc.set(((e.clientX-r.left)/r.width)*2-1, -((e.clientY-r.top)/r.height)*2+1);
+  ray.setFromCamera(ndc,camera); const h=ray.intersectObjects(pickables(),false)[0];
+  return h ? h.object.userData.id : null;
+}
+const tip=document.getElementById('tip');
+let hovered=null, selected=null;
+function hover(e){
+  if(e.pointerType==='touch') return;
+  const id=hit(e); setHover(id);
+  if(id){ const r=stage.getBoundingClientRect(); tip.textContent=DATA[id].ar; tip.style.left=(e.clientX-r.left)+'px'; tip.style.top=(e.clientY-r.top)+'px'; tip.hidden=false; el.style.cursor='pointer'; }
+  else { tip.hidden=true; el.style.cursor=''; }
+}
+function pick(e){ const id=hit(e); if(id) select(id,{move:false}); }
+
+/* ---------------- Highlight ---------------- */
+function paint(id){
+  const g=groups[id]; if(!g) return; const P=PALETTE[palette];
+  if(g.kind==='m'){ g.mat.color.copy(C(id===selected?P.sel:P.muscle)); g.mat.emissive.copy(C(id===selected?P.selE:id===hovered?P.hov:0)); }
+  else { g.mat.emissive.copy(C(id===selected?0x9a2810:id===hovered?0x3a1c10:0)); }
+}
+function setHover(id){ if(id===hovered) return; const prev=hovered; hovered=id; if(prev) paint(prev); if(id) paint(id); }
+function repaintAll(){ Object.keys(groups).forEach(paint); }
+
+function centerOf(id){ const b=new THREE.Box3(); groups[id].meshes.forEach(m=>b.expandByObject(m)); return b.getCenter(new THREE.Vector3()); }
+
+const LAYER_OF={m:'muscles',b:'bones',o:'organs'};
+function select(id,{move=true}={}){
+  const prev=selected; selected=id; if(prev) paint(prev); paint(id);
+  const d=DATA[id];
+  // make sure its layer is visible and reachable
+  const layer=LAYER_OF[d.k];
+  if(!L[layer].visible) setLayer(layer,true);
+  if(d.k!=='m' && L.muscles.visible && muscleOpacity>.5){ setOpacity(d.k==='o'?20:35); }
+  if(d.k==='m' && muscleOpacity<.6) setOpacity(100);
+  if(move){ stopSpin(); const c=centerOf(id); setView(d.view,{dist:Math.min(homeDist,1.9),target:v(0,c.y,0),phi:1.5}); }
+  renderInfo(id); renderList();
+}
+
+/* ---------------- UI ---------------- */
+const info=document.getElementById('info');
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function renderInfo(id){
+  const d=DATA[id];
+  let h=`<div class="top">${d.img?`<img class="thumb" src="img/${id}.png" alt="${esc(d.ar)} في رسم توضيحي" onerror="this.remove()">`:''}
+    <div style="min-width:0;display:flex;flex-direction:column;gap:2px"><span class="kind">${KIND[d.k]}${d.r?' · '+d.r:''}</span><h2>${esc(d.ar)}</h2><div class="latin">${esc(d.la)}</div></div></div>
+    <p>${esc(d.fn)}</p>`;
+  if(d.k==='m'){
+    h+=`<dl><dt>المنشأ</dt><dd>${esc(d.o)}</dd><dt>المُدغَم</dt><dd>${esc(d.i)}</dd></dl>
+      <div class="lbl">تمارين مقترحة</div><div class="chips">${d.ex.map(x=>`<span>${esc(x)}</span>`).join('')}</div>`;
+  } else {
+    h+=`<dl><dt>معلومة</dt><dd>${esc(d.fact)}</dd></dl>`;
+  }
+  info.innerHTML=h;
+}
+let tab='m';
+const listEl=document.getElementById('list');
+function renderList(){
+  let h='', region=null;
+  ORDER[tab].forEach(id=>{ const d=DATA[id];
+    if(d.r && d.r!==region){ region=d.r; h+=`<h3>${esc(region)}</h3>`; }
+    h+=`<button class="item" data-id="${id}" aria-current="${id===selected}"><span class="ar">${esc(d.ar)}</span><span class="la">${esc(d.la)}</span></button>`; });
+  listEl.innerHTML=h;
+}
+listEl.addEventListener('click',e=>{ const b=e.target.closest('.item'); if(b) select(b.dataset.id); });
+['m','b','o'].forEach(k=>{
+  const b=document.getElementById('tab-'+{m:'muscle',b:'bone',o:'organ'}[k]);
+  b.addEventListener('click',()=>{ tab=k; document.querySelectorAll('[id^="tab-"]').forEach(x=>x.setAttribute('aria-pressed',x===b)); renderList(); });
+});
+
+function setLayer(name,on){ L[name].visible=on; document.getElementById('t-'+name).setAttribute('aria-pressed',on); }
+['skin','muscles','bones','organs'].forEach(n=>document.getElementById('t-'+n).addEventListener('click',()=>{ setLayer(n,!L[n].visible); if(n==='skin'&&L.skin.visible){} }));
+
+const op=document.getElementById('opacity'), opOut=document.getElementById('opacity-out');
+function setOpacity(val){
+  op.value=val; muscleOpacity=val/100; opOut.textContent=Math.round(val)+'٪';
+  Object.values(groups).forEach(g=>{ if(g.kind!=='m') return; g.mat.transparent=muscleOpacity<.999; g.mat.opacity=muscleOpacity; g.mat.depthWrite=muscleOpacity>.95; g.mat.needsUpdate=true; });
+  tendonMat.transparent=muscleOpacity<.999; tendonMat.opacity=muscleOpacity; tendonMat.depthWrite=muscleOpacity>.95; tendonMat.needsUpdate=true;
+}
+op.addEventListener('input',()=>setOpacity(+op.value));
+
+function setPalette(p){ palette=p; document.getElementById('c-atlas').setAttribute('aria-pressed',p==='atlas'); document.getElementById('c-real').setAttribute('aria-pressed',p==='real'); repaintAll(); }
+document.getElementById('c-atlas').addEventListener('click',()=>setPalette('atlas'));
+document.getElementById('c-real').addEventListener('click',()=>setPalette('real'));
+
+const vb={front:document.getElementById('v-front'),side:document.getElementById('v-side'),back:document.getElementById('v-back')};
+function markView(k){ Object.entries(vb).forEach(([n,b])=>b.setAttribute('aria-pressed',n===k)); }
+vb.front.addEventListener('click',()=>{ stopSpin(); setView(0,{phi:1.48,dist:homeDist,target:v(0,.92,0)}); markView('front'); });
+vb.side.addEventListener('click',()=>{ stopSpin(); setView(Math.PI/2,{phi:1.48,dist:homeDist,target:v(0,.92,0)}); markView('side'); });
+vb.back.addEventListener('click',()=>{ stopSpin(); setView(Math.PI,{phi:1.48,dist:homeDist,target:v(0,.92,0)}); markView('back'); });
+document.getElementById('v-focus').addEventListener('click',()=>{ if(selected) select(selected); });
+const spinBtn=document.getElementById('v-spin');
+function stopSpin(){ spin=false; spinBtn.setAttribute('aria-pressed','false'); }
+spinBtn.addEventListener('click',()=>{ spin=!spin; spinBtn.setAttribute('aria-pressed',spin); });
+spinBtn.setAttribute('aria-pressed',spin);
+
+// theme changes → ruler colour
+const mq=matchMedia('(prefers-color-scheme: dark)'); mq.addEventListener && mq.addEventListener('change',buildRuler);
+new MutationObserver(buildRuler).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
+/* ---------------- Loop ---------------- */
+let last=performance.now();
+function frame(now){
+  const dt=Math.min((now-last)/1000,.05); last=now;
+  if(spin) goal.theta+=dt*.35;
+  const k=1-Math.exp(-dt*(reduce?60:9));
+  cam.theta+=(goal.theta-cam.theta)*k; cam.phi+=(goal.phi-cam.phi)*k; cam.dist+=(goal.dist-cam.dist)*k; cam.target.lerp(goal.target,k);
+  const sp=Math.sin(cam.phi);
+  camera.position.set(cam.target.x+cam.dist*sp*Math.sin(cam.theta), cam.target.y+cam.dist*Math.cos(cam.phi), cam.target.z+cam.dist*sp*Math.cos(cam.theta));
+  camera.lookAt(cam.target);
+  renderer.render(scene,camera);
+  requestAnimationFrame(frame);
+}
+selected='chest'; repaintAll(); renderInfo('chest'); renderList();
+requestAnimationFrame(frame);
+}
+</script>

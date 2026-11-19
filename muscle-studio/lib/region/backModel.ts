@@ -133,7 +133,9 @@ export function prepareMeshes(scene: Object3D, opts: PrepareOptions = {}): Regio
       orientFibres(mesh.geometry);
       fibreTangents(mesh.geometry);
       if (opts.refineRegions?.has(x.region ?? "")) refineMeshInPlace(mesh);
-      material = createMuscleMaterialHD(baseHex, REALISTIC_LOOK, false, muscleDetail(x.id + (x.source ?? ""), mesh.geometry));
+      // Redesigned (sculpted) muscles: smooth organic surfaces with subtle fibres.
+      const detail = { ...muscleDetail(x.id + (x.source ?? ""), mesh.geometry), detail: mesh.userData.sculpt ? 0.45 : 1 };
+      material = createMuscleMaterialHD(baseHex, REALISTIC_LOOK, false, detail);
       // Where layers nearly coincide, the more superficial muscle wins the depth test
       // (render order only — no geometry is moved).
       const d = renderDepth(x.za_name ?? "", x.depth) - 1;

@@ -170,3 +170,44 @@ describe("abdominal wall: rectus sheath from the oblique aponeuroses", () => {
     }
   });
 });
+
+describe("chest & abdomen redesign (sculpt-trunk) keeps the anatomy", () => {
+  it("measured report: bone attachments fixed, bounded displacement, both bodies", () => {
+    for (const sex of ["male", "female"]) {
+      const r = JSON.parse(readFileSync(join(PUBLIC, `models/zanatomy/${sex}/sculpt-trunk.json`), "utf8"));
+      expect(r.meshes).toHaveLength(18);
+      for (const m of r.meshes) {
+        expect(m.boneAttachmentMaxDisplacementMm, m.name).toBeLessThan(2.5);
+        expect(m.maxDisplacementMm, m.name).toBeLessThan(8);
+        expect(m.trianglesAfter, m.name).toBeGreaterThanOrEqual(m.trianglesBefore);
+      }
+      const rect = r.meshes.find((m: { name: string }) => m.name === "Rectus abdominis muscle.l");
+      expect(rect.intersectionsY).toHaveLength(3); // three tendinous intersections from the author's faces
+    }
+  });
+
+  it("swaps only the geometry: same nodes, names, sides, ids; fibres kept", async () => {
+    const { applySculpt } = await import("@/lib/three/sculpt");
+    const core = await load("models/zanatomy/male/core.glb");
+    const sculpt = await load("models/zanatomy/male/sculpt-trunk.glb");
+    const before = new Map<string, { id: string; side: string; uuid: string }>();
+    core.traverse((o) => { if ((o as Mesh).isMesh) before.set(o.userData.za_name, { id: o.userData.id, side: o.userData.side, uuid: o.uuid }); });
+    expect(applySculpt(core, sculpt)).toBe(18);
+    let swapped = 0;
+    core.traverse((o) => {
+      const m = o as Mesh;
+      if (!m.isMesh) return;
+      const b = before.get(m.userData.za_name)!;
+      expect(m.uuid).toBe(b.uuid);
+      expect(m.userData.id).toBe(b.id);
+      if (m.userData.sculpt) {
+        swapped++;
+        expect(m.geometry.getAttribute("_fiber"), m.userData.za_name).toBeDefined();
+        expect(m.geometry.getAttribute("_anat"), m.userData.za_name).toBeDefined();
+      }
+    });
+    expect(swapped).toBe(18);
+    const model = prepareRegionModel(core, { hd: true });
+    for (const id of ["rectus-abdominis", "external-oblique"]) expect(model.byUnit.has(id) || [...model.units.keys()].some((k) => k.includes("rectus")), id).toBe(true);
+  }, 120_000);
+});

@@ -1,0 +1,201 @@
+{
+ "sex": "female",
+ "generated": "2026-11-19T10:25:35.613Z",
+ "method": "PN remesh → pinned Taubin fairing → exposed belly volume → rectus intersection bands → sheath coupling",
+ "meshes": [
+  {
+   "name": "External abdominal oblique muscle.l",
+   "trianglesBefore": 29622,
+   "trianglesAfter": 29622,
+   "remeshLevels": 0,
+   "meanDisplacementMm": 1.29,
+   "maxDisplacementMm": 7.14,
+   "boneAttachmentMaxDisplacementMm": 0.157,
+   "volumeChangePct": 1.3,
+   "sheathVerticesMoved": 48048
+  },
+  {
+   "name": "External abdominal oblique muscle.r",
+   "trianglesBefore": 29622,
+   "trianglesAfter": 29622,
+   "remeshLevels": 0,
+   "meanDisplacementMm": 1.3,
+   "maxDisplacementMm": 7.14,
+   "boneAttachmentMaxDisplacementMm": 0.157,
+   "volumeChangePct": 1.3,
+   "sheathVerticesMoved": 48048
+  },
+  {
+   "name": "Internal abdominal oblique muscle.l",
+   "trianglesBefore": 28869,
+   "trianglesAfter": 28869,
+   "remeshLevels": 0,
+   "meanDisplacementMm": 1.33,
+   "maxDisplacementMm": 6.03,
+   "boneAttachmentMaxDisplacementMm": 0.81,
+   "volumeChangePct": 0.6,
+   "sheathVerticesMoved": 9578
+  },
+  {
+   "name": "Internal abdominal oblique muscle.r",
+   "trianglesBefore": 28869,
+   "trianglesAfter": 28869,
+   "remeshLevels": 0,
+   "meanDisplacementMm": 1.34,
+   "maxDisplacementMm": 6.03,
+   "boneAttachmentMaxDisplacementMm": 1.603,
+   "volumeChangePct": 0.7,
+   "sheathVerticesMoved": 9578
+  },
+  {
+   "name": "Rectus abdominis muscle.l",
+   "trianglesBefore": 20604,
+   "trianglesAfter": 20604,
+   "remeshLevels": 0,
+   "meanDisplacementMm": 0.77,
+   "maxDisplacementMm": 5.5,
+   "boneAttachmentMaxDisplacementMm": 0.05,
+   "volumeChangePct": 24.5,
+   "intersectionsY": [
+    0.986,
+    1.032,
+    1.08
+   ]
+  },
+  {
+   "name": "Rectus abdominis muscle.r",
+   "trianglesBefore": 20604,
+   "trianglesAfter": 20604,
+   "remeshLevels": 0,
+   "meanDisplacementMm": 0.77,
+   "maxDisplacementMm": 5.5,
+   "boneAttachmentMaxDisplacementMm": 0.05,
+   "volumeChangePct": 24.9,
+   "intersectionsY": [
+    0.986,
+    1.032,
+    1.08
+   ]
+  },
+  {
+   "name": "(Abdominal part of pectoralis major muscle).l",
+   "trianglesBefore": 1508,
+   "trianglesAfter": 6032,
+   "remeshLevels": 1,
+   "meanDisplacementMm": 0.13,
+   "maxDisplacementMm": 3.96,
+   "boneAttachmentMaxDisplacementMm": 0.018,
+   "volumeChangePct": 9.3
+  },
+  {
+   "name": "(Abdominal part of pectoralis major muscle).r",
+   "trianglesBefore": 1508,
+   "trianglesAfter": 6032,
+   "remeshLevels": 1,
+   "meanDisplacementMm": 0.13,
+   "maxDisplacementMm": 3.96,
+   "boneAttachmentMaxDisplacementMm": 0.018,
+   "volumeChangePct": 9.3
+  },
+  {
+   "name": "Clavicular head of pectoralis major muscle.l",
+   "trianglesBefore": 850,
+   "trianglesAfter": 3400,
+   "remeshLevels": 1,
+   "meanDisplacementMm": 0.76,
+   "maxDisplacementMm": 4.71,
+   "boneAttachmentMaxDisplacementMm": 0.109,
+   "volumeChangePct": 20.7
+  },
+  {
+   "name": "Clavicular head of pectoralis major muscle.r",
+   "trianglesBefore": 850,
+   "trianglesAfter": 3400,
+   "remeshLevels": 1,
+   "meanDisplacementMm": 0.76,
+   "maxDisplacementMm": 4.71,
+   "boneAttachmentMaxDisplacementMm": 0.109,
+   "volumeChangePct": 20.7
+  },
+  {
+   "name": "Sternocostal head of pectoralis major muscle.l",
+   "trianglesBefore": 3222,
+   "trianglesAfter": 51552,
+   "remeshLevels": 2,
+   "meanDisplacementMm": 1.04,
+   "maxDisplacementMm": 5.66,
+   "boneAttachmentMaxDisplacementMm": 0.068,
+   "volumeChangePct": 18.7
+  },
+  {
+   "name": "Sternocostal head of pectoralis major muscle.r",
+   "trianglesBefore": 3222,
+   "trianglesAfter": 51552,
+   "remeshLevels": 2,
+   "meanDisplacementMm": 1.04,
+   "maxDisplacementMm": 5.66,
+   "boneAttachmentMaxDisplacementMm": 0.068,
+   "volumeChangePct": 18.7
+  },
+  {
+   "name": "Pectoralis minor muscle.l",
+   "trianglesBefore": 4142,
+   "trianglesAfter": 4142,
+   "remeshLevels": 0,
+   "meanDisplacementMm": 0.22,
+   "maxDisplacementMm": 2,
+   "boneAttachmentMaxDisplacementMm": 0.084,
+   "volumeChangePct": 0
+  },
+  {
+   "name": "Pectoralis minor muscle.r",
+   "trianglesBefore": 4142,
+   "trianglesAfter": 4142,
+   "remeshLevels": 0,
+   "meanDisplacementMm": 0.22,
+   "maxDisplacementMm": 2,
+   "boneAttachmentMaxDisplacementMm": 0.084,
+   "volumeChangePct": 0
+  },
+  {
+   "name": "Serratus anterior muscle.l",
+   "trianglesBefore": 25240,
+   "trianglesAfter": 25240,
+   "remeshLevels": 0,
+   "meanDisplacementMm": 0.23,
+   "maxDisplacementMm": 3.5,
+   "boneAttachmentMaxDisplacementMm": 0.099,
+   "volumeChangePct": 1
+  },
+  {
+   "name": "Serratus anterior muscle.r",
+   "trianglesBefore": 25240,
+   "trianglesAfter": 25240,
+   "remeshLevels": 0,
+   "meanDisplacementMm": 0.23,
+   "maxDisplacementMm": 3.5,
+   "boneAttachmentMaxDisplacementMm": 0.099,
+   "volumeChangePct": 1
+  },
+  {
+   "name": "Pyramidalis muscle.l",
+   "trianglesBefore": 1112,
+   "trianglesAfter": 1112,
+   "remeshLevels": 0,
+   "meanDisplacementMm": 0.02,
+   "maxDisplacementMm": 1.96,
+   "boneAttachmentMaxDisplacementMm": 0.033,
+   "volumeChangePct": 0.7
+  },
+  {
+   "name": "Pyramidalis muscle.r",
+   "trianglesBefore": 1112,
+   "trianglesAfter": 1112,
+   "remeshLevels": 0,
+   "meanDisplacementMm": 0.02,
+   "maxDisplacementMm": 1.96,
+   "boneAttachmentMaxDisplacementMm": 0.033,
+   "volumeChangePct": 0.7
+  }
+ ]
+}

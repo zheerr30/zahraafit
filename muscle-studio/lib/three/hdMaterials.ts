@@ -122,6 +122,8 @@ export interface MuscleDetail {
   seed: Vector3;
   /** Fascicle size multiplier (~0.75 small muscles … 1.35 large muscles). */
   scale: number;
+  /** Strength of the surface detail (relief and fibre contrast), 1 = default. */
+  detail?: number;
 }
 
 /** Deterministic per-muscle detail parameters from its id and size. */
@@ -163,6 +165,7 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
     uLight: { value: light },
     uSeed: { value: detail.seed },
     uScale: { value: detail.scale },
+    uDetail: { value: detail.detail ?? 1 },
   };
   mat.userData.msUniforms = uniforms;
   mat.userData.hd = true;
@@ -175,7 +178,7 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
       .replace(
         "#include <common>",
         `#include <common>
-        uniform float uTendon, uBump, uStripe, uAo, uScale;
+        uniform float uTendon, uBump, uStripe, uAo, uScale, uDetail;
         uniform vec3 uTendonColor, uGroove, uLight, uSeed;
         varying float vSheath;
         varying vec2 vAnat;
@@ -210,10 +213,10 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
           t = smoothstep(0.12, 0.88, t + (tF - 0.5) * 1.6 * t * (1.0 - t));
           // Tendon: fine parallel collagen striation, much lower relief.
           float ht = (bF - 0.625) * 0.05e-3 + (bM - 0.625) * 0.02e-3 + mott * 0.04e-3;
-          hzH = mix(hm, ht, t);
+          hzH = mix(hm * uDetail, ht, t);
           float k = (bF - 0.625) * 0.7 * wF + (bB - 0.625) * 0.6 * wB + (bM - 0.625) * 0.25 * wM
                   + (tF - 0.5) * 0.3 + (tB - 0.5) * 0.25 + mott * 0.25 + mott2 * 0.06;
-          hzK = k;
+          hzK = k * mix(1.0, uDetail, 0.7);
           hzTendon = t;
           hzWet = clamp(0.5 + mott * 0.9 + (bF - 0.625) * 0.8, 0.0, 1.0);
         }`,

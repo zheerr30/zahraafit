@@ -23,6 +23,7 @@ import {
 import { HDPipeline } from "@/components/anatomy/HDPipeline";
 import { ProgressiveRefine } from "@/components/anatomy/ProgressiveRefine";
 import { loadGltf } from "@/lib/three/loadGltf";
+import { applySculpt } from "@/lib/three/sculpt";
 import { configureRenderer } from "@/lib/three/rendererSetup";
 import { backStore, useBack, type PickedStructure, type RegionView } from "@/stores/backStore";
 
@@ -77,8 +78,14 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
     const model = createRegionModel();
     loaded.current = new Set(["core"]);
     onState({ status: "loading", progress: 0 });
-    loadGltf(modelUrl(sex, "core"), { renderer: gl, signal: ctrl.signal, onProgress: (p) => onState({ status: "loading", progress: p }) })
-      .then((gltf) => {
+    // HD: the redesigned chest & abdomen geometry replaces the original meshes of the same name (`?sculpt=0` shows the original).
+    const sculptOn = hd && new URLSearchParams(window.location.search).get("sculpt") !== "0";
+    Promise.all([
+      loadGltf(modelUrl(sex, "core"), { renderer: gl, signal: ctrl.signal, onProgress: (p) => onState({ status: "loading", progress: p }) }),
+      sculptOn ? loadGltf(modelUrl(sex, "sculpt-trunk"), { renderer: gl, signal: ctrl.signal }).catch(() => null) : Promise.resolve(null),
+    ])
+      .then(([gltf, sculpt]) => {
+        if (sculpt) applySculpt(gltf.scene, sculpt.scene);
         const meshes = prepareMeshes(gltf.scene, hd ? HD_OPTIONS : {});
         addMeshes(model, meshes);
         modelRef.current = model;

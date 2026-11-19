@@ -341,7 +341,12 @@ const atlasTarget = (out: Vector3) => {
   else out.set(0, 1, 0);
 };
 const atlasMeshes = () => (regionBridge.model?.meshes ?? []).map((m) => m.mesh);
-const atlasMuscles = () => (regionBridge.model?.meshes ?? []).filter((m) => m.kind === "unit").map((m) => m.mesh);
+/** Only the outermost visible layer is refined (deeper muscles are hidden behind it). */
+const atlasMuscles = () => {
+  const mode = backStore.getState().depthMode;
+  const top = mode === "deep" ? 3 : mode === "no-superficial" ? 2 : 1;
+  return (regionBridge.model?.meshes ?? []).filter((m) => m.kind === "unit" && m.target > 0.5 && m.depth <= top).map((m) => m.mesh);
+};
 const refineOff = () => typeof window !== "undefined" && new URLSearchParams(window.location.search).get("refine") === "0";
 
 function Lighting() {

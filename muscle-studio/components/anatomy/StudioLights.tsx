@@ -14,7 +14,8 @@ const editorTarget = (out: Vector3) => {
   else out.set(0, 0.9, 0);
 };
 const editorMeshes = (): Mesh[] => viewportBridge.loaded?.model.meshes ?? [];
-const editorMuscles = (): Mesh[] => editorMeshes().filter((m) => !!m.geometry.getAttribute("_fiber"));
+/** Only superficial muscles are refined (deeper ones are hidden behind them). */
+const editorMuscles = (): Mesh[] => editorMeshes().filter((m) => !!m.geometry.getAttribute("_fiber") && ((m.userData.depth as number | undefined) ?? 1) <= 1);
 
 /**
  * The shared HD standard of the atlas (camera-following fill/rim + studio

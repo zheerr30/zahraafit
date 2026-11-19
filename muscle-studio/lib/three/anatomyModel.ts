@@ -400,7 +400,7 @@ export function applyMaterials(
     const zKind = mesh.userData.kind as string | undefined;
     const tissue = zKind && zKind !== "unit" ? tissueOf(zKind, mesh.userData.source as string | undefined, mesh.userData.role as string | undefined) : null;
     // Natural tone of a Z-Anatomy muscle: same per-muscle variation as the atlas.
-    const zTone = typeof mesh.userData.id === "string" ? muscleTone(mesh.userData.id, library.hd ? HD_MUSCLE : undefined) : null;
+    const zTone = typeof mesh.userData.id === "string" ? muscleTone(mesh.userData.id, library.hd ? HD_MUSCLE : undefined, library.hd ? 0.5 : 1) : null;
     if (tissue) {
       // Z-Anatomy tendons, ligaments, fasciae, bones, nerves, vessels, organs, skin: the shared tissue standard.
       next = library.tissue(tissue, zKind === "bone" && !!mesh.geometry.getAttribute("color"));

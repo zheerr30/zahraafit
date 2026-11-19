@@ -29,7 +29,7 @@ export function StudioLights() {
 
   return (
     <>
-      <AtlasLighting keyLight={false} warmFill intensity={0.85 * intensity} />
+      <AtlasLighting keyLight={false} warmFill intensity={1.3 * intensity} />
       <HDPipeline getTarget={editorTarget} getMeshes={editorMeshes} />
       <ProgressiveRefine getTarget={editorTarget} getCandidates={editorMuscles} />
       <ContactShadows

@@ -13,14 +13,16 @@ import { MeshBVH } from "three-mesh-bvh";
  * from its distance to the rectus surface of the same side:
  *
  *   |`_sheath`| ∈ [0, 1] sheath factor, + up to 1 more in front of the rectus
- *                  itself (there the film is thinner, so the segments read clearly);
- *   `_sheath` > 0  external oblique → drawn as a translucent, glossy, pearly
- *                  aponeurosis (the anterior rectus sheath) through which the
- *                  rectus and its tendinous intersections are seen;
- *   `_sheath` < 0  internal oblique → its lamina in front of the rectus is fused
- *                  into the same sheath, so it is not drawn twice.
+ *                  itself: there the anterior layer is opened (see openSheath);
+ *   `_sheath` > 0  external oblique → drawn as a cream aponeurosis that fades
+ *                  out at the lateral border of the rectus, so the rectus and
+ *                  its tendinous intersections are seen;
+ *   `_sheath` < 0  internal oblique / transversus → the lamina in front of the
+ *                  rectus is fused into the same sheath, so it is not drawn twice
+ *                  (their lamina behind the rectus stays, as a cream sheet).
  *
  * The factor is read by the HD muscle shader (alpha-to-coverage, no sorting).
+ * Vertices are never moved or removed.
  */
 
 const NEAR = 0.003; // fully sheath within 3 mm of the rectus surface
@@ -45,10 +47,18 @@ function footprint(r: Mesh) {
   }
   const nb = Math.max(1, Math.ceil((y1 - y0) / BIN) + 1);
   const xs = new Float32Array(nb).fill(-1), zs = new Float32Array(nb).fill(Infinity);
+  // Mid-plane of the muscle (between its front and back surface) per 4 mm cell
+  // and per slice: tells the anterior lamina of a sheath from the posterior one.
+  const cells = new Map<number, [number, number]>();
+  const rowLo = new Float32Array(nb).fill(Infinity), rowHi = new Float32Array(nb).fill(-Infinity);
+  const cellKey = (b: number, x: number) => b * 4096 + Math.floor(x / BIN) + 2048;
   for (let i = 0; i < pos.count; i++) {
     v.fromBufferAttribute(pos, i).applyMatrix4(r.matrixWorld);
     const b = Math.floor((v.y - y0) / BIN);
     xs[b] = Math.max(xs[b], Math.abs(v.x)); zs[b] = Math.min(zs[b], v.z);
+    rowLo[b] = Math.min(rowLo[b], v.z); rowHi[b] = Math.max(rowHi[b], v.z);
+    const c = cells.get(cellKey(b, v.x));
+    if (c) { c[0] = Math.min(c[0], v.z); c[1] = Math.max(c[1], v.z); } else cells.set(cellKey(b, v.x), [v.z, v.z]);
   }
   // close one-slice gaps and soften the outline
   const X = new Float32Array(nb), Z = new Float32Array(nb);
@@ -56,12 +66,23 @@ function footprint(r: Mesh) {
     X[b] = Math.max(xs[b], xs[b - 1] ?? -1, xs[b + 1] ?? -1);
     Z[b] = Math.min(zs[b], zs[b - 1] ?? Infinity, zs[b + 1] ?? Infinity);
   }
-  /** 1 over the rectus, 0 lateral to it (2 mm inside → 6 mm outside the border). */
-  return (q: Vector3) => {
-    const b = Math.floor((q.y - y0) / BIN);
-    if (b < 0 || b >= nb || X[b] < 0 || q.z < Z[b] - 0.003) return 0;
-    const d = Math.abs(q.x) - X[b];
-    return d <= -0.002 ? 1 : d >= 0.006 ? 0 : 1 - (d + 0.002) / 0.008;
+  return {
+    /** 1 over the rectus, 0 lateral to it (2 mm inside → 6 mm outside the border). */
+    over(q: Vector3): number {
+      const b = Math.floor((q.y - y0) / BIN);
+      if (b < 0 || b >= nb || X[b] < 0 || q.z < Z[b] - 0.003) return 0;
+      const d = Math.abs(q.x) - X[b];
+      return d <= -0.002 ? 1 : d >= 0.006 ? 0 : 1 - (d + 0.002) / 0.008;
+    },
+    /** In front of the rectus mid-plane (anterior lamina) rather than behind it. */
+    anterior(q: Vector3): boolean {
+      const b = Math.min(nb - 1, Math.max(0, Math.floor((q.y - y0) / BIN)));
+      for (const k of [cellKey(b, q.x), cellKey(b, q.x - BIN), cellKey(b, q.x + BIN)]) {
+        const c = cells.get(k);
+        if (c && c[1] - c[0] > 0.002) return q.z > (c[0] + c[1]) / 2;
+      }
+      return rowHi[b] >= rowLo[b] ? q.z > (rowLo[b] + rowHi[b]) / 2 : true;
+    },
   };
 }
 
@@ -71,15 +92,49 @@ const sideOf = (m: Mesh): string => {
   return s === "left" ? "l" : s === "right" ? "r" : s;
 };
 
+// `layered`: its aponeurosis splits around the rectus — only the anterior lamina
+// belongs to the opened layer; the posterior one stays, as a cream sheet.
 const KIND = [
-  { re: /^External abdominal oblique muscle/i, sign: 1 },
-  { re: /^Internal abdominal oblique muscle/i, sign: -1 },
+  { re: /^External abdominal oblique muscle/i, sign: 1, layered: false },
+  { re: /^Internal abdominal oblique muscle/i, sign: -1, layered: true },
+  { re: /^Transvers(us|e) abdomin(is|al)/i, sign: -1, layered: true },
 ] as const;
 const RECTUS = /^Rectus abdominis muscle/i;
 
 export interface SheathStats {
   meshes: number;
   sheathVertices: number;
+  /** Triangles of the anterior layer opened in front of the rectus. */
+  opened: number;
+}
+
+/**
+ * Opens the anterior layer of the rectus sheath: the triangles of an oblique
+ * aponeurosis lying wholly in front of the rectus are left out of the index
+ * (vertices untouched), as in every atlas plate that shows the rectus. They are
+ * then absent from every pass — colour, shadows, ambient occlusion — and from
+ * picking, so a click on a rectus segment selects the rectus, not an invisible sheet.
+ */
+function openSheath(m: Mesh, front: Uint8Array): number {
+  const g = m.geometry;
+  const index = g.index;
+  if (!index) return 0;
+  const src = index.array;
+  const kept = new (src.constructor as Uint32ArrayConstructor)(src.length);
+  let k = 0;
+  for (let t = 0; t < src.length; t += 3) {
+    if (front[src[t]] && front[src[t + 1]] && front[src[t + 2]]) continue;
+    kept[k++] = src[t]; kept[k++] = src[t + 1]; kept[k++] = src[t + 2];
+  }
+  const removed = (src.length - k) / 3;
+  if (!removed) return 0;
+  g.setIndex(new BufferAttribute(kept.slice(0, k), 1));
+  const bvh = g as unknown as { boundsTree?: unknown; computeBoundsTree?: () => void };
+  if (bvh.boundsTree) {
+    bvh.boundsTree = undefined;
+    bvh.boundsTree = new MeshBVH(g);
+  }
+  return removed;
 }
 
 /** Adds the `_sheath` attribute to the oblique muscles of every side found in `meshes`. */
@@ -97,7 +152,7 @@ export function markRectusSheath(meshes: Iterable<Mesh>): SheathStats {
     a.needsUpdate = true;
     r.userData.aoLifted = true;
   }
-  const stats: SheathStats = { meshes: 0, sheathVertices: 0 };
+  const stats: SheathStats = { meshes: 0, sheathVertices: 0, opened: 0 };
   const inv = new Matrix4();
   const p = new Vector3();
   const hit = { point: new Vector3(), distance: 0, faceIndex: 0 } as unknown as Parameters<MeshBVH["closestPointToPoint"]>[1];
@@ -125,6 +180,7 @@ export function markRectusSheath(meshes: Iterable<Mesh>): SheathStats {
     inv.copy(r.matrixWorld).invert().multiply(m.matrixWorld);
     const pos = m.geometry.getAttribute("position");
     const out = new Float32Array(pos.count);
+    const front = new Uint8Array(pos.count);
     let n = 0;
     for (let i = 0; i < pos.count; i++) {
       p.fromBufferAttribute(pos, i);
@@ -132,12 +188,18 @@ export function markRectusSheath(meshes: Iterable<Mesh>): SheathStats {
       p.applyMatrix4(inv);
       const res = bvh.closestPointToPoint(p, hit, 0, FAR * 1.5);
       const d = res ? res.distance : Infinity;
-      const f = over(w);
+      const f = over.over(w);
       const s = Math.max(d <= NEAR ? 1 : d >= FAR ? 0 : 1 - (d - NEAR) / (FAR - NEAR), f);
-      out[i] = k.sign * (s + f); // |value| > 1: in front of the rectus (thinner film)
+      if (k.layered && s > 0 && !over.anterior(w)) {
+        out[i] = s; // posterior lamina of the sheath: cream aponeurosis, kept
+      } else {
+        out[i] = k.sign * (s + f); // |value| > 1: in front of the rectus (opened layer)
+        front[i] = f >= 0.999 ? 1 : 0;
+      }
       if (s > 0.5) n++;
     }
     m.geometry.setAttribute("_sheath", new BufferAttribute(out, 1));
+    stats.opened += openSheath(m, front);
     stats.meshes++;
     stats.sheathVertices += n;
   }

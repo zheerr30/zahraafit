@@ -167,6 +167,14 @@ describe("abdominal wall: rectus sheath from the oblique aponeuroses", () => {
       expect(e.n / e.total).toBeLessThan(0.7); // the fleshy lateral part stays muscle
       expect(i.n, `internal ${side}`).toBeGreaterThan(100);
       expect((ext.mesh.material as MeshPhysicalMaterial).alphaToCoverage).toBe(true);
+      // The anterior layer is opened in front of the rectus: no triangle of the external
+      // oblique is left wholly inside the rectus outline (vertices themselves are kept).
+      const sh = ext.mesh.geometry.getAttribute("_sheath"), idx = ext.mesh.geometry.index!;
+      let inFront = 0, onRectus = 0;
+      for (let v = 0; v < sh.count; v++) if (sh.getX(v) >= 1.999) onRectus++;
+      for (let t = 0; t < idx.count; t += 3) if (sh.getX(idx.getX(t)) >= 1.999 && sh.getX(idx.getX(t + 1)) >= 1.999 && sh.getX(idx.getX(t + 2)) >= 1.999) inFront++;
+      expect(onRectus, `sheath vertices kept ${side}`).toBeGreaterThan(300);
+      expect(inFront, `opened ${side}`).toBe(0);
     }
   });
 });

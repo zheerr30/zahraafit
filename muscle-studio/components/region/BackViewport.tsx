@@ -3,8 +3,8 @@
 import { CameraControls } from "@react-three/drei";
 import { AtlasLighting } from "@/components/anatomy/AtlasLighting";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useRef, useState } from "react";
-import { Box3, Object3D, Sphere, Vector2, Vector3, type PerspectiveCamera, type Raycaster } from "three";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Box3, CanvasTexture, Object3D, Sphere, SRGBColorSpace, Vector2, Vector3, type PerspectiveCamera, type Raycaster } from "three";
 import {
   applyStyle,
   disposeRegionModel,
@@ -33,7 +33,7 @@ export const modelUrl = (sex: "male" | "female", part: string) => `${MODEL_BASE}
 export const DEFINITIONS_URL = `${MODEL_BASE}/definitions.json`;
 /** Optional layers loaded on first use. */
 const LAZY_PARTS = { attachments: "attachments", nerves: "nerves" } as const;
-export const BACKGROUNDS = { black: "#000000", navy: "#06142f" } as const;
+export const BACKGROUNDS = { black: "#0d0e10", navy: "#06142f" } as const;
 
 /** Shared handles for overlays, tests and exports (one viewer per page). */
 export const regionBridge: {
@@ -78,8 +78,9 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
     const model = createRegionModel();
     loaded.current = new Set(["core"]);
     onState({ status: "loading", progress: 0 });
-    // HD: the redesigned chest & abdomen geometry replaces the original meshes of the same name (`?sculpt=0` shows the original).
-    const sculptOn = hd && new URLSearchParams(window.location.search).get("sculpt") !== "0";
+    // The original Z-Anatomy geometry is the standard. The experimental smoothed
+    // chest & abdomen meshes (pipeline/sculpt) load only on request: `?sculpt=1`.
+    const sculptOn = hd && new URLSearchParams(window.location.search).get("sculpt") === "1";
     Promise.all([
       loadGltf(modelUrl(sex, "core"), { renderer: gl, signal: ctrl.signal, onProgress: (p) => onState({ status: "loading", progress: p }) }),
       sculptOn ? loadGltf(modelUrl(sex, "sculpt-trunk"), { renderer: gl, signal: ctrl.signal }).catch(() => null) : Promise.resolve(null),
@@ -353,7 +354,7 @@ function Lighting() {
   const hd = useBack((s) => s.hd);
   return hd === true ? (
     <>
-      <AtlasLighting keyLight={false} warmFill intensity={0.85} />
+      <AtlasLighting keyLight={false} warmFill intensity={1.3} />
       <HDPipeline getTarget={atlasTarget} getMeshes={atlasMeshes} />
       {!refineOff() && <ProgressiveRefine getTarget={atlasTarget} getCandidates={atlasMuscles} />}
     </>
@@ -362,9 +363,42 @@ function Lighting() {
   );
 }
 
+/**
+ * Studio backdrop for the default (dark) background: a soft charcoal vignette, as in
+ * a photographed anatomical sculpt, instead of flat black. Slightly dithered (no banding).
+ */
+function studioBackdrop(toneMapped: boolean): CanvasTexture {
+  const c = document.createElement("canvas");
+  c.width = c.height = 512;
+  const ctx = c.getContext("2d")!;
+  const g = ctx.createRadialGradient(256, 225, 20, 256, 256, 380);
+  // Target on screen: #2e2e2e → #181818 → #090909. In HD the backdrop passes through
+  // the neutral tone mapper, whose toe crushes dark greys (y = 6.25·x²): pre-compensated.
+  const stops = toneMapped ? ["#484848", "#373737", "#282828"] : ["#2e2e2e", "#181818", "#090909"];
+  g.addColorStop(0, stops[0]);
+  g.addColorStop(0.55, stops[1]);
+  g.addColorStop(1, stops[2]);
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 512, 512);
+  const img = ctx.getImageData(0, 0, 512, 512);
+  let seed = 7;
+  for (let i = 0; i < img.data.length; i += 4) {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    const n = ((seed >>> 24) / 255 - 0.5) * 3;
+    img.data[i] += n; img.data[i + 1] += n; img.data[i + 2] += n;
+  }
+  ctx.putImageData(img, 0, 0);
+  const t = new CanvasTexture(c);
+  t.colorSpace = SRGBColorSpace;
+  return t;
+}
+
 function Background() {
   const bg = useBack((s) => s.background);
-  return <color attach="background" args={[BACKGROUNDS[bg]]} />;
+  const hd = useBack((s) => s.hd);
+  const backdrop = useMemo(() => (bg === "black" ? studioBackdrop(hd === true) : null), [bg, hd]);
+  useEffect(() => () => backdrop?.dispose(), [backdrop]);
+  return backdrop ? <primitive attach="background" object={backdrop} /> : <color attach="background" args={[BACKGROUNDS[bg]]} />;
 }
 
 export function BackViewport({ onState }: { onState: (s: LoadState) => void }) {

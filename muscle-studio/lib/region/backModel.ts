@@ -129,7 +129,7 @@ export function prepareMeshes(scene: Object3D, opts: PrepareOptions = {}): Regio
     let baseHex: string;
     let material: Material;
     if (kind === "unit" && opts.hd) {
-      baseHex = muscleTone(x.id, HD_MUSCLE);
+      baseHex = muscleTone(x.id, HD_MUSCLE, 0.5);
       orientFibres(mesh.geometry);
       fibreTangents(mesh.geometry);
       if (opts.refineRegions?.has(x.region ?? "")) refineMeshInPlace(mesh);

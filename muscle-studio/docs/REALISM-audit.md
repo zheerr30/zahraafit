@@ -107,3 +107,42 @@ HD costs about 4× the muscle triangles of the region and a GTAO + shadow pass p
    renders tiles without the composer today).
 3. Review every region's close-ups (front, back, both sides, deep layers), male and female, and tune the per-muscle
    fascicle scale where needed.
+
+## Whole-body visual redesign (matte atlas style)
+
+Brief: one consistent professional look for the entire muscular system, taken
+from the user's references (sculpted écorché renders and printed atlas plates),
+with the original Z-Anatomy geometry intact.
+
+**What was wrong with the previous HD look** (measured against the references)
+
+| Aspect | Before | References | Now |
+| --- | --- | --- | --- |
+| Finish | wet: roughness 0.40, clearcoat 0.40, specular 0.85 → white glints everywhere | matte / satin, broad soft highlights | roughness 0.62, clearcoat 0.05, specular 0.40, satin sheen |
+| Muscle colour | muted rose `#A0605F` | warm brick red, salmon highlights | `#B24E41`, grooves deeper red, crests warm salmon, slow orange ↔ crimson drift |
+| Tendons / aponeuroses | glossy silver-white `#D3D0CC` | matte cream | `#DDCDA9`, roughness 0.46 |
+| Bones | near white | cream / khaki | cream tint, roughness 0.70 |
+| Fibres | three scales (7 mm … 0.4 mm), all faded out at body distance → flat from afar | sculpted strands visible on the whole figure | fourth scale added: strand groups ≈ 2 cm, 0.55 mm relief |
+| Myotendinous junction | short staggered edge | long interdigitating fingers | bundle- and fascicle-scale fingers |
+| Lighting | four camera lights of similar strength | one large key, weak fill, rim | key 5.0 (upper left, soft shadows), fill 0.55, rim 1.5, bounce 0.25 |
+| Backdrop | flat black | charcoal studio vignette | radial charcoal gradient (pre-compensated for the tone mapper's toe) |
+| Abdomen | oblique aponeuroses drawn as a pale plate over the rectus | rectus segments, cream intersections and linea alba | anterior layer of the rectus sheath opened in front of the rectus (see below) |
+
+**Abdominal wall** (`lib/three/abdomen.ts`). In the source the aponeuroses of the
+external oblique, internal oblique and (below the arcuate line) transversus lie in
+front of the rectus. They are now classified by the frontal outline of the rectus
+and by which side of its mid-plane they lie on: triangles of the anterior layer
+wholly in front of the rectus are left out of the index — the atlas convention of
+showing the rectus with its sheath opened. No vertex is moved or removed; the
+posterior lamina stays as a cream sheet; the aponeurosis fades in at the lateral
+border of the rectus (linea semilunaris). The opened layer is absent from colour,
+shadow, ambient-occlusion and picking alike, so a click on a rectus segment
+selects the rectus. The rectus' baked AO (computed under the sheath) is lifted.
+
+**Geometry.** Unchanged: original Z-Anatomy meshes, plus the interpolating
+refinement (original vertices kept, ≤ 0.5 mm). The smoothed chest / abdomen meshes
+of the earlier prototype (`pipeline/sculpt`) are no longer loaded by default
+(`?sculpt=1` to compare).
+
+**Not changed:** selection, isolation, highlighting, labels, layers, camera,
+anatomy data. The non-HD mode keeps its previous look.

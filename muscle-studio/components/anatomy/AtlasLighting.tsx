@@ -6,7 +6,7 @@ import { useEffect, useMemo } from "react";
 import { Group, Object3D, Vector3, type Camera } from "three";
 
 /** The key light (camera space), shared with the HD pipeline's shadow-casting key. */
-export const KEY_LIGHT = { position: new Vector3(1.6, 1.8, 0.6), intensity: 2.4, color: "#fff3e8" };
+export const KEY_LIGHT = { position: new Vector3(-1.5, 1.9, 0.9), intensity: 5.0, color: "#fff1e2" };
 
 /** The light rig of the mounted viewer (used by exports to aim it at the export camera). */
 export const lightRig: { group: Group | null } = { group: null };
@@ -21,8 +21,9 @@ export function alignLightRig(camera: Camera): void {
 }
 
 /**
- * ONE lighting standard for the atlas and the editor: key, fill, rim and under
- * lights that travel with the camera (every angle of a 360° turn is lit alike),
+ * ONE lighting standard for the atlas and the editor: a studio set-up — one large
+ * warm key from the upper left, a weak cool fill, a rim and a faint bounce — that
+ * travels with the camera (every angle of a 360° turn is lit alike),
  * a soft hemisphere + ambient base and a procedural studio environment for the
  * satin / moist reflections. `intensity` scales everything. With
  * `keyLight={false}` the key is provided elsewhere (HD pipeline: shadow-casting key).
@@ -48,13 +49,14 @@ export function AtlasLighting({ intensity = 1, keyLight = true, warmFill = false
   });
   return (
     <>
-      <ambientLight intensity={0.22 * intensity} />
-      <hemisphereLight args={["#fff8f2", warmFill ? "#3a2c2a" : "#20232a", 0.45 * intensity]} />
+      <ambientLight intensity={0.2 * intensity} />
+      <hemisphereLight args={["#fff8f2", warmFill ? "#3a2c2a" : "#20232a", 0.38 * intensity]} />
       <primitive object={group}>
         {keyLight && <directionalLight position={KEY_LIGHT.position.toArray()} intensity={KEY_LIGHT.intensity * intensity} color={KEY_LIGHT.color} target={target} />}
-        <directionalLight position={[-2.2, 0.6, 0.8]} intensity={0.85 * intensity} color="#f2f5ff" target={target} />
-        <directionalLight position={[0, 2.5, -3]} intensity={1.3 * intensity} color="#eef2ff" target={target} />
-        <directionalLight position={[-1.5, -1.2, -1.5]} intensity={0.45 * intensity} target={target} />
+        {/* soft cool fill opposite the key, a rim from behind for separation, a faint bounce from below */}
+        <directionalLight position={[2.2, 0.5, 0.8]} intensity={0.55 * intensity} color="#e8eeff" target={target} />
+        <directionalLight position={[0.8, 2.4, -3]} intensity={1.5 * intensity} color="#eef2ff" target={target} />
+        <directionalLight position={[1.5, -1.2, -1.5]} intensity={0.25 * intensity} target={target} />
       </primitive>
       <Environment resolution={128} frames={1}>
         <Lightformer form="rect" intensity={1.4} position={[0, 4, -2]} scale={[6, 2, 1]} />

@@ -1,11 +1,14 @@
 import { AddEquation, BufferAttribute, Color, CustomBlending, DoubleSide, FrontSide, MeshPhysicalMaterial, OneFactor, Vector3, ZeroFactor, type BufferGeometry } from "three";
 import type { MuscleLook } from "@/lib/three/muscleMaterial";
 
-/** Base colour of skeletal muscle in the HD standard: muted rose (reference: professional atlas apps). */
-export const HD_MUSCLE_COLOR = "#A0605F";
+/**
+ * Base colour of skeletal muscle in the HD standard: warm brick red, matte —
+ * the look of a sculpted écorché / printed atlas plate (user references), not wet tissue.
+ */
+export const HD_MUSCLE_COLOR = "#B24E41";
 
-/** Tendon / aponeurosis colour of the HD standard: glossy silver-white (reference: medical atlas apps). */
-const HD_TENDON = "#D3D0CC";
+/** Tendon / aponeurosis colour of the HD standard: matte cream (same references). */
+const HD_TENDON = "#DDCDA9";
 import { TISSUE, type TissueKind } from "@/lib/three/tissue";
 
 /**
@@ -110,10 +113,10 @@ varying vec3 vObjNrm;
 
 function fibreColors(hex: string): { groove: Color; light: Color } {
   const s = new Color(hex).convertLinearToSRGB();
-  // Perimysium grooves: deeper, slightly bluish crimson; crests: lighter, pinker.
-  // Grooves: a little deeper and redder; crests: paler, towards a pinkish white (no saturation boost).
-  const groove = new Color(s.r * 0.7, s.g * 0.6, s.b * 0.6).convertSRGBToLinear();
-  const light = new Color(s.r + (1 - s.r) * 0.22, s.g + (1 - s.g) * 0.2, s.b + (1 - s.b) * 0.2).convertSRGBToLinear();
+  // Grooves between fascicles: deeper, redder; crests: lighter, towards a warm
+  // salmon (the sculpted-strand highlights of the references) — never white.
+  const groove = new Color(s.r * 0.64, s.g * 0.5, s.b * 0.5).convertSRGBToLinear();
+  const light = new Color(s.r + (1.0 - s.r) * 0.34, s.g + (0.8 - s.g) * 0.34, s.b + (0.7 - s.b) * 0.34).convertSRGBToLinear();
   return { groove, light };
 }
 
@@ -138,21 +141,25 @@ export function muscleDetail(id: string, geometry: BufferGeometry): MuscleDetail
   return { seed: new Vector3(r(0), r(1), r(2)), scale };
 }
 
+/** Surface finish of muscle in the HD standard (matte satin). */
+const MATTE = { roughness: 0.62, clearcoat: 0.05, sheen: 0.6 };
+
 export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boolean, detail: MuscleDetail): MeshPhysicalMaterial {
   const color = new Color(hex);
   const { groove, light } = fibreColors(hex);
   const mat = new MeshPhysicalMaterial({
     color,
-    roughness: 0.4,
+    // Matte, satin tissue: broad soft highlights, no wet clearcoat.
+    roughness: MATTE.roughness,
     metalness: 0,
-    clearcoat: 0.4,
-    clearcoatRoughness: 0.22,
-    sheen: 0.35,
-    sheenRoughness: 0.5,
-    sheenColor: light.clone().lerp(new Color(1, 0.85, 0.85), 0.4),
-    specularIntensity: 0.85,
-    anisotropy: 0.35,
-    envMapIntensity: 1.35,
+    clearcoat: MATTE.clearcoat,
+    clearcoatRoughness: 0.5,
+    sheen: MATTE.sheen,
+    sheenRoughness: 0.6,
+    sheenColor: light.clone().lerp(new Color(1, 0.86, 0.78), 0.4),
+    specularIntensity: 0.4,
+    anisotropy: 0.3,
+    envMapIntensity: 0.85,
   });
   if (hover) mat.emissive = color.clone().multiplyScalar(0.25);
   const uniforms = {
@@ -187,35 +194,40 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
         varying vec3 vObjNrm;
         ${NOISE}
         // Muscle relief (metres), colour contrast, tendon factor and a moisture term.
-        float hzH, hzK, hzTendon, hzWet;
+        float hzH, hzK, hzTendon, hzWet, hzMott;
         void hzMuscle() {
           vec3 F, A, N;
           hzFrame(vObjNrm, vFib, F, A, N);
           vec3 p = vObjPos + uSeed;
           float px = length(fwidth(vObjPos));          // metres per pixel
           float s = uScale;
-          float fB = 1.0 / (0.007 * s), fF = 1.0 / (0.002 * s), fM = 1.0 / (0.0004 * s);
+          float fS = 1.0 / (0.019 * s), fB = 1.0 / (0.007 * s), fF = 1.0 / (0.002 * s), fM = 1.0 / (0.0004 * s);
+          // Strand groups (~2 cm): the sculpted strands that read from a full-body view.
+          float wS = 1.0 - smoothstep(0.12, 0.3, px * fS);
           // Each scale fades to its mean before its period drops under ~4 px.
           float wB = 1.0 - smoothstep(0.12, 0.3, px * fB);
           float wF = 1.0 - smoothstep(0.12, 0.3, px * fF);
           float wM = 1.0 - smoothstep(0.1, 0.22, px * fM);
-          float bB = 0.625, bF = 0.625, bM = 0.625, tB = 0.5, tF = 0.5;
+          float bS = 0.625, bB = 0.625, bF = 0.625, bM = 0.625, tS = 0.5, tB = 0.5, tF = 0.5;
+          if (wS > 0.0) { vec3 r = hzPhasor(p + 1.13, F, A, N, 0.046 * s, fS, vec3(0.025, 0.0098, 0.018) * s); bS = mix(0.625, hzBulge(r), wS); tS = mix(0.5, r.z, wS); }
           if (wB > 0.0) { vec3 r = hzPhasor(p, F, A, N, 0.018 * s, fB, vec3(0.0095, 0.0038, 0.007) * s); bB = mix(0.625, hzBulge(r), wB); tB = mix(0.5, r.z, wB); }
           if (wF > 0.0) { vec3 r = hzPhasor(p + 0.37, F, A, N, 0.0065 * s, fF, vec3(0.0034, 0.0013, 0.0026) * s); bF = mix(0.625, hzBulge(r), wF); tF = mix(0.5, r.z, wF); }
           if (wM > 0.0) { vec3 r = hzPhasor(p + 0.71, F, A, N, 0.0014 * s, fM, vec3(0.0007, 0.00028, 0.0005) * s); bM = mix(0.625, hzBulge(r), wM); }
           // Large-scale mottling (cm): colour and moisture vary across the belly.
           float mott = hzFbm(p * 28.0) - 0.5;
           float mott2 = hzValue(p * 110.0) - 0.5;
-          // Relief: bundles 0.35 mm, fascicles 0.12 mm, fibres 0.02 mm.
-          float hm = (bB - 0.625) * 0.35e-3 * s + (bF - 0.625) * 0.12e-3 * s + (bM - 0.625) * 0.012e-3 * s;
+          // Relief: strand groups 0.55 mm, bundles 0.32 mm, fascicles 0.1 mm, fibres 0.01 mm.
+          float hm = (bS - 0.625) * 0.55e-3 * s + (bB - 0.625) * 0.32e-3 * s + (bF - 0.625) * 0.1e-3 * s + (bM - 0.625) * 0.012e-3 * s;
           // Myotendinous junction: fascicles end at staggered positions.
           float t = clamp(vAnat.y * uTendon, 0.0, 1.0);
-          t = smoothstep(0.12, 0.88, t + (tF - 0.5) * 1.6 * t * (1.0 - t));
+          // Long interdigitating fingers (bundle scale) with fine ones (fascicle scale).
+          t = smoothstep(0.1, 0.9, t + ((tB - 0.5) * 1.5 + (tF - 0.5) * 1.3) * t * (1.0 - t));
           // Tendon: fine parallel collagen striation, much lower relief.
           float ht = (bF - 0.625) * 0.05e-3 + (bM - 0.625) * 0.02e-3 + mott * 0.04e-3;
           hzH = mix(hm * uDetail, ht, t);
-          float k = (bF - 0.625) * 0.7 * wF + (bB - 0.625) * 0.6 * wB + (bM - 0.625) * 0.25 * wM
-                  + (tF - 0.5) * 0.3 + (tB - 0.5) * 0.25 + mott * 0.25 + mott2 * 0.06;
+          float k = (bS - 0.625) * 0.5 * wS + (bF - 0.625) * 0.65 * wF + (bB - 0.625) * 0.6 * wB + (bM - 0.625) * 0.25 * wM
+                  + (tS - 0.5) * 0.4 + (tF - 0.5) * 0.3 + (tB - 0.5) * 0.3 + mott * 0.3 + mott2 * 0.06;
+          hzMott = mott;
           hzK = k * mix(1.0, uDetail, 0.7);
           hzTendon = t;
           hzWet = clamp(0.5 + mott * 0.9 + (bF - 0.625) * 0.8, 0.0, 1.0);
@@ -227,19 +239,25 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
         hzMuscle();
         float msK = hzK * uStripe;
         vec3 msTissue = msK < 0.0 ? mix(diffuseColor.rgb, uGroove, clamp(-msK * 1.15, 0.0, 1.0)) : mix(diffuseColor.rgb, uLight, clamp(msK * 0.85, 0.0, 1.0));
-        // Junction: pale pink where the last fascicles meet the tendon.
-        vec3 msJunction = mix(diffuseColor.rgb, uTendonColor, 0.55);
-        vec3 msTendonCol = uTendonColor * (0.88 + 0.16 * hzK);
+        // Natural variation across the belly: a slow drift between a warmer
+        // (orange) and a deeper (crimson) red, a few percent only.
+        float msDrift = clamp(hzMott * 2.2, -1.0, 1.0) * uStripe;
+        msTissue *= vec3(1.0 + 0.05 * msDrift, 1.0 - 0.07 * msDrift, 1.0 - 0.11 * msDrift);
+        // Junction: pale salmon where the last fascicles meet the tendon.
+        vec3 msJunction = mix(msTissue, uTendonColor, 0.5);
+        vec3 msTendonCol = uTendonColor * (0.9 + 0.14 * hzK);
         diffuseColor.rgb = mix(msTissue, mix(msJunction, msTendonCol, smoothstep(0.35, 0.8, hzTendon)), smoothstep(0.0, 0.45, hzTendon));
-        // Rectus sheath (lib/three/abdomen.ts): the external oblique aponeurosis is a
-        // translucent pearly sheet over the rectus; the internal oblique lamina fused
-        // into it is not drawn a second time. Alpha-to-coverage: no sorting needed.
+        // Rectus sheath (lib/three/abdomen.ts): the oblique aponeuroses are cream
+        // sheets; their anterior layer is opened in front of the rectus (atlas
+        // convention) and fades out at its lateral border; the internal oblique
+        // lamina fused into the sheath is not drawn a second time.
+        // Alpha-to-coverage: no sorting needed.
         float hzSheath = smoothstep(0.25, 0.85, min(abs(vSheath), 1.0));
         float hzOver = clamp(abs(vSheath) - 1.0, 0.0, 1.0); // in front of the rectus
         if (vSheath > 0.0) {
-          vec3 sheathCol = uTendonColor * vec3(1.0, 0.9, 0.9) * (0.96 + 0.08 * hzK);
+          vec3 sheathCol = uTendonColor * (0.94 + 0.1 * hzK);
           diffuseColor.rgb = mix(diffuseColor.rgb, sheathCol, hzSheath);
-          diffuseColor.a *= 1.0 - (0.42 + 0.36 * hzOver) * hzSheath;
+          diffuseColor.a *= 1.0 - smoothstep(0.1, 0.9, hzOver);
         } else if (vSheath < 0.0) {
           diffuseColor.a *= 1.0 - hzSheath;
         }
@@ -248,7 +266,7 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
       .replace(
         "#include <roughnessmap_fragment>",
         `#include <roughnessmap_fragment>
-        roughnessFactor = mix(clamp(roughnessFactor + (0.5 - hzWet) * 0.14, 0.26, 0.56), 0.16, hzTendon);`,
+        roughnessFactor = mix(clamp(roughnessFactor + (0.5 - hzWet) * 0.12, 0.5, 0.74), 0.46, hzTendon);`,
       )
       .replace(
         "#include <normal_fragment_maps>",
@@ -260,11 +278,11 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
         `#include <lights_physical_fragment>
         #ifdef USE_ANISOTROPY
           // Collagen is far more anisotropic than muscle.
-          material.anisotropy = mix(material.anisotropy, 0.8, hzTendon);
+          material.anisotropy = mix(material.anisotropy, 0.6, hzTendon);
           material.alphaT = mix(pow2(material.roughness), 1.0, pow2(material.anisotropy));
         #endif
         #ifdef USE_CLEARCOAT
-          material.clearcoat = mix(material.clearcoat, 0.95, hzTendon);
+          material.clearcoat = mix(material.clearcoat, 0.14, hzTendon);
         #endif`,
       )
       .replace(
@@ -282,17 +300,17 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
   mat.alphaToCoverage = true;
   setCoverageBlending(mat);
   mat.userData.coverageBlend = true;
-  mat.customProgramCacheKey = () => "muscle-hd2";
+  mat.customProgramCacheKey = () => "muscle-hd3";
   mat.name = `muscle-hd:${hex}`;
   return mat;
 }
 
 /** PBR parameters of the other tissues (HD standard). */
 const HD_TISSUE: Record<TissueKind, { hex: string; roughness: number; clearcoat: number; sheen: number; specular: number; anisotropy: number; opacity: number; relief: number; period: number }> = {
-  bone: { hex: "#E3D6BC", roughness: 0.62, clearcoat: 0.05, sheen: 0.2, specular: 0.45, anisotropy: 0, opacity: 1, relief: 0.03e-3, period: 0.0006 },
-  tendon: { hex: "#D3D0CC", roughness: 0.16, clearcoat: 0.9, sheen: 0.25, specular: 0.65, anisotropy: 0.75, opacity: 1, relief: 0.05e-3, period: 0.0007 },
-  ligament: { hex: "#CFC8BD", roughness: 0.32, clearcoat: 0.55, sheen: 0.2, specular: 0.6, anisotropy: 0.6, opacity: 1, relief: 0.04e-3, period: 0.0008 },
-  fascia: { hex: "#E4E1DA", roughness: 0.32, clearcoat: 0.45, sheen: 0.15, specular: 0.7, anisotropy: 0.4, opacity: 0.5, relief: 0.015e-3, period: 0.0006 },
+  bone: { hex: "#D9C9A0", roughness: 0.7, clearcoat: 0, sheen: 0.25, specular: 0.35, anisotropy: 0, opacity: 1, relief: 0.03e-3, period: 0.0006 },
+  tendon: { hex: HD_TENDON, roughness: 0.46, clearcoat: 0.14, sheen: 0.35, specular: 0.45, anisotropy: 0.55, opacity: 1, relief: 0.07e-3, period: 0.0007 },
+  ligament: { hex: "#D6C7A6", roughness: 0.5, clearcoat: 0.1, sheen: 0.3, specular: 0.45, anisotropy: 0.5, opacity: 1, relief: 0.06e-3, period: 0.0008 },
+  fascia: { hex: "#E2D6BA", roughness: 0.48, clearcoat: 0.12, sheen: 0.25, specular: 0.5, anisotropy: 0.4, opacity: 0.5, relief: 0.02e-3, period: 0.0006 },
   bursa: { hex: "#C3D5E0", roughness: 0.22, clearcoat: 0.6, sheen: 0, specular: 0.8, anisotropy: 0, opacity: 0.5, relief: 0, period: 0.001 },
   nerve: { hex: TISSUE.nerve, roughness: 0.42, clearcoat: 0.3, sheen: 0, specular: 0.5, anisotropy: 0.3, opacity: 1, relief: 0.02e-3, period: 0.0006 },
   vessel: { hex: TISSUE.vessel, roughness: 0.35, clearcoat: 0.3, sheen: 0, specular: 0.5, anisotropy: 0, opacity: 1, relief: 0, period: 0.001 },
@@ -335,7 +353,8 @@ export function principalAxis(g: BufferGeometry): Vector3 {
 export function createTissueMaterialHD(t: TissueKind, opts: { vertexColors?: boolean; axis?: Vector3; seed?: Vector3 } = {}): MeshPhysicalMaterial {
   const P = HD_TISSUE[t];
   const mat = new MeshPhysicalMaterial({
-    color: new Color(opts.vertexColors ? "#ffffff" : P.hex),
+    // Vertex-coloured bones (author's near-white bone / bluish cartilage) are tinted to the same cream.
+    color: new Color(opts.vertexColors ? "#EBDCB4" : P.hex),
     vertexColors: !!opts.vertexColors,
     roughness: P.roughness,
     metalness: 0,
@@ -345,7 +364,7 @@ export function createTissueMaterialHD(t: TissueKind, opts: { vertexColors?: boo
     sheenRoughness: 0.5,
     sheenColor: new Color("#fff4e8"),
     specularIntensity: P.specular,
-    envMapIntensity: t === "tendon" || t === "ligament" || t === "fascia" ? 1.6 : t === "bone" ? 0.8 : 1,
+    envMapIntensity: t === "bone" ? 0.7 : 0.9,
     side: t === "tendon" || t === "fascia" || t === "bursa" || t === "ligament" ? DoubleSide : FrontSide,
   });
   if (t === "origin" || t === "insertion") {
@@ -425,14 +444,14 @@ export function createTissueMaterialHD(t: TissueKind, opts: { vertexColors?: boo
         hzCart = 0.0;
         #if defined(USE_COLOR) && ${isBone ? 1 : 0}
           hzCart = smoothstep(-0.01, 0.05, vColor.b - vColor.r);
-          diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.78, 0.84, 0.87), hzCart);
+          diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.8, 0.83, 0.82), hzCart);
         #endif
         diffuseColor.rgb *= 1.0 + hzK * mix(0.22, 0.06, hzCart);`,
       )
       .replace(
         "#include <roughnessmap_fragment>",
         `#include <roughnessmap_fragment>
-        roughnessFactor = mix(roughnessFactor, 0.24, hzCart);`,
+        roughnessFactor = mix(roughnessFactor, 0.36, hzCart);`,
       )
       .replace(
         "#include <normal_fragment_maps>",
@@ -443,12 +462,12 @@ export function createTissueMaterialHD(t: TissueKind, opts: { vertexColors?: boo
         "#include <lights_physical_fragment>",
         `#include <lights_physical_fragment>
         #ifdef USE_CLEARCOAT
-          material.clearcoat = mix(material.clearcoat, 0.6, hzCart);
+          material.clearcoat = mix(material.clearcoat, 0.3, hzCart);
         #endif`,
       );
   };
   if (fibrous) mat.anisotropy = P.anisotropy;
-  mat.customProgramCacheKey = () => `tissue-hd1:${t}:${opts.vertexColors ? 1 : 0}`;
+  mat.customProgramCacheKey = () => `tissue-hd2:${t}:${opts.vertexColors ? 1 : 0}`;
   mat.name = `tissue-hd:${t}`;
   return mat;
 }
@@ -476,9 +495,10 @@ export function setMuscleLookHD(mat: MeshPhysicalMaterial, hex: string, look: Mu
   const color = new Color(hex);
   const { groove, light } = fibreColors(hex);
   mat.color.copy(color);
-  mat.clearcoat = look.clearcoat * 1.33;
-  mat.sheen = look.sheen * 0.8;
-  mat.sheenColor.copy(light).lerp(new Color(1, 0.85, 0.85), 0.4);
+  // Matte standard; the look only scales it (highlighted muscles: a little less sheen).
+  mat.clearcoat = MATTE.clearcoat * (look.clearcoat / 0.3);
+  mat.sheen = MATTE.sheen * (look.sheen / 0.55);
+  mat.sheenColor.copy(light).lerp(new Color(1, 0.86, 0.78), 0.4);
   mat.emissive.copy(hover ? color.clone().multiplyScalar(0.25) : new Color(0, 0, 0));
   u.uTendon.value = look.tendon;
   u.uBump.value = look.bump;

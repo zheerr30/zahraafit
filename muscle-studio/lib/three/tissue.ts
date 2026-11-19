@@ -87,10 +87,10 @@ export function createTissueMaterial(t: TissueKind, opts: { vertexColors?: boole
 }
 
 /** Deterministic small tone variation so neighbouring muscles read as separate tissue. */
-export function muscleTone(key: string, base: string = TISSUE.muscle): string {
+export function muscleTone(key: string, base: string = TISSUE.muscle, spread = 1): string {
   let h = 0;
   for (const ch of key) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
   const c = new Color(base);
-  c.offsetHSL(((h % 7) - 3) * 0.004, (((h >> 3) % 5) - 2) * 0.02, (((h >> 6) % 7) - 3) * 0.01);
+  c.offsetHSL(((h % 7) - 3) * 0.004 * spread, (((h >> 3) % 5) - 2) * 0.02 * spread, (((h >> 6) % 7) - 3) * 0.01);
   return `#${c.getHexString()}`;
 }

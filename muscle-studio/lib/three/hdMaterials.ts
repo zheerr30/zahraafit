@@ -1,4 +1,4 @@
-import { BufferAttribute, Color, DoubleSide, FrontSide, MeshPhysicalMaterial, Vector3, type BufferGeometry } from "three";
+import { AddEquation, BufferAttribute, Color, CustomBlending, DoubleSide, FrontSide, MeshPhysicalMaterial, OneFactor, Vector3, ZeroFactor, type BufferGeometry } from "three";
 import type { MuscleLook } from "@/lib/three/muscleMaterial";
 
 /** Base colour of skeletal muscle in the HD standard: muted rose (reference: professional atlas apps). */
@@ -100,6 +100,8 @@ void hzFrame(vec3 n, vec3 dir, out vec3 F, out vec3 A, out vec3 N) {
 const VERTEX_HEAD = /* glsl */ `
 attribute vec2 _anat;
 attribute vec3 _fiber;
+attribute float _sheath;
+varying float vSheath;
 varying vec2 vAnat;
 varying vec3 vFib;
 varying vec3 vObjPos;
@@ -168,13 +170,14 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
     Object.assign(shader.uniforms, uniforms);
     shader.vertexShader = shader.vertexShader
       .replace("#include <common>", `#include <common>\n${VERTEX_HEAD}`)
-      .replace("#include <begin_vertex>", `#include <begin_vertex>\nvAnat = _anat; vFib = _fiber; vObjPos = transformed; vObjNrm = objectNormal;`);
+      .replace("#include <begin_vertex>", `#include <begin_vertex>\nvAnat = _anat; vFib = _fiber; vSheath = _sheath; vObjPos = transformed; vObjNrm = objectNormal;`);
     shader.fragmentShader = shader.fragmentShader
       .replace(
         "#include <common>",
         `#include <common>
         uniform float uTendon, uBump, uStripe, uAo, uScale;
         uniform vec3 uTendonColor, uGroove, uLight, uSeed;
+        varying float vSheath;
         varying vec2 vAnat;
         varying vec3 vFib;
         varying vec3 vObjPos;
@@ -224,7 +227,19 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
         // Junction: pale pink where the last fascicles meet the tendon.
         vec3 msJunction = mix(diffuseColor.rgb, uTendonColor, 0.55);
         vec3 msTendonCol = uTendonColor * (0.88 + 0.16 * hzK);
-        diffuseColor.rgb = mix(msTissue, mix(msJunction, msTendonCol, smoothstep(0.35, 0.8, hzTendon)), smoothstep(0.0, 0.45, hzTendon));`,
+        diffuseColor.rgb = mix(msTissue, mix(msJunction, msTendonCol, smoothstep(0.35, 0.8, hzTendon)), smoothstep(0.0, 0.45, hzTendon));
+        // Rectus sheath (lib/three/abdomen.ts): the external oblique aponeurosis is a
+        // translucent pearly sheet over the rectus; the internal oblique lamina fused
+        // into it is not drawn a second time. Alpha-to-coverage: no sorting needed.
+        float hzSheath = smoothstep(0.25, 0.85, abs(vSheath));
+        if (vSheath > 0.0) {
+          vec3 sheathCol = uTendonColor * vec3(1.0, 0.9, 0.9) * (0.96 + 0.08 * hzK);
+          diffuseColor.rgb = mix(diffuseColor.rgb, sheathCol, hzSheath);
+          diffuseColor.a *= 1.0 - 0.42 * hzSheath;
+        } else if (vSheath < 0.0) {
+          diffuseColor.a *= 1.0 - hzSheath;
+        }
+        hzTendon = max(hzTendon, hzSheath);`,
       )
       .replace(
         "#include <roughnessmap_fragment>",
@@ -234,7 +249,7 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
       .replace(
         "#include <normal_fragment_maps>",
         `#include <normal_fragment_maps>
-        normal = hzPerturb(-vViewPosition, normal, vec2(dFdx(hzH), dFdy(hzH)) * (uBump / 0.75), faceDirection);`,
+        normal = hzPerturb(-vViewPosition, normal, vec2(dFdx(hzH), dFdy(hzH)) * (uBump / 0.75) * (1.0 - 0.8 * hzSheath), faceDirection);`,
       )
       .replace(
         "#include <lights_physical_fragment>",
@@ -258,7 +273,12 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
         reflectedLight.directSpecular *= mix(1.0, msAo, 0.45);`,
       );
   };
-  mat.customProgramCacheKey = () => "muscle-hd1";
+  // Sheath translucency by alpha-to-coverage (MSAA); colour replaces, alpha accumulates,
+  // so transparent-background exports keep an opaque body.
+  mat.alphaToCoverage = true;
+  setCoverageBlending(mat);
+  mat.userData.coverageBlend = true;
+  mat.customProgramCacheKey = () => "muscle-hd2";
   mat.name = `muscle-hd:${hex}`;
   return mat;
 }
@@ -462,4 +482,15 @@ export function setMuscleLookHD(mat: MeshPhysicalMaterial, hex: string, look: Mu
   u.uAo.value = look.ao;
   (u.uGroove.value as Color).copy(groove);
   (u.uLight.value as Color).copy(light);
+}
+
+/** Blending used with alpha-to-coverage: replace colour, accumulate alpha (opaque body on transparent backgrounds). */
+export function setCoverageBlending(mat: MeshPhysicalMaterial): void {
+  mat.blending = CustomBlending;
+  mat.blendEquation = AddEquation;
+  mat.blendSrc = OneFactor;
+  mat.blendDst = ZeroFactor;
+  mat.blendEquationAlpha = AddEquation;
+  mat.blendSrcAlpha = OneFactor;
+  mat.blendDstAlpha = OneFactor;
 }

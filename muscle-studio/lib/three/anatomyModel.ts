@@ -4,6 +4,7 @@ import { MUSCLES } from "@/data/muscles/muscles";
 import catalog from "@/data/models/open-anatomy-3d/catalog.json";
 import { axisTangents, HD_MUSCLE_COLOR as HD_MUSCLE, principalAxis } from "@/lib/three/hdMaterials";
 import { fibreTangents, orientFibres } from "@/lib/three/refine";
+import { markRectusSheath, renderDepth } from "@/lib/three/abdomen";
 import { mapMeshesToMuscles, type MappingReport } from "@/lib/anatomy/resolver";
 import type { IllustrationDoc, Layers } from "@/lib/storage/schema";
 import { SYSTEMS, type AnatomyAssetDefinition, type BodySide, type SystemId } from "@/types/anatomy";
@@ -257,6 +258,7 @@ function registerMeshes(model: PreparedModel, from: Object3D): void {
     meshNames.set(obj.uuid, meaningfulName(obj));
     systemOf.set(obj.uuid, system);
   });
+  if (model.hd) markRectusSheath(meshes);
 }
 
 /**
@@ -376,7 +378,10 @@ function realisticTone(muscleId: string): string {
 
 /** Shaded muscle material when the mesh carries baked appearance data, plain otherwise. */
 function muscleMat(library: MaterialLibrary, mesh: Mesh, hex: string, look: MuscleLookName, variant: MaterialVariant): Material {
-  return mesh.geometry.getAttribute("_anat") ? library.muscle(hex, look, variant) : library.get(hex, variant);
+  if (!mesh.geometry.getAttribute("_anat")) return library.get(hex, variant);
+  // HD: deeper layers yield in the depth test where layers nearly coincide (render order only).
+  const layer = library.hd ? renderDepth((mesh.userData.za_name ?? mesh.userData.source ?? "") as string, mesh.userData.depth as number | undefined) - 1 : 0;
+  return library.muscle(hex, look, variant, layer);
 }
 
 export function applyMaterials(

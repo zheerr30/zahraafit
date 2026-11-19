@@ -1,9 +1,10 @@
-import { Box3, Color, Mesh, MeshPhysicalMaterial, Raycaster, Vector3, type Material, type Object3D } from "three";
+import { Box3, Color, Mesh, MeshPhysicalMaterial, NormalBlending, Raycaster, Vector3, type Material, type Object3D } from "three";
 import { acceleratedRaycast, computeBoundsTree, disposeBoundsTree } from "three-mesh-bvh";
 import { REGION_MUSCLE_BY_ID, type RegionLayer } from "@/data/region/backShoulders";
 import { dequantizeMesh } from "@/lib/three/anatomyModel";
 import { createMuscleMaterial, HIGHLIGHT_LOOK, REALISTIC_LOOK, setMuscleLook } from "@/lib/three/muscleMaterial";
-import { axisTangents, createMuscleMaterialHD, createTissueMaterialHD, muscleDetail, principalAxis, setMuscleLookHD } from "@/lib/three/hdMaterials";
+import { axisTangents, createMuscleMaterialHD, createTissueMaterialHD, muscleDetail, principalAxis, setCoverageBlending, setMuscleLookHD } from "@/lib/three/hdMaterials";
+import { markRectusSheath, renderDepth } from "@/lib/three/abdomen";
 import { fibreTangents, orientFibres, refineMeshInPlace } from "@/lib/three/refine";
 import { createTissueMaterial, muscleTone, TISSUE, tissueOf } from "@/lib/three/tissue";
 import type { DepthMode, PickedStructure } from "@/stores/backStore";
@@ -135,7 +136,7 @@ export function prepareMeshes(scene: Object3D, opts: PrepareOptions = {}): Regio
       material = createMuscleMaterialHD(baseHex, REALISTIC_LOOK, false, muscleDetail(x.id + (x.source ?? ""), mesh.geometry));
       // Where layers nearly coincide, the more superficial muscle wins the depth test
       // (render order only — no geometry is moved).
-      const d = (x.depth ?? 1) - 1;
+      const d = renderDepth(x.za_name ?? "", x.depth) - 1;
       if (d > 0) {
         material.polygonOffset = true;
         material.polygonOffsetFactor = d;
@@ -186,6 +187,7 @@ export function prepareMeshes(scene: Object3D, opts: PrepareOptions = {}): Regio
       styleKey: "",
     });
   }
+  if (opts.hd) markRectusSheath(out.filter((m) => m.kind === "unit").map((m) => m.mesh));
   return out;
 }
 
@@ -303,6 +305,10 @@ export function stepFades(model: RegionModel, dt: number): boolean {
     const transparent = m.opacity < 1 || base < 1;
     if (mat.transparent !== transparent) {
       mat.transparent = transparent;
+      if (mat.userData.coverageBlend) {
+        if (transparent) mat.blending = NormalBlending;
+        else setCoverageBlending(mat);
+      }
       mat.needsUpdate = true;
     }
     mat.depthWrite = base >= 1 && m.opacity > 0.6 && m.target > GHOST;

@@ -141,8 +141,32 @@ describe("editor in HD keeps the per-muscle colouring", () => {
       store.getState().toggleMuscle(id);
       applyMaterials(model, report, { doc: store.getState().doc, hoveredMuscleId: null }, library);
       const own = new Set(report.byMuscle.get(id));
-      for (const mesh of model.meshes) expect(mesh.material === highlight, id).toBe(own.has(mesh.uuid));
+      const isHighlight = (m: (typeof model.meshes)[number]) => {
+        const mat = m.material as MeshPhysicalMaterial;
+        return mat === highlight || (mat.userData.hd && mat.name === highlight.name);
+      };
+      for (const mesh of model.meshes) expect(isHighlight(mesh), id).toBe(own.has(mesh.uuid));
     }
     library.dispose();
   }, 120_000);
+});
+
+describe("abdominal wall: rectus sheath from the oblique aponeuroses", () => {
+  it("marks the external oblique over the rectus as sheath (+) and the internal oblique lamina as fused (−), both sides", () => {
+    for (const side of ["l", "r"]) {
+      const ext = hd.meshes.find((m) => m.kind === "unit" && /^External abdominal oblique/.test(m.meta.zaName) && m.side === side)!;
+      const int = hd.meshes.find((m) => m.kind === "unit" && /^Internal abdominal oblique/.test(m.meta.zaName) && m.side === side)!;
+      const count = (m: typeof ext, sign: number) => {
+        const a = m.mesh.geometry.getAttribute("_sheath");
+        let n = 0;
+        for (let i = 0; i < a.count; i++) if (a.getX(i) * sign > 0.5) n++;
+        return { n, total: a.count };
+      };
+      const e = count(ext, 1), i = count(int, -1);
+      expect(e.n, `external ${side}`).toBeGreaterThan(300);
+      expect(e.n / e.total).toBeLessThan(0.7); // the fleshy lateral part stays muscle
+      expect(i.n, `internal ${side}`).toBeGreaterThan(100);
+      expect((ext.mesh.material as MeshPhysicalMaterial).alphaToCoverage).toBe(true);
+    }
+  });
 });

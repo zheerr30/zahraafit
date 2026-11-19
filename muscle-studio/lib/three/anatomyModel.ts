@@ -4,7 +4,7 @@ import { MUSCLES } from "@/data/muscles/muscles";
 import catalog from "@/data/models/open-anatomy-3d/catalog.json";
 import { axisTangents, HD_MUSCLE_COLOR as HD_MUSCLE, principalAxis } from "@/lib/three/hdMaterials";
 import { fibreTangents, orientFibres } from "@/lib/three/refine";
-import { abdominalDepthBias, markRectusSheath, renderDepth } from "@/lib/three/abdomen";
+import { markRectusSheath, renderDepth } from "@/lib/three/abdomen";
 import { mapMeshesToMuscles, type MappingReport } from "@/lib/anatomy/resolver";
 import type { IllustrationDoc, Layers } from "@/lib/storage/schema";
 import { SYSTEMS, type AnatomyAssetDefinition, type BodySide, type SystemId } from "@/types/anatomy";
@@ -381,8 +381,7 @@ function muscleMat(library: MaterialLibrary, mesh: Mesh, hex: string, look: Musc
   if (!mesh.geometry.getAttribute("_anat")) return library.get(hex, variant);
   // HD: deeper layers yield in the depth test where layers nearly coincide (render order only).
   const layer = library.hd ? renderDepth((mesh.userData.za_name ?? mesh.userData.source ?? "") as string, mesh.userData.depth as number | undefined) - 1 : 0;
-  const bias = library.hd ? abdominalDepthBias((mesh.userData.za_name ?? mesh.userData.source ?? "") as string) : 0;
-  return library.muscle(hex, look, variant, layer, bias);
+  return library.muscle(hex, look, variant, layer);
 }
 
 export function applyMaterials(

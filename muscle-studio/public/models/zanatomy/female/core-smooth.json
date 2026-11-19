@@ -1,6 +1,6 @@
 {
  "sex": "female",
- "generated": "2026-11-19T13:23:06.158Z",
+ "generated": "2026-11-19T17:18:59.577Z",
  "method": "pinned Taubin fairing of muscle bellies (≤ 2 mm, ≤ 40 % of the gap to the nearest structure) + welded normals + smoothed AO",
  "limitsMm": {
   "max": 2
@@ -5597,6 +5597,32 @@
    "volumeChangePct": -0.16,
    "roughnessDegBefore": 26.73,
    "roughnessDegAfter": 26.51
+  }
+ ],
+ "abdominalWall": [
+  {
+   "deep": "Internal abdominal oblique muscle.l",
+   "under": "External abdominal oblique muscle.l",
+   "verticesMoved": 1053,
+   "maxMoveMm": 5.156
+  },
+  {
+   "deep": "Transversus abdominis muscle.l",
+   "under": "External abdominal oblique muscle.l",
+   "verticesMoved": 543,
+   "maxMoveMm": 5.169
+  },
+  {
+   "deep": "Internal abdominal oblique muscle.r",
+   "under": "External abdominal oblique muscle.r",
+   "verticesMoved": 1065,
+   "maxMoveMm": 5.156
+  },
+  {
+   "deep": "Transversus abdominis muscle.r",
+   "under": "External abdominal oblique muscle.r",
+   "verticesMoved": 551,
+   "maxMoveMm": 5.195
   }
  ],
  "summary": {

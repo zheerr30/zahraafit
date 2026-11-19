@@ -175,7 +175,17 @@ Two causes, both addressed for all 466 muscles of both bodies in one pass:
    baked per-vertex ambient occlusion is smoothed over the surface and used gently,
    and the screen-space AO and key shadow are softer (less harsh separations).
 
-Also: the internal oblique / transversus are drawn 1.5 / 3 mm deeper in the depth
-test only (no vertex moved), which removes the mottled patch where the internal
-oblique pokes through the external oblique at the flank; the edge where the
-aponeurosis fades in beside the rectus is crisp instead of dithered.
+Also (abdominal wall, after close-up review on a phone):
+
+- In the source the internal oblique and transversus cross the outer surface of the
+  external oblique at the flank, which rendered as a mottled patch. `body.mjs` moves
+  those vertices of the two deep sheets 1.2 mm beneath that surface (≈ 250–1,060
+  vertices per sheet, ≤ 5.2 mm; hidden layer only, the superficial muscle untouched).
+  A depth-test bias tried first was dropped: it let ribs lying just under the
+  internal oblique show through it.
+- The opening of the anterior rectus sheath now ends 2–8 mm inside the lateral
+  border of the rectus and 4–12 mm short of its ends, so the cut edge of the
+  aponeurosis always lies on the muscle. Opened to the border, an oblique view
+  looked past the rounded edge of the rectus into the deeper layers, and the slip
+  of pectoralis major that arises from the sheath hung over a hole.
+- The edge where the aponeurosis fades in is crisp instead of dithered.

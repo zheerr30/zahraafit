@@ -67,12 +67,22 @@ function footprint(r: Mesh) {
     Z[b] = Math.min(zs[b], zs[b - 1] ?? Infinity, zs[b + 1] ?? Infinity);
   }
   return {
-    /** 1 over the rectus, 0 lateral to it (2 mm inside → 6 mm outside the border). */
+    /**
+     * 1 well inside the rectus outline, 0 at its border: the opening of the anterior
+     * layer ends 2–8 mm INSIDE the lateral border and 4–12 mm short of both ends, so
+     * the cut edge of the aponeurosis always lies on the muscle. (Opened up to the
+     * border, an oblique view looked past the rounded edge of the rectus into the
+     * deeper layers, and the slip of pectoralis major arising from the sheath hung
+     * over a hole.)
+     */
     over(q: Vector3): number {
       const b = Math.floor((q.y - y0) / BIN);
       if (b < 0 || b >= nb || X[b] < 0 || q.z < Z[b] - 0.003) return 0;
       const d = Math.abs(q.x) - X[b];
-      return d <= -0.002 ? 1 : d >= 0.006 ? 0 : 1 - (d + 0.002) / 0.008;
+      const fx = d <= -0.008 ? 1 : d >= -0.002 ? 0 : (-0.002 - d) / 0.006;
+      const e = Math.min(q.y - y0, y1 - q.y);
+      const fy = e >= 0.012 ? 1 : e <= 0.004 ? 0 : (e - 0.004) / 0.008;
+      return fx * fy;
     },
     /** In front of the rectus mid-plane (anterior lamina) rather than behind it. */
     anterior(q: Vector3): boolean {
@@ -215,16 +225,4 @@ export function renderDepth(name: string, depth: number | undefined): number {
   if (/^Internal abdominal oblique/i.test(name)) return Math.max(2, depth ?? 1);
   if (/^Transversus abdominis/i.test(name)) return Math.max(3, depth ?? 1);
   return depth ?? 1;
-}
-
-/**
- * Depth-test bias (metres, along the view axis) of the deep abdominal sheets. In
- * the source the internal oblique pokes through the external oblique at the flank
- * by fractions of a millimetre, which shows as a mottled patch; drawn slightly
- * deeper, the superficial sheet wins everywhere. Rendering only — no vertex moves.
- */
-export function abdominalDepthBias(name: string): number {
-  if (/^Internal abdominal oblique/i.test(name)) return 0.0015;
-  if (/^Transvers(us|e) abdomin(is|al)/i.test(name)) return 0.003;
-  return 0;
 }

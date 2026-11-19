@@ -188,6 +188,9 @@ describe("muscle surface refinement (core-smooth) keeps the anatomy", () => {
       expect(r.summary.tendonMaxDisplacementMm).toBeLessThan(0.01);
       expect(r.summary.boneAttachmentMaxDisplacementMm).toBeLessThan(0.1);
       expect(r.summary.roughnessDegAfter).toBeLessThan(r.summary.roughnessDegBefore);
+      // deep abdominal sheets brought under the external oblique (hidden layer only)
+      expect(r.abdominalWall).toHaveLength(4);
+      for (const w of r.abdominalWall) { expect(w.verticesMoved, w.deep).toBeGreaterThan(0); expect(w.maxMoveMm, w.deep).toBeLessThan(5.3); }
       for (const m of r.meshes) if (m.vertices > 800) expect(m.roughnessDegAfter, m.name).toBeLessThanOrEqual(m.roughnessDegBefore + 0.3);
     }
   });

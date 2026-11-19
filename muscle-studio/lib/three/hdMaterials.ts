@@ -109,7 +109,6 @@ varying vec2 vAnat;
 varying vec3 vFib;
 varying vec3 vObjPos;
 varying vec3 vObjNrm;
-uniform float uDepthBias;
 `;
 
 function fibreColors(hex: string): { groove: Color; light: Color } {
@@ -128,8 +127,6 @@ export interface MuscleDetail {
   scale: number;
   /** Strength of the surface detail (relief and fibre contrast), 1 = default. */
   detail?: number;
-  /** Depth-test bias in metres (deep sheets that nearly coincide with a superficial one). */
-  depthBias?: number;
 }
 
 /** Deterministic per-muscle detail parameters from its id and size. */
@@ -176,7 +173,6 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
     uSeed: { value: detail.seed },
     uScale: { value: detail.scale },
     uDetail: { value: detail.detail ?? 1 },
-    uDepthBias: { value: detail.depthBias ?? 0 },
   };
   mat.userData.msUniforms = uniforms;
   mat.userData.hd = true;
@@ -184,15 +180,7 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
     Object.assign(shader.uniforms, uniforms);
     shader.vertexShader = shader.vertexShader
       .replace("#include <common>", `#include <common>\n${VERTEX_HEAD}`)
-      .replace("#include <begin_vertex>", `#include <begin_vertex>\nvAnat = _anat; vFib = _fiber; vSheath = _sheath; vObjPos = transformed; vObjNrm = objectNormal;`)
-      .replace(
-        "#include <project_vertex>",
-        `#include <project_vertex>
-        if (uDepthBias > 0.0) {
-          vec4 hzDeep = projectionMatrix * (mvPosition + vec4(0.0, 0.0, -uDepthBias, 0.0));
-          gl_Position.z = hzDeep.z / hzDeep.w * gl_Position.w;
-        }`,
-      );
+      .replace("#include <begin_vertex>", `#include <begin_vertex>\nvAnat = _anat; vFib = _fiber; vSheath = _sheath; vObjPos = transformed; vObjNrm = objectNormal;`);
     shader.fragmentShader = shader.fragmentShader
       .replace(
         "#include <common>",
@@ -314,7 +302,7 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
   mat.alphaToCoverage = true;
   setCoverageBlending(mat);
   mat.userData.coverageBlend = true;
-  mat.customProgramCacheKey = () => "muscle-hd5";
+  mat.customProgramCacheKey = () => "muscle-hd6";
   mat.name = `muscle-hd:${hex}`;
   return mat;
 }

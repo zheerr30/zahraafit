@@ -238,6 +238,53 @@ for (const T of items) {
   results.push({ T, P, N });
 }
 
+// ── abdominal wall: the deep sheets must lie UNDER the external oblique ──
+// In the source the internal oblique (and transversus) cross the outer surface of the
+// external oblique at the flank by fractions of a millimetre, which renders as a
+// mottled patch. Their vertices found on or above that surface are moved 1.2 mm
+// beneath it (hidden deep layer only; the superficial muscle is not touched).
+report.abdominalWall = [];
+{
+  const COVER = 0.0012;
+  const sideOf = (T) => (/\.l$/.test(T.name) ? "l" : /\.r$/.test(T.name) ? "r" : "m");
+  const q = new Vector3();
+  for (const E of results.filter((r) => /^External abdominal oblique/.test(r.T.name))) {
+    const g = new BufferGeometry();
+    g.setAttribute("position", new BufferAttribute(Float32Array.from(E.P), 3));
+    g.setIndex(new BufferAttribute(Uint32Array.from(E.T.I), 1));
+    const bvh = new MeshBVH(g), EP = g.getAttribute("position").array, EI = g.index.array;
+    // torso axis (for "outward"): centroid of the sheet in x–z
+    let cx = 0, cz = 0;
+    for (let i = 0; i < E.P.length; i += 3) { cx += E.P[i]; cz += E.P[i + 2]; }
+    cz /= E.P.length / 3; cx = 0; // the body is centred on x = 0
+    for (const D of results.filter((r) => /^(Internal abdominal oblique|Transvers(us|e) abdomin)/.test(r.T.name) && sideOf(r.T) === sideOf(E.T))) {
+      const P = D.P, { canon } = weld(D.T.P, D.T.I);
+      let moved = 0, max = 0;
+      for (let i = 0; i < P.length / 3; i++) {
+        if (canon[i] !== i) continue;
+        q.set(P[i * 3], P[i * 3 + 1], P[i * 3 + 2]);
+        if (!bvh.closestPointToPoint(q, hit, 0, 0.004) || hit.distance > 0.004) continue;
+        const f = hit.faceIndex * 3, a = EI[f] * 3, b = EI[f + 1] * 3, c = EI[f + 2] * 3;
+        const ux = EP[b] - EP[a], uy = EP[b + 1] - EP[a + 1], uz = EP[b + 2] - EP[a + 2], vx = EP[c] - EP[a], vy = EP[c + 1] - EP[a + 1], vz = EP[c + 2] - EP[a + 2];
+        let nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
+        const nl = Math.hypot(nx, ny, nz) || 1; nx /= nl; ny /= nl; nz /= nl;
+        // only the OUTER face of the superficial sheet (normal pointing away from the torso axis)
+        if (nx * (hit.point.x - cx) + nz * (hit.point.z - cz) <= 0) continue;
+        const h = (q.x - hit.point.x) * nx + (q.y - hit.point.y) * ny + (q.z - hit.point.z) * nz;
+        // directly above / below that face (not merely beside the border of the sheet)
+        if (h <= -COVER || Math.abs(h) < 0.9 * hit.distance) continue;
+        const k = h + COVER;
+        P[i * 3] -= k * nx; P[i * 3 + 1] -= k * ny; P[i * 3 + 2] -= k * nz;
+        moved++; max = Math.max(max, k);
+      }
+      for (let i = 0; i < P.length / 3; i++) { const c = canon[i]; if (c !== i) { P[i * 3] = P[c * 3]; P[i * 3 + 1] = P[c * 3 + 1]; P[i * 3 + 2] = P[c * 3 + 2]; } }
+      D.N = normalsOf(P, D.T.I, canon);
+      report.abdominalWall.push({ deep: D.T.name, under: E.T.name, verticesMoved: moved, maxMoveMm: +(max * 1e3).toFixed(3) });
+    }
+  }
+}
+console.log(JSON.stringify(report.abdominalWall));
+
 // ── write back (after all muscles were measured against the ORIGINAL neighbours) ──
 for (const { T, P, N } of results) {
   const M = T.M, n = P.length / 3;

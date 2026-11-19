@@ -37,6 +37,7 @@ export function ExerciseLibrary({ tone, scope = null, showEnglish, onSpotlight, 
   const [equipment, setEquipment] = useState<Equipment | null>(null);
   const [level, setLevel] = useState<Level | null>(null);
   const [saved, setSaved] = useState(false);
+  const [video, setVideo] = useState(false);
   const [group, setGroup] = useState<string | null>(initial?.group ?? null);
   const [openId, setOpenId] = useState<string | null>(initial?.open ?? null);
   const bookmarks = useExercises((s) => s.bookmarks);
@@ -45,12 +46,12 @@ export function ExerciseLibrary({ tone, scope = null, showEnglish, onSpotlight, 
   // the muscle filter as one stable value (the scope array is rebuilt on every render of the parent)
   const groupKey = (scope ?? (group ? [group] : [])).join(" ");
   const { counts, list } = useMemo(() => {
-    const base = { query, equipment, level, groups: groupKey ? groupKey.split(" ") : null, bookmarks: saved ? bookmarks : null };
+    const base = { query, equipment, level, video, groups: groupKey ? groupKey.split(" ") : null, bookmarks: saved ? bookmarks : null };
     return {
       counts: { strength: filterExercises({ ...base, type: "strength" }).length, stretch: filterExercises({ ...base, type: "stretch" }).length },
       list: filterExercises({ ...base, type }),
     };
-  }, [type, query, equipment, level, saved, bookmarks, groupKey]);
+  }, [type, query, equipment, level, video, saved, bookmarks, groupKey]);
   // an opened exercise that the filters removed is no longer "being looked at"
   const openVisible = openId && list.some((e) => e.id === openId) ? openId : null;
   useEffect(() => {
@@ -67,12 +68,13 @@ export function ExerciseLibrary({ tone, scope = null, showEnglish, onSpotlight, 
     if (inside) onSpotlight?.(e, false);
     else onSpotlight?.(list.find((x) => x.id === openVisible) ?? null, false);
   };
-  const activeFilters = (equipment ? 1 : 0) + (level ? 1 : 0) + (saved ? 1 : 0) + (query ? 1 : 0) + (!scope && group ? 1 : 0);
+  const activeFilters = (equipment ? 1 : 0) + (level ? 1 : 0) + (saved ? 1 : 0) + (video ? 1 : 0) + (query ? 1 : 0) + (!scope && group ? 1 : 0);
   const clear = () => {
     setQuery("");
     setEquipment(null);
     setLevel(null);
     setSaved(false);
+    setVideo(false);
     if (!scope) setGroup(null);
   };
   const pill = (on: boolean) => cn("whitespace-nowrap rounded-full border px-2.5 py-1 text-[11px] transition-colors", on ? T.pillOn : T.pillOff);
@@ -125,6 +127,10 @@ export function ExerciseLibrary({ tone, scope = null, showEnglish, onSpotlight, 
       )}
 
       <div className="scroll-thin flex items-center gap-1.5 overflow-x-auto pb-1" role="group" aria-label="تصفية حسب الأدوات والمستوى">
+        <button type="button" aria-pressed={video} data-action="video-filter" onClick={() => setVideo(!video)} className={pill(video)}>
+          ▶ بفيديو
+        </button>
+        <span className={cn("mx-0.5 h-4 w-px shrink-0", tone === "light" ? "bg-[#cfd6e4]" : "bg-line-strong")} />
         {EQUIPMENT.map((q) => (
           <button key={q} type="button" aria-pressed={equipment === q} data-equipment={q} onClick={() => setEquipment(equipment === q ? null : q)} className={pill(equipment === q)}>
             {EQUIPMENT_AR[q]}

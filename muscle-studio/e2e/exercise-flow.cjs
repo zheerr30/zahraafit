@@ -67,7 +67,7 @@ async function tapMuscle(page, id, touch) {
 
     await panel.getByPlaceholder('ابحث باسم التمرين أو العضلة…').fill('push');
     await page.waitForTimeout(300);
-    ok('search narrows the list', (await cards.count()) >= 1 && (await cards.count()) < nStrength && (await cards.allInnerTexts()).every((t) => /الضغط|push/i.test(t)));
+    ok('search narrows the list', (await cards.count()) >= 1 && (await cards.count()) < nStrength && (await cards.allInnerTexts()).every((t) => /ضغط|بوش|push/i.test(t)));
     await panel.getByPlaceholder('ابحث باسم التمرين أو العضلة…').fill('');
     await panel.locator('[data-equipment=dumbbell]').click();
     await page.waitForTimeout(300);
@@ -83,6 +83,12 @@ async function tapMuscle(page, id, touch) {
     const sec = s.spot.secondary[0];
     ok('helper muscles take the lighter tint', (await T(page, (u) => window.__backStudioTest.unitColor(u), sec)) === '#f4b096' || (await T(page, (u) => window.__backStudioTest.unitColor(u), sec)) !== (await T(page, (u) => window.__backStudioTest.unitColor(u), 'soleus-muscle')));
     ok('steps are shown', (await first.locator('ol li').count()) >= 3);
+    // the exercise video (from the ZahraaFit program's library): a still with a play button, the player only on demand
+    const vid = first.locator('[data-video]');
+    ok('exercise has a video with a still picture', (await vid.count()) === 1 && (await first.locator('img[src*="i.ytimg.com/vi/"]').count()) >= 1 && (await vid.locator('iframe').count()) === 0);
+    await vid.locator('[data-action=play-video]').click();
+    ok('play loads the YouTube player in place', ((await vid.locator('iframe').getAttribute('src')) || '').startsWith('https://www.youtube-nocookie.com/embed/' + (await vid.getAttribute('data-video'))));
+    ok('link to the video on YouTube', ((await vid.locator('a').getAttribute('href')) || '').startsWith('https://youtu.be/'));
     await settle(page);
     await shot(page, '3-exercises-spotlight');
 
@@ -154,6 +160,10 @@ async function tapMuscle(page, id, touch) {
     await page.waitForTimeout(300);
     const n = await cards.count();
     ok('library: muscle filter', n >= 3 && n < all, `(${n})`);
+    await page.locator('[data-action=video-filter]').click();
+    await page.waitForTimeout(300);
+    ok('library: "with video" filter', (await cards.count()) >= 3 && (await cards.count()) === (await page.locator('[data-exercise] img[src*="i.ytimg.com/vi/"]').count()));
+    await page.locator('[data-action=video-filter]').click();
     await shot(page, '7-library');
     await cards.first().locator('button[aria-expanded]').click();
     const link = cards.first().locator('[data-action=open-in-atlas]');

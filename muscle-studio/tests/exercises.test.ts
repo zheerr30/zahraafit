@@ -4,10 +4,11 @@ import type { Group } from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
 import { beforeAll, describe, expect, it } from "vitest";
-import { EXERCISES } from "@/data/exercises/exercises";
+import { EXERCISES, EXERCISE_BY_ID } from "@/data/exercises/exercises";
+import { ZF_MERGE, ZF_ROWS } from "@/data/exercises/zahraafit";
 import { GROUP_AREAS, GROUP_BY_ID, MUSCLE_GROUPS, groupsOfUnit } from "@/data/exercises/groups";
 import { MAP_OVERLAYS } from "@/data/exercises/maps";
-import { countForUnit, filterExercises, functionOfUnit, relevance, spotlightOf, viewOf } from "@/lib/exercises";
+import { countForUnit, filterExercises, functionOfUnit, relevance, spotlightOf, viewOf, youtubeId } from "@/lib/exercises";
 import { applyStyle, prepareRegionModel, secondaryHighlight, type RegionModel } from "@/lib/region/backModel";
 import { backStore } from "@/stores/backStore";
 import { exerciseStore } from "@/stores/exerciseStore";
@@ -64,14 +65,19 @@ describe("exercise muscle groups are the muscles of the 3D model", () => {
 describe("exercise library", () => {
   it("is well formed: unique ids, known groups, steps and dose", () => {
     expect(new Set(EXERCISES.map((e) => e.id)).size).toBe(EXERCISES.length);
-    expect(EXERCISES.filter((e) => e.type === "strength").length).toBeGreaterThan(55);
+    expect(EXERCISES).toHaveLength(232);
+    expect(EXERCISES.filter((e) => e.type === "strength").length).toBeGreaterThan(190);
     expect(EXERCISES.filter((e) => e.type === "stretch").length).toBeGreaterThan(25);
     for (const e of EXERCISES) {
       expect(e.primary.length, e.id).toBeGreaterThan(0);
       for (const g of [...e.primary, ...e.secondary]) expect(GROUP_BY_ID.has(g), `${e.id}: ${g}`).toBe(true);
       expect(e.primary.some((g) => e.secondary.includes(g)), e.id).toBe(false);
-      expect(e.steps.length, e.id).toBeGreaterThanOrEqual(3);
-      expect(e.ar.length && e.en.length && e.dose.length && e.tip.length, e.id).toBeTruthy();
+      // written exercises have steps and a dose; the program's own come with a video and a tip
+      const video = youtubeId(e.media?.video);
+      if (e.id.startsWith("zf-")) expect(video, e.id).toMatch(/^[A-Za-z0-9_-]{11}$/);
+      else expect(e.steps.length >= 3 && e.dose.length > 0, e.id).toBe(true);
+      if (e.media?.video) expect(video, e.id).not.toBeNull();
+      expect(e.ar.length && e.en.length && e.tip.length, e.id).toBeTruthy();
     }
   });
 
@@ -91,6 +97,30 @@ describe("exercise library", () => {
     expect(filterExercises({ level: 3 }).every((e) => e.level === 3)).toBe(true);
     expect(filterExercises({ bookmarks: new Set(["plank", "cobra"]) }).map((e) => e.id).sort()).toEqual(["cobra", "plank"]);
     expect(filterExercises({ type: "stretch", groups: ["hamstrings"], query: "zzz" })).toEqual([]);
+    const withVideo = filterExercises({ video: true });
+    expect(withVideo.length).toBeGreaterThan(180);
+    expect(withVideo.every((e) => !!e.media?.video)).toBe(true);
+  });
+
+  it("carries the ZahraaFit program's library: its names and the YouTube video of each exercise", () => {
+    // 202 in the program, 13 repeats dropped: 59 merged into written exercises, 130 added
+    expect(Object.keys(ZF_MERGE)).toHaveLength(59);
+    expect(ZF_ROWS).toHaveLength(130);
+    for (const id of Object.keys(ZF_MERGE)) expect(EXERCISE_BY_ID.has(id), id).toBe(true);
+    const bench = EXERCISE_BY_ID.get("bench-press")!;
+    expect(bench.ar).toBe("بنش بريس بالبار"); // the program's name…
+    expect(youtubeId(bench.media?.video)).toBe("SCVCLChPQFY"); // …and video,
+    expect(bench.steps.length).toBeGreaterThanOrEqual(3); // with the steps written here
+    const pec = EXERCISE_BY_ID.get("zf-pecdeck")!;
+    expect(pec.ar).toBe("جهاز التفتيح (بيك ديك)");
+    expect(pec.primary).toEqual(["chest"]);
+    expect(pec.equipment).toBe("machine");
+    // exercises with a video come first for a muscle, written steps before video-only
+    const chest = filterExercises({ type: "strength", groups: ["chest"] });
+    expect(chest[0].media?.video && chest[0].steps.length).toBeTruthy();
+    expect(youtubeId("https://www.youtube.com/watch?v=SCVCLChPQFY&t=3s")).toBe("SCVCLChPQFY");
+    expect(youtubeId("https://youtube.com/shorts/SCVCLChPQFY?feature=share")).toBe("SCVCLChPQFY");
+    expect(youtubeId("https://example.com/clip.mp4")).toBeNull();
   });
 
   it("bookmarks toggle", () => {

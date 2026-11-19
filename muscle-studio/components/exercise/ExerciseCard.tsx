@@ -3,9 +3,10 @@
 import type { ReactNode } from "react";
 import { EQUIPMENT_AR, LEVEL_AR, TYPE_AR, type Exercise } from "@/data/exercises/exercises";
 import { GROUP_BY_ID } from "@/data/exercises/groups";
-import { relevance } from "@/lib/exercises";
+import { relevance, youtubeId } from "@/lib/exercises";
 import { cn } from "@/components/ui/cn";
 import { IconBookmark, IconChevron } from "@/components/ui/icons";
+import { ExerciseVideo, VideoThumb } from "./ExerciseVideo";
 import { MuscleMap } from "./MuscleMap";
 import { TONES, type Tone } from "./tone";
 
@@ -41,6 +42,8 @@ export function ExerciseCard({ exercise: e, tone, open, bookmarked, showEnglish,
           {e.media?.image ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={e.media.image} alt={e.ar} loading="lazy" className="h-[92px] w-[84px] shrink-0 rounded-lg object-cover" />
+          ) : e.media?.video && youtubeId(e.media.video) ? (
+            <VideoThumb url={e.media.video} alt={`فيديو ${e.ar}`} className="h-[92px] w-[104px] shrink-0" />
           ) : (
             <MuscleMap primary={e.primary} secondary={e.secondary} label={`العضلات العاملة في ${e.ar}: ${names(e.primary)}`} className="h-[92px] w-[84px] shrink-0" />
           )}
@@ -56,7 +59,7 @@ export function ExerciseCard({ exercise: e, tone, open, bookmarked, showEnglish,
               )}
               <span className={cn("rounded-full px-1.5 py-0.5", T.chip)}>{EQUIPMENT_AR[e.equipment]}</span>
               <span className={cn("rounded-full px-1.5 py-0.5", T.chip)}>{LEVEL_AR[e.level]}</span>
-              <span className={cn("rounded-full px-1.5 py-0.5", T.chip)} dir="rtl">{e.dose}</span>
+              {e.dose && <span className={cn("rounded-full px-1.5 py-0.5", T.chip)} dir="rtl">{e.dose}</span>}
             </span>
           </span>
         </button>
@@ -76,22 +79,26 @@ export function ExerciseCard({ exercise: e, tone, open, bookmarked, showEnglish,
       </div>
       {open && (
         <div id={`ex-${e.id}`} className={cn("space-y-3 border-t px-3 py-3 text-[13px] leading-relaxed", T.border, T.text)}>
-          {e.media?.video && (
-            <video src={e.media.video} poster={e.media.image} controls playsInline preload="none" className="w-full rounded-lg bg-black" aria-label={`فيديو ${e.ar}`} />
+          {e.media?.video && <ExerciseVideo url={e.media.video} title={e.ar} linkClass={T.link} />}
+          {e.steps.length > 0 && (
+            <ol className="space-y-1.5">
+              {e.steps.map((s, i) => (
+                <li key={i} className="flex gap-2">
+                  <span className={cn("mt-0.5 grid size-5 shrink-0 place-items-center rounded-full text-[11px] font-semibold", T.step)}>{i + 1}</span>
+                  <span>{s}</span>
+                </li>
+              ))}
+            </ol>
           )}
-          <ol className="space-y-1.5">
-            {e.steps.map((s, i) => (
-              <li key={i} className="flex gap-2">
-                <span className={cn("mt-0.5 grid size-5 shrink-0 place-items-center rounded-full text-[11px] font-semibold", T.step)}>{i + 1}</span>
-                <span>{s}</span>
-              </li>
-            ))}
-          </ol>
           <p className={cn("rounded-lg p-2 text-xs", T.note)}>
             <span className="font-semibold">ملاحظة: </span>
             {e.tip}
           </p>
-          <dl className="space-y-1.5 text-xs">
+          <div className="flex items-start gap-3">
+            {(e.media?.video || e.media?.image) && (
+              <MuscleMap primary={e.primary} secondary={e.secondary} label={`العضلات العاملة في ${e.ar}: ${names(e.primary)}`} className="h-[92px] w-[84px] shrink-0" />
+            )}
+          <dl className="min-w-0 flex-1 space-y-1.5 text-xs">
             {(
               [
                 ["العضلات الأساسية", e.primary, "bg-[#E8602C]"],
@@ -114,8 +121,9 @@ export function ExerciseCard({ exercise: e, tone, open, bookmarked, showEnglish,
               ) : null,
             )}
           </dl>
+          </div>
           <p className={cn("text-[11px]", T.muted)}>
-            {TYPE_AR[e.type]} · {EQUIPMENT_AR[e.equipment]} · {LEVEL_AR[e.level]} · {e.dose}
+            {[TYPE_AR[e.type], EQUIPMENT_AR[e.equipment], LEVEL_AR[e.level], e.dose].filter(Boolean).join(" · ")}
           </p>
           {footer}
         </div>

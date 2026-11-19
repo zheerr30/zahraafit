@@ -3,9 +3,19 @@
  * muscle groups of data/exercises/groups.ts (and through them, for the muscles
  * of the 3D model). General educational content — not a training prescription.
  *
- * `media` is optional: an exercise without its own photo / video is illustrated
- * by a muscle map rendered from the 3D model (components/exercise/MuscleMap).
+ * Two sources, merged below:
+ *  - the exercises written here (steps, dose, target muscles);
+ *  - the exercise library of the ZahraaFit program (data/exercises/zahraafit.ts,
+ *    generated): the program's exercise names and the YouTube video chosen for each.
+ *    Where both describe the same exercise it takes the program's name and video and
+ *    keeps the steps written here; the program's other exercises are added with their
+ *    video and tip.
+ *
+ * `media` is optional: an exercise without a photo / video is illustrated by a
+ * muscle map rendered from the 3D model (components/exercise/MuscleMap).
  */
+import { ZF_MERGE, ZF_ROWS } from "./zahraafit";
+
 export type ExerciseType = "strength" | "stretch";
 export type Equipment = "bodyweight" | "dumbbell" | "barbell" | "cable" | "machine" | "band" | "bar" | "ball";
 export type Level = 1 | 2 | 3;
@@ -21,10 +31,12 @@ export interface Exercise {
   secondary: string[];
   equipment: Equipment;
   level: Level;
-  /** Suggested sets × reps, or hold time. */
+  /** Suggested sets × reps, or hold time ("" when the source gives none). */
   dose: string;
+  /** How to do it, step by step (empty for exercises that come with a video only). */
   steps: string[];
   tip: string;
+  /** `video`: a YouTube link (played in place) or a direct video file URL. */
   media?: { image?: string; video?: string };
 }
 
@@ -367,5 +379,15 @@ const STRETCH: Row[] = [
     "حركة هادئة تتبع النفَس."],
 ];
 
-export const EXERCISES: Exercise[] = [...make("strength", STRENGTH), ...make("stretch", STRETCH)];
+/** Written here; an exercise the program also has takes its name and video. */
+const WRITTEN: Exercise[] = [...make("strength", STRENGTH), ...make("stretch", STRETCH)].map((e) => {
+  const m = ZF_MERGE[e.id];
+  return m ? { ...e, ar: m.ar, en: m.en || e.en, media: { video: m.video } } : e;
+});
+/** The program's other exercises: name, video and tip. */
+const FROM_PROGRAM: Exercise[] = ZF_ROWS.map(([id, ar, en, type, primary, secondary, equipment, level, tip, video]) => ({
+  id, ar, en, type, primary: list(primary), secondary: list(secondary), equipment, level, dose: "", steps: [], tip, media: { video },
+}));
+
+export const EXERCISES: Exercise[] = [...WRITTEN, ...FROM_PROGRAM];
 export const EXERCISE_BY_ID = new Map(EXERCISES.map((e) => [e.id, e]));

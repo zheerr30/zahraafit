@@ -12,6 +12,8 @@ export interface ExerciseFilter {
   groups?: readonly string[] | null;
   /** Only bookmarked exercises (ids). */
   bookmarks?: ReadonlySet<string> | null;
+  /** Only exercises that have a video. */
+  video?: boolean;
 }
 
 /** How an exercise relates to a set of muscle groups: prime mover (2), helper (1) or not at all (0). */
@@ -41,14 +43,14 @@ export function filterExercises(f: ExerciseFilter, all: readonly Exercise[] = EX
       (!f.equipment || e.equipment === f.equipment) &&
       (!f.level || e.level === f.level) &&
       (!f.bookmarks || f.bookmarks.has(e.id)) &&
+      (!f.video || !!e.media?.video) &&
       (!f.groups || relevance(e, f.groups) > 0) &&
       (!q || textOf(e).includes(q)),
   );
-  if (f.groups) {
-    const g = f.groups;
-    out.sort((a, b) => relevance(b, g) - relevance(a, g) || a.level - b.level);
-  }
-  return out;
+  // prime movers of the chosen muscle first; then exercises with a video, with written steps, easier ones
+  const g = f.groups ?? null;
+  const rank = (e: Exercise) => (g ? (2 - relevance(e, g)) * 100 : 0) + (e.media?.video ? 0 : 20) + (e.steps.length ? 0 : 10) + e.level;
+  return out.map((e, i) => [rank(e), i, e] as const).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map((x) => x[2]);
 }
 
 /** Group ids of a model unit (empty when no exercise group covers it). */
@@ -83,4 +85,10 @@ export function viewOf(e: Exercise): MuscleView {
 export function functionOfUnit(unitId: string): string | null {
   const gs = groupsOfUnit(unitId);
   return gs.length ? gs[gs.length - 1].fn : null;
+}
+
+/** The 11-character id of a YouTube link (youtu.be/…, watch?v=…, /shorts/…, /embed/…), or null. */
+export function youtubeId(url: string | undefined | null): string | null {
+  const m = /(?:youtu\.be\/|[?&]v=|\/shorts\/|\/embed\/)([A-Za-z0-9_-]{11})(?![A-Za-z0-9_-])/.exec(url ?? "");
+  return m ? m[1] : null;
 }

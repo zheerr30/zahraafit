@@ -87,6 +87,16 @@ export function markRectusSheath(meshes: Iterable<Mesh>): SheathStats {
   const all = [...meshes];
   const rectus = new Map<string, Mesh>();
   for (const m of all) if (RECTUS.test(nameOf(m))) rectus.set(sideOf(m), m);
+  // The baked AO of the rectus was computed with the sheath lying on it (mean ≈ 0.16):
+  // drawn through a thin film it must not read as a buried muscle. Real-time AO
+  // (GTAO) still darkens the grooves at the intersections.
+  for (const r of rectus.values()) {
+    const a = r.geometry.getAttribute("_anat");
+    if (!a || r.userData.aoLifted) continue;
+    for (let i = 0; i < a.count; i++) a.setX(i, Math.max(a.getX(i), 0.8));
+    a.needsUpdate = true;
+    r.userData.aoLifted = true;
+  }
   const stats: SheathStats = { meshes: 0, sheathVertices: 0 };
   const inv = new Matrix4();
   const p = new Vector3();

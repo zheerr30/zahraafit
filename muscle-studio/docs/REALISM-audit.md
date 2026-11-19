@@ -161,7 +161,7 @@ Two causes, both addressed for all 466 muscles of both bodies in one pass:
    - no vertex moves more than 2 mm, and towards the nearest other structure by at
      most 40 % of the original gap — layers cannot come to cross;
    - same nodes, names, ids, vertex and triangle counts; tendons, ligaments,
-     fasciae and bones are byte-for-byte the same geometry (re-quantised only).
+     fasciae and bones are not moved (the file is only re-compressed).
 
    Measured (`core-smooth.json`): max displacement 2.0 mm, mean 0.51 mm (male) /
    0.42 mm (female); tendon vertices 0 mm; bone attachments ≤ 0.02 mm; mean angle

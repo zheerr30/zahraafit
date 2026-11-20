@@ -11,7 +11,7 @@ model files are stripped when the model is loaded: plainArabic in lib/anatomy/no
 import glob, os, re, sys
 
 TASHKEEL = re.compile("[ً-ْٰ]")
-ROOTS = ["app", "components", "data", "lib", "stores", "types", "tests", "e2e", "pipeline/exercises"]
+ROOTS = ["app", "components", "data", "hooks", "lib", "stores", "types", "tests", "e2e", "pipeline/exercises"]
 KEEP = {"lib/anatomy/normalize.ts", "tests/normalize.test.ts"}
 check = "--check" in sys.argv
 total = 0

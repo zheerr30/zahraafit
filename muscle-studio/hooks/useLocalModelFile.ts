@@ -20,17 +20,17 @@ export function useLocalModelFile() {
       const file = input.files?.[0];
       if (!file) return;
       if (!/\.glb$/i.test(file.name)) {
-        toast.error("يُرجى اختيار ملف glTF ثنائي (‎.glb) يتضمن بياناته وخاماته.");
+        toast.error("يرجى اختيار ملف glTF ثنائي (‎.glb) يتضمن بياناته وخاماته.");
         return;
       }
       if (file.size > MAX_BYTES) {
-        toast.error("حجم الملف يتجاوز 512 ميغابايت. يُرجى ضغطه (Draco أو Meshopt) قبل التحميل.");
+        toast.error("حجم الملف يتجاوز 512 ميغابايت. يرجى ضغطه (Draco أو Meshopt) قبل التحميل.");
         return;
       }
       const previous = editorStore.getState().localFile;
       if (previous) URL.revokeObjectURL(previous.url);
       editorStore.getState().setLocalFile({ url: URL.createObjectURL(file), name: file.name });
-      toast.info(`جارٍ تحميل ${file.name} من الجهاز…`);
+      toast.info(`جار تحميل ${file.name} من الجهاز…`);
     };
     input.click();
   }, []);

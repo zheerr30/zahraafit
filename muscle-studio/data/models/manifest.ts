@@ -20,7 +20,7 @@ const zaParts = (sex: Gender) => ({
 });
 export const ANATOMY_ASSETS: AnatomyAssetDefinition[] = (["male", "female"] as Gender[]).map((g) => ({
   id: `zanatomy-${g}`,
-  label: g === "male" ? "Z-Anatomy · نموذج ذكر" : "Z-Anatomy · نموذج أنثى (تقريب)",
+  label: g === "male" ? "Z-Anatomy · نموذج ذكر" : "Z-Anatomy · نموذج أنثى",
   gender: g,
   layer: "full-body",
   // core.glb with refined muscle surfaces (pipeline/sculpt/body.mjs); same nodes and names

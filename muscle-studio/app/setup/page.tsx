@@ -50,7 +50,6 @@ export default function SetupPage() {
             <ul className="list-disc space-y-1 ps-5">
               <li>233 عضلة مستقلة لكل جانب في المناطق العشر، كلها قابلة للتحديد في <Link href="/atlas" className="text-accent-2 hover:underline">الأطلس التشريحي</Link>.</li>
               <li>المحرّر يربط منها 54 وحدة قابلة للتلوين (منها الظهرية العريضة والمستقيمة البطنية والمائلة الداخلية).</li>
-              <li>النموذج الأنثوي تقريب: التشريح نفسه بنِسَب هيكل عظمي أنثوي.</li>
             </ul>
           </section>
 

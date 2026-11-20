@@ -21,6 +21,8 @@ const BASE = process.env.BASE || 'http://localhost:3001';
     for (const id of await page.$$eval('button[data-unit-id]', (els) => els.map((e) => e.dataset.unitId))) regionOf[id] = r;
   }
   const ids = Object.keys(regionOf);
+  // The muscle panel shifts the view when it opens and closes: wait until the camera rests again.
+  const rest = async () => { let last = null, same = 0; for (let k = 0; k < 40 && same < 2; k++) { await page.waitForTimeout(200); const cp = JSON.stringify(await T(() => window.__backStudioTest.cameraPos())); same = cp === last ? same + 1 : 0; last = cp; } };
   const result = { units: ids.length, clicked: {}, failed: [], checks: {} };
   // Views × depth modes: the deep muscles appear once the superficial layers are hidden.
   const plan = [];
@@ -42,18 +44,18 @@ const BASE = process.env.BASE || 'http://localhost:3001';
       }
       for (const id of todo) {
         // Close the previous card first: it overlays the viewport, so points must be computed without it.
-        await T(() => window.__backStudioTest.store.getState().select(null)); await page.waitForTimeout(250);
+        await T(() => window.__backStudioTest.store.getState().select(null)); await rest();
         const pts = await T(([id, side]) => window.__backStudioTest.pointsFor(id, side, "unit", 4), [id, side]);
         let done = false;
         for (const p of pts) {
-          await T(() => window.__backStudioTest.store.getState().select(null)); await page.waitForTimeout(150);
+          await T(() => window.__backStudioTest.store.getState().select(null)); await rest();
           await page.mouse.move(p.x, p.y); await page.waitForTimeout(80);
           await page.mouse.click(p.x, p.y); await page.waitForTimeout(250);
           const sel = await T(() => window.__backStudioTest.selected());
           const card = await page.locator('[role="dialog"]').getAttribute('aria-label').catch(() => null);
           if (sel && sel.kind === 'unit' && sel.id === id && card && card.includes(sel.ar)) {
             const color = await T(([id, side]) => window.__backStudioTest.unitColor(id, side), [id, side]);
-            if (color !== '#e8602c') result.failed.push(`${id}:${side} not highlighted (${color})`);
+            if (color !== '#a5111f') result.failed.push(`${id}:${side} not highlighted (${color})`);
             result.clicked[`${id}:${side}`] = `${view}/${depth}`;
             done = true;
             break;
@@ -71,6 +73,7 @@ const BASE = process.env.BASE || 'http://localhost:3001';
   // Per-muscle hide / show from the list.
   await T(() => { const s = window.__backStudioTest.store.getState(); s.resetAll(); s.focusRegion('back'); }); await page.waitForTimeout(800);
   const all = (await T(() => window.__backStudioTest.visibleUnits())).length;
+  await page.locator('[data-dock-tab=muscles]').click();
   await page.locator('button[aria-label="إخفاء الظهرية العريضة"]').click(); await page.waitForTimeout(300);
   result.checks.hideOne = !(await T(() => window.__backStudioTest.visibleUnits())).includes('latissimus-dorsi');
   result.checks.othersStay = (await T(() => window.__backStudioTest.visibleUnits())).length === all - 1;
@@ -82,6 +85,7 @@ const BASE = process.env.BASE || 'http://localhost:3001';
   await page.getByRole('button', { name: 'عزل', exact: true }).click(); await page.waitForTimeout(500);
   result.checks.isolate = JSON.stringify(await T(() => window.__backStudioTest.solidUnits())) === '["infraspinatus"]'
     && (await T(() => window.__backStudioTest.visibleUnits())).length === all; // the others stay as ghosts
+  await page.locator('[data-dock-tab=layers]').click();
   await page.getByRole('button', { name: 'الهيكل العظمي فقط' }).click(); await page.waitForTimeout(500);
   const sk = await T(() => window.__backStudioTest.visibleKinds());
   result.checks.skeletonOnly = Object.keys(sk).join() === 'bone';

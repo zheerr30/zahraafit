@@ -133,7 +133,7 @@ async function tapMuscle(page, id, touch) {
     const panel = page.locator('[role=dialog][data-panel]');
     const vp = page.viewportSize();
     let box = await panel.boundingBox();
-    ok('phone: summary is a bottom sheet that leaves the model visible', box && box.y > vp.height * 0.45 && Math.abs(box.y + box.height - vp.height) < 2, JSON.stringify(box));
+    ok('phone: summary is a bottom sheet that leaves the model visible', box && box.y > vp.height * 0.45 && Math.abs(box.y + box.height - (vp.height - 56)) < 3, JSON.stringify(box)); // it rests on the control bar
     await shot(page, '5-phone-summary');
     await panel.locator('[data-action=exercises]').tap();
     await page.waitForTimeout(600);

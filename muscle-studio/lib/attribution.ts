@@ -71,6 +71,6 @@ export const SOURCES = [
     license: "CC BY 4.0",
     url: "https://github.com/MervinR07/open-anatomy-3d",
     usage:
-      "نِسَب الهيكل العظمي الأنثوي فقط: يُلاءم تشريح Z-Anatomy مع هيكله الأنثوي بتحويل Thin-Plate Spline لإنتاج النموذج الأنثوي (تقريب). ملفاته لا تُعرض في التطبيق.",
+      "نِسَب الهيكل العظمي الأنثوي فقط: يُلاءم تشريح Z-Anatomy مع هيكله الأنثوي بتحويل Thin-Plate Spline لإنتاج النموذج الأنثوي. ملفاته لا تُعرض في التطبيق.",
   },
 ] as const;

@@ -61,14 +61,14 @@ export function SourceMeta({ picked }: { picked: PickedStructure }) {
   const definition = defs && first.definition ? defs[first.definition] : undefined;
 
   return (
-    <section className="mx-4 mb-4 rounded-xl border border-[#e3e8f2] bg-[#f8fafd] p-3 text-xs leading-relaxed text-[#13213d]">
-      <h4 className="mb-2 text-[11px] font-semibold text-[#0B2E6B]">من بيانات المجسم الأصلي (Z-Anatomy)</h4>
+    <section className="border-t border-white/10 p-3 text-xs leading-relaxed text-fg">
+      <h4 className="mb-2 text-[11px] font-semibold text-muted">من بيانات المجسّم الأصلي (Z-Anatomy)</h4>
       <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1">
-        <dt className="text-[#6b7891]">الكائن</dt>
+        <dt className="text-muted">الكائن</dt>
         <dd dir="ltr" className="text-start font-mono text-[11px]">{meshes.map((m) => m.meta.zaName).join(" · ")}</dd>
         {first.ta2 && (
           <>
-            <dt className="text-[#6b7891]">TA2</dt>
+            <dt className="text-muted">TA2</dt>
             <dd dir="ltr" className="text-start">
               {first.ta2} — <span className="italic">{first.latin}</span>
             </dd>
@@ -76,22 +76,22 @@ export function SourceMeta({ picked }: { picked: PickedStructure }) {
         )}
         {first.hierarchy.length > 0 && (
           <>
-            <dt className="text-[#6b7891]">التسلسل</dt>
+            <dt className="text-muted">التسلسل</dt>
             <dd dir="ltr" className="text-start text-[11px]">{first.hierarchy.join(" › ")}</dd>
           </>
         )}
         {fn && picked.kind === "unit" && (
           <>
-            <dt className="text-[#6b7891]">تصنيف المؤلف</dt>
+            <dt className="text-muted">تصنيف المؤلف</dt>
             <dd>
-              {FUNCTION_AR[fn] ?? fn} <span dir="ltr" className="text-[#6b7891]">({fn})</span>
+              {FUNCTION_AR[fn] ?? fn} <span dir="ltr" className="text-muted">({fn})</span>
               {tendon ? " · أوتار مرسومة في المصدر" : " · لا أوتار مرسومة في المصدر"}
             </dd>
           </>
         )}
         {picked.kind === "unit" && (
           <>
-            <dt className="text-[#6b7891]">بصمات العظم</dt>
+            <dt className="text-muted">بصمات العظم</dt>
             <dd>
               {atts.length === 0 && "لا توجد بصمات منشأ/مرتكز لهذه العضلة في المصدر."}
               {byRole("origin").length > 0 && <span className="block">منشأ على: {byRole("origin").join("، ")}</span>}
@@ -102,11 +102,11 @@ export function SourceMeta({ picked }: { picked: PickedStructure }) {
       </dl>
       {first.definition && (
         <details className="mt-2" onToggle={(e) => setOpen((e.target as HTMLDetailsElement).open)}>
-          <summary className="cursor-pointer text-[11px] font-semibold text-[#173F8A]">الوصف التشريحي من المصدر (بالإنجليزية)</summary>
-          <div dir="ltr" className="mt-1 max-h-56 overflow-y-auto whitespace-pre-line text-start text-[11px] text-[#2b3a57]">
+          <summary className="cursor-pointer text-[11px] font-semibold text-accent-2">الوصف التشريحي من المصدر (بالإنجليزية)</summary>
+          <div dir="ltr" className="mt-1 max-h-56 overflow-y-auto whitespace-pre-line text-start text-[11px] text-white/80">
             {defs === null ? "…" : (definition ?? "—")}
           </div>
-          <p className="mt-1 text-[10px] text-[#6b7891]">
+          <p className="mt-1 text-[10px] text-muted">
             النص: Z-Anatomy عن Wikipedia — رخصة CC BY-SA 3.0.
           </p>
         </details>

@@ -157,7 +157,7 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
         const spot = st.spotlight ? { primary: new Set(st.spotlight.primary), secondary: new Set(st.spotlight.secondary) } : null;
         for (const m of model.meshes) changed = applyStyle(m, st.selected, st.hovered, st.highlightColor, spot) || changed;
       }
-      if (changed || st.background !== prev.background || st.autoRotate !== prev.autoRotate) invalidate();
+      if (changed || st.background !== prev.background || st.autoRotate !== prev.autoRotate || st.insets !== prev.insets) invalidate();
     });
   }, [invalidate]);
 
@@ -182,6 +182,11 @@ function Rig() {
   const invalidate = useThree((s) => s.invalidate);
   const command = useBack((s) => s.cameraCommand);
   const autoRotate = useBack((s) => s.autoRotate);
+  const insets = useBack((s) => s.insets);
+  // The last framing is applied again when the free part of the view changes (a panel
+  // opened or closed, the window resized) — unless the user has moved the camera since.
+  const done = useRef(0);
+  const moved = useRef(false);
 
   useEffect(() => {
     regionBridge.controls = ref.current;
@@ -189,7 +194,10 @@ function Rig() {
     regionBridge.invalidate = invalidate;
     const c = ref.current;
     if (!c) return;
-    const stop = () => backStore.getState().autoRotate && backStore.getState().setAutoRotate(false);
+    const stop = () => {
+      moved.current = true;
+      if (backStore.getState().autoRotate) backStore.getState().setAutoRotate(false);
+    };
     c.addEventListener("controlstart", stop);
     return () => c.removeEventListener("controlstart", stop);
   }, [camera, invalidate]);
@@ -198,14 +206,30 @@ function Rig() {
     const c = ref.current;
     const model = regionBridge.model;
     if (!c || !command || !model) return;
+    const again = done.current === command.nonce;
+    done.current = command.nonce;
+    if (command.type === "zoom") {
+      if (again) return;
+      moved.current = true;
+      // one step: about a third of the way in, or the same back out (smooth)
+      void c.dolly(command.dir > 0 ? c.distance * 0.3 : -c.distance * 0.43, true);
+      invalidate();
+      return;
+    }
+    if (again && moved.current) return;
+    if (!again) moved.current = false;
     const aspect = size.width / Math.max(1, size.height);
+    // the part of the view not covered by panels: the subject is framed in it
+    const ins = insets;
+    const freeH = Math.max(0.35, 1 - ins.bottom / Math.max(1, size.height));
+    const freeW = Math.max(0.35, 1 - (ins.left + ins.right) / Math.max(1, size.width));
     const fit = (box: Box3, dir: Vector3, margin: number) => {
       const center = box.getCenter(new Vector3());
       const s = box.getSize(new Vector3());
       const vfov = (camera.fov * Math.PI) / 180;
       const hfov = 2 * Math.atan(Math.tan(vfov / 2) * aspect);
       const across = Math.abs(dir.x) > 0.5 ? s.z : s.x;
-      const dist = Math.max(s.y / 2 / Math.tan(vfov / 2), across / 2 / Math.tan(hfov / 2)) * margin + Math.max(s.x, s.z) / 2;
+      const dist = Math.max(s.y / 2 / (Math.tan(vfov / 2) * freeH), across / 2 / (Math.tan(hfov / 2) * freeW)) * margin + Math.max(s.x, s.z) / 2;
       const pos = center.clone().addScaledVector(dir, dist);
       void c.setLookAt(pos.x, pos.y, pos.z, center.x, center.y, center.z, true);
     };
@@ -245,15 +269,37 @@ function Rig() {
       const b = box ?? (sel ? structureBounds(model, sel) : null);
       if (!b) return;
       const sphere = b.getBoundingSphere(new Sphere());
-      sphere.radius = Math.max(sphere.radius, 0.05);
+      sphere.radius = Math.max(sphere.radius, 0.05) / Math.min(freeH, freeW);
       void c.fitToSphere(sphere, true);
     }
     invalidate();
-  }, [command, camera, size, invalidate]);
+  }, [command, camera, size, insets, invalidate]);
 
+  // Panels cover part of the view (a sheet at the bottom on a phone, the muscle panel at the
+  // side on desktop): the picture is shifted so its centre is the centre of the free part.
+  // Done in the projection (view offset), so picking and the camera controls stay exact.
+  const shift = useRef({ x: 0, y: 0 });
   useFrame((_, dt) => {
     const c = ref.current;
     if (!c) return;
+    const ins = backStore.getState().insets;
+    const tx = (ins.right - ins.left) / 2, ty = ins.bottom / 2;
+    const s = shift.current;
+    if (Math.abs(tx - s.x) > 0.5 || Math.abs(ty - s.y) > 0.5) {
+      const k = 1 - Math.exp(-Math.min(dt, 0.5) * 14); // time-based: a slow device arrives in a frame or two
+      s.x += (tx - s.x) * k;
+      s.y += (ty - s.y) * k;
+      invalidate();
+    } else if (s.x !== tx || s.y !== ty) {
+      s.x = tx;
+      s.y = ty;
+      invalidate();
+    }
+    const want = Math.abs(s.x) > 0.25 || Math.abs(s.y) > 0.25;
+    const v = camera.view;
+    if (want) {
+      if (!v || !v.enabled || v.offsetX !== s.x || v.offsetY !== s.y || v.fullWidth !== size.width || v.fullHeight !== size.height) camera.setViewOffset(size.width, size.height, s.x, s.y, size.width, size.height);
+    } else if (v?.enabled) camera.clearViewOffset();
     if (autoRotate) {
       c.azimuthAngle += Math.min(dt, 0.05) * 0.45;
       invalidate();

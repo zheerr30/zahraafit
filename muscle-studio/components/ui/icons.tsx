@@ -211,3 +211,25 @@ export const IconCube = (p: IconProps) => (
     <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9zM12 12l8-4.5M12 12L4 7.5M12 12v9" />
   </Svg>
 );
+export const IconInfo = (p: IconProps) => (
+  <Svg {...p}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 11v5.5M12 7.6v.2" />
+  </Svg>
+);
+export const IconMinus = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M5 12h14" />
+  </Svg>
+);
+export const IconList = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01" />
+  </Svg>
+);
+export const IconIsolate = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3" />
+    <circle cx="12" cy="12" r="3" />
+  </Svg>
+);

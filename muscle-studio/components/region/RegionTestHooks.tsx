@@ -87,7 +87,13 @@ export function RegionTestHooks() {
       /** The loaded model object (identity changes when the body is swapped). */
       rawModel: () => regionBridge.model,
       /** Camera position (to wait until a transition has settled). */
-      cameraPos: () => regionBridge.camera?.position.toArray().map((x) => +x.toFixed(4)) ?? null,
+      cameraPos: () => {
+        const cam = regionBridge.camera as (typeof regionBridge.camera & { view?: { enabled: boolean; offsetX: number; offsetY: number } | null }) | null;
+        if (!cam) return null;
+        // position + the shift that keeps the subject clear of the panels: both must rest
+        const v = cam.view?.enabled ? [Math.round(cam.view.offsetX), Math.round(cam.view.offsetY)] : [0, 0];
+        return [...cam.position.toArray().map((x) => +x.toFixed(4)), ...v];
+      },
       /** The viewer store, for scripted states in visual checks. */
       store: backStore,
     };

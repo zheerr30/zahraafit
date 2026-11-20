@@ -19,7 +19,18 @@ export type CameraCommand =
   | { type: "view"; view: RegionView; nonce: number }
   | { type: "focus"; unitId: string; side: "l" | "r" | "m" | null; nonce: number }
   | { type: "focus-structure"; key: string; nonce: number }
-  | { type: "region"; region: string; nonce: number };
+  | { type: "region"; region: string; nonce: number }
+  | { type: "zoom"; dir: 1 | -1; nonce: number };
+
+/** Control groups of the dock (a column on desktop, a bottom sheet on a phone). */
+export type DockTab = "regions" | "layers" | "muscles";
+
+/** Parts of the 3D view covered by panels (px): the camera keeps its subject in the free part. */
+export interface ViewInsets {
+  left: number;
+  right: number;
+  bottom: number;
+}
 
 export const DEFAULT_LAYERS: Record<RegionLayer, boolean> = {
   muscles: true,
@@ -69,6 +80,13 @@ interface BackState {
   spotlight: Spotlight | null;
   /** Exercise to open when the exercises panel appears (set by a link to one exercise). */
   linkedExercise: string | null;
+  /** Open control group of the dock (null: closed — phones start closed). */
+  dock: DockTab | null;
+  insets: ViewInsets;
+  setDock: (d: DockTab | null) => void;
+  setInsets: (i: Partial<ViewInsets>) => void;
+  /** Step the camera towards (1) or away from (-1) what it looks at. */
+  zoom: (dir: 1 | -1) => void;
   setPanel: (p: PanelMode) => void;
   setSpotlight: (s: Spotlight | null) => void;
   /** Back to the whole anatomy: no isolation, no region, front view. */
@@ -123,6 +141,15 @@ export const backStore = createStore<BackState>()((set, get) => ({
   panel: "summary",
   spotlight: null,
   linkedExercise: null,
+  dock: null,
+  insets: { left: 0, right: 0, bottom: 0 },
+  setDock: (dock) => set({ dock }),
+  setInsets: (i) => {
+    const cur = get().insets;
+    const next = { ...cur, ...i };
+    if (next.left !== cur.left || next.right !== cur.right || next.bottom !== cur.bottom) set({ insets: next });
+  },
+  zoom: (dir) => set({ cameraCommand: { type: "zoom", dir, nonce: ++nonce }, autoRotate: false }),
   setPanel: (panel) => set({ panel, spotlight: panel === "exercises" ? get().spotlight : null }),
   setSpotlight: (spotlight) => set({ spotlight }),
   showFullBody: () =>

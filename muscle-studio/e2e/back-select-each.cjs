@@ -22,7 +22,8 @@ const BASE = process.env.BASE || 'http://localhost:3001';
   }
   const ids = Object.keys(regionOf);
   // The muscle panel shifts the view when it opens and closes: wait until the camera rests again.
-  const rest = async () => { let last = null, same = 0; for (let k = 0; k < 40 && same < 2; k++) { await page.waitForTimeout(200); const cp = JSON.stringify(await T(() => window.__backStudioTest.cameraPos())); same = cp === last ? same + 1 : 0; last = cp; } };
+  // (software rendering draws a frame in seconds: wait before sampling, then for three equal readings)
+  const rest = async () => { await page.waitForTimeout(1200); let last = null, same = 0; for (let k = 0; k < 60 && same < 3; k++) { await page.waitForTimeout(500); const cp = JSON.stringify(await T(() => window.__backStudioTest.cameraPos())); same = cp === last ? same + 1 : 0; last = cp; } };
   const result = { units: ids.length, clicked: {}, failed: [], checks: {} };
   // Views × depth modes: the deep muscles appear once the superficial layers are hidden.
   const plan = [];

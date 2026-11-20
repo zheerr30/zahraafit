@@ -358,7 +358,7 @@ function TopBar() {
   const sex = useBack((s) => s.sex);
   return (
     <header className="relative z-40 flex h-12 shrink-0 items-center gap-2 border-b border-white/8 bg-[#0e0f11] px-3 sm:gap-3 sm:px-4">
-      <Link href="/" className="flex h-9 shrink-0 items-center text-[13px] font-bold tracking-wide">
+      <Link href="/" dir="ltr" className="flex h-9 shrink-0 items-center gap-1 text-[13px] font-bold tracking-wide">
         MUSCLE STUDIO <span className="text-accent">3D</span>
       </Link>
       <h1 className="hidden truncate text-sm text-muted md:block">الأطلس التشريحي</h1>

@@ -23,8 +23,8 @@ export default function SetupPage() {
           <header>
             <h1 className="text-2xl font-bold text-fg">الإعدادات والنماذج</h1>
             <p className="mt-1">
-              النموذج التشريحي للتطبيق كله هو Z-Anatomy، مصدَّرًا من ملف Blender الأصلي دون تعديل الهندسة. إذا تعذّر تحميل أي ملف
-              تظهر رسالة خطأ واضحة، ولا يُستبدل أبدًا بمجسّم هندسي أو بديل.
+              النموذج التشريحي للتطبيق كله هو Z-Anatomy، مصدرا من ملف Blender الأصلي دون تعديل الهندسة. إذا تعذر تحميل أي ملف
+              تظهر رسالة خطأ واضحة، ولا يستبدل أبدا بمجسم هندسي أو بديل.
             </p>
           </header>
 
@@ -37,7 +37,7 @@ export default function SetupPage() {
               </li>
               <li>
                 <Code>attachments.glb</Code>، <Code>nerves.glb</Code>، <Code>organs.glb</Code>، <Code>vessels.glb</Code>،{" "}
-                <Code>skin.glb</Code> — تُحمَّل عند تشغيل طبقتها
+                <Code>skin.glb</Code> — تحمل عند تشغيل طبقتها
               </li>
               <li>
                 تقرير البناء: <Code>public/models/zanatomy/build-report.json</Code>
@@ -49,7 +49,7 @@ export default function SetupPage() {
             <h2 className="mb-2 text-base font-semibold text-fg">ما يحتويه النموذج</h2>
             <ul className="list-disc space-y-1 ps-5">
               <li>233 عضلة مستقلة لكل جانب في المناطق العشر، كلها قابلة للتحديد في <Link href="/atlas" className="text-accent-2 hover:underline">الأطلس التشريحي</Link>.</li>
-              <li>المحرّر يربط منها 54 وحدة قابلة للتلوين (منها الظهرية العريضة والمستقيمة البطنية والمائلة الداخلية).</li>
+              <li>المحرر يربط منها 54 وحدة قابلة للتلوين (منها الظهرية العريضة والمستقيمة البطنية والمائلة الداخلية).</li>
             </ul>
           </section>
 

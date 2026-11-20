@@ -14,7 +14,8 @@ import { backStore } from "@/stores/backStore";
 import { exerciseStore } from "@/stores/exerciseStore";
 import { Color, type MeshPhysicalMaterial } from "three";
 import { SELECTION_RED, SELECTION_RED_SOFT } from "@/lib/highlight";
-import { describeMuscle } from "@/lib/exercises/describe";
+import { describeMuscle, explainMuscle } from "@/lib/exercises/describe";
+import { plainArabic } from "@/lib/anatomy/normalize";
 
 const PUBLIC = join(__dirname, "../public");
 let model: RegionModel;
@@ -188,8 +189,33 @@ describe("an exercise lights its muscles on the model", () => {
     expect(nearest).toBeGreaterThan(0.25);
   });
 
+  it("no Arabic diacritics in what the interface shows", () => {
+    const marks = /[\u064B-\u0652\u0670]/;
+    for (const e of EXERCISES) for (const t of [e.ar, e.dose, e.tip, ...e.steps]) expect(marks.test(t), `${e.id}: ${t}`).toBe(false);
+    for (const g of MUSCLE_GROUPS) for (const t of [g.ar, g.fn, g.where, ...g.does, ...g.moves]) expect(marks.test(t), `${g.id}: ${t}`).toBe(false);
+    for (const a of GROUP_AREAS) expect(marks.test(a.ar), a.id).toBe(false);
+    // names read from the model files are shown without them too
+    for (const m of model.meshes) expect(marks.test(m.ar), `${m.kind} ${m.id}: ${m.ar}`).toBe(false);
+    expect(plainArabic("\u0627\u0644\u0645\u0642\u0631\u0651\u0650\u0628\u0629 \u0627\u0644\u0637\u0648\u064A\u0644\u0629\u064F")).toBe("المقربة الطويلة"); // written with escapes: this file is kept free of the marks too
+  });
+
+  it("every muscle is explained in plain words: what it does, and for trained muscles where it is and its movements", () => {
+    for (const u of model.units.values()) {
+      const x = explainMuscle(u.id, u.region);
+      expect(x.about.length, u.id).toBeGreaterThan(15);
+      for (const t of [x.about, x.where ?? "", ...x.does, ...x.moves]) expect(/Z-Anatomy|TA2|[A-Za-z]{6,}/.test(t), `${u.id}: ${t}`).toBe(false);
+    }
+    for (const g of MUSCLE_GROUPS) {
+      const x = explainMuscle(g.units[0]);
+      expect(x.where && x.where.length > 10, g.id).toBeTruthy();
+      expect(x.does.length, g.id).toBeGreaterThanOrEqual(2);
+      expect(x.moves.length, g.id).toBeGreaterThanOrEqual(2);
+    }
+    expect(explainMuscle("zygomaticus-major-muscle", "head-neck").where).toContain("الوجه");
+  });
+
   it("every muscle has a short, plain description", () => {
-    const jargon = /إنسي|وحشي|تبعيد|أخمصي|ظهري|الحُقّ|استلقاء الساعد|العضد\b/;
+    const jargon = /إنسي|وحشي|تبعيد|أخمصي|ظهري|الحق|استلقاء الساعد|العضد\b/;
     for (const u of model.units.values()) {
       const text = describeMuscle(u.id, u.region);
       expect(text.length, u.id).toBeGreaterThan(15);

@@ -14,7 +14,7 @@ import { IconReset, IconUpload } from "@/components/ui/icons";
 import { AssetInspector } from "./AssetInspector";
 
 const SYSTEM_HINTS: Record<(typeof SYSTEMS)[number], string> = {
-  muscles: "54 عضلة وجزءًا قابلة للتلوين، لكل جانب",
+  muscles: "54 عضلة وجزءا قابلة للتلوين، لكل جانب",
   muscles_context: "بقية عضلات Z-Anatomy والأوتار، للعرض",
   skeleton: "العظام والغضاريف والأربطة",
   fasciae: "اللفافات والجرابات وأغماد الأوتار (تغطي العضلات)",
@@ -103,7 +103,7 @@ export function SettingsPanel({ active }: { active: ActiveAsset }) {
           </p>
           <Switch
             label="الجمجمة (إكمال الرأس)"
-            description="المصدر لا يحتوي عضلات الرأس والوجه، فتُكمل الجمجمة شكل الجسم"
+            description="المصدر لا يحتوي عضلات الرأس والوجه، فتكمل الجمجمة شكل الجسم"
             checked={doc.layers.head}
             onChange={(v) => setLayer("head", v)}
           />
@@ -157,7 +157,7 @@ export function SettingsPanel({ active }: { active: ActiveAsset }) {
         <div className="mt-2">
           <Switch
             label="تعتيم العضلات غير المحددة"
-            description="تخفيت لون النسيج الطبيعي لإبراز العضلات الملوّنة"
+            description="تخفيت لون النسيج الطبيعي لإبراز العضلات الملونة"
             checked={doc.dimUnselected}
             onChange={setDimUnselected}
           />

@@ -171,11 +171,11 @@ export function ExerciseLibrary({ tone, scope = null, showEnglish, onSpotlight, 
       ) : (
         <p role="status" className={cn("rounded-xl border border-dashed px-4 py-6 text-center text-sm", T.border, T.muted)}>
           {saved && !bookmarks.size
-            ? "لا توجد تمارين محفوظة بعد. تُحفظ التمارين بالضغط على علامة الحفظ في بطاقة التمرين."
+            ? "لا توجد تمارين محفوظة بعد. تحفظ التمارين بالضغط على علامة الحفظ في بطاقة التمرين."
             : activeFilters
               ? "لا توجد تمارين تطابق البحث والتصفية الحالية."
               : scope
-                ? `لا توجد تمارين ${TYPE_AR[type]} مخصّصة لهذه العضلة في المكتبة.`
+                ? `لا توجد تمارين ${TYPE_AR[type]} مخصصة لهذه العضلة في المكتبة.`
                 : "لا توجد تمارين."}
         </p>
       )}

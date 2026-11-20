@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     default: "MUSCLE STUDIO 3D — استوديو العضلات",
     template: "%s · MUSCLE STUDIO 3D",
   },
-  description: "استوديو لتلوين العضلات على نماذج تشريحية ثلاثية الأبعاد وتصدير رسوم توضيحية للمدربين ومعلّمي التشريح.",
+  description: "استوديو لتلوين العضلات على نماذج تشريحية ثلاثية الأبعاد وتصدير رسوم توضيحية للمدربين ومعلمي التشريح.",
 };
 
 export const viewport: Viewport = {

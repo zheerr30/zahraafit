@@ -3,6 +3,7 @@ import { acceleratedRaycast, computeBoundsTree, disposeBoundsTree } from "three-
 import { REGION_MUSCLE_BY_ID, type RegionLayer } from "@/data/region/backShoulders";
 import { dequantizeMesh } from "@/lib/three/anatomyModel";
 import { createMuscleMaterial, REALISTIC_LOOK, setMuscleLook, type MuscleLook } from "@/lib/three/muscleMaterial";
+import { plainArabic } from "@/lib/anatomy/normalize";
 import { SELECTION_RED, SELECTION_RED_SOFT } from "@/lib/highlight";
 import { axisTangents, createMuscleMaterialHD, createTissueMaterialHD, muscleDetail, principalAxis, setCoverageBlending, setMuscleLookHD } from "@/lib/three/hdMaterials";
 import { markRectusSheath, renderDepth } from "@/lib/three/abdomen";
@@ -75,7 +76,7 @@ export const REGIONS: { id: string; ar: string }[] = [
   { id: "abdomen", ar: "البطن والجذع" },
   { id: "pelvis", ar: "الحوض والألوية" },
   { id: "thigh", ar: "الفخذ: الرباعية وأوتار المأبض" },
-  { id: "adductors", ar: "المقرِّبات" },
+  { id: "adductors", ar: "المقربات" },
   { id: "legs", ar: "الساق والقدم" },
 ];
 
@@ -167,7 +168,7 @@ export function prepareMeshes(scene: Object3D, opts: PrepareOptions = {}): Regio
       kind,
       id: x.id,
       side: x.side ?? "m",
-      ar: kind === "unit" ? (card?.ar ?? x.ar ?? english(source)) : (x.ar ?? english(source)),
+      ar: plainArabic(kind === "unit" ? (card?.ar ?? x.ar ?? english(source)) : (x.ar ?? english(source))),
       en: kind === "unit" && card ? card.en : english(source),
       layer: LAYER_OF[kind],
       depth: kind === "unit" ? (x.depth ?? 1) : 1,

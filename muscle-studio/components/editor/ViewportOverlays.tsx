@@ -1,5 +1,6 @@
 "use client";
 
+import { plainArabic } from "@/lib/anatomy/normalize";
 import Link from "next/link";
 import { structureName, withSide } from "@/data/anatomy/lexicon";
 import { getMuscle } from "@/data/muscles/muscles";
@@ -18,11 +19,11 @@ export function LoadingOverlay() {
   return (
     <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center" role="status">
       <div className="w-64 rounded-xl border border-line bg-panel/95 p-4 text-center shadow-xl">
-        <p className="text-sm text-fg">جارٍ تحميل النموذج التشريحي…</p>
+        <p className="text-sm text-fg">جار تحميل النموذج التشريحي…</p>
         <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-panel-3" dir="ltr">
           <div className="h-full rounded-full bg-accent transition-[width]" style={{ width: `${pct > 0 ? pct : 12}%` }} />
         </div>
-        <p className="mt-2 font-mono text-xs text-muted">{pct > 0 ? `${pct}%` : "جارٍ الاتصال"}</p>
+        <p className="mt-2 font-mono text-xs text-muted">{pct > 0 ? `${pct}%` : "جار الاتصال"}</p>
       </div>
     </div>
   );
@@ -43,9 +44,9 @@ export function LoadErrorOverlay() {
     <div className="absolute inset-0 z-10 flex items-center justify-center p-6" role="alert">
       <div className="max-w-md rounded-2xl border border-danger/40 bg-panel p-6 text-center">
         <IconWarning className="mx-auto mb-3 text-danger" size={28} />
-        <h2 className="text-base font-semibold">تعذّر تحميل النموذج التشريحي</h2>
+        <h2 className="text-base font-semibold">تعذر تحميل النموذج التشريحي</h2>
         <p className="mt-2 text-sm leading-relaxed text-muted">
-          لم يُعرض أي مجسّم بديل. يُرجى التحقق من الاتصال ومن وجود ملف النموذج ثم إعادة المحاولة.
+          لم يعرض أي مجسم بديل. يرجى التحقق من الاتصال ومن وجود ملف النموذج ثم إعادة المحاولة.
         </p>
         <p dir="auto" className="mt-3 break-words rounded-lg bg-panel-2 p-2 text-start text-xs text-muted">
           {error}
@@ -124,7 +125,7 @@ export function SelectedNamesLegend() {
 
 function zaStructure(key: string) {
   const x = JSON.parse(key.slice(3)) as { ar: string; en: string; side: string };
-  return { ar: x.ar, en: x.en, side: (x.side === "l" ? "left" : x.side === "r" ? "right" : "center") as "left" | "right" | "center" };
+  return { ar: plainArabic(x.ar), en: x.en, side: (x.side === "l" ? "left" : x.side === "r" ? "right" : "center") as "left" | "right" | "center" };
 }
 
 export function HoverReadout() {

@@ -14,7 +14,7 @@ export const REGION_SHORT: Record<string, string> = {
   abdomen: "البطن",
   pelvis: "الحوض والألوية",
   thigh: "الفخذ",
-  adductors: "المقرِّبات",
+  adductors: "المقربات",
   legs: "الساق والقدم",
 };
 

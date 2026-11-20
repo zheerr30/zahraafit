@@ -31,7 +31,6 @@ export const MODEL_BASE = "/models/zanatomy";
 export const modelUrl = (sex: "male" | "female", part: string) => `${MODEL_BASE}/${sex}/${part}.glb`;
 /** The body shown by default: core.glb with refined muscle surfaces. */
 export const BODY_PART = "core-smooth";
-export const DEFINITIONS_URL = `${MODEL_BASE}/definitions.json`;
 /** Optional layers loaded on first use. */
 const LAZY_PARTS = { attachments: "attachments", nerves: "nerves" } as const;
 export const BACKGROUNDS = { black: "#0d0e10", navy: "#06142f" } as const;

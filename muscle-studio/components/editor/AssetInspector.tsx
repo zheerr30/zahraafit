@@ -37,7 +37,7 @@ export function AssetInspector() {
     const json = JSON.stringify(userMap, null, 2);
     try {
       await navigator.clipboard.writeText(`meshMap: ${json},`);
-      toast.success("نُسخ الربط. يُلصق في مدخل النموذج في data/models/manifest.ts.");
+      toast.success("نسخ الربط. يلصق في مدخل النموذج في data/models/manifest.ts.");
     } catch {
       toast.error("الحافظة غير متاحة في هذا المتصفح.");
     }
@@ -83,7 +83,7 @@ export function AssetInspector() {
       {(summary.unmappedMeshNames.length > 0 || assignedNames.length > 0) && (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <span className="font-medium text-fg">ربط الشبكات يدويًا</span>
+            <span className="font-medium text-fg">ربط الشبكات يدويا</span>
             {assignedNames.length > 0 && (
               <Button size="sm" variant="ghost" onClick={copyJson}>
                 <IconCopy size={13} /> نسخ meshMap
@@ -92,7 +92,7 @@ export function AssetInspector() {
           </div>
           {inspected && (
             <p className="rounded-md border border-accent/40 bg-accent/10 p-2 text-fg">
-              شبكة غير مرتبطة نُقر عليها: <span dir="ltr" className="font-mono">{inspected}</span>
+              شبكة غير مرتبطة نقر عليها: <span dir="ltr" className="font-mono">{inspected}</span>
             </p>
           )}
           <input
@@ -135,7 +135,7 @@ export function AssetInspector() {
               </li>
             ))}
           </ul>
-          {unmapped.length > 300 && <p className="text-muted">يُعرض 300 من {unmapped.length}. يمكن استخدام التصفية.</p>}
+          {unmapped.length > 300 && <p className="text-muted">يعرض 300 من {unmapped.length}. يمكن استخدام التصفية.</p>}
         </div>
       )}
     </div>

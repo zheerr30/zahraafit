@@ -35,7 +35,7 @@ export class ViewportErrorBoundary extends Component<Props, State> {
       <div role="alert" className="absolute inset-0 flex items-center justify-center p-6">
         <div className="max-w-md rounded-2xl border border-line bg-panel p-6 text-center">
           <IconWarning className="mx-auto mb-3 text-warn" size={28} />
-          <h2 className="text-base font-semibold">توقّف العارض ثلاثي الأبعاد عن العمل</h2>
+          <h2 className="text-base font-semibold">توقف العارض ثلاثي الأبعاد عن العمل</h2>
           <p className="mt-2 text-sm text-muted">{this.state.error.message}</p>
           <p className="mt-2 text-xs text-muted">
             بيانات مشروعك محفوظة. يمكن إعادة تشغيل العارض، أو تحديث الصفحة إذا استمرت المشكلة.

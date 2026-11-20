@@ -141,7 +141,8 @@ function equipment(e) {
   return "bodyweight";
 }
 const STRETCH = new Set(["إطالة", "مرونة", "استرخاء"]);
-const clean = (s) => String(s ?? "").replace(/\s+/g, " ").trim();
+// single spaces; Arabic without diacritics (the interface shows none)
+const clean = (s) => String(s ?? "").replace(/[\u064B-\u0652\u0670]/g, "").replace(/\s+/g, " ").trim();
 const videoOf = (e) => {
   const m = /(?:youtu\.be\/|[?&]v=|\/shorts\/|\/embed\/)([A-Za-z0-9_-]{11})/.exec(e.video ?? "");
   if (!m) throw new Error(`no YouTube video for ${e.id}: ${e.video}`);

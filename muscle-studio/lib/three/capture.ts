@@ -448,7 +448,7 @@ export function drawLegend(
 export async function renderIllustration(opts: ExportOptions): Promise<HTMLCanvasElement> {
   const handles = viewportBridge.handles;
   const loaded = viewportBridge.loaded;
-  if (!handles || !loaded) throw new Error("العارض ثلاثي الأبعاد غير جاهز. يلزم تحميل النموذج أولًا.");
+  if (!handles || !loaded) throw new Error("العارض ثلاثي الأبعاد غير جاهز. يلزم تحميل النموذج أولا.");
   const W = Math.round(MathUtils.clamp(opts.width, 16, MAX_EXPORT_SIDE));
   const H = Math.round(MathUtils.clamp(opts.height, 16, MAX_EXPORT_SIDE));
   const views = opts.views.length ? opts.views : (["current"] as ExportView[]);
@@ -494,7 +494,7 @@ export async function renderIllustration(opts: ExportOptions): Promise<HTMLCanva
 
 export function canvasToBlob(canvas: HTMLCanvasElement, type = "image/png", quality?: number): Promise<Blob> {
   return new Promise((resolve, reject) =>
-    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("تعذّر ترميز الصورة."))), type, quality),
+    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("تعذر ترميز الصورة."))), type, quality),
   );
 }
 

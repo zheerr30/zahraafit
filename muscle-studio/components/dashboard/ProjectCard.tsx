@@ -137,7 +137,7 @@ export function ProjectCard({
         open={confirmDelete}
         onClose={() => setConfirmDelete(false)}
         title="حذف الرسم؟"
-        description={`سيُحذف «${project.name}» نهائيًا ولا يمكن التراجع.`}
+        description={`سيحذف «${project.name}» نهائيا ولا يمكن التراجع.`}
         footer={
           <>
             <Button variant="ghost" onClick={() => setConfirmDelete(false)}>إلغاء</Button>
@@ -153,7 +153,7 @@ export function ProjectCard({
           </>
         }
       >
-        <p className="text-sm text-muted">لا يتأثر أي ملف PNG صُدّر مسبقًا إلى جهازك.</p>
+        <p className="text-sm text-muted">لا يتأثر أي ملف PNG صدر مسبقا إلى جهازك.</p>
       </Dialog>
     </article>
   );

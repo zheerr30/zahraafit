@@ -32,7 +32,7 @@ const WARN = /تقريب|لا يوجد مصدر|approximat|النموذج الذ
     await page.locator('[data-region=chest]').click(); await rest(page);
     ok('region button focuses the region', (await st(page)).region === 'chest');
     const dChest = await dist(page);
-    await page.getByRole('button', { name: 'الجسم كاملًا' }).first().click(); await rest(page);
+    await page.getByRole('button', { name: 'الجسم كاملا' }).first().click(); await rest(page);
     ok('"whole body" returns to the full view', (await st(page)).region === null && (await dist(page)) > dChest * 1.3);
 
     // views, zoom, 360°
@@ -98,10 +98,9 @@ const WARN = /تقريب|لا يوجد مصدر|approximat|النموذج الذ
     ok('panel: no technical or source data in the summary', !/Z-Anatomy|TA2|المنشأ|المرتكز|التعصيب|طبقة|المصدر/.test(text), text.replace(/\s+/g, ' ').slice(0, 80));
     await panel.locator('[data-action=learn-more]').click();
     const det = await panel.innerText();
-    ok('ⓘ opens the anatomical details', (await panel.getAttribute('data-panel')) === 'details' && /المنشأ/.test(det) && /بيانات المصدر العلمي/.test(det));
-    await panel.getByText('بيانات المصدر العلمي').click();
-    await page.waitForTimeout(300);
-    ok('source data is inside its own section', /Z-Anatomy/.test(await panel.innerText()));
+    ok('ⓘ opens a plain explanation: where it is, what it does, movements', (await panel.getAttribute('data-panel')) === 'details' && /أين تقع/.test(det) && /ماذا تفعل/.test(det) && /تعمل في/.test(det));
+    ok('no source or database data anywhere in the panel', !/Z-Anatomy|TA2|Wikipedia|الكائن|التسلسل|تصنيف المؤلف|بصمات|بيانات المصدر|المنشأ|المرتكز|التعصيب/.test(det), det.replace(/\s+/g, ' ').slice(0, 80));
+    ok('nothing to expand into source data', (await panel.locator('details').count()) === 0);
     await panel.getByLabel('إغلاق البطاقة').click(); await rest(page);
     s = await st(page);
     ok('closing the panel deselects and gives the view back', s.sel === null && s.insets.left === 0);
@@ -129,7 +128,7 @@ const WARN = /تقريب|لا يوجد مصدر|approximat|النموذج الذ
     await page.locator('[data-sex=female]').click({ timeout: 400000 });
     await page.waitForTimeout(600);
     const during = await page.locator('body').innerText({ timeout: 400000 });
-    ok('switching body keeps the view (no full-screen loading)', (await page.locator('main canvas').count()) === 1 && !/تحميل المجسّم…/.test(during));
+    ok('switching body keeps the view (no full-screen loading)', (await page.locator('main canvas').count()) === 1 && !/تحميل المجسم…/.test(during));
     await page.waitForFunction(() => { const m = window.__backStudioTest.rawModel(); return m && m !== window.__prev; }, null, { timeout: 600000 });
     await page.waitForTimeout(1500);
     const after = await page.locator('body').innerText();
@@ -137,6 +136,8 @@ const WARN = /تقريب|لا يوجد مصدر|approximat|النموذج الذ
     ok('no warning or note about the female model', !WARN.test(during) && !WARN.test(after), (after.match(WARN) || [''])[0]);
     await page.locator('[data-sex=male]').click();
     await page.waitForFunction(() => window.__backStudioTest.store.getState().sex === 'male');
+    const marks = (await page.locator('body').innerText()).match(/[\u064B-\u0652\u0670]/g);
+    ok('no Arabic diacritics in the interface', !marks, marks ? `${marks.length} marks` : '');
     ok('no page errors (desktop)', errors.length === 0, errors.slice(0, 2).join(' | '));
     await page.close();
   }

@@ -29,7 +29,7 @@ const AnatomyViewport = dynamic(() => import("@/components/anatomy/AnatomyViewpo
   ssr: false,
   loading: () => (
     <div className="absolute inset-0 flex items-center justify-center text-sm text-muted" role="status">
-      جارٍ تشغيل المحرك ثلاثي الأبعاد…
+      جار تشغيل المحرك ثلاثي الأبعاد…
     </div>
   ),
 });
@@ -57,15 +57,15 @@ function useEditorInitialization() {
               const dropped = st.loadProject(project);
               if (dropped > 0) {
                 toast.warning(
-                  `أُزيلت ${dropped} من العضلات المحفوظة لأنها غير موجودة في BodyParts3D.`,
+                  `أزيلت ${dropped} من العضلات المحفوظة لأنها غير موجودة في BodyParts3D.`,
                 );
               }
             } else {
-              toast.error("هذا المشروع لم يعد موجودًا. بدأ رسم جديد.");
+              toast.error("هذا المشروع لم يعد موجودا. بدأ رسم جديد.");
               st.newDocument();
             }
           } catch (e) {
-            toast.error(e instanceof Error ? e.message : "تعذّر فتح المشروع.");
+            toast.error(e instanceof Error ? e.message : "تعذر فتح المشروع.");
           }
         }
       } else if (params.has("new") || gender) {

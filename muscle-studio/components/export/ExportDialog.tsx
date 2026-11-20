@@ -20,13 +20,13 @@ import { IconDownload } from "@/components/ui/icons";
 type Composition = "current" | "front" | "back" | "left" | "right" | "front-back" | "selection";
 
 const COMPOSITIONS: { value: Composition; label: string; views: ExportView[]; hint: string }[] = [
-  { value: "current", label: "المنظر الحالي", views: ["current"], hint: "ما تراه الكاميرا الآن تمامًا" },
-  { value: "front", label: "أمامي", views: ["front"], hint: "منظر أمامي للجسم كاملًا" },
-  { value: "back", label: "خلفي", views: ["back"], hint: "منظر خلفي للجسم كاملًا" },
+  { value: "current", label: "المنظر الحالي", views: ["current"], hint: "ما تراه الكاميرا الآن تماما" },
+  { value: "front", label: "أمامي", views: ["front"], hint: "منظر أمامي للجسم كاملا" },
+  { value: "back", label: "خلفي", views: ["back"], hint: "منظر خلفي للجسم كاملا" },
   { value: "left", label: "الجانب الأيسر", views: ["left"], hint: "منظر جانبي أيسر" },
   { value: "right", label: "الجانب الأيمن", views: ["right"], hint: "منظر جانبي أيمن" },
   { value: "front-back", label: "أمامي + خلفي", views: ["front", "back"], hint: "لوحتان متجاورتان" },
-  { value: "selection", label: "العضلات المحددة", views: ["selection"], hint: "الكاميرا مؤطّرة على العضلات الملوّنة" },
+  { value: "selection", label: "العضلات المحددة", views: ["selection"], hint: "الكاميرا مؤطرة على العضلات الملونة" },
 ];
 
 type SizePreset = "viewport" | "square" | "portrait" | "poster" | "hd" | "4k" | "custom";
@@ -149,7 +149,7 @@ function ExportDialogContent({ onClose }: { onClose: () => void }) {
       const canvas = await renderIllustration(buildOptions(size.w, size.h));
       const filename = `${fileStem(projectName)}-${composition}-${size.w}x${size.h}${background === "transparent" ? "-transparent" : ""}.png`;
       await downloadCanvas(canvas, filename);
-      toast.success(`صُدّرت الصورة ${filename}`);
+      toast.success(`صدرت الصورة ${filename}`);
       onClose();
     } catch (e) {
       toast.error(e instanceof Error ? `فشل التصدير: ${e.message}` : "فشل التصدير.");
@@ -164,7 +164,7 @@ function ExportDialogContent({ onClose }: { onClose: () => void }) {
       open={open}
       onClose={onClose}
       title="تصدير رسم توضيحي"
-      description="يُرسم المجسّم وحده بدقة كاملة — وليس لقطة شاشة للواجهة."
+      description="يرسم المجسم وحده بدقة كاملة — وليس لقطة شاشة للواجهة."
       className="w-[min(860px,calc(100vw-24px))]"
       footer={
         <>
@@ -173,7 +173,7 @@ function ExportDialogContent({ onClose }: { onClose: () => void }) {
           </Button>
           <Button variant="primary" onClick={doExport} disabled={!ready || !sizeValid || busy}>
             <IconDownload size={16} />
-            {busy ? "جارٍ الرسم…" : `تصدير PNG · ${size.w}×${size.h}`}
+            {busy ? "جار الرسم…" : `تصدير PNG · ${size.w}×${size.h}`}
           </Button>
         </>
       }
@@ -246,7 +246,7 @@ function ExportDialogContent({ onClose }: { onClose: () => void }) {
               </div>
             )}
             {!sizeValid && (
-              <p className="mt-1 text-xs text-danger">يجب أن يكون كل بُعد بين 64 و{MAX_EXPORT_SIDE} بكسل.</p>
+              <p className="mt-1 text-xs text-danger">يجب أن يكون كل بعد بين 64 و{MAX_EXPORT_SIDE} بكسل.</p>
             )}
           </fieldset>
 
@@ -304,7 +304,7 @@ function ExportDialogContent({ onClose }: { onClose: () => void }) {
               // eslint-disable-next-line @next/next/no-img-element
               <img src={preview} alt="معاينة التصدير" className="max-h-full max-w-full object-contain" />
             ) : (
-              <p className="text-xs text-muted">جارٍ رسم المعاينة…</p>
+              <p className="text-xs text-muted">جار رسم المعاينة…</p>
             )}
           </div>
           {summary?.attribution && (
@@ -312,7 +312,7 @@ function ExportDialogContent({ onClose }: { onClose: () => void }) {
               <Switch label="ذكر مصدر النموذج على الصورة" checked={credit} onChange={setCredit} />
               <p className="text-xs leading-relaxed text-muted">
                 {credit
-                  ? "يُكتب سطر النسبة (CC BY-SA 4.0) أسفل الصورة."
+                  ? "يكتب سطر النسبة (CC BY-SA 4.0) أسفل الصورة."
                   : "رخصة CC BY-SA 4.0 تشترط ذكر المصدر عند نشر الصورة؛ يجب إضافته في مكان النشر."}
               </p>
             </div>

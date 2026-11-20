@@ -55,7 +55,7 @@ export function AppFooter() {
   return (
     <footer className="border-t border-line px-4 py-6 text-center text-xs leading-relaxed text-muted">
       <p>
-        النموذج التشريحي: Z-Anatomy (مبني على BodyParts3D © DBCLS)، ونِسَب الهيكل الأنثوي من open-anatomy-3d. الرخصة{" "}
+        النموذج التشريحي: Z-Anatomy (مبني على BodyParts3D © DBCLS)، ونسب الهيكل الأنثوي من open-anatomy-3d. الرخصة{" "}
         <a href="https://creativecommons.org/licenses/by-sa/4.0/" className="text-accent-2 hover:underline" target="_blank" rel="noreferrer">
           CC BY-SA 4.0
         </a>

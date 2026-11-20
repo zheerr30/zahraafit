@@ -56,14 +56,14 @@ export const SOURCES = [
     license: "CC BY-SA 4.0",
     url: "https://github.com/Z-Anatomy/Models-of-human-anatomy",
     usage:
-      "النموذج التشريحي للتطبيق كله (الأطلس والمحرّر، ذكر وأنثى): مصدَّر من ملف Blender الأصلي دون تعديل الهندسة — كل عضلة مستقلة بأوتارها المرسومة، والعظام والغضاريف، والأربطة، واللفافات، ومواضع المنشأ والمرتكز، والأعصاب، والأعضاء، والأوعية، والجلد، مع معرّفات TA2 والأسماء اللاتينية والتسلسل التشريحي. ملفات public/models/zanatomy مرخّصة CC BY-SA 4.0 (شرط المشاركة بالمثل). التعريفات الإنجليزية من Wikipedia (CC BY-SA 3.0).",
+      "النموذج التشريحي للتطبيق كله (الأطلس والمحرر، ذكر وأنثى): مصدر من ملف Blender الأصلي دون تعديل الهندسة — كل عضلة مستقلة بأوتارها المرسومة، والعظام والغضاريف، والأربطة، واللفافات، ومواضع المنشأ والمرتكز، والأعصاب، والأعضاء، والأوعية، والجلد، مع معرفات TA2 والأسماء اللاتينية والتسلسل التشريحي. ملفات public/models/zanatomy مرخصة CC BY-SA 4.0 (شرط المشاركة بالمثل). التعريفات الإنجليزية من Wikipedia (CC BY-SA 3.0).",
   },
   {
     name: "BodyParts3D 4.0",
     owner: "© The Database Center for Life Science (DBCLS)",
     license: "CC BY 4.0",
     url: "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/",
-    usage: "النموذج الأصلي الذي بُني عليه Z-Anatomy.",
+    usage: "النموذج الأصلي الذي بني عليه Z-Anatomy.",
   },
   {
     name: "open-anatomy-3d",
@@ -71,6 +71,6 @@ export const SOURCES = [
     license: "CC BY 4.0",
     url: "https://github.com/MervinR07/open-anatomy-3d",
     usage:
-      "نِسَب الهيكل العظمي الأنثوي فقط: يُلاءم تشريح Z-Anatomy مع هيكله الأنثوي بتحويل Thin-Plate Spline لإنتاج النموذج الأنثوي. ملفاته لا تُعرض في التطبيق.",
+      "نسب الهيكل العظمي الأنثوي فقط: يلاءم تشريح Z-Anatomy مع هيكله الأنثوي بتحويل Thin-Plate Spline لإنتاج النموذج الأنثوي. ملفاته لا تعرض في التطبيق.",
   },
 ] as const;

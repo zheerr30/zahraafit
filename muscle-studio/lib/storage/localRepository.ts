@@ -23,7 +23,7 @@ export const LOCAL_STORAGE_KEY = "muscle-studio.projects.v1";
 
 export class StorageQuotaError extends Error {
   constructor() {
-    super("مساحة التخزين في المتصفح ممتلئة. يُرجى حذف مشاريع قديمة ثم إعادة الحفظ.");
+    super("مساحة التخزين في المتصفح ممتلئة. يرجى حذف مشاريع قديمة ثم إعادة الحفظ.");
     this.name = "StorageQuotaError";
   }
 }

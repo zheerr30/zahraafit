@@ -64,6 +64,14 @@ export function normalizeKey(raw: string): string {
 
 const ARABIC_DIACRITICS = /[ً-ٰٟـ]/g;
 
+/** Arabic short-vowel marks and shadda (tashkeel). The interface shows Arabic without them. */
+const TASHKEEL = /[\u064B-\u0652\u0670]/g;
+
+/** Arabic text as the interface shows it: without diacritics (names read from the model files carry some). */
+export function plainArabic(text: string): string {
+  return text.replace(TASHKEEL, "");
+}
+
 /**
  * Normalize text for bilingual search: case-folds Latin, removes Arabic
  * diacritics/tatweel and unifies common Arabic letter variants.

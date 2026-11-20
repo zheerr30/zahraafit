@@ -27,9 +27,9 @@ export function StoragePanel() {
   if (!configured) {
     return (
       <div className="rounded-2xl border border-line bg-panel p-5">
-        <p className="text-sm font-semibold">التخزين المحلي (مفعّل)</p>
+        <p className="text-sm font-semibold">التخزين المحلي (مفعل)</p>
         <p className="mt-1 text-sm text-muted">
-          تُحفظ المشاريع في هذا المتصفح. لتفعيل الحسابات والحفظ السحابي يلزم ضبط{" "}
+          تحفظ المشاريع في هذا المتصفح. لتفعيل الحسابات والحفظ السحابي يلزم ضبط{" "}
           <code dir="ltr" className="font-mono text-xs text-fg">NEXT_PUBLIC_SUPABASE_URL</code> و{" "}
           <code dir="ltr" className="font-mono text-xs text-fg">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> وتطبيق{" "}
           <code dir="ltr" className="font-mono text-xs text-fg">supabase/migrations/0001_projects.sql</code>.
@@ -48,16 +48,16 @@ export function StoragePanel() {
     });
     setSending(false);
     if (error) toast.error(error.message);
-    else toast.success("أُرسل رابط الدخول إلى البريد الإلكتروني.");
+    else toast.success("أرسل رابط الدخول إلى البريد الإلكتروني.");
   };
 
   return (
     <div className="rounded-2xl border border-line bg-panel p-5">
-      <p className="text-sm font-semibold">التخزين السحابي Supabase (مُعَدّ)</p>
+      <p className="text-sm font-semibold">التخزين السحابي Supabase (معد)</p>
       {session ? (
         <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm text-muted">
-            تم الدخول بالحساب <span dir="ltr" className="text-fg">{session.user.email}</span>. يُحفظ كل جديد في السحابة.
+            تم الدخول بالحساب <span dir="ltr" className="text-fg">{session.user.email}</span>. يحفظ كل جديد في السحابة.
           </p>
           <Button size="sm" onClick={() => void client.auth.signOut()}>
             تسجيل الخروج
@@ -79,9 +79,9 @@ export function StoragePanel() {
             className="h-9 min-w-0 flex-1 rounded-lg border border-line bg-panel-2 px-3 text-sm"
           />
           <Button type="submit" variant="primary" disabled={sending}>
-            {sending ? "جارٍ الإرسال…" : "إرسال رابط الدخول"}
+            {sending ? "جار الإرسال…" : "إرسال رابط الدخول"}
           </Button>
-          <p className="w-full text-xs text-muted">قبل تسجيل الدخول تُحفظ المشاريع في هذا المتصفح.</p>
+          <p className="w-full text-xs text-muted">قبل تسجيل الدخول تحفظ المشاريع في هذا المتصفح.</p>
         </form>
       )}
     </div>

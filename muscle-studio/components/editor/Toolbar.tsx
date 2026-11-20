@@ -82,7 +82,7 @@ export function Toolbar({
           </IconButton>
           <Button onClick={onSave} disabled={saving} size="md" aria-label="حفظ المشروع (Ctrl+S)" title="حفظ المشروع (Ctrl+S)">
             <IconSave size={16} />
-            <span className="hidden sm:inline">{saving ? "جارٍ الحفظ…" : "حفظ"}</span>
+            <span className="hidden sm:inline">{saving ? "جار الحفظ…" : "حفظ"}</span>
           </Button>
           <Button variant="primary" onClick={onExport} aria-label="تصدير صورة (Ctrl+E)" title="تصدير صورة (Ctrl+E)">
             <IconDownload size={16} />
@@ -133,7 +133,7 @@ export function Toolbar({
           options={[
             {
               value: "primary",
-              title: "النقر يلوّن العضلة كعضلة مستهدفة (X للتبديل)",
+              title: "النقر يلون العضلة كعضلة مستهدفة (X للتبديل)",
               label: (
                 <span className="flex items-center gap-1.5">
                   <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: palette.primary }} />
@@ -143,7 +143,7 @@ export function Toolbar({
             },
             {
               value: "secondary",
-              title: "النقر يلوّن العضلة كعضلة ثانوية (X للتبديل)",
+              title: "النقر يلون العضلة كعضلة ثانوية (X للتبديل)",
               label: (
                 <span className="flex items-center gap-1.5">
                   <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: palette.secondary }} />

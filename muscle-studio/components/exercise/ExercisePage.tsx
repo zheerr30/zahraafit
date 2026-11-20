@@ -34,7 +34,7 @@ export function ExercisePage() {
       initial={{ group: group && GROUP_BY_ID.has(group) ? group : null, query: params.get("q") ?? "", type, open: ex?.id ?? null }}
       cardFooter={(e) => (
         <Link href={atlasHref(e)} data-action="open-in-atlas" className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-3 py-1.5 text-xs font-medium text-white hover:bg-[#f06d3a]">
-          <IconCube size={14} /> عرض العضلات على المجسّم ثلاثي الأبعاد
+          <IconCube size={14} /> عرض العضلات على المجسم ثلاثي الأبعاد
         </Link>
       )}
     />

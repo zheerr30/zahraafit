@@ -15,7 +15,7 @@ export default function LibraryPage() {
           العضلات المستخرجة من BodyParts3D كشبكات مستقلة لكل جانب، بأسمائها الطبية العربية واللاتينية، ومصدر كل شبكة.
           تتوفر في النموذجين الذكري والأنثوي.
         </p>
-        <Suspense fallback={<p className="text-sm text-muted">جارٍ تحميل المكتبة…</p>}>
+        <Suspense fallback={<p className="text-sm text-muted">جار تحميل المكتبة…</p>}>
           <MuscleCatalog />
         </Suspense>
       </main>

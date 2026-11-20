@@ -24,11 +24,32 @@ store (`stores/backStore.ts`) and model code drive the new interface.
 
 - **Summary** — only the muscle's name, its group and what it does in one or two
   plain sentences, with the actions: التمارين, عزل, focus.
-- **ⓘ details** — origin, insertion, action, innervation, related muscles, the
-  layer, tools on the model (attachments on the bone, hide) and, in its own
-  collapsed section, the source data (Z-Anatomy object, TA2 / Latin, hierarchy,
-  definition).
+- **ⓘ explanation** — written for people who train, in simple Arabic: أين تقع
+  (where the muscle is), ماذا تفعل (what it does, as short points) and تعمل في
+  (movements and exercises that use it); for the back and shoulder muscles also the
+  muscles that work with and against it. Then two tools on the model (show its
+  attachment on the bone, hide it) and a button to its exercises.
 - **Exercises** — the exercise library for the muscle.
+
+No source or database data is shown anywhere in the panel: the Z-Anatomy object
+names, TA2 codes, hierarchy, author classification, attachment listing and the
+English definitions were removed together with their component. (The licence
+credit for the model stays as one line under the controls and on the sources page.)
+Other structures (bones, tendons, ligaments, nerves) show their name and one
+sentence on what they are.
+
+The explanations live in `data/exercises/groups.ts` (`fn`, `where`, `does`,
+`moves` for the 39 trained groups) and `lib/exercises/describe.ts` (families of
+small muscles outside them). They are original text and general education, not
+medical advice.
+
+## Arabic text
+
+The interface shows Arabic without diacritics (tashkeel). The source strings are
+kept free of them (`python3 pipeline/strip-tashkeel.py --check`), the imported
+exercise names are stripped by the importer, and names read from the model files
+are stripped when the model is loaded (`plainArabic`). Search still accepts text
+typed with or without them.
 
 ## The view makes room for the panels
 
@@ -54,7 +75,7 @@ View buttons animate between front, back and the sides; 360° turns the body.
 - the explanatory paragraphs, the keyboard hint line, the source and licence text
   in the control column (a one-line credit with a link to the sources page stays,
   as the licence requires attribution);
-- colour swatches and technical lines from the muscle summary.
+- colour swatches and technical lines from the muscle summary; all source data from the panel.
 
 ## Checks
 

@@ -65,7 +65,7 @@ function RegionGrid() {
   return (
     <div className="grid grid-cols-2 gap-2 p-3">
       <button type="button" aria-pressed={!region} onClick={() => pick(null)} className={cn(tile(!region), "col-span-2 gap-1.5")}>
-        <IconBody size={16} /> الجسم كاملًا
+        <IconBody size={16} /> الجسم كاملا
       </button>
       {REGIONS.map((r) => (
         <button key={r.id} type="button" data-region={r.id} title={r.ar} aria-pressed={region === r.id} onClick={() => pick(r.id)} className={tile(region === r.id)}>
@@ -284,7 +284,7 @@ function Dock() {
         </div>
       </div>
       <p className="hidden shrink-0 border-t border-white/8 px-4 py-2.5 text-[11px] text-muted lg:block">
-        المجسّم: Z-Anatomy · CC BY-SA 4.0 ·{" "}
+        المجسم: Z-Anatomy · CC BY-SA 4.0 ·{" "}
         <Link href="/credits" className="underline hover:text-fg">
           المصادر
         </Link>
@@ -545,7 +545,7 @@ export function BackStudio({ initialRegion = null, hd = false }: { initialRegion
           {load.status === "loading" && !shownOnce && (
             <div className="absolute inset-0 grid place-items-center bg-[#0b0c0e]">
               <div className="w-56 text-center text-sm text-muted">
-                <p className="mb-3">تحميل المجسّم…</p>
+                <p className="mb-3">تحميل المجسم…</p>
                 <div className="h-1 overflow-hidden rounded-full bg-white/10">
                   <div className="h-full rounded-full bg-[#A5111F] transition-all" style={{ width: `${Math.round(load.progress * 100)}%` }} />
                 </div>
@@ -555,13 +555,13 @@ export function BackStudio({ initialRegion = null, hd = false }: { initialRegion
           {load.status === "loading" && shownOnce && (
             <div role="status" className={cn(GLASS, "absolute inset-x-0 top-3 z-10 mx-auto flex w-fit items-center gap-2 rounded-full px-3 py-1.5 text-xs text-fg")}>
               <span className="size-3 animate-spin rounded-full border-2 border-white/25 border-t-white" />
-              جارٍ التحميل… {Math.round(load.progress * 100)}%
+              جار التحميل… {Math.round(load.progress * 100)}%
             </div>
           )}
           {load.status === "error" && (
             <div role="alert" data-load-error="" className="absolute inset-0 z-20 grid place-items-center bg-[#0b0c0e]/80 p-6">
               <div className={cn(GLASS, "max-w-sm rounded-2xl p-5 text-center text-sm")}>
-                <p className="mb-1 font-semibold">تعذّر تحميل النموذج التشريحي</p>
+                <p className="mb-1 font-semibold">تعذر تحميل النموذج التشريحي</p>
                 <p dir="auto" className="text-muted">
                   {load.message}
                 </p>
@@ -580,14 +580,14 @@ export function BackStudio({ initialRegion = null, hd = false }: { initialRegion
                   <span className="size-2 rounded-full bg-[#A5111F]" />
                   معزولة: {selected.ar}
                   <button type="button" data-action="exit-isolate" onClick={() => backStore.getState().showFullBody()} className="flex h-7 items-center gap-1 rounded-full bg-white/10 px-2.5 hover:bg-white/18">
-                    <IconBody size={13} /> الجسم كاملًا
+                    <IconBody size={13} /> الجسم كاملا
                   </button>
                 </div>
               )}
               {!isolate && region && !selected && (
                 <div className={cn(GLASS, "absolute start-3 top-3 z-10 flex items-center gap-2 rounded-full py-1 pe-1 ps-3 text-xs")}>
                   {REGION_SHORT[region] ?? REGION_AR[region]}
-                  <button type="button" aria-label="عرض الجسم كاملًا" onClick={() => backStore.getState().focusRegion(null)} className="grid size-7 place-items-center rounded-full bg-white/10 hover:bg-white/18">
+                  <button type="button" aria-label="عرض الجسم كاملا" onClick={() => backStore.getState().focusRegion(null)} className="grid size-7 place-items-center rounded-full bg-white/10 hover:bg-white/18">
                     <IconX size={13} />
                   </button>
                 </div>

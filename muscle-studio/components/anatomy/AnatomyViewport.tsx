@@ -78,7 +78,7 @@ export default function AnatomyViewport({ asset }: { asset: AnatomyAssetDefiniti
           <IconWarning className="mx-auto mb-3 text-warn" size={28} />
           <h2 className="text-base font-semibold">تقنية WebGL غير متاحة</h2>
           <p className="mt-2 text-sm text-muted">
-            يحتاج الاستوديو إلى WebGL لعرض النموذج التشريحي. يُرجى تفعيل تسريع العتاد في إعدادات المتصفح
+            يحتاج الاستوديو إلى WebGL لعرض النموذج التشريحي. يرجى تفعيل تسريع العتاد في إعدادات المتصفح
             أو استخدام إصدار حديث من Chrome أو Edge أو Firefox أو Safari.
           </p>
         </div>
@@ -122,9 +122,9 @@ export default function AnatomyViewport({ asset }: { asset: AnatomyAssetDefiniti
       {contextLost && (
         <div role="alert" className="absolute inset-0 z-30 flex items-center justify-center bg-bg/80 p-6">
           <div className="max-w-sm rounded-2xl border border-line bg-panel p-6 text-center">
-            <h2 className="text-base font-semibold">فُقد سياق الرسوميات</h2>
+            <h2 className="text-base font-semibold">فقد سياق الرسوميات</h2>
             <p className="mt-2 text-sm text-muted">
-              أعاد معالج الرسوميات ضبط السياق ثلاثي الأبعاد (غالبًا بسبب ضغط الذاكرة أو تحديث التعريف).
+              أعاد معالج الرسوميات ضبط السياق ثلاثي الأبعاد (غالبا بسبب ضغط الذاكرة أو تحديث التعريف).
             </p>
             <Button variant="primary" className="mt-4" onClick={restart}>
               إعادة تشغيل العارض

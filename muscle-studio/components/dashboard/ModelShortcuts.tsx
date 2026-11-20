@@ -22,7 +22,7 @@ function StatusPill({ state }: { state: boolean | undefined }) {
       )}
     >
       <span className={cn("h-1.5 w-1.5 rounded-full", state === undefined ? "bg-muted" : state ? "bg-ok" : "bg-danger")} />
-      {state === undefined ? "جارٍ التحقق…" : state ? "النموذج جاهز" : "ملف النموذج غير موجود"}
+      {state === undefined ? "جار التحقق…" : state ? "النموذج جاهز" : "ملف النموذج غير موجود"}
     </span>
   );
 }

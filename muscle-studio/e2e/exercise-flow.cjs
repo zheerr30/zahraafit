@@ -49,9 +49,9 @@ async function tapMuscle(page, id, touch) {
     await shot(page, '1-summary');
 
     await panel.locator('[data-action=learn-more]').click();
-    ok('learn more → anatomical details', (await panel.getAttribute('data-panel')) === 'details' && (await panel.innerText()).includes('الوظيفة'));
+    ok('learn more → anatomical details', (await panel.getAttribute('data-panel')) === 'details' && (await panel.innerText()).includes('ماذا تفعل'));
     await shot(page, '2-learn-more');
-    await panel.getByLabel('رجوع إلى ملخّص العضلة').click();
+    await panel.getByLabel('رجوع إلى ملخص العضلة').click();
     ok('back → summary', (await panel.getAttribute('data-panel')) === 'summary');
 
     await panel.locator('[data-action=exercises]').click();
@@ -105,7 +105,7 @@ async function tapMuscle(page, id, touch) {
     s = await state(page);
     ok('tapping a target muscle selects it on the model', s.sel === 'long-head-of-triceps-brachii' && s.panel === 'exercises', s.sel);
 
-    await panel.getByLabel('رجوع إلى ملخّص العضلة').click();
+    await panel.getByLabel('رجوع إلى ملخص العضلة').click();
     await panel.locator('[data-action=isolate]').click();
     await page.waitForTimeout(1500);
     s = await state(page);

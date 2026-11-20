@@ -44,7 +44,7 @@ export const MuscleSearchInput = forwardRef<
 export function GranularityBadge({ muscle }: { muscle: MuscleDefinition }) {
   if (muscle.granularity === "part") {
     return (
-      <span className="shrink-0 rounded border border-accent-2/50 px-1 text-[10px] text-accent-2" title="جزء مسمّى من عضلة، شبكة مستقلة">
+      <span className="shrink-0 rounded border border-accent-2/50 px-1 text-[10px] text-accent-2" title="جزء مسمى من عضلة، شبكة مستقلة">
         جزء
       </span>
     );
@@ -110,7 +110,7 @@ function MuscleRow({
         </span>
       </span>
       {missing ? (
-        <span className="shrink-0 rounded border border-warn/40 px-1 text-[10px] text-warn" title="لا توجد شبكة لهذه العضلة في النموذج المحمّل">
+        <span className="shrink-0 rounded border border-warn/40 px-1 text-[10px] text-warn" title="لا توجد شبكة لهذه العضلة في النموذج المحمل">
           غير موجودة
         </span>
       ) : (
@@ -136,7 +136,7 @@ function SelectedList() {
   if (!ids.length) {
     return (
       <p className="px-4 py-3 text-xs leading-relaxed text-muted">
-        لا توجد عضلات محددة. النقر على عضلة في النموذج أو في القائمة يلوّنها، والنقر مرة أخرى يزيل اللون.
+        لا توجد عضلات محددة. النقر على عضلة في النموذج أو في القائمة يلونها، والنقر مرة أخرى يزيل اللون.
       </p>
     );
   }

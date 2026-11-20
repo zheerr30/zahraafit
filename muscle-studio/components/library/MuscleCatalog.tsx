@@ -124,8 +124,8 @@ export function MuscleCatalog() {
           تغطية BodyParts3D للعضلات المستهدفة الـ32
         </h2>
         <p className="mb-4 mt-1 max-w-3xl text-sm leading-relaxed text-muted">
-          فُحصت ملفات BodyParts3D 4.0 كلها (2234 ملفًا). يبيّن الجدول ما يمكن تلوينه فعلًا لكل عضلة من القائمة المرجعية،
-          وما لا يحتويه المصدر أصلًا.
+          فحصت ملفات BodyParts3D 4.0 كلها (2234 ملفا). يبين الجدول ما يمكن تلوينه فعلا لكل عضلة من القائمة المرجعية،
+          وما لا يحتويه المصدر أصلا.
         </p>
         <div className="mb-3 flex flex-wrap gap-2 text-xs">
           {(Object.keys(COVERAGE_LABELS) as CoverageStatus[]).map((s) => (

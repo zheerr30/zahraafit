@@ -2,18 +2,17 @@
 
 import Link from "next/link";
 import { useRef } from "react";
-import { DEPTH_NAMES, REGION_MUSCLE_BY_ID, type RegionMuscle } from "@/data/region/backShoulders";
+import { REGION_MUSCLE_BY_ID, type RegionMuscle } from "@/data/region/backShoulders";
 import { EXERCISE_BY_ID, type Exercise } from "@/data/exercises/exercises";
-import { GROUP_BY_ID, groupsOfUnit } from "@/data/exercises/groups";
+import { GROUP_BY_ID } from "@/data/exercises/groups";
 import { countForUnit, groupIdsOfUnit, spotlightOf, viewOf } from "@/lib/exercises";
-import { describeMuscle } from "@/lib/exercises/describe";
-import { COLORS, secondaryHighlight } from "@/lib/region/backModel";
+import { STRUCTURE_ABOUT, explainMuscle } from "@/lib/exercises/describe";
+import { secondaryHighlight } from "@/lib/region/backModel";
 import { backStore, useBack, type PanelMode } from "@/stores/backStore";
 import { cn } from "@/components/ui/cn";
 import { IconBack, IconBody, IconDumbbell, IconFocus, IconInfo, IconIsolate, IconX } from "@/components/ui/icons";
 import { ExerciseLibrary } from "@/components/exercise/ExerciseLibrary";
 import { regionBridge } from "./BackViewport";
-import { SourceMeta } from "./SourceMeta";
 import { REGION_SHORT, useCover, useIsDesktop } from "./studioUi";
 
 const KIND_AR: Record<string, string> = {
@@ -71,8 +70,8 @@ const soft = "flex h-10 items-center justify-center gap-1.5 rounded-xl border bo
  * Panel of the structure picked on the 3D model — kept minimal:
  *  - summary: the muscle's name, its group and what it does in a sentence or two,
  *    with the actions (exercises, isolate, focus);
- *  - details, behind the ⓘ button: origin, insertion, action, innervation, related
- *    muscles, tools on the model and the source data;
+ *  - explanation, behind the ⓘ button: where the muscle is, what it does and the
+ *    movements it works in, in plain Arabic — no source or database data anywhere;
  *  - exercises: the exercise library for this muscle.
  * A floating card at the side on desktop, a bottom sheet on a phone; the 3D view
  * shifts its subject into the part the panel leaves free.
@@ -99,8 +98,10 @@ export function MusclePanel() {
   const groups = isUnit ? groupIdsOfUnit(selected.id) : [];
   const counts = isUnit ? countForUnit(selected.id) : { strength: 0, stretch: 0 };
   const total = counts.strength + counts.stretch;
-  const about = isUnit ? describeMuscle(selected.id, modelUnit?.region) : null;
-  const panel: PanelMode = mode;
+  // Muscles: a plain explanation. Other structures: one sentence on what they are (no details view).
+  const explain = isUnit ? explainMuscle(selected.id, modelUnit?.region) : null;
+  const about = explain ? explain.about : (STRUCTURE_ABOUT[selected.kind] ?? null);
+  const panel: PanelMode = isUnit ? mode : "summary";
   const focus = () => (isUnit ? st.focus(selected.id, selected.side) : backStore.setState({ cameraCommand: { type: "focus-structure", key: selected.id, nonce: Date.now() } }));
   // A tall sheet on a phone leaves a small part of the view: bring the muscle into it.
   const open = (p: PanelMode) => {
@@ -132,7 +133,7 @@ export function MusclePanel() {
       <span aria-hidden className="mx-auto mt-2 h-1 w-9 shrink-0 rounded-full bg-white/18 lg:hidden" />
       <div className="flex shrink-0 items-start gap-2 px-4 pb-2 pt-3">
         {panel !== "summary" ? (
-          <button type="button" aria-label="رجوع إلى ملخّص العضلة" title="رجوع" onClick={() => st.setPanel("summary")} className={cn(ghost, "-ms-1.5 -mt-1")}>
+          <button type="button" aria-label="رجوع إلى ملخص العضلة" title="رجوع" onClick={() => st.setPanel("summary")} className={cn(ghost, "-ms-1.5 -mt-1")}>
             <IconBack size={18} />
           </button>
         ) : (
@@ -150,8 +151,8 @@ export function MusclePanel() {
           )}
           {panel === "summary" && <p className="mt-0.5 text-xs text-muted">{groupLine}</p>}
         </div>
-        {panel === "summary" && (
-          <button type="button" data-action="learn-more" aria-label="تفاصيل تشريحية" title="تفاصيل تشريحية" onClick={() => open("details")} className={cn(ghost, "-mt-1")}>
+        {panel === "summary" && isUnit && (
+          <button type="button" data-action="learn-more" aria-label="شرح العضلة" title="شرح العضلة" onClick={() => open("details")} className={cn(ghost, "-mt-1")}>
             <IconInfo size={19} />
           </button>
         )}
@@ -184,97 +185,73 @@ export function MusclePanel() {
             </div>
             {(isolate || region) && (
               <button type="button" data-action="full-body" onClick={st.showFullBody} className={cn(soft, "w-full")}>
-                <IconBody size={15} /> عرض الجسم كاملًا
+                <IconBody size={15} /> عرض الجسم كاملا
               </button>
             )}
           </div>
         )}
 
-        {panel === "details" && (
-          <div className="space-y-4 px-4 pb-4">
-            {unit ? (
-              <dl className="space-y-3 text-sm leading-relaxed">
-                <div>
-                  <dt className="flex items-center gap-1.5 text-[11px] font-semibold text-muted">
-                    <span className="size-2 rounded-full" style={{ background: COLORS.origin }} /> المنشأ
-                  </dt>
-                  <dd>{unit.origin}</dd>
-                </div>
-                <div>
-                  <dt className="flex items-center gap-1.5 text-[11px] font-semibold text-muted">
-                    <span className="size-2 rounded-full" style={{ background: COLORS.insertion }} /> المرتكز
-                  </dt>
-                  <dd>{unit.insertion}</dd>
-                </div>
-                <div>
-                  <dt className="text-[11px] font-semibold text-muted">الوظيفة</dt>
-                  <dd>{unit.action}</dd>
-                </div>
-                <div>
-                  <dt className="text-[11px] font-semibold text-muted">التعصيب</dt>
-                  <dd>{unit.innervation}</dd>
-                </div>
-                <Chips title="العضلات المساعدة" list={unit.synergists} />
-                <Chips title="العضلات المضادة" list={unit.antagonists} />
-                {unit.note && <p className="rounded-xl bg-white/5 p-2.5 text-xs text-muted">{unit.note}</p>}
-              </dl>
-            ) : (
-              <dl className="space-y-3 text-sm leading-relaxed">
-                {about && (
-                  <div>
-                    <dt className="text-[11px] font-semibold text-muted">الوظيفة</dt>
-                    <dd>{about}</dd>
-                  </div>
-                )}
-                {!isUnit && (
-                  <div>
-                    <dt className="text-[11px] font-semibold text-muted">النوع</dt>
-                    <dd>{groupLine}</dd>
-                  </div>
-                )}
-                {groups.length > 0 && (
-                  <div>
-                    <dt className="mb-1 text-[11px] font-semibold text-muted">المجموعة الوظيفية</dt>
-                    <dd className="flex flex-wrap gap-1">
-                      {groupsOfUnit(selected.id).map((g) => (
-                        <span key={g.id} className="rounded-full bg-white/6 px-2.5 py-1 text-[11px] text-muted">
-                          {g.ar}
-                        </span>
-                      ))}
-                    </dd>
-                  </div>
-                )}
+        {panel === "details" && explain && (
+          <div className="space-y-4 px-4 pb-4 text-sm leading-relaxed">
+            {explain.where && (
+              <section>
+                <h4 className="mb-1 text-xs font-semibold text-muted">أين تقع</h4>
+                <p>{explain.where}</p>
+              </section>
+            )}
+            <section>
+              <h4 className="mb-1 text-xs font-semibold text-muted">ماذا تفعل</h4>
+              {explain.does.length ? (
+                <ul className="space-y-1">
+                  {explain.does.map((d) => (
+                    <li key={d} className="flex gap-2">
+                      <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-[#D2626C]" />
+                      {d}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>{explain.about}</p>
+              )}
+            </section>
+            {explain.moves.length > 0 && (
+              <section>
+                <h4 className="mb-1.5 text-xs font-semibold text-muted">تعمل في</h4>
+                <ul className="flex flex-wrap gap-1.5">
+                  {explain.moves.map((m) => (
+                    <li key={m} className="rounded-full bg-white/7 px-2.5 py-1 text-xs text-white/85">
+                      {m}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+            {unit && (
+              <dl className="space-y-3">
+                <Chips title="عضلات تعمل معها" list={unit.synergists} />
+                <Chips title="عضلات تعاكسها" list={unit.antagonists} />
               </dl>
             )}
-            {isUnit && modelUnit && (
-              <p className="text-xs text-muted">
-                الطبقة: {DEPTH_NAMES[modelUnit.depth]} · {REGION_SHORT[modelUnit.region] ?? ""}
-              </p>
+            <div className="grid grid-cols-2 gap-2">
+              <button type="button" onClick={() => st.showAttachmentsOf(selected.id)} className={cn(soft, "h-auto min-h-10 py-2 text-xs")}>
+                إظهار ارتباطها بالعظم
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  st.toggleUnit(selected.id);
+                  st.select(null);
+                }}
+                className={cn(soft, "h-auto min-h-10 py-2 text-xs")}
+              >
+                إخفاء العضلة
+              </button>
+            </div>
+            {total > 0 && (
+              <button type="button" onClick={() => open("exercises")} className="flex h-10 w-full items-center justify-center gap-1.5 rounded-xl bg-[#A5111F] px-3 text-sm font-medium text-white transition-colors hover:bg-[#BA1626]">
+                <IconDumbbell size={16} /> تمارين هذه العضلة ({total})
+              </button>
             )}
-            {isUnit && (
-              <div className="grid grid-cols-2 gap-2">
-                <button type="button" onClick={() => st.showAttachmentsOf(selected.id)} className={cn(soft, "h-auto min-h-10 py-2 text-xs")}>
-                  المنشأ والمرتكز على العظم
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    st.toggleUnit(selected.id);
-                    st.select(null);
-                  }}
-                  className={cn(soft, "h-auto min-h-10 py-2 text-xs")}
-                >
-                  إخفاء العضلة
-                </button>
-              </div>
-            )}
-            <details className="group rounded-xl border border-white/10">
-              <summary className="flex cursor-pointer list-none items-center justify-between px-3 py-2.5 text-xs font-medium text-muted hover:text-fg">
-                بيانات المصدر العلمي
-                <span aria-hidden className="transition-transform group-open:rotate-180">⌄</span>
-              </summary>
-              <SourceMeta picked={selected} />
-            </details>
           </div>
         )}
 
@@ -283,7 +260,7 @@ export function MusclePanel() {
             {groups.length ? (
               <>
                 <p className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 px-1 text-[11px] text-muted">
-                  <span>اختيار تمرين يُضيء عضلاته على المجسّم:</span>
+                  <span>اختيار تمرين يضيء عضلاته على المجسم:</span>
                   <span className="flex items-center gap-1">
                     <span className="size-2 rounded-full" style={{ background: highlight }} /> أساسية
                   </span>
@@ -309,9 +286,9 @@ export function MusclePanel() {
               </>
             ) : (
               <div className="px-1 py-4 text-sm leading-relaxed text-muted">
-                <p>لا توجد في المكتبة تمارين مخصّصة لهذه العضلة.</p>
+                <p>لا توجد في المكتبة تمارين مخصصة لهذه العضلة.</p>
                 <Link href="/exercises" className="mt-2 inline-block text-accent-2 underline">
-                  تصفّح مكتبة التمارين كاملة
+                  تصفح مكتبة التمارين كاملة
                 </Link>
               </div>
             )}

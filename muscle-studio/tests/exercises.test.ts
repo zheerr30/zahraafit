@@ -12,7 +12,9 @@ import { countForUnit, filterExercises, functionOfUnit, relevance, spotlightOf, 
 import { applyStyle, prepareRegionModel, secondaryHighlight, type RegionModel } from "@/lib/region/backModel";
 import { backStore } from "@/stores/backStore";
 import { exerciseStore } from "@/stores/exerciseStore";
-import type { MeshPhysicalMaterial } from "three";
+import { Color, type MeshPhysicalMaterial } from "three";
+import { SELECTION_RED, SELECTION_RED_SOFT } from "@/lib/highlight";
+import { describeMuscle } from "@/lib/exercises/describe";
 
 const PUBLIC = join(__dirname, "../public");
 let model: RegionModel;
@@ -143,13 +145,63 @@ describe("an exercise lights its muscles on the model", () => {
     const sets = { primary: new Set(spot.primary), secondary: new Set(spot.secondary) };
     const hex = (id: string) => `#${(model.byUnit.get(id)![0].mesh.material as MeshPhysicalMaterial).color.getHexString()}`;
     const before = { quad: hex("rectus-femoris-muscle"), add: hex("adductor-magnus"), bic: hex("long-head-of-biceps-brachii") };
-    for (const m of model.meshes) applyStyle(m, null, null, "#E8602C", sets);
-    expect(hex("rectus-femoris-muscle")).toBe("#e8602c");
-    expect(hex("adductor-magnus")).toBe(secondaryHighlight("#E8602C").toLowerCase());
+    for (const m of model.meshes) applyStyle(m, null, null, SELECTION_RED, sets);
+    expect(hex("rectus-femoris-muscle")).toBe(SELECTION_RED.toLowerCase());
+    expect(hex("adductor-magnus")).toBe(SELECTION_RED_SOFT.toLowerCase());
+    expect(secondaryHighlight("#173F8A")).not.toBe("#173f8a"); // any other colour: a lighter tint of itself
     expect(hex("long-head-of-biceps-brachii")).toBe(before.bic);
-    for (const m of model.meshes) applyStyle(m, null, null, "#E8602C", null);
+    for (const m of model.meshes) applyStyle(m, null, null, SELECTION_RED, null);
     expect(hex("rectus-femoris-muscle")).toBe(before.quad);
     expect(hex("adductor-magnus")).toBe(before.add);
+  });
+
+  it("selection: a deep red, clearly apart from every muscle's own colour, and fully undone on deselect", () => {
+    expect(backStore.getState().highlightColor).toBe(SELECTION_RED);
+    const red = new Color(SELECTION_RED);
+    const hsl = { h: 0, s: 0, l: 0 };
+    red.getHSL(hsl);
+    // deep and rich, not orange and not neon: a red hue, strongly saturated, dark
+    expect(hsl.h > 0.93 || hsl.h < 0.02).toBe(true);
+    expect(hsl.s).toBeGreaterThan(0.75);
+    expect(hsl.l).toBeLessThan(0.42);
+    const units = [...model.units.keys()];
+    const state = (id: string) => {
+      const mat = model.byUnit.get(id)![0].mesh.material as MeshPhysicalMaterial;
+      return `${mat.color.getHexString()}|${mat.emissive.getHexString()}|${mat.sheen.toFixed(3)}|${mat.clearcoat.toFixed(3)}`;
+    };
+    let nearest = Infinity;
+    for (const id of units) {
+      const before = state(id);
+      const own = (model.byUnit.get(id)![0].mesh.material as MeshPhysicalMaterial).color.clone();
+      const sel = { kind: "unit" as const, id, side: "l" as const, ar: id, en: id };
+      for (const m of model.byUnit.get(id)!) applyStyle(m, sel, null, SELECTION_RED);
+      const mat = model.byUnit.get(id)![0].mesh.material as MeshPhysicalMaterial;
+      expect(mat.color.getHexString(), id).toBe(SELECTION_RED.slice(1).toLowerCase()); // the same colour for every muscle
+      expect(mat.emissive.r, id).toBeGreaterThan(0); // readable in shadow, from every side
+      // distance from the muscle's own colour, in sRGB (0…~1.7)
+      const a = own.clone().convertLinearToSRGB(), b = red.clone().convertLinearToSRGB();
+      nearest = Math.min(nearest, Math.hypot(a.r - b.r, a.g - b.g, a.b - b.b));
+      for (const m of model.byUnit.get(id)!) applyStyle(m, null, null, SELECTION_RED);
+      expect(state(id), `${id} restored`).toBe(before); // deselected: exactly its original appearance
+    }
+    expect(units.length).toBeGreaterThan(220);
+    expect(nearest).toBeGreaterThan(0.25);
+  });
+
+  it("every muscle has a short, plain description", () => {
+    const jargon = /إنسي|وحشي|تبعيد|أخمصي|ظهري|الحُقّ|استلقاء الساعد|العضد\b/;
+    for (const u of model.units.values()) {
+      const text = describeMuscle(u.id, u.region);
+      expect(text.length, u.id).toBeGreaterThan(15);
+      expect(text.length, u.id).toBeLessThan(120);
+      expect(text.split(/[.؟!]\s/).filter((x) => x.trim()).length, u.id).toBeLessThanOrEqual(2);
+      expect(jargon.test(text), `${u.id}: ${text}`).toBe(false);
+    }
+    expect(describeMuscle("rectus-abdominis-muscle")).toContain("البطن");
+    expect(describeMuscle("zygomaticus-major-muscle", "head-neck")).toContain("تعابير الوجه");
+    // only a few muscles fall back to the plain "a muscle of the … region" line
+    const generic = [...model.units.values()].filter((u) => /^عضلة (صغيرة )?من عضلات/.test(describeMuscle(u.id, u.region)));
+    expect(generic.length, generic.map((u) => u.id).join(" ")).toBeLessThan(6);
   });
 
   it("store: a new selection opens the summary and clears the spotlight; full body leaves isolation", () => {

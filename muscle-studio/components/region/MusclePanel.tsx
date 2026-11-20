@@ -5,7 +5,9 @@ import { DEPTH_NAMES, REGION_MUSCLE_BY_ID, type RegionMuscle } from "@/data/regi
 import { EXERCISE_BY_ID, type Exercise } from "@/data/exercises/exercises";
 import { GROUP_BY_ID, groupsOfUnit } from "@/data/exercises/groups";
 import { countForUnit, functionOfUnit, groupIdsOfUnit, spotlightOf, viewOf } from "@/lib/exercises";
-import { COLORS, REGIONS } from "@/lib/region/backModel";
+import { describeMuscle } from "@/lib/exercises/describe";
+import { SELECTION_SWATCHES } from "@/lib/highlight";
+import { COLORS, REGIONS, secondaryHighlight } from "@/lib/region/backModel";
 import { backStore, useBack, type PanelMode } from "@/stores/backStore";
 import { cn } from "@/components/ui/cn";
 import { IconBack, IconBody, IconBook, IconDumbbell, IconFocus, IconX } from "@/components/ui/icons";
@@ -24,7 +26,7 @@ const KIND_AR: Record<string, string> = {
 };
 const REGION_AR = Object.fromEntries(REGIONS.map((r) => [r.id, r.ar]));
 const SIDE_AR = { l: "الأيسر", r: "الأيمن", m: "" } as const;
-const SWATCHES = ["#E8602C", "#EEA585", "#173F8A", "#2E9E6A", "#D4A017"];
+const SWATCHES = SELECTION_SWATCHES;
 
 function Chips({ title, list }: { title: string; list: RegionMuscle["synergists"] }) {
   return (
@@ -92,6 +94,8 @@ export function MusclePanel() {
   const groups = isUnit ? groupIdsOfUnit(selected.id) : [];
   const counts = isUnit ? countForUnit(selected.id) : { strength: 0, stretch: 0 };
   const total = counts.strength + counts.stretch;
+  // Summary: one or two plain sentences. The anatomical wording (origin, insertion, action…) is under "learn more".
+  const about = isUnit ? describeMuscle(selected.id, modelUnit?.region) : null;
   const fn = unit?.action ?? (isUnit ? functionOfUnit(selected.id) : null);
   const panel: PanelMode = isUnit ? mode : "summary";
   const focus = () => (isUnit ? st.focus(selected.id, selected.side) : backStore.setState({ cameraCommand: { type: "focus-structure", key: selected.id, nonce: Date.now() } }));
@@ -145,8 +149,7 @@ export function MusclePanel() {
       <div className="scroll-thin min-h-0 flex-1 overflow-y-auto">
         {panel === "summary" && (
           <div className="space-y-3 px-4 py-3">
-            {fn && <p className="text-sm leading-relaxed">{fn}</p>}
-            {!fn && isUnit && <p className="text-sm leading-relaxed text-[#4b5d80]">عضلة مستقلة من نموذج Z-Anatomy. التفاصيل التشريحية من المصدر في «اعرف أكثر».</p>}
+            {about && <p data-muscle-about="" className="text-sm leading-relaxed">{about}</p>}
             {!isUnit && <p className="text-sm leading-relaxed text-[#4b5d80]">بنية تشريحية من نموذج Z-Anatomy.</p>}
             {isUnit && (
               <div className="grid grid-cols-2 gap-2">
@@ -265,7 +268,7 @@ export function MusclePanel() {
                 <p className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 px-1 text-[11px] text-[#6b7891]">
                   <span>اختيار تمرين يُضيء عضلاته على المجسّم:</span>
                   <span className="flex items-center gap-1"><span className="size-2 rounded-full" style={{ background: highlight }} /> أساسية</span>
-                  <span className="flex items-center gap-1"><span className="size-2 rounded-full opacity-50" style={{ background: highlight }} /> مساعدة</span>
+                  <span className="flex items-center gap-1"><span className="size-2 rounded-full" style={{ background: secondaryHighlight(highlight) }} /> مساعدة</span>
                 </p>
                 <ExerciseLibrary
                   key={selected.id}

@@ -2,7 +2,8 @@ import { Box3, Color, Mesh, MeshPhysicalMaterial, NormalBlending, Raycaster, Vec
 import { acceleratedRaycast, computeBoundsTree, disposeBoundsTree } from "three-mesh-bvh";
 import { REGION_MUSCLE_BY_ID, type RegionLayer } from "@/data/region/backShoulders";
 import { dequantizeMesh } from "@/lib/three/anatomyModel";
-import { createMuscleMaterial, HIGHLIGHT_LOOK, REALISTIC_LOOK, setMuscleLook } from "@/lib/three/muscleMaterial";
+import { createMuscleMaterial, REALISTIC_LOOK, setMuscleLook, type MuscleLook } from "@/lib/three/muscleMaterial";
+import { SELECTION_RED, SELECTION_RED_SOFT } from "@/lib/highlight";
 import { axisTangents, createMuscleMaterialHD, createTissueMaterialHD, muscleDetail, principalAxis, setCoverageBlending, setMuscleLookHD } from "@/lib/three/hdMaterials";
 import { markRectusSheath, renderDepth } from "@/lib/three/abdomen";
 import { fibreTangents, orientFibres, refineMeshInPlace } from "@/lib/three/refine";
@@ -59,7 +60,7 @@ export interface RegionModel {
 }
 
 export const COLORS = {
-  highlight: "#E8602C",
+  highlight: SELECTION_RED,
   origin: TISSUE.origin,
   insertion: TISSUE.insertion,
   nerve: TISSUE.nerve,
@@ -273,10 +274,20 @@ export interface SpotlightSets {
   secondary: Set<string>;
 }
 
-/** Colour of the helper (secondary) muscles of an exercise: the highlight, lightened. */
+/** Colour of the helper (secondary) muscles of an exercise: the highlight, lightened (a soft rose for the default red). */
 export function secondaryHighlight(highlight: string): string {
-  return `#${new Color(highlight).lerp(new Color("#ffffff"), 0.5).getHexString()}`;
+  if (highlight.toLowerCase() === SELECTION_RED.toLowerCase()) return SELECTION_RED_SOFT;
+  return `#${new Color(highlight).lerp(new Color("#ffffff"), 0.42).getHexString()}`;
 }
+
+/**
+ * Look of the selected muscle: one clean colour over the whole muscle. Fibre
+ * striping, the pale tendon ends and the baked shading are held back, so the
+ * selection reads as a single shape from every side.
+ */
+export const SELECT_LOOK: MuscleLook = { tendon: 0.3, bump: 0.5, stripe: 0.28, ao: 0.55, sheen: 0.18, clearcoat: 0.25, roughness: 0.5 };
+/** Part of its own colour the selected muscle emits, so it stays readable in shadow and from behind the key light. */
+const SELECT_GLOW = 0.12;
 
 /**
  * Colour / look of a mesh for the current selection, hover and highlight colour.
@@ -294,7 +305,9 @@ export function applyStyle(m: RegionMesh, selected: PickedStructure | null, hove
   const mat = m.mesh.material as MeshPhysicalMaterial;
   if (m.kind === "unit") {
     const lit = isSel || role === 1;
-    (mat.userData.hd ? setMuscleLookHD : setMuscleLook)(mat, isSel ? highlight : role === 1 ? secondaryHighlight(highlight) : m.baseHex, lit ? HIGHLIGHT_LOOK : REALISTIC_LOOK, isHover);
+    const hex = isSel ? highlight : role === 1 ? secondaryHighlight(highlight) : m.baseHex;
+    (mat.userData.hd ? setMuscleLookHD : setMuscleLook)(mat, hex, lit ? SELECT_LOOK : REALISTIC_LOOK, isHover);
+    if (lit) mat.emissive.set(hex).multiplyScalar(SELECT_GLOW + (isHover ? 0.12 : 0));
   } else if (m.kind !== "attachment") {
     const c = new Color(isSel ? highlight : m.baseHex);
     mat.color.copy(c);

@@ -1,6 +1,7 @@
 import { useStore } from "zustand";
 import { createStore } from "zustand/vanilla";
 import { REGION_MUSCLES, type RegionLayer } from "@/data/region/backShoulders";
+import { SELECTION_RED } from "@/lib/highlight";
 
 /** What the user picked on the model: a muscle unit (full card) or any other structure (name only). */
 export interface PickedStructure {
@@ -113,7 +114,7 @@ export const backStore = createStore<BackState>()((set, get) => ({
   showEnglish: false,
   background: "black",
   autoRotate: false,
-  highlightColor: "#E8602C",
+  highlightColor: SELECTION_RED,
   sex: "male",
   hd: null,
   unitsVersion: 0,
@@ -177,7 +178,7 @@ export const backStore = createStore<BackState>()((set, get) => ({
   setShowEnglish: (v) => set({ showEnglish: v }),
   setBackground: (b) => set({ background: b }),
   setAutoRotate: (v) => set({ autoRotate: v }),
-  setHighlightColor: (hex) => set({ highlightColor: /^#[0-9a-fA-F]{6}$/.test(hex) ? hex : "#E8602C" }),
+  setHighlightColor: (hex) => set({ highlightColor: /^#[0-9a-fA-F]{6}$/.test(hex) ? hex : SELECTION_RED }),
   setSex: (sex) => set({ sex, selected: null, hovered: null, isolate: false, spotlight: null }),
   setHd: (hd) => set({ hd, selected: null, hovered: null, isolate: false, spotlight: null }),
   focusRegion: (region) =>

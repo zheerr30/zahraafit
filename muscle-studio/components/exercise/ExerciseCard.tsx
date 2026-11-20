@@ -53,7 +53,7 @@ export function ExerciseCard({ exercise: e, tone, open, bookmarked, showEnglish,
             <span className={cn("mt-0.5 line-clamp-1 text-[11px]", T.soft)}>{names(e.primary)}</span>
             <span className="mt-auto flex flex-wrap items-center gap-1 pt-1.5 text-[10.5px]">
               {role > 0 && (
-                <span className={cn("rounded-full px-1.5 py-0.5 font-medium", role === 2 ? "bg-[#E8602C] text-white" : "bg-[#fbd9c9] text-[#9a3d14]")}>
+                <span className={cn("rounded-full px-1.5 py-0.5 font-medium", role === 2 ? "bg-[#A5111F] text-white" : "bg-[#f6d5dc] text-[#8a1730]")}>
                   {role === 2 ? "عضلة أساسية" : "عضلة مساعدة"}
                 </span>
               )}
@@ -101,8 +101,8 @@ export function ExerciseCard({ exercise: e, tone, open, bookmarked, showEnglish,
           <dl className="min-w-0 flex-1 space-y-1.5 text-xs">
             {(
               [
-                ["العضلات الأساسية", e.primary, "bg-[#E8602C]"],
-                ["العضلات المساعدة", e.secondary, "bg-[#F3B095]"],
+                ["العضلات الأساسية", e.primary, "bg-[#A5111F]"],
+                ["العضلات المساعدة", e.secondary, "bg-[#D2626C]"],
               ] as [string, string[], string][]
             ).map(([title, ids, dot]) =>
               ids.length ? (

@@ -323,6 +323,12 @@ export function BackStudio({ initialRegion = null, hd = false }: { initialRegion
     return () => backStore.setState({ hd: null });
   }, [initialRegion, hd]);
   const [load, setLoad] = useState<LoadState>({ status: "loading", progress: 0 });
+  // "Try again" after a failed download: the viewer is mounted anew and loads the model again.
+  const [attempt, setAttempt] = useState(0);
+  const retry = () => {
+    setLoad({ status: "loading", progress: 0 });
+    setAttempt((n) => n + 1);
+  };
   const onState = useCallback((s: LoadState) => setLoad(s), []);
   const isolate = useBack((s) => s.isolate);
   const selected = useBack((s) => s.selected);
@@ -400,7 +406,7 @@ export function BackStudio({ initialRegion = null, hd = false }: { initialRegion
       <div className="flex min-h-0 flex-1 max-lg:flex-col-reverse">
         <LayersPanel />
         <main className="relative min-h-0 flex-1 bg-black max-lg:min-h-[58dvh]" data-viewport-wrap="">
-          <BackViewport onState={onState} />
+          <BackViewport key={attempt} onState={onState} />
           {load.status === "loading" && (
             <div className="absolute inset-0 grid place-items-center">
               <div className="w-64 text-center text-sm text-white/80">
@@ -412,10 +418,13 @@ export function BackStudio({ initialRegion = null, hd = false }: { initialRegion
             </div>
           )}
           {load.status === "error" && (
-            <div role="alert" className="absolute inset-0 grid place-items-center p-6">
+            <div role="alert" data-load-error="" className="absolute inset-0 grid place-items-center p-6">
               <div className="max-w-md rounded-2xl bg-white p-5 text-center text-sm text-[#13213d]">
                 <p className="mb-1 font-semibold text-[#c44a1c]">تعذّر تحميل النموذج التشريحي</p>
                 <p dir="auto" className="text-[#4b5d80]">{load.message}</p>
+                <button type="button" data-action="retry-load" onClick={retry} className="mt-3 rounded-lg bg-[#0B2E6B] px-4 py-2 text-sm font-medium text-white hover:bg-[#173F8A]">
+                  إعادة المحاولة
+                </button>
                 <p className="mt-2 text-xs text-[#6b7891]">لا يُعرض أي مجسّم بديل.</p>
               </div>
             </div>

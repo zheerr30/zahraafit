@@ -10,7 +10,13 @@ const T = (page, fn, a) => page.evaluate(fn, a);
 const shot = async (page, name) => { if (SHOTS) await page.screenshot({ path: `${SHOTS}/${name}.png` }); };
 const PEC = 'sternocostal-head-of-pectoralis-major-muscle';
 const rgb = (s) => (s.match(/[\d.]+/g) || []).slice(0, 3).map(Number);
-const near = (a, b, tol = 2) => a.length === 3 && a.every((v, i) => Math.abs(v - b[i]) <= tol);
+const near = (a, b, tol = 2) => a.length >= 3 && b.every((v, i) => Math.abs(v - a[i]) <= tol);
+// any CSS colour (the browser reports mixed ones as oklab) → [r, g, b, alpha 0–255]
+const rgba = (page, color) => T(page, (c) => {
+  const x = document.createElement('canvas'); x.width = x.height = 1;
+  const g = x.getContext('2d', { willReadFrequently: true }); g.fillStyle = c; g.fillRect(0, 0, 1, 1);
+  return [...g.getImageData(0, 0, 1, 1).data];
+}, color);
 
 async function open(browser, path, { phone = false } = {}) {
   const ctx = await browser.newContext(phone ? { viewport: { width: 390, height: 780 }, hasTouch: true, isMobile: true } : { viewport: { width: 1366, height: 800 } });
@@ -58,7 +64,8 @@ const backdrop = (page) => T(page, () => {
     ok('theme: cream page #F6F2EA', css.theme === 'zahraafit' && near(rgb(css.page), [246, 242, 234]), css.page);
     ok('theme: navy text #050F2C', near(rgb(css.text), [5, 15, 44]) && near(rgb(css.region), [5, 15, 44]), css.text);
     ok('theme: white bars and menus', near(rgb(css.header), [255, 255, 255]) && near(rgb(css.dock), [255, 255, 255]), `${css.header} ${css.dock}`);
-    ok('theme: separators rgba(5,15,44,.1)', /rgba?\(5, 15, 44, 0\.1\)|color\(srgb 0\.0196\d* 0\.0588\d* 0\.1725\d* \/ 0\.1\)/.test(css.line), css.line);
+    const line = await rgba(page, css.line);
+    ok('theme: separators rgba(5,15,44,.1)', near(line, [5, 15, 44], 12) && Math.abs(line[3] - 25.5) <= 2, `${css.line} → ${line.join(',')}`);
     const b = await backdrop(page);
     ok('theme: light cream backdrop behind the model', near(b, [246, 242, 234], 6), b.join(','));
     await shot(page, 't1-desktop');
@@ -72,7 +79,7 @@ const backdrop = (page) => T(page, () => {
     ok('theme: the selected muscle is orange on the model', (await T(page, (u) => window.__backStudioTest.unitColor(u), PEC)) === '#e8602c');
     const panel = page.locator('[role=dialog][data-panel]');
     const pc = await T(page, () => { const p = document.querySelector('[role=dialog][data-panel]'); const b = p.querySelector('[data-action=learn-more]'); return { card: getComputedStyle(p).backgroundColor, btn: getComputedStyle(b).backgroundColor, name: getComputedStyle(p.querySelector('h3')).color }; });
-    ok('theme: white muscle card, navy name, orange button', /255, 255, 255|srgb 1 1 1/.test(pc.card) && near(rgb(pc.btn), [232, 96, 44]) && near(rgb(pc.name), [5, 15, 44]), JSON.stringify(pc));
+    ok('theme: white muscle card, navy name, orange button', near(await rgba(page, pc.card), [255, 255, 255]) && near(rgb(pc.btn), [232, 96, 44]) && near(rgb(pc.name), [5, 15, 44]), JSON.stringify(pc));
     await shot(page, 't2-desktop-muscle');
     await panel.locator('[data-action=learn-more]').click();
     await panel.locator('[data-panel-tab=exercises]').click();
@@ -92,7 +99,7 @@ const backdrop = (page) => T(page, () => {
     await page.waitForTimeout(9000);
     await shot(page, 't4-phone-muscle');
     const sheet = await T(page, () => getComputedStyle(document.querySelector('[role=dialog][data-panel]')).backgroundColor);
-    ok('phone: white sheet on the cream page', /255, 255, 255|srgb 1 1 1/.test(sheet), sheet);
+    ok('phone: white sheet on the cream page', near(await rgba(page, sheet), [255, 255, 255]), sheet);
     ok('no page errors (phone)', errors.length === 0, errors.join(' | '));
     await ctx.close();
   }

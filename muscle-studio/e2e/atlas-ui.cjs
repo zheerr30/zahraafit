@@ -57,7 +57,8 @@ const WARN = /تقريب|لا يوجد مصدر|approximat|النموذج الذ
     ok('zoom in / out buttons', d1 < d0 * 0.85 && d2 > d1 * 1.2, `${d0.toFixed(2)} → ${d1.toFixed(2)} → ${d2.toFixed(2)}`);
     await page.getByLabel('دوران 360°').click();
     const a0 = await T(page, () => window.__backStudioTest.cameraPos());
-    await page.waitForTimeout(4000);
+    // (a frame can take seconds here: wait for the camera to have turned, not for a fixed time)
+    await page.waitForFunction((p) => { const q = window.__backStudioTest.cameraPos(); return q[0] !== p[0] || q[2] !== p[2]; }, a0, { timeout: 90000 }).catch(() => {});
     const a1 = await T(page, () => window.__backStudioTest.cameraPos());
     ok('360° rotation runs', (await st(page)).auto && (a0[0] !== a1[0] || a0[2] !== a1[2]));
     await page.getByLabel('دوران 360°').click();

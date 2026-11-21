@@ -7,7 +7,7 @@ import { DEPTH_NAMES, LAYER_NAMES, type RegionLayer } from "@/data/region/backSh
 import { EXERCISE_BY_ID } from "@/data/exercises/exercises";
 import { spotlightOf, viewOf } from "@/lib/exercises";
 import { SELECTION_SWATCHES } from "@/lib/highlight";
-import { BRAND_SELECT, currentTheme } from "@/lib/theme";
+import { currentTheme } from "@/lib/theme";
 import { COLORS, REGIONS, type RegionUnit } from "@/lib/region/backModel";
 import { normalizeSearchText } from "@/lib/anatomy/normalize";
 import { backStore, useBack, type DepthMode, type DockTab, type PanelMode, type RegionView } from "@/stores/backStore";
@@ -333,7 +333,7 @@ function SettingsMenu() {
           <div className={cn(row, "border-t border-ink/10")}>
             لون التحديد
             <span className="flex items-center gap-1.5">
-              {(currentTheme() === "zahraafit" ? [BRAND_SELECT, ...SELECTION_SWATCHES.slice(0, 4)] : SELECTION_SWATCHES).map((c) => (
+              {SELECTION_SWATCHES.map((c) => (
                 <button
                   key={c}
                   type="button"
@@ -450,8 +450,9 @@ export function BackStudio({ initialRegion = null, hd = false }: { initialRegion
   // `?hd=0` / `?hd=1` override the page default (before/after comparison).
   useEffect(() => {
     const q = new URLSearchParams(window.location.search).get("hd");
-    // ZahraaFit theme (?theme=zahraafit): a cream backdrop behind the model, the brand's selection colour
-    const themed = currentTheme() === "zahraafit" ? ({ background: "cream", highlightColor: BRAND_SELECT } as const) : {};
+    // ZahraaFit theme (?theme=zahraafit): a cream backdrop behind the model. The selected muscle
+    // keeps its deep red in every theme (the orange of the brand is for buttons and chosen items).
+    const themed = currentTheme() === "zahraafit" ? ({ background: "cream" } as const) : {};
     backStore.setState({ region: initialRegion, hd: q === null ? hd : q === "1", ...themed });
     return () => backStore.setState({ hd: null });
   }, [initialRegion, hd]);

@@ -76,7 +76,7 @@ const backdrop = (page) => T(page, () => {
     ok('theme: the chosen item is orange #E8602C', near(rgb(on), [232, 96, 44]), on);
     await T(page, (u) => window.__backStudioTest.store.getState().selectUnit(u, 'l'), PEC);
     await page.waitForTimeout(9000);
-    ok('theme: the selected muscle is orange on the model', (await T(page, (u) => window.__backStudioTest.unitColor(u), PEC)) === '#e8602c');
+    ok('theme: the selected muscle keeps its deep red on the model', (await T(page, (u) => window.__backStudioTest.unitColor(u), PEC)) === '#a5111f');
     const panel = page.locator('[role=dialog][data-panel]');
     const pc = await T(page, () => { const p = document.querySelector('[role=dialog][data-panel]'); const b = p.querySelector('[data-action=learn-more]'); return { card: getComputedStyle(p).backgroundColor, btn: getComputedStyle(b).backgroundColor, name: getComputedStyle(p.querySelector('h3')).color }; });
     ok('theme: white muscle card, navy name, orange button', near(await rgba(page, pc.card), [255, 255, 255]) && near(rgb(pc.btn), [232, 96, 44]) && near(rgb(pc.name), [5, 15, 44]), JSON.stringify(pc));

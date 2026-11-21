@@ -1064,6 +1064,14 @@ function atlasSrc(){
   const u = ATLAS_MUSCLE[S.atlasMuscle];
   return ATLAS_URL + "/atlas" + (u ? "?muscle=" + u + "&panel=details" : "");
 }
+/* الأطلس يملأ ما تحت شريط البرنامج بالضبط، مهما كان ارتفاع الشريط */
+function fitAtlas(){
+  const el = document.querySelector(".atlas-screen");
+  if(!el) return;
+  const top = el.getBoundingClientRect().top + window.scrollY;
+  el.style.height = Math.max(420, window.innerHeight - top) + "px";
+}
+window.addEventListener("resize", fitAtlas);
 function screenAtlas(){
   const name = S.atlasMuscle && MUSCLES[S.atlasMuscle];
   return `<div class="atlas-screen">
@@ -3775,6 +3783,7 @@ function bind(){
   $$("[data-mind]").forEach(el=>el.onclick=()=>{ S.minDaily=+el.dataset.mind; render(); });
   $$("[data-maxd]").forEach(el=>el.onclick=()=>{ S.maxDaily=+el.dataset.maxd; render(); });
   $$("[data-glute]").forEach(el=>el.onclick=()=>{ S.gluteEmphasis=el.dataset.glute==="1"; render(); });
+  fitAtlas();
   $$("[data-atlas]").forEach(el=>el.onclick=()=>{ S._back=S.step; S.atlasMuscle=el.dataset.atlas; go(15); });
   $$("[data-act]").forEach(b=>b.onclick=()=>{
     const a=b.dataset.act;

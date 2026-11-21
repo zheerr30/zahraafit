@@ -98,7 +98,7 @@ const WARN = /تقريب|لا يوجد مصدر|approximat|النموذج الذ
     ok('panel: no technical or source data in the summary', !/Z-Anatomy|TA2|المنشأ|المرتكز|التعصيب|طبقة|المصدر/.test(text), text.replace(/\s+/g, ' ').slice(0, 80));
     await panel.locator('[data-action=learn-more]').click();
     const det = await panel.innerText();
-    ok('ⓘ opens a plain explanation: where it is, what it does, movements', (await panel.getAttribute('data-panel')) === 'details' && /أين تقع/.test(det) && /ماذا تفعل/.test(det) && /تعمل في/.test(det));
+    ok('learn more opens a plain explanation: where it is, what it does, movements', (await panel.getAttribute('data-panel')) === 'details' && /أين تقع/.test(det) && /ماذا تفعل/.test(det) && /تعمل في/.test(det));
     ok('no source or database data anywhere in the panel', !/Z-Anatomy|TA2|Wikipedia|الكائن|التسلسل|تصنيف المؤلف|بصمات|بيانات المصدر|المنشأ|المرتكز|التعصيب/.test(det), det.replace(/\s+/g, ' ').slice(0, 80));
     ok('nothing to expand into source data', (await panel.locator('details').count()) === 0);
     await panel.getByLabel('إغلاق البطاقة').click(); await rest(page);
@@ -178,7 +178,7 @@ const WARN = /تقريب|لا يوجد مصدر|approximat|النموذج الذ
     const box = await panel.boundingBox();
     ok('phone: tap selects; a short sheet shows name, group, function', s.sel === 'rectus-abdominis-muscle' && box.height < vp.height * 0.36 && (await panel.innerText()).includes('المجموعة: البطن'), `${Math.round(box.height)}px`);
     ok('phone: the muscle stays visible above the sheet', await T(page, () => { const q = window.__backStudioTest.pointFor('rectus-abdominis-muscle', 'l'); const top = document.querySelector('[role=dialog][data-panel]').getBoundingClientRect().top; return !!q && q.y < top - 20; }));
-    await panel.locator('[data-action=exercises]').tap(); await rest(page);
+    await panel.locator('[data-action=learn-more]').tap(); await panel.locator('[data-panel-tab=exercises]').tap(); await rest(page);
     ok('phone: with the exercises sheet open the muscle is still in view', await T(page, () => { const q = window.__backStudioTest.pointFor('rectus-abdominis-muscle', 'l'); const top = document.querySelector('[role=dialog][data-panel]').getBoundingClientRect().top; return !!q && q.y < top - 10 && q.y > 48; }));
     await page.locator('[data-dock-tab=muscles]').tap(); await page.waitForTimeout(500);
     ok('phone: a control sheet takes the place of the muscle panel', (await st(page)).dock === 'muscles' && !(await panel.isVisible()));

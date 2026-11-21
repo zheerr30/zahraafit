@@ -23,13 +23,14 @@ store (`stores/backStore.ts`) and model code drive the new interface.
 ## Muscle panel
 
 - **Summary** — only the muscle's name, its group and what it does in one or two
-  plain sentences, with the actions: التمارين, عزل, focus.
-- **ⓘ explanation** — written for people who train, in simple Arabic: أين تقع
+  plain sentences, with the actions: اعرف أكثر, عزل, focus.
+- **اعرف أكثر** opens one view with two tabs, الشرح and التمارين.
+- **Explanation tab** — written for people who train, in simple Arabic: أين تقع
   (where the muscle is), ماذا تفعل (what it does, as short points) and تعمل في
   (movements and exercises that use it); for the back and shoulder muscles also the
   muscles that work with and against it. Then two tools on the model (show its
   attachment on the bone, hide it) and a button to its exercises.
-- **Exercises** — the exercise library for the muscle.
+- **Exercises tab** — the exercise library for the muscle.
 
 No source or database data is shown anywhere in the panel: the Z-Anatomy object
 names, TA2 codes, hierarchy, author classification, attachment listing and the

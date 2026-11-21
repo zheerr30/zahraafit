@@ -7,8 +7,9 @@ connected to the model.
 | Step | What happens | Where |
 | --- | --- | --- |
 | Tap a muscle | selected + highlighted; contextual panel with its name, what it does and the actions | `components/region/MusclePanel.tsx` (summary) |
-| اعرف أكثر (Learn more) | origin, insertion, action, innervation, related muscles, Z-Anatomy source data (TA2, Latin, hierarchy, definition) | panel `details` |
-| التمارين (Exercises) | exercise library filtered for that muscle: تقوية / إطالة tabs, search, equipment and level filters, bookmarks | `components/exercise/ExerciseLibrary.tsx` |
+| اعرف أكثر (Learn more) | the one button of the summary; opens a view with two tabs, الشرح and التمارين | panel `details` / `exercises` |
+| الشرح (Explanation) tab | where the muscle is, what it does, the movements it works in, in plain Arabic | panel `details` |
+| التمارين (Exercises) tab | exercise library filtered for that muscle: تقوية / إطالة tabs, search, equipment and level filters, bookmarks | `components/exercise/ExerciseLibrary.tsx` |
 | Look at / open an exercise | its prime movers light up on the model in the highlight colour, the helpers in a lighter tint; opening turns the body to the side that shows them | store `spotlight`, `applyStyle` |
 | Tap a target muscle of an exercise | that muscle is selected on the model, exercises stay open | `pickGroup` |
 | عزل العضلة / عرض الجسم كاملًا | isolate the muscle (rest ghosted) / back to the whole anatomy | store `setIsolate`, `showFullBody` |

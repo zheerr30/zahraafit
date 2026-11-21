@@ -69,10 +69,11 @@ const soft = "flex h-10 items-center justify-center gap-1.5 rounded-xl border bo
 /**
  * Panel of the structure picked on the 3D model — kept minimal:
  *  - summary: the muscle's name, its group and what it does in a sentence or two,
- *    with the actions (exercises, isolate, focus);
- *  - explanation, behind the ⓘ button: where the muscle is, what it does and the
- *    movements it works in, in plain Arabic — no source or database data anywhere;
- *  - exercises: the exercise library for this muscle.
+ *    with the actions (learn more, isolate, focus);
+ *  - "learn more" opens one view with two tabs:
+ *      explanation — where the muscle is, what it does and the movements it works
+ *      in, in plain Arabic (no source or database data anywhere);
+ *      exercises — the exercise library for this muscle.
  * A floating card at the side on desktop, a bottom sheet on a phone; the 3D view
  * shifts its subject into the part the panel leaves free.
  */
@@ -123,7 +124,7 @@ export function MusclePanel() {
       className={cn(
         "pointer-events-auto z-30 flex flex-col overflow-hidden border-white/10 bg-[#111214]/92 text-fg shadow-[0_12px_40px_rgba(0,0,0,.55)] backdrop-blur-xl",
         "lg:absolute lg:end-3 lg:top-3 lg:max-h-[calc(100%-1.5rem)] lg:rounded-2xl lg:border",
-        panel === "exercises" ? "lg:w-[420px]" : "lg:w-[340px]",
+        panel === "summary" ? "lg:w-[340px]" : "lg:w-[420px]",
         // phone: a sheet resting on the control bar, which stays reachable
         "max-lg:fixed max-lg:inset-x-0 max-lg:bottom-[calc(3.5rem+env(safe-area-inset-bottom))] max-lg:rounded-t-2xl max-lg:border-t",
         panel === "summary" ? "max-lg:max-h-[42dvh]" : "max-lg:h-[56dvh]",
@@ -140,10 +141,7 @@ export function MusclePanel() {
           <span aria-hidden className="mt-1.5 size-3 shrink-0 rounded-full ring-2 ring-white/15" style={{ background: highlight }} />
         )}
         <div className="min-w-0 flex-1">
-          <h3 className="text-[17px] font-semibold leading-snug">
-            {panel === "exercises" && <span className="font-normal text-muted">تمارين </span>}
-            {selected.ar}
-          </h3>
+          <h3 className="text-[17px] font-semibold leading-snug">{selected.ar}</h3>
           {showEnglish && (
             <p className="truncate text-end text-xs text-muted" dir="ltr">
               {selected.en}
@@ -151,15 +149,29 @@ export function MusclePanel() {
           )}
           {panel === "summary" && <p className="mt-0.5 text-xs text-muted">{groupLine}</p>}
         </div>
-        {panel === "summary" && isUnit && (
-          <button type="button" data-action="learn-more" aria-label="شرح العضلة" title="شرح العضلة" onClick={() => open("details")} className={cn(ghost, "-mt-1")}>
-            <IconInfo size={19} />
-          </button>
-        )}
         <button type="button" aria-label="إغلاق البطاقة" title="إغلاق" onClick={() => st.select(null)} className={cn(ghost, "-me-1.5 -mt-1")}>
           <IconX size={18} />
         </button>
       </div>
+
+      {panel !== "summary" && (
+        <div role="tablist" aria-label="محتوى بطاقة العضلة" className="mx-4 mb-3 grid shrink-0 grid-cols-2 gap-1 rounded-xl bg-white/6 p-1">
+          {(["details", "exercises"] as const).map((t) => (
+            <button
+              key={t}
+              type="button"
+              role="tab"
+              aria-selected={panel === t}
+              data-panel-tab={t}
+              onClick={() => st.setPanel(t)}
+              className={cn("flex h-8 items-center justify-center gap-1.5 rounded-lg text-[13px] transition-colors", panel === t ? "bg-[#A5111F] font-medium text-white" : "text-muted hover:text-fg")}
+            >
+              {t === "details" ? <IconInfo size={15} /> : <IconDumbbell size={15} />}
+              {t === "details" ? "الشرح" : `التمارين${total ? ` (${total})` : ""}`}
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className="scroll-thin min-h-0 flex-1 overflow-y-auto">
         {panel === "summary" && (
@@ -171,8 +183,8 @@ export function MusclePanel() {
             )}
             <div className="flex gap-2">
               {isUnit && (
-                <button type="button" data-action="exercises" onClick={() => open("exercises")} className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#A5111F] px-3 text-sm font-medium text-white transition-colors hover:bg-[#BA1626]">
-                  <IconDumbbell size={16} /> التمارين{total ? ` (${total})` : ""}
+                <button type="button" data-action="learn-more" onClick={() => open("details")} className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#A5111F] px-3 text-sm font-medium text-white transition-colors hover:bg-[#BA1626]">
+                  <IconInfo size={16} /> اعرف أكثر
                 </button>
               )}
               <button type="button" data-action="isolate" aria-pressed={isolate} onClick={() => st.setIsolate(!isolate)} className={cn(soft, isolate && "border-[#D2626C] bg-[#A5111F]/20 text-[#F4B4BB]", !isUnit && "flex-1")}>
@@ -248,7 +260,7 @@ export function MusclePanel() {
               </button>
             </div>
             {total > 0 && (
-              <button type="button" onClick={() => open("exercises")} className="flex h-10 w-full items-center justify-center gap-1.5 rounded-xl bg-[#A5111F] px-3 text-sm font-medium text-white transition-colors hover:bg-[#BA1626]">
+              <button type="button" data-action="exercises" onClick={() => open("exercises")} className="flex h-10 w-full items-center justify-center gap-1.5 rounded-xl bg-[#A5111F] px-3 text-sm font-medium text-white transition-colors hover:bg-[#BA1626]">
                 <IconDumbbell size={16} /> تمارين هذه العضلة ({total})
               </button>
             )}

@@ -44,18 +44,19 @@ async function tapMuscle(page, id, touch) {
     ok('tap selects the muscle', await tapMuscle(page, PEC) && (await state(page)).sel === PEC);
     ok('selected muscle is highlighted', (await T(page, (u) => window.__backStudioTest.unitColor(u), PEC)) === '#a5111f');
     const panel = page.locator('[role=dialog][data-panel]');
-    ok('contextual panel: summary with name and actions', (await panel.getAttribute('data-panel')) === 'summary' && (await panel.locator('h3').innerText()).includes('الصدرية') && (await panel.locator('[data-action=learn-more]').count()) === 1 && (await panel.locator('[data-action=exercises]').count()) === 1);
+    ok('contextual panel: summary with name and actions', (await panel.getAttribute('data-panel')) === 'summary' && (await panel.locator('h3').innerText()).includes('الصدرية') && (await panel.locator('[data-action=learn-more]').count()) === 1 && (await panel.locator('[data-action=learn-more]').innerText()).includes('اعرف أكثر'));
     ok('address follows the selection', (await page.url()).includes(`muscle=${PEC}`));
     await shot(page, '1-summary');
 
     await panel.locator('[data-action=learn-more]').click();
-    ok('learn more → anatomical details', (await panel.getAttribute('data-panel')) === 'details' && (await panel.innerText()).includes('ماذا تفعل'));
+    ok('learn more → explanation, with the exercises one tab away', (await panel.getAttribute('data-panel')) === 'details' && (await panel.innerText()).includes('ماذا تفعل') && (await panel.locator('[data-panel-tab=exercises]').count()) === 1);
     await shot(page, '2-learn-more');
     await panel.getByLabel('رجوع إلى ملخص العضلة').click();
     ok('back → summary', (await panel.getAttribute('data-panel')) === 'summary');
 
-    await panel.locator('[data-action=exercises]').click();
-    ok('exercises → library for this muscle', (await panel.getAttribute('data-panel')) === 'exercises');
+    await panel.locator('[data-action=learn-more]').click();
+    await panel.locator('[data-panel-tab=exercises]').click();
+    ok('learn more → exercises tab: library for this muscle', (await panel.getAttribute('data-panel')) === 'exercises');
     const cards = panel.locator('[data-exercise]');
     const nStrength = await cards.count();
     ok('strengthening exercises listed', nStrength >= 4, `(${nStrength})`);
@@ -135,7 +136,8 @@ async function tapMuscle(page, id, touch) {
     let box = await panel.boundingBox();
     ok('phone: summary is a bottom sheet that leaves the model visible', box && box.y > vp.height * 0.45 && Math.abs(box.y + box.height - (vp.height - 56)) < 3, JSON.stringify(box)); // it rests on the control bar
     await shot(page, '5-phone-summary');
-    await panel.locator('[data-action=exercises]').tap();
+    await panel.locator('[data-action=learn-more]').tap();
+    await panel.locator('[data-panel-tab=exercises]').tap();
     await page.waitForTimeout(600);
     box = await panel.boundingBox();
     ok('phone: exercises sheet with the model above it', (await panel.getAttribute('data-panel')) === 'exercises' && box.y > vp.height * 0.3 && (await panel.locator('[data-exercise]').count()) >= 3);

@@ -1,0 +1,70 @@
+{
+ "source": "core-smooth.glb",
+ "sex": "male",
+ "keep": {
+  "unit": 0.11,
+  "tendon": 0.14,
+  "bone": 0.06,
+  "ligament": 0.12,
+  "fascia": 0.1
+ },
+ "kinds": {
+  "fascia": {
+   "meshes": 156,
+   "trianglesBefore": 312277,
+   "trianglesAfter": 39591,
+   "verticesBefore": 161953,
+   "verticesAfter": 23924
+  },
+  "tendon": {
+   "meshes": 47,
+   "trianglesBefore": 172730,
+   "trianglesAfter": 28494,
+   "verticesBefore": 88080,
+   "verticesAfter": 14756
+  },
+  "unit": {
+   "meshes": 466,
+   "trianglesBefore": 1823304,
+   "trianglesAfter": 373220,
+   "verticesBefore": 1102828,
+   "verticesAfter": 185459
+  },
+  "ligament": {
+   "meshes": 354,
+   "trianglesBefore": 253923,
+   "trianglesAfter": 54868,
+   "verticesBefore": 133611,
+   "verticesAfter": 28412
+  },
+  "bone": {
+   "meshes": 332,
+   "trianglesBefore": 773791,
+   "trianglesAfter": 103277,
+   "verticesBefore": 409572,
+   "verticesAfter": 52158
+  }
+ },
+ "detail": [
+  "external_oblique_l",
+  "external_oblique_r",
+  "internal_oblique_l",
+  "internal_oblique_r",
+  "Linea_alba",
+  "Pyramidalis_muscle_l",
+  "Pyramidalis_muscle_r",
+  "rectus_abdominis_l",
+  "rectus_abdominis_r",
+  "Transversus_abdominis_muscle_l",
+  "Transversus_abdominis_muscle_r"
+ ],
+ "summary": {
+  "meshes": 1355,
+  "trianglesBefore": 3336025,
+  "trianglesAfter": 599450,
+  "verticesBefore": 1896044,
+  "verticesAfter": 304709,
+  "bytesBefore": 27267324,
+  "bytesAfter": 6417552
+ }
+}

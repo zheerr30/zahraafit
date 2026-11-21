@@ -17,12 +17,59 @@
   --color-warn: #f5a524;
   --color-ok: #46a758;
 
+  /* Atlas surfaces and marks (themeable: see the ZahraaFit theme below) */
+  --color-ink: #ffffff; /* lines and soft fills, used with an opacity */
+  --color-surface: #111214; /* floating cards and sheets */
+  --color-chrome: #0e0f11; /* top bar and side panel */
+  --color-stage: #0b0c0e; /* behind the 3D view */
+  --color-select: #a5111f; /* main buttons and the selected item */
+  --color-select-hover: #ba1626;
+  --color-select-soft: #d2626c;
+  --color-select-tint: #f4b4bb;
+  --color-select-chip: #f6d5dc;
+  --color-select-chip-fg: #8a1730;
+  --color-pick: #ffffff; /* the chosen option of a segmented control */
+  --color-pick-fg: #111214;
+
   --font-sans: "IBM Plex Sans Arabic", "Segoe UI", "Noto Sans Arabic", "Geeza Pro", Tahoma, sans-serif;
   --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 }
 
 :root {
   color-scheme: dark;
+  --st-shadow: rgba(0, 0, 0, 0.5);
+}
+
+/*
+ * ZahraaFit theme (?theme=zahraafit): the atlas in the brand's light colours, for
+ * opening it inside the ZahraaFit app. Cream page, white cards and menus, navy text,
+ * orange buttons and selection.
+ */
+:root[data-theme="zahraafit"] {
+  color-scheme: light;
+  --color-bg: #f6f2ea;
+  --color-panel: #ffffff;
+  --color-panel-2: #f6f2ea;
+  --color-panel-3: #efe9dd;
+  --color-line: rgba(5, 15, 44, 0.1);
+  --color-line-strong: rgba(5, 15, 44, 0.2);
+  --color-fg: #050f2c;
+  --color-muted: #5e667a;
+  --color-accent: #e8602c;
+  --color-accent-2: #c24a1b;
+  --color-ink: #050f2c;
+  --color-surface: #ffffff;
+  --color-chrome: #ffffff;
+  --color-stage: #f6f2ea;
+  --color-select: #e8602c;
+  --color-select-hover: #d4541f;
+  --color-select-soft: #e8602c;
+  --color-select-tint: #b8431a;
+  --color-select-chip: #fbe3d8;
+  --color-select-chip-fg: #a63e12;
+  --color-pick: #e8602c;
+  --color-pick-fg: #ffffff;
+  --st-shadow: rgba(5, 15, 44, 0.14);
 }
 
 html,

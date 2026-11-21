@@ -33,11 +33,11 @@ function Chips({ title, list }: { title: string; list: RegionMuscle["synergists"
       <dd className="flex flex-wrap gap-1">
         {list.map((r) =>
           r.id ? (
-            <button key={r.ar} type="button" onClick={() => backStore.getState().selectUnit(r.id!)} className="rounded-full border border-white/12 px-2.5 py-1 text-[11px] text-fg hover:border-[#D2626C] hover:text-[#F0A3AB]">
+            <button key={r.ar} type="button" onClick={() => backStore.getState().selectUnit(r.id!)} className="rounded-full border border-ink/12 px-2.5 py-1 text-[11px] text-fg hover:border-select-soft hover:text-select-tint">
               {r.ar}
             </button>
           ) : (
-            <span key={r.ar} className="rounded-full bg-white/6 px-2.5 py-1 text-[11px] text-muted">
+            <span key={r.ar} className="rounded-full bg-ink/6 px-2.5 py-1 text-[11px] text-muted">
               {r.ar}
             </span>
           ),
@@ -63,8 +63,8 @@ function pickGroup(groupId: string): void {
   st.setPanel("exercises");
 }
 
-const ghost = "grid size-9 shrink-0 place-items-center rounded-xl text-muted transition-colors hover:bg-white/8 hover:text-fg";
-const soft = "flex h-10 items-center justify-center gap-1.5 rounded-xl border border-white/12 px-3 text-[13px] text-fg transition-colors hover:bg-white/8";
+const ghost = "grid size-9 shrink-0 place-items-center rounded-xl text-muted transition-colors hover:bg-ink/8 hover:text-fg";
+const soft = "flex h-10 items-center justify-center gap-1.5 rounded-xl border border-ink/12 px-3 text-[13px] text-fg transition-colors hover:bg-ink/8";
 
 /**
  * Panel of the structure picked on the 3D model — kept minimal:
@@ -122,7 +122,7 @@ export function MusclePanel() {
       aria-label={`بطاقة ${selected.ar}`}
       data-panel={panel}
       className={cn(
-        "pointer-events-auto z-30 flex flex-col overflow-hidden border-white/10 bg-[#111214]/92 text-fg shadow-[0_12px_40px_rgba(0,0,0,.55)] backdrop-blur-xl",
+        "pointer-events-auto z-30 flex flex-col overflow-hidden border-ink/10 bg-surface/92 text-fg shadow-[0_12px_40px_var(--st-shadow)] backdrop-blur-xl",
         "lg:absolute lg:end-3 lg:top-3 lg:max-h-[calc(100%-1.5rem)] lg:rounded-2xl lg:border",
         panel === "summary" ? "lg:w-[340px]" : "lg:w-[420px]",
         // phone: a sheet resting on the control bar, which stays reachable
@@ -131,14 +131,14 @@ export function MusclePanel() {
         !shown && "hidden",
       )}
     >
-      <span aria-hidden className="mx-auto mt-2 h-1 w-9 shrink-0 rounded-full bg-white/18 lg:hidden" />
+      <span aria-hidden className="mx-auto mt-2 h-1 w-9 shrink-0 rounded-full bg-ink/18 lg:hidden" />
       <div className="flex shrink-0 items-start gap-2 px-4 pb-2 pt-3">
         {panel !== "summary" ? (
           <button type="button" aria-label="رجوع إلى ملخص العضلة" title="رجوع" onClick={() => st.setPanel("summary")} className={cn(ghost, "-ms-1.5 -mt-1")}>
             <IconBack size={18} />
           </button>
         ) : (
-          <span aria-hidden className="mt-1.5 size-3 shrink-0 rounded-full ring-2 ring-white/15" style={{ background: highlight }} />
+          <span aria-hidden className="mt-1.5 size-3 shrink-0 rounded-full ring-2 ring-ink/15" style={{ background: highlight }} />
         )}
         <div className="min-w-0 flex-1">
           <h3 className="text-[17px] font-semibold leading-snug">{selected.ar}</h3>
@@ -155,7 +155,7 @@ export function MusclePanel() {
       </div>
 
       {panel !== "summary" && (
-        <div role="tablist" aria-label="محتوى بطاقة العضلة" className="mx-4 mb-3 grid shrink-0 grid-cols-2 gap-1 rounded-xl bg-white/6 p-1">
+        <div role="tablist" aria-label="محتوى بطاقة العضلة" className="mx-4 mb-3 grid shrink-0 grid-cols-2 gap-1 rounded-xl bg-ink/6 p-1">
           {(["details", "exercises"] as const).map((t) => (
             <button
               key={t}
@@ -164,7 +164,7 @@ export function MusclePanel() {
               aria-selected={panel === t}
               data-panel-tab={t}
               onClick={() => st.setPanel(t)}
-              className={cn("flex h-8 items-center justify-center gap-1.5 rounded-lg text-[13px] transition-colors", panel === t ? "bg-[#A5111F] font-medium text-white" : "text-muted hover:text-fg")}
+              className={cn("flex h-8 items-center justify-center gap-1.5 rounded-lg text-[13px] transition-colors", panel === t ? "bg-select font-medium text-white" : "text-muted hover:text-fg")}
             >
               {t === "details" ? <IconInfo size={15} /> : <IconDumbbell size={15} />}
               {t === "details" ? "الشرح" : `التمارين${total ? ` (${total})` : ""}`}
@@ -177,17 +177,17 @@ export function MusclePanel() {
         {panel === "summary" && (
           <div className="space-y-3 px-4 pb-4">
             {about && (
-              <p data-muscle-about="" className="text-sm leading-relaxed text-white/85">
+              <p data-muscle-about="" className="text-sm leading-relaxed text-ink/85">
                 {about}
               </p>
             )}
             <div className="flex gap-2">
               {isUnit && (
-                <button type="button" data-action="learn-more" onClick={() => open("details")} className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#A5111F] px-3 text-sm font-medium text-white transition-colors hover:bg-[#BA1626]">
+                <button type="button" data-action="learn-more" onClick={() => open("details")} className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl bg-select px-3 text-sm font-medium text-white transition-colors hover:bg-select-hover">
                   <IconInfo size={16} /> اعرف أكثر
                 </button>
               )}
-              <button type="button" data-action="isolate" aria-pressed={isolate} onClick={() => st.setIsolate(!isolate)} className={cn(soft, isolate && "border-[#D2626C] bg-[#A5111F]/20 text-[#F4B4BB]", !isUnit && "flex-1")}>
+              <button type="button" data-action="isolate" aria-pressed={isolate} onClick={() => st.setIsolate(!isolate)} className={cn(soft, isolate && "border-select-soft bg-select/20 text-select-tint", !isUnit && "flex-1")}>
                 <IconIsolate size={15} />
                 {isolate ? "إلغاء العزل" : "عزل"}
               </button>
@@ -217,7 +217,7 @@ export function MusclePanel() {
                 <ul className="space-y-1">
                   {explain.does.map((d) => (
                     <li key={d} className="flex gap-2">
-                      <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-[#D2626C]" />
+                      <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-select-soft" />
                       {d}
                     </li>
                   ))}
@@ -231,7 +231,7 @@ export function MusclePanel() {
                 <h4 className="mb-1.5 text-xs font-semibold text-muted">تعمل في</h4>
                 <ul className="flex flex-wrap gap-1.5">
                   {explain.moves.map((m) => (
-                    <li key={m} className="rounded-full bg-white/7 px-2.5 py-1 text-xs text-white/85">
+                    <li key={m} className="rounded-full bg-ink/7 px-2.5 py-1 text-xs text-ink/85">
                       {m}
                     </li>
                   ))}
@@ -260,7 +260,7 @@ export function MusclePanel() {
               </button>
             </div>
             {total > 0 && (
-              <button type="button" data-action="exercises" onClick={() => open("exercises")} className="flex h-10 w-full items-center justify-center gap-1.5 rounded-xl bg-[#A5111F] px-3 text-sm font-medium text-white transition-colors hover:bg-[#BA1626]">
+              <button type="button" data-action="exercises" onClick={() => open("exercises")} className="flex h-10 w-full items-center justify-center gap-1.5 rounded-xl bg-select px-3 text-sm font-medium text-white transition-colors hover:bg-select-hover">
                 <IconDumbbell size={16} /> تمارين هذه العضلة ({total})
               </button>
             )}

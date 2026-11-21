@@ -7,6 +7,7 @@ import { DEPTH_NAMES, LAYER_NAMES, type RegionLayer } from "@/data/region/backSh
 import { EXERCISE_BY_ID } from "@/data/exercises/exercises";
 import { spotlightOf, viewOf } from "@/lib/exercises";
 import { SELECTION_SWATCHES } from "@/lib/highlight";
+import { BRAND_SELECT, currentTheme } from "@/lib/theme";
 import { COLORS, REGIONS, type RegionUnit } from "@/lib/region/backModel";
 import { normalizeSearchText } from "@/lib/anatomy/normalize";
 import { backStore, useBack, type DepthMode, type DockTab, type PanelMode, type RegionView } from "@/stores/backStore";
@@ -22,7 +23,7 @@ const BackViewport = dynamic(() => import("./BackViewport").then((m) => m.BackVi
 const REGION_AR = Object.fromEntries(REGIONS.map((r) => [r.id, r.ar]));
 const SIDE_AR = { l: "الأيسر", r: "الأيمن", m: "" } as const;
 /** Floating surface over the 3D view. */
-const GLASS = "border border-white/10 bg-[#111214]/85 shadow-[0_8px_30px_rgba(0,0,0,.45)] backdrop-blur-xl";
+const GLASS = "border border-ink/10 bg-surface/85 shadow-[0_8px_30px_var(--st-shadow)] backdrop-blur-xl";
 
 function Switch({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) {
   return (
@@ -32,7 +33,7 @@ function Switch({ checked, onChange, label }: { checked: boolean; onChange: (v: 
       aria-checked={checked}
       aria-label={label}
       onClick={() => onChange(!checked)}
-      className={cn("relative h-6 w-11 shrink-0 rounded-full transition-colors", checked ? "bg-[#A5111F]" : "bg-white/15")}
+      className={cn("relative h-6 w-11 shrink-0 rounded-full transition-colors", checked ? "bg-select" : "bg-ink/15")}
     >
       <span className={cn("absolute top-0.5 size-5 rounded-full bg-white shadow transition-all", checked ? "start-[22px]" : "start-0.5")} />
     </button>
@@ -41,9 +42,9 @@ function Switch({ checked, onChange, label }: { checked: boolean; onChange: (v: 
 
 function Segmented<T extends string>({ value, options, onChange, label, className }: { value: T; options: [T, string][]; onChange: (v: T) => void; label: string; className?: string }) {
   return (
-    <div role="radiogroup" aria-label={label} className={cn("grid gap-1 rounded-xl bg-white/6 p-1", className)} style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}>
+    <div role="radiogroup" aria-label={label} className={cn("grid gap-1 rounded-xl bg-ink/6 p-1", className)} style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}>
       {options.map(([v, text]) => (
-        <button key={v} type="button" role="radio" aria-checked={value === v} onClick={() => onChange(v)} className={cn("rounded-lg px-2 py-1.5 text-xs transition-colors", value === v ? "bg-white font-semibold text-[#111214]" : "text-muted hover:text-fg")}>
+        <button key={v} type="button" role="radio" aria-checked={value === v} onClick={() => onChange(v)} className={cn("rounded-lg px-2 py-1.5 text-xs transition-colors", value === v ? "bg-pick font-semibold text-pick-fg" : "text-muted hover:text-fg")}>
           {text}
         </button>
       ))}
@@ -61,7 +62,7 @@ function RegionGrid() {
     if (!isDesktopNow()) st.setDock(null); // the phone sheet gives the view back
   };
   const tile = (on: boolean) =>
-    cn("flex h-12 items-center justify-center rounded-xl border px-2 text-center text-[13px] leading-tight transition-colors", on ? "border-[#A5111F] bg-[#A5111F] font-medium text-white" : "border-white/10 bg-white/4 text-fg hover:bg-white/9");
+    cn("flex h-12 items-center justify-center rounded-xl border px-2 text-center text-[13px] leading-tight transition-colors", on ? "border-select bg-select font-medium text-white" : "border-ink/10 bg-ink/4 text-fg hover:bg-ink/9");
   return (
     <div className="grid grid-cols-2 gap-2 p-3">
       <button type="button" aria-pressed={!region} onClick={() => pick(null)} className={cn(tile(!region), "col-span-2 gap-1.5")}>
@@ -91,12 +92,12 @@ function LayersPanel() {
   const layers = useBack((s) => s.layers);
   const depthMode = useBack((s) => s.depthMode);
   const st = backStore.getState();
-  const quick = "h-10 rounded-xl border border-white/10 px-2 text-xs text-fg transition-colors hover:bg-white/8";
+  const quick = "h-10 rounded-xl border border-ink/10 px-2 text-xs text-fg transition-colors hover:bg-ink/8";
   return (
     <div className="space-y-4 p-3">
-      <ul className="overflow-hidden rounded-xl border border-white/10">
+      <ul className="overflow-hidden rounded-xl border border-ink/10">
         {(Object.keys(LAYER_NAMES) as RegionLayer[]).map((l, i) => (
-          <li key={l} className={cn("flex min-h-12 items-center gap-3 px-3", i > 0 && "border-t border-white/8")}>
+          <li key={l} className={cn("flex min-h-12 items-center gap-3 px-3", i > 0 && "border-t border-ink/10")}>
             <span className="flex w-5 shrink-0 justify-center gap-0.5">
               <span className="size-2.5 rounded-full" style={{ background: LAYER_DOT[l] }} />
               {l === "attachments" && <span className="size-2.5 rounded-full" style={{ background: COLORS.insertion }} />}
@@ -126,7 +127,7 @@ function LayersPanel() {
         <button type="button" aria-label="إظهار الأعصاب والأوتار" onClick={st.showNervesAndTendons} className={quick}>
           الأعصاب والأوتار
         </button>
-        <button type="button" aria-label="إعادة جميع الطبقات إلى وضعها الأصلي" onClick={st.resetAll} className={cn(quick, "col-span-2 flex items-center justify-center gap-1.5 bg-white/6")}>
+        <button type="button" aria-label="إعادة جميع الطبقات إلى وضعها الأصلي" onClick={st.resetAll} className={cn(quick, "col-span-2 flex items-center justify-center gap-1.5 bg-ink/6")}>
           <IconReset size={14} /> إعادة الضبط
         </button>
       </div>
@@ -142,15 +143,15 @@ function MuscleRow({ m }: { m: RegionUnit }) {
   const showEnglish = useBack((s) => s.showEnglish);
   const highlight = useBack((s) => s.highlightColor);
   return (
-    <li className={cn("flex items-center rounded-xl", selected && "bg-white/8")}>
+    <li className={cn("flex items-center rounded-xl", selected && "bg-ink/8")}>
       <button
         type="button"
         data-unit-id={m.id}
         aria-pressed={selected}
         onClick={() => (selected ? backStore.getState().select(null) : backStore.getState().selectUnit(m.id))}
-        className="flex min-h-11 min-w-0 flex-1 items-center gap-2.5 rounded-xl px-2.5 text-start hover:bg-white/5"
+        className="flex min-h-11 min-w-0 flex-1 items-center gap-2.5 rounded-xl px-2.5 text-start hover:bg-ink/5"
       >
-        <span className="size-2 shrink-0 rounded-full" style={{ background: selected ? highlight : "rgba(255,255,255,.22)" }} />
+        <span className="size-2 shrink-0 rounded-full" style={{ background: selected ? highlight : "var(--color-line-strong)" }} />
         <span className="min-w-0 flex-1">
           <span className={cn("block truncate text-sm", hidden ? "text-muted line-through" : "text-fg")}>{m.ar}</span>
           {showEnglish && (
@@ -161,7 +162,7 @@ function MuscleRow({ m }: { m: RegionUnit }) {
         </span>
         <span className="shrink-0 text-[10px] text-muted">{DEPTH_NAMES[m.depth]}</span>
       </button>
-      <button type="button" onClick={() => backStore.getState().toggleUnit(m.id)} aria-label={hidden ? `إظهار ${m.ar}` : `إخفاء ${m.ar}`} title={hidden ? "إظهار" : "إخفاء"} className="grid size-11 shrink-0 place-items-center rounded-xl text-muted hover:bg-white/8 hover:text-fg">
+      <button type="button" onClick={() => backStore.getState().toggleUnit(m.id)} aria-label={hidden ? `إظهار ${m.ar}` : `إخفاء ${m.ar}`} title={hidden ? "إظهار" : "إخفاء"} className="grid size-11 shrink-0 place-items-center rounded-xl text-muted hover:bg-ink/8 hover:text-fg">
         {hidden ? <IconEyeOff size={16} /> : <IconEye size={16} />}
       </button>
     </li>
@@ -191,13 +192,13 @@ function MuscleList() {
           onChange={(e) => setQ(e.target.value)}
           placeholder="ابحث عن عضلة…"
           aria-label="بحث في العضلات"
-          className="h-10 w-full rounded-xl border border-white/10 bg-white/5 pe-3 ps-9 text-sm text-fg outline-none placeholder:text-muted focus:border-white/30"
+          className="h-10 w-full rounded-xl border border-ink/10 bg-ink/5 pe-3 ps-9 text-sm text-fg outline-none placeholder:text-muted focus:border-ink/30"
         />
       </label>
       {groups.map((g) =>
         g.units.length ? (
           <details key={g.id} open={!!region || !!nq} className="group mb-1">
-            <summary className="flex cursor-pointer list-none items-center justify-between rounded-xl px-2.5 py-2 text-[13px] font-medium text-fg hover:bg-white/5">
+            <summary className="flex cursor-pointer list-none items-center justify-between rounded-xl px-2.5 py-2 text-[13px] font-medium text-fg hover:bg-ink/5">
               <span>
                 {REGION_SHORT[g.id] ?? g.ar} <span className="font-normal text-muted">({g.units.length})</span>
               </span>
@@ -237,8 +238,8 @@ function Dock() {
   useCover(sheet, "dock", "bottom", !desktop && !!dock, dock ?? "");
   const st = backStore.getState();
   return (
-    <aside aria-label="أدوات الأطلس" className="z-20 flex shrink-0 bg-[#0e0f11] max-lg:border-t max-lg:border-white/10 max-lg:pb-[env(safe-area-inset-bottom)] lg:w-[320px] lg:flex-col lg:border-e lg:border-white/8">
-      <div role="tablist" aria-label="مجموعات التحكم" className="grid w-full shrink-0 grid-cols-3 gap-1 max-lg:h-14 max-lg:px-2 lg:border-b lg:border-white/8 lg:p-2">
+    <aside aria-label="أدوات الأطلس" className="z-20 flex shrink-0 bg-chrome max-lg:border-t max-lg:border-ink/10 max-lg:pb-[env(safe-area-inset-bottom)] lg:w-[320px] lg:flex-col lg:border-e lg:border-ink/10">
+      <div role="tablist" aria-label="مجموعات التحكم" className="grid w-full shrink-0 grid-cols-3 gap-1 max-lg:h-14 max-lg:px-2 lg:border-b lg:border-ink/10 lg:p-2">
         {TABS.map((t) => (
           <button
             key={t.id}
@@ -249,7 +250,7 @@ function Dock() {
             onClick={() => st.setDock(desktop ? t.id : dock === t.id ? null : t.id)}
             className={cn(
               "flex items-center justify-center gap-1.5 rounded-xl text-xs transition-colors max-lg:flex-col max-lg:gap-0.5 lg:h-10",
-              active === t.id ? "bg-white/10 font-medium text-fg" : "text-muted hover:text-fg",
+              active === t.id ? "bg-ink/10 font-medium text-fg" : "text-muted hover:text-fg",
             )}
           >
             {t.icon}
@@ -262,13 +263,13 @@ function Dock() {
         data-dock-sheet=""
         className={cn(
           "scroll-thin min-h-0 overflow-y-auto overscroll-contain lg:flex-1",
-          "max-lg:fixed max-lg:inset-x-0 max-lg:bottom-[calc(3.5rem+env(safe-area-inset-bottom))] max-lg:z-20 max-lg:max-h-[50dvh] max-lg:rounded-t-2xl max-lg:border-t max-lg:border-white/10 max-lg:bg-[#111214]/95 max-lg:shadow-[0_-12px_40px_rgba(0,0,0,.5)] max-lg:backdrop-blur-xl",
+          "max-lg:fixed max-lg:inset-x-0 max-lg:bottom-[calc(3.5rem+env(safe-area-inset-bottom))] max-lg:z-20 max-lg:max-h-[50dvh] max-lg:rounded-t-2xl max-lg:border-t max-lg:border-ink/10 max-lg:bg-surface/95 max-lg:shadow-[0_-12px_40px_var(--st-shadow)] max-lg:backdrop-blur-xl",
           !active && "max-lg:hidden",
         )}
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between bg-[#111214]/95 px-4 pb-1 pt-3 lg:hidden">
+        <div className="sticky top-0 z-10 flex items-center justify-between bg-surface/95 px-4 pb-1 pt-3 lg:hidden">
           <h2 className="text-sm font-semibold">{TABS.find((t) => t.id === active)?.label}</h2>
-          <button type="button" aria-label="إغلاق" onClick={() => st.setDock(null)} className="grid size-9 place-items-center rounded-xl text-muted hover:bg-white/8 hover:text-fg">
+          <button type="button" aria-label="إغلاق" onClick={() => st.setDock(null)} className="grid size-9 place-items-center rounded-xl text-muted hover:bg-ink/8 hover:text-fg">
             <IconX size={17} />
           </button>
         </div>
@@ -283,7 +284,7 @@ function Dock() {
           <MuscleList />
         </div>
       </div>
-      <p className="hidden shrink-0 border-t border-white/8 px-4 py-2.5 text-[11px] text-muted lg:block">
+      <p className="hidden shrink-0 border-t border-ink/10 px-4 py-2.5 text-[11px] text-muted lg:block">
         المجسم: Z-Anatomy · CC BY-SA 4.0 ·{" "}
         <Link href="/credits" className="underline hover:text-fg">
           المصادر
@@ -312,7 +313,7 @@ function SettingsMenu() {
   const row = "flex min-h-11 items-center justify-between gap-3 text-sm";
   return (
     <div ref={box} className="relative">
-      <button type="button" aria-label="الإعدادات" aria-expanded={open} title="الإعدادات" onClick={() => setOpen(!open)} className={cn("grid size-9 place-items-center rounded-xl transition-colors", open ? "bg-white/12 text-fg" : "text-muted hover:bg-white/8 hover:text-fg")}>
+      <button type="button" aria-label="الإعدادات" aria-expanded={open} title="الإعدادات" onClick={() => setOpen(!open)} className={cn("grid size-9 place-items-center rounded-xl transition-colors", open ? "bg-ink/12 text-fg" : "text-muted hover:bg-ink/8 hover:text-fg")}>
         <IconSettings size={18} />
       </button>
       {open && (
@@ -327,25 +328,25 @@ function SettingsMenu() {
           </div>
           <div className={row}>
             خلفية كحلية
-            <Switch checked={bg === "navy"} onChange={(v) => st.setBackground(v ? "navy" : "black")} label="خلفية كحلية" />
+            <Switch checked={bg === "navy"} onChange={(v) => st.setBackground(v ? "navy" : currentTheme() === "zahraafit" ? "cream" : "black")} label="خلفية كحلية" />
           </div>
-          <div className={cn(row, "border-t border-white/8")}>
+          <div className={cn(row, "border-t border-ink/10")}>
             لون التحديد
             <span className="flex items-center gap-1.5">
-              {SELECTION_SWATCHES.map((c) => (
+              {(currentTheme() === "zahraafit" ? [BRAND_SELECT, ...SELECTION_SWATCHES.slice(0, 4)] : SELECTION_SWATCHES).map((c) => (
                 <button
                   key={c}
                   type="button"
                   aria-label={`لون ${c}`}
                   aria-pressed={highlight.toLowerCase() === c.toLowerCase()}
                   onClick={() => st.setHighlightColor(c)}
-                  className={cn("size-6 rounded-full ring-offset-2 ring-offset-[#111214]", highlight.toLowerCase() === c.toLowerCase() && "ring-2 ring-white")}
+                  className={cn("size-6 rounded-full ring-offset-2 ring-offset-surface", highlight.toLowerCase() === c.toLowerCase() && "ring-2 ring-ink")}
                   style={{ background: c }}
                 />
               ))}
             </span>
           </div>
-          <Link href="/credits" className="mt-1 block border-t border-white/8 pt-2.5 text-xs text-muted hover:text-fg">
+          <Link href="/credits" className="mt-1 block border-t border-ink/10 pt-2.5 text-xs text-muted hover:text-fg">
             المصادر والترخيص
           </Link>
         </div>
@@ -357,19 +358,19 @@ function SettingsMenu() {
 function TopBar() {
   const sex = useBack((s) => s.sex);
   return (
-    <header className="relative z-40 flex h-12 shrink-0 items-center gap-2 border-b border-white/8 bg-[#0e0f11] px-3 sm:gap-3 sm:px-4">
+    <header className="relative z-40 flex h-12 shrink-0 items-center gap-2 border-b border-ink/10 bg-chrome px-3 sm:gap-3 sm:px-4">
       <Link href="/" dir="ltr" className="flex h-9 shrink-0 items-center gap-1 text-[13px] font-bold tracking-wide">
         MUSCLE STUDIO <span className="text-accent">3D</span>
       </Link>
       <h1 className="hidden truncate text-sm text-muted md:block">الأطلس التشريحي</h1>
-      <div role="radiogroup" aria-label="الجنس" className="ms-auto grid grid-cols-2 gap-0.5 rounded-xl bg-white/6 p-0.5">
+      <div role="radiogroup" aria-label="الجنس" className="ms-auto grid grid-cols-2 gap-0.5 rounded-xl bg-ink/6 p-0.5">
         {(["male", "female"] as const).map((v) => (
-          <button key={v} type="button" role="radio" aria-checked={sex === v} data-sex={v} onClick={() => sex !== v && backStore.getState().setSex(v)} className={cn("h-8 rounded-[10px] px-3.5 text-xs transition-colors", sex === v ? "bg-white font-semibold text-[#111214]" : "text-muted hover:text-fg")}>
+          <button key={v} type="button" role="radio" aria-checked={sex === v} data-sex={v} onClick={() => sex !== v && backStore.getState().setSex(v)} className={cn("h-8 rounded-[10px] px-3.5 text-xs transition-colors", sex === v ? "bg-pick font-semibold text-pick-fg" : "text-muted hover:text-fg")}>
             {v === "male" ? "ذكر" : "أنثى"}
           </button>
         ))}
       </div>
-      <Link href="/exercises" aria-label="مكتبة التمارين" title="مكتبة التمارين" className="flex h-9 shrink-0 items-center gap-1.5 rounded-xl px-2.5 text-xs text-muted transition-colors hover:bg-white/8 hover:text-fg">
+      <Link href="/exercises" aria-label="مكتبة التمارين" title="مكتبة التمارين" className="flex h-9 shrink-0 items-center gap-1.5 rounded-xl px-2.5 text-xs text-muted transition-colors hover:bg-ink/8 hover:text-fg">
         <IconDumbbell size={17} /> <span className="hidden sm:inline">التمارين</span>
       </Link>
       <SettingsMenu />
@@ -389,8 +390,8 @@ function ViewControls() {
     ["left", "أيسر", "2", false],
     ["closeup", "قريب", "5", true],
   ];
-  const btn = "flex h-9 items-center justify-center rounded-xl px-2.5 text-xs text-fg transition-colors hover:bg-white/10";
-  const sep = <span aria-hidden className="mx-0.5 h-5 w-px bg-white/12" />;
+  const btn = "flex h-9 items-center justify-center rounded-xl px-2.5 text-xs text-fg transition-colors hover:bg-ink/10";
+  const sep = <span aria-hidden className="mx-0.5 h-5 w-px bg-ink/12" />;
   return (
     <div className="pointer-events-none absolute inset-x-2 bottom-3 z-10 flex justify-center">
       <div className={cn(GLASS, "pointer-events-auto flex items-center gap-0.5 rounded-2xl p-1")}>
@@ -402,7 +403,7 @@ function ViewControls() {
           ))}
         </div>
         {sep}
-        <button type="button" aria-pressed={autoRotate} aria-label="دوران 360°" title="دوران 360°" onClick={() => st.setAutoRotate(!autoRotate)} className={cn(btn, "gap-1", autoRotate && "bg-[#A5111F] hover:bg-[#BA1626]")}>
+        <button type="button" aria-pressed={autoRotate} aria-label="دوران 360°" title="دوران 360°" onClick={() => st.setAutoRotate(!autoRotate)} className={cn(btn, "gap-1", autoRotate && "bg-select hover:bg-select-hover")}>
           <IconRotate size={15} /> <span className="max-sm:hidden">360°</span>
         </button>
         {sep}
@@ -449,7 +450,9 @@ export function BackStudio({ initialRegion = null, hd = false }: { initialRegion
   // `?hd=0` / `?hd=1` override the page default (before/after comparison).
   useEffect(() => {
     const q = new URLSearchParams(window.location.search).get("hd");
-    backStore.setState({ region: initialRegion, hd: q === null ? hd : q === "1" });
+    // ZahraaFit theme (?theme=zahraafit): a cream backdrop behind the model, the brand's selection colour
+    const themed = currentTheme() === "zahraafit" ? ({ background: "cream", highlightColor: BRAND_SELECT } as const) : {};
+    backStore.setState({ region: initialRegion, hd: q === null ? hd : q === "1", ...themed });
     return () => backStore.setState({ hd: null });
   }, [initialRegion, hd]);
   const [load, setLoad] = useState<LoadState>({ status: "loading", progress: 0 });
@@ -536,36 +539,36 @@ export function BackStudio({ initialRegion = null, hd = false }: { initialRegion
   }, [ready]);
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden bg-[#0b0c0e] text-fg">
+    <div className="flex h-dvh flex-col overflow-hidden bg-stage text-fg">
       <TopBar />
       <div className="flex min-h-0 flex-1 max-lg:flex-col-reverse">
         <Dock />
-        <main className="relative min-h-0 flex-1 bg-[#0b0c0e]" data-viewport-wrap="">
+        <main className="relative min-h-0 flex-1 bg-stage" data-viewport-wrap="">
           <BackViewport key={attempt} onState={onState} />
           {load.status === "loading" && !shownOnce && (
-            <div className="absolute inset-0 grid place-items-center bg-[#0b0c0e]">
+            <div className="absolute inset-0 grid place-items-center bg-stage">
               <div className="w-56 text-center text-sm text-muted">
                 <p className="mb-3">تحميل المجسم…</p>
-                <div className="h-1 overflow-hidden rounded-full bg-white/10">
-                  <div className="h-full rounded-full bg-[#A5111F] transition-all" style={{ width: `${Math.round(load.progress * 100)}%` }} />
+                <div className="h-1 overflow-hidden rounded-full bg-ink/10">
+                  <div className="h-full rounded-full bg-select transition-all" style={{ width: `${Math.round(load.progress * 100)}%` }} />
                 </div>
               </div>
             </div>
           )}
           {load.status === "loading" && shownOnce && (
             <div role="status" className={cn(GLASS, "absolute inset-x-0 top-3 z-10 mx-auto flex w-fit items-center gap-2 rounded-full px-3 py-1.5 text-xs text-fg")}>
-              <span className="size-3 animate-spin rounded-full border-2 border-white/25 border-t-white" />
+              <span className="size-3 animate-spin rounded-full border-2 border-ink/25 border-t-ink" />
               جار التحميل… {Math.round(load.progress * 100)}%
             </div>
           )}
           {load.status === "error" && (
-            <div role="alert" data-load-error="" className="absolute inset-0 z-20 grid place-items-center bg-[#0b0c0e]/80 p-6">
+            <div role="alert" data-load-error="" className="absolute inset-0 z-20 grid place-items-center bg-stage/80 p-6">
               <div className={cn(GLASS, "max-w-sm rounded-2xl p-5 text-center text-sm")}>
                 <p className="mb-1 font-semibold">تعذر تحميل النموذج التشريحي</p>
                 <p dir="auto" className="text-muted">
                   {load.message}
                 </p>
-                <button type="button" data-action="retry-load" onClick={retry} className="mt-4 h-10 rounded-xl bg-[#A5111F] px-5 text-sm font-medium text-white hover:bg-[#BA1626]">
+                <button type="button" data-action="retry-load" onClick={retry} className="mt-4 h-10 rounded-xl bg-select px-5 text-sm font-medium text-white hover:bg-select-hover">
                   إعادة المحاولة
                 </button>
               </div>
@@ -577,9 +580,9 @@ export function BackStudio({ initialRegion = null, hd = false }: { initialRegion
               <ViewControls />
               {isolate && selected && (
                 <div className={cn(GLASS, "absolute start-3 top-3 z-10 flex items-center gap-2 rounded-full py-1 pe-1 ps-3 text-xs")}>
-                  <span className="size-2 rounded-full bg-[#A5111F]" />
+                  <span className="size-2 rounded-full bg-select" />
                   معزولة: {selected.ar}
-                  <button type="button" data-action="exit-isolate" onClick={() => backStore.getState().showFullBody()} className="flex h-7 items-center gap-1 rounded-full bg-white/10 px-2.5 hover:bg-white/18">
+                  <button type="button" data-action="exit-isolate" onClick={() => backStore.getState().showFullBody()} className="flex h-7 items-center gap-1 rounded-full bg-ink/10 px-2.5 hover:bg-ink/18">
                     <IconBody size={13} /> الجسم كاملا
                   </button>
                 </div>
@@ -587,13 +590,13 @@ export function BackStudio({ initialRegion = null, hd = false }: { initialRegion
               {!isolate && region && !selected && (
                 <div className={cn(GLASS, "absolute start-3 top-3 z-10 flex items-center gap-2 rounded-full py-1 pe-1 ps-3 text-xs")}>
                   {REGION_SHORT[region] ?? REGION_AR[region]}
-                  <button type="button" aria-label="عرض الجسم كاملا" onClick={() => backStore.getState().focusRegion(null)} className="grid size-7 place-items-center rounded-full bg-white/10 hover:bg-white/18">
+                  <button type="button" aria-label="عرض الجسم كاملا" onClick={() => backStore.getState().focusRegion(null)} className="grid size-7 place-items-center rounded-full bg-ink/10 hover:bg-ink/18">
                     <IconX size={13} />
                   </button>
                 </div>
               )}
               {!picked && !selected && !region && (
-                <p className={cn(GLASS, "pointer-events-none absolute inset-x-0 top-3 z-0 mx-auto w-fit rounded-full px-3.5 py-1.5 text-xs text-white/85")}>اضغط على أي عضلة لعرض معلوماتها وتمارينها</p>
+                <p className={cn(GLASS, "pointer-events-none absolute inset-x-0 top-3 z-0 mx-auto w-fit rounded-full px-3.5 py-1.5 text-xs text-ink/85")}>اضغط على أي عضلة لعرض معلوماتها وتمارينها</p>
               )}
             </>
           )}

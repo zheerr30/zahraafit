@@ -4,7 +4,7 @@ import { CameraControls } from "@react-three/drei";
 import { AtlasLighting } from "@/components/anatomy/AtlasLighting";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Box3, CanvasTexture, Object3D, Sphere, SRGBColorSpace, Vector2, Vector3, type PerspectiveCamera, type Raycaster } from "three";
+import { Box3, CanvasTexture, Color, LinearSRGBColorSpace, Object3D, Sphere, SRGBColorSpace, Vector2, Vector3, type PerspectiveCamera, type Raycaster } from "three";
 import {
   applyStyle,
   disposeRegionModel,
@@ -31,9 +31,25 @@ export const MODEL_BASE = "/models/zanatomy";
 export const modelUrl = (sex: "male" | "female", part: string) => `${MODEL_BASE}/${sex}/${part}.glb`;
 /** The body shown by default: core.glb with refined muscle surfaces. */
 export const BODY_PART = "core-smooth";
+/**
+ * The same body with fewer triangles (pipeline/lite/body.mjs: every muscle keeps its name
+ * and id), about a fifth of the download: loaded on phones and tablets. `?lite=1` asks for
+ * it anywhere, `?lite=0` for the full body.
+ */
+export const LITE_PART = "core-lite";
+export function bodyPart(): string {
+  const q = new URLSearchParams(window.location.search);
+  // Muscle surfaces refined from the original Z-Anatomy meshes (pipeline/sculpt/body.mjs:
+  // same nodes and vertices, bellies smoothed by ≤ 2 mm); `?sculpt=0` shows the original.
+  if (q.get("sculpt") === "0") return "core";
+  const lite = q.get("lite");
+  if (lite === "1") return LITE_PART;
+  if (lite === "0") return BODY_PART;
+  return window.matchMedia("(hover: none) and (pointer: coarse)").matches ? LITE_PART : BODY_PART;
+}
 /** Optional layers loaded on first use. */
 const LAZY_PARTS = { attachments: "attachments", nerves: "nerves" } as const;
-export const BACKGROUNDS = { black: "#0d0e10", navy: "#06142f" } as const;
+export const BACKGROUNDS = { black: "#0d0e10", navy: "#06142f", cream: "#F6F2EA" } as const;
 
 /** Shared handles for overlays, tests and exports (one viewer per page). */
 export const regionBridge: {
@@ -78,9 +94,7 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
     const model = createRegionModel();
     loaded.current = new Set(["core"]);
     onState({ status: "loading", progress: 0 });
-    // Muscle surfaces refined from the original Z-Anatomy meshes (pipeline/sculpt/body.mjs:
-    // same nodes and vertices, bellies smoothed by ≤ 2 mm); `?sculpt=0` shows the original.
-    const part = new URLSearchParams(window.location.search).get("sculpt") === "0" ? "core" : BODY_PART;
+    const part = bodyPart();
     loadGltf(modelUrl(sex, part), { renderer: gl, signal: ctrl.signal, onProgress: (p) => onState({ status: "loading", progress: p }) })
       .then((gltf) => {
         const meshes = prepareMeshes(gltf.scene, hd ? HD_OPTIONS : {});
@@ -437,11 +451,19 @@ function studioBackdrop(toneMapped: boolean): CanvasTexture {
   return t;
 }
 
+/**
+ * Light cream backdrop of the ZahraaFit theme. In HD the frame passes through the neutral
+ * tone mapper, which darkens and greys near-white: the colour is given already inverted
+ * through it (linear values above 1), so that the screen shows exactly BACKGROUNDS.cream.
+ */
+const CREAM_HD = new Color().setRGB(1.2938, 1.2459, 1.1527, LinearSRGBColorSpace);
+
 function Background() {
   const bg = useBack((s) => s.background);
   const hd = useBack((s) => s.hd);
   const backdrop = useMemo(() => (bg === "black" ? studioBackdrop(hd === true) : null), [bg, hd]);
   useEffect(() => () => backdrop?.dispose(), [backdrop]);
+  if (bg === "cream" && hd === true) return <primitive attach="background" object={CREAM_HD} />;
   return backdrop ? <primitive attach="background" object={backdrop} /> : <color attach="background" args={[BACKGROUNDS[bg]]} />;
 }
 

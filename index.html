@@ -1070,7 +1070,8 @@ const ATLAS_MUSCLE = {
 };
 function atlasSrc(){
   const u = ATLAS_MUSCLE[S.atlasMuscle];
-  return ATLAS_URL + "/atlas" + (u ? "?muscle=" + u + "&panel=details" : "");
+  /* theme=zahraafit: الأطلس بألوان الهوية. نسخة المجسم الخفيفة تحمل تلقائيا على الجوال. */
+  return ATLAS_URL + "/atlas?theme=zahraafit" + (u ? "&muscle=" + u + "&panel=details" : "");
 }
 /* الأطلس يملأ ما تحت شريط البرنامج بالضبط، مهما كان ارتفاع الشريط */
 function fitAtlas(){

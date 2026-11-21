@@ -62,7 +62,7 @@ interface BackState {
   /** Show only the selected structure (with the skeleton for reference). */
   isolate: boolean;
   showEnglish: boolean;
-  background: "black" | "navy";
+  background: "black" | "navy" | "cream";
   autoRotate: boolean;
   /** Colour of the selected structure (user-chosen). */
   highlightColor: string;
@@ -102,7 +102,7 @@ interface BackState {
   showNervesAndTendons: () => void;
   showAttachmentsOf: (id: string) => void;
   setShowEnglish: (v: boolean) => void;
-  setBackground: (b: "black" | "navy") => void;
+  setBackground: (b: "black" | "navy" | "cream") => void;
   setAutoRotate: (v: boolean) => void;
   setHighlightColor: (hex: string) => void;
   setSex: (s: Sex) => void;

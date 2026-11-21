@@ -1,0 +1,271 @@
+{
+ "Acromial part of deltoid muscle.l": {
+  "Abductor": 2835,
+  "Tendon": 129
+ },
+ "Acromial part of deltoid muscle.r": {
+  "Abductor": 2835,
+  "Tendon": 129
+ },
+ "Ascending part of trapezius muscle.l": {
+  "Abductor": 2146,
+  "Tendon": 2450
+ },
+ "Ascending part of trapezius muscle.r": {
+  "Abductor": 2146,
+  "Tendon": 2450
+ },
+ "Clavicular part of deltoid muscle.l": {
+  "Abductor": 2765,
+  "Tendon": 137
+ },
+ "Clavicular part of deltoid muscle.r": {
+  "Abductor": 2765,
+  "Tendon": 137
+ },
+ "Deltoid fascia.l": {
+  "Fascia": 1821
+ },
+ "Deltoid fascia.r": {
+  "Fascia": 1821
+ },
+ "Deltoid region.l": {
+  "Skin-3": 71,
+  "Skin-4": 38,
+  "Skin-5": 5,
+  "Skin-7": 28,
+  "Skin-in": 0
+ },
+ "Deltoid region.r": {
+  "Skin-3": 71,
+  "Skin-4": 38,
+  "Skin-5": 5,
+  "Skin-7": 28,
+  "Skin-in": 0
+ },
+ "Descending part of trapezius muscle.l": {
+  "External rotation": 3571,
+  "Tendon": 3189
+ },
+ "Descending part of trapezius muscle.r": {
+  "External rotation": 3571,
+  "Tendon": 3189
+ },
+ "Iliocostalis colli muscle": {
+  "External rotation": 2050,
+  "Tendon": 0
+ },
+ "Iliocostalis colli muscle.r": {
+  "External rotation": 2050,
+  "Tendon": 0
+ },
+ "Iliocostalis lumborum muscle.l": {
+  "External rotation": 10038,
+  "Tendon": 0
+ },
+ "Iliocostalis lumborum muscle.r": {
+  "External rotation": 10038,
+  "Tendon": 0
+ },
+ "Iliocostalis thoracis muscle.l": {
+  "Extension": 5772,
+  "Tendon": 0
+ },
+ "Iliocostalis thoracis muscle.r": {
+  "Extension": 5772,
+  "Tendon": 0
+ },
+ "Infraspinatus muscle.l": {
+  "External rotation": 2645,
+  "Tendon": 521
+ },
+ "Infraspinatus muscle.r": {
+  "External rotation": 2645,
+  "Tendon": 521
+ },
+ "Latissimus dorsi muscle.l": {
+  "Adductor": 15460,
+  "Tendon": 6120
+ },
+ "Latissimus dorsi muscle.r": {
+  "Adductor": 15460,
+  "Tendon": 6120
+ },
+ "Levator scapulae.l": {
+  "Levator": 1678,
+  "Tendon": 1404
+ },
+ "Levator scapulae.r": {
+  "Levator": 1678,
+  "Tendon": 1404
+ },
+ "Longissimus capitis muscle.l": {
+  "Abductor": 1574,
+  "Tendon": 0
+ },
+ "Longissimus capitis muscle.r": {
+  "Abductor": 1574,
+  "Tendon": 0
+ },
+ "Longissimus colli muscle.l": {
+  "Extension": 1826,
+  "Tendon": 0
+ },
+ "Longissimus colli muscle.r": {
+  "Extension": 1826,
+  "Tendon": 0
+ },
+ "Longissimus thoracis muscle.l": {
+  "Extension": 9652,
+  "Tendon": 0
+ },
+ "Longissimus thoracis muscle.r": {
+  "Extension": 9652,
+  "Tendon": 0
+ },
+ "Rhomboid major muscle.l": {
+  "Adductor": 3105,
+  "Tendon": 1695
+ },
+ "Rhomboid major muscle.r": {
+  "Adductor": 3105,
+  "Tendon": 1695
+ },
+ "Rhomboid minor muscle.l": {
+  "Adductor": 1044,
+  "Tendon": 450
+ },
+ "Rhomboid minor muscle.r": {
+  "Adductor": 1044,
+  "Tendon": 450
+ },
+ "Semispinalis colli muscle.l": {
+  "Internal rotator": 2584,
+  "Tendon": 0
+ },
+ "Semispinalis colli muscle.r": {
+  "Internal rotator": 2584,
+  "Tendon": 0
+ },
+ "Semispinalis thoracis muscle.r": {
+  "Extension": 4972,
+  "Tendon": 0
+ },
+ "Scapular spinal part of deltoid muscle.l": {
+  "Abductor": 3293,
+  "Tendon": 1085
+ },
+ "Scapular spinal part of deltoid muscle.r": {
+  "Abductor": 3293,
+  "Tendon": 1085
+ },
+ "Semispinalis thoracis muscle.l": {
+  "Extension": 4972,
+  "Tendon": 0
+ },
+ "Spinalis capitis muscle.l": {
+  "Extension": 1924,
+  "Tendon": 636
+ },
+ "Spinalis capitis muscle.r": {
+  "Extension": 1924,
+  "Tendon": 636
+ },
+ "Spinalis colli muscle.l": {
+  "Extension": 596,
+  "Tendon": 0
+ },
+ "Spinalis colli muscle.r": {
+  "Extension": 596,
+  "Tendon": 0
+ },
+ "Spinalis thoracis muscle.l": {
+  "Extension": 5532,
+  "Tendon": 0
+ },
+ "Spinalis thoracis muscle.r": {
+  "Extension": 5532,
+  "Tendon": 0
+ },
+ "Subdeltoid bursa.l": {
+  "Bursa": 192
+ },
+ "Subdeltoid bursa.r": {
+  "Bursa": 192
+ },
+ "Subscapularis muscle.l": {
+  "Internal rotator": 2954,
+  "Tendon": 0
+ },
+ "Subscapularis muscle.r": {
+  "Internal rotator": 2954,
+  "Tendon": 0
+ },
+ "Subtendinous bursa of infraspinatus muscle.l": {
+  "Bursa": 192
+ },
+ "Subtendinous bursa of infraspinatus muscle.r": {
+  "Bursa": 192
+ },
+ "Subtendinous bursa of teres major muscle.l": {
+  "Bursa": 192
+ },
+ "Subtendinous bursa of teres major muscle.r": {
+  "Bursa": 192
+ },
+ "Subtendinous bursa of trapezius muscle.l": {
+  "Bursa": 192
+ },
+ "Subtendinous bursa of trapezius muscle.r": {
+  "Bursa": 192
+ },
+ "Supraspinatus muscle.l": {
+  "Abductor": 1430,
+  "Tendon": 0
+ },
+ "Supraspinatus muscle.r": {
+  "Abductor": 1430,
+  "Tendon": 0
+ },
+ "Teres major muscle.l": {
+  "Internal rotator": 1154,
+  "Tendon": 0
+ },
+ "Teres major muscle.r": {
+  "Internal rotator": 1154,
+  "Tendon": 0
+ },
+ "Teres minor muscle.l": {
+  "External rotation": 1522,
+  "Tendon": 0
+ },
+ "Teres minor muscle.r": {
+  "External rotation": 1522,
+  "Tendon": 0
+ },
+ "Transverse part of trapezius muscle.l": {
+  "External rotation": 912,
+  "Tendon": 2080
+ },
+ "Transverse part of trapezius muscle.r": {
+  "External rotation": 912,
+  "Tendon": 2080
+ },
+ "_Muscle-Default nodes": [
+  "NodeGroupInput",
+  "NodeReroute",
+  "ShaderNodeAddShader",
+  "ShaderNodeAmbientOcclusion",
+  "ShaderNodeAttribute",
+  "ShaderNodeBrightContrast",
+  "ShaderNodeBsdfAnisotropic",
+  "ShaderNodeBsdfPrincipled",
+  "ShaderNodeGamma",
+  "ShaderNodeGroup",
+  "ShaderNodeHueSaturation",
+  "ShaderNodeMix",
+  "ShaderNodeMixShader",
+  "ShaderNodeOutputMaterial",
+  "ShaderNodeValToRGB"
+ ]
+}

@@ -1,0 +1,228 @@
+import { BufferAttribute, Matrix4, Vector3, type Mesh } from "three";
+import { MeshBVH } from "three-mesh-bvh";
+
+/**
+ * The anterior abdominal wall, rendered as it is built — without touching the
+ * geometry.
+ *
+ * In Z-Anatomy the external and internal oblique meshes continue medially as
+ * their aponeuroses, which form the rectus sheath: those parts lie on the
+ * surface of the rectus abdominis (often < 1 mm away). Rendered as muscle they
+ * show oblique fibres over the "six-pack" and fight the rectus in the depth
+ * buffer (jagged lines, specks). Here every oblique vertex gets a sheath factor
+ * from its distance to the rectus surface of the same side:
+ *
+ *   |`_sheath`| ∈ [0, 1] sheath factor, + up to 1 more in front of the rectus
+ *                  itself: there the anterior layer is opened (see openSheath);
+ *   `_sheath` > 0  external oblique → drawn as a cream aponeurosis that fades
+ *                  out at the lateral border of the rectus, so the rectus and
+ *                  its tendinous intersections are seen;
+ *   `_sheath` < 0  internal oblique / transversus → the lamina in front of the
+ *                  rectus is fused into the same sheath, so it is not drawn twice
+ *                  (their lamina behind the rectus stays, as a cream sheet).
+ *
+ * The factor is read by the HD muscle shader (alpha-to-coverage, no sorting).
+ * Vertices are never moved or removed.
+ */
+
+const NEAR = 0.003; // fully sheath within 3 mm of the rectus surface
+const FAR = 0.008; // muscle beyond 8 mm
+const BIN = 0.004; // footprint: 4 mm horizontal slices of the rectus
+
+/**
+ * Frontal footprint of a rectus (world space): per horizontal slice, the lateral
+ * border |x| and the back of the muscle. Anterior to the rectus the obliques are
+ * aponeurosis only — whatever their distance to its (bulging, segmented) surface —
+ * so the sheath is defined by the footprint as well as by proximity. Without it,
+ * oblique parts in the grooves between rectus segments (> 8 mm away) were drawn as
+ * muscle bands across the "six-pack".
+ */
+function footprint(r: Mesh) {
+  const pos = r.geometry.getAttribute("position");
+  const v = new Vector3();
+  let y0 = Infinity, y1 = -Infinity;
+  for (let i = 0; i < pos.count; i++) {
+    v.fromBufferAttribute(pos, i).applyMatrix4(r.matrixWorld);
+    y0 = Math.min(y0, v.y); y1 = Math.max(y1, v.y);
+  }
+  const nb = Math.max(1, Math.ceil((y1 - y0) / BIN) + 1);
+  const xs = new Float32Array(nb).fill(-1), zs = new Float32Array(nb).fill(Infinity);
+  // Mid-plane of the muscle (between its front and back surface) per 4 mm cell
+  // and per slice: tells the anterior lamina of a sheath from the posterior one.
+  const cells = new Map<number, [number, number]>();
+  const rowLo = new Float32Array(nb).fill(Infinity), rowHi = new Float32Array(nb).fill(-Infinity);
+  const cellKey = (b: number, x: number) => b * 4096 + Math.floor(x / BIN) + 2048;
+  for (let i = 0; i < pos.count; i++) {
+    v.fromBufferAttribute(pos, i).applyMatrix4(r.matrixWorld);
+    const b = Math.floor((v.y - y0) / BIN);
+    xs[b] = Math.max(xs[b], Math.abs(v.x)); zs[b] = Math.min(zs[b], v.z);
+    rowLo[b] = Math.min(rowLo[b], v.z); rowHi[b] = Math.max(rowHi[b], v.z);
+    const c = cells.get(cellKey(b, v.x));
+    if (c) { c[0] = Math.min(c[0], v.z); c[1] = Math.max(c[1], v.z); } else cells.set(cellKey(b, v.x), [v.z, v.z]);
+  }
+  // close one-slice gaps and soften the outline
+  const X = new Float32Array(nb), Z = new Float32Array(nb);
+  for (let b = 0; b < nb; b++) {
+    X[b] = Math.max(xs[b], xs[b - 1] ?? -1, xs[b + 1] ?? -1);
+    Z[b] = Math.min(zs[b], zs[b - 1] ?? Infinity, zs[b + 1] ?? Infinity);
+  }
+  return {
+    /**
+     * 1 well inside the rectus outline, 0 at its border: the opening of the anterior
+     * layer ends 2–8 mm INSIDE the lateral border and 4–12 mm short of both ends, so
+     * the cut edge of the aponeurosis always lies on the muscle. (Opened up to the
+     * border, an oblique view looked past the rounded edge of the rectus into the
+     * deeper layers, and the slip of pectoralis major arising from the sheath hung
+     * over a hole.)
+     */
+    over(q: Vector3): number {
+      const b = Math.floor((q.y - y0) / BIN);
+      if (b < 0 || b >= nb || X[b] < 0 || q.z < Z[b] - 0.003) return 0;
+      const d = Math.abs(q.x) - X[b];
+      const fx = d <= -0.008 ? 1 : d >= -0.002 ? 0 : (-0.002 - d) / 0.006;
+      const e = Math.min(q.y - y0, y1 - q.y);
+      const fy = e >= 0.012 ? 1 : e <= 0.004 ? 0 : (e - 0.004) / 0.008;
+      return fx * fy;
+    },
+    /** In front of the rectus mid-plane (anterior lamina) rather than behind it. */
+    anterior(q: Vector3): boolean {
+      const b = Math.min(nb - 1, Math.max(0, Math.floor((q.y - y0) / BIN)));
+      for (const k of [cellKey(b, q.x), cellKey(b, q.x - BIN), cellKey(b, q.x + BIN)]) {
+        const c = cells.get(k);
+        if (c && c[1] - c[0] > 0.002) return q.z > (c[0] + c[1]) / 2;
+      }
+      return rowHi[b] >= rowLo[b] ? q.z > (rowLo[b] + rowHi[b]) / 2 : true;
+    },
+  };
+}
+
+const nameOf = (m: Mesh) => ((m.userData.za_name ?? m.userData.source ?? m.name) as string).replace(/[._](l|r)$/i, "");
+const sideOf = (m: Mesh): string => {
+  const s = (m.userData.side as string | undefined) ?? (/[._]l$/i.test((m.userData.za_name as string) ?? "") ? "l" : /[._]r$/i.test((m.userData.za_name as string) ?? "") ? "r" : "m");
+  return s === "left" ? "l" : s === "right" ? "r" : s;
+};
+
+// `layered`: its aponeurosis splits around the rectus — only the anterior lamina
+// belongs to the opened layer; the posterior one stays, as a cream sheet.
+const KIND = [
+  { re: /^External abdominal oblique muscle/i, sign: 1, layered: false },
+  { re: /^Internal abdominal oblique muscle/i, sign: -1, layered: true },
+  { re: /^Transvers(us|e) abdomin(is|al)/i, sign: -1, layered: true },
+] as const;
+const RECTUS = /^Rectus abdominis muscle/i;
+
+export interface SheathStats {
+  meshes: number;
+  sheathVertices: number;
+  /** Triangles of the anterior layer opened in front of the rectus. */
+  opened: number;
+}
+
+/**
+ * Opens the anterior layer of the rectus sheath: the triangles of an oblique
+ * aponeurosis lying wholly in front of the rectus are left out of the index
+ * (vertices untouched), as in every atlas plate that shows the rectus. They are
+ * then absent from every pass — colour, shadows, ambient occlusion — and from
+ * picking, so a click on a rectus segment selects the rectus, not an invisible sheet.
+ */
+function openSheath(m: Mesh, front: Uint8Array): number {
+  const g = m.geometry;
+  const index = g.index;
+  if (!index) return 0;
+  const src = index.array;
+  const kept = new (src.constructor as Uint32ArrayConstructor)(src.length);
+  let k = 0;
+  for (let t = 0; t < src.length; t += 3) {
+    if (front[src[t]] && front[src[t + 1]] && front[src[t + 2]]) continue;
+    kept[k++] = src[t]; kept[k++] = src[t + 1]; kept[k++] = src[t + 2];
+  }
+  const removed = (src.length - k) / 3;
+  if (!removed) return 0;
+  g.setIndex(new BufferAttribute(kept.slice(0, k), 1));
+  const bvh = g as unknown as { boundsTree?: unknown; computeBoundsTree?: () => void };
+  if (bvh.boundsTree) {
+    bvh.boundsTree = undefined;
+    bvh.boundsTree = new MeshBVH(g);
+  }
+  return removed;
+}
+
+/** Adds the `_sheath` attribute to the oblique muscles of every side found in `meshes`. */
+export function markRectusSheath(meshes: Iterable<Mesh>): SheathStats {
+  const all = [...meshes];
+  const rectus = new Map<string, Mesh>();
+  for (const m of all) if (RECTUS.test(nameOf(m))) rectus.set(sideOf(m), m);
+  // The baked AO of the rectus was computed with the sheath lying on it (mean ≈ 0.16):
+  // drawn through a thin film it must not read as a buried muscle. Real-time AO
+  // (GTAO) still darkens the grooves at the intersections.
+  for (const r of rectus.values()) {
+    const a = r.geometry.getAttribute("_anat");
+    if (!a || r.userData.aoLifted) continue;
+    for (let i = 0; i < a.count; i++) a.setX(i, Math.max(a.getX(i), 0.8));
+    a.needsUpdate = true;
+    r.userData.aoLifted = true;
+  }
+  const stats: SheathStats = { meshes: 0, sheathVertices: 0, opened: 0 };
+  const inv = new Matrix4();
+  const p = new Vector3();
+  const hit = { point: new Vector3(), distance: 0, faceIndex: 0 } as unknown as Parameters<MeshBVH["closestPointToPoint"]>[1];
+  const bvhs = new Map<Mesh, MeshBVH>();
+  const prints = new Map<Mesh, ReturnType<typeof footprint>>();
+  const w = new Vector3();
+  for (const m of all) {
+    const k = KIND.find((x) => x.re.test(nameOf(m)));
+    if (!k || m.geometry.getAttribute("_sheath")) continue;
+    const r = rectus.get(sideOf(m));
+    if (!r) continue;
+    let bvh = bvhs.get(r);
+    if (!bvh) {
+      bvh = new MeshBVH(r.geometry.clone());
+      bvhs.set(r, bvh);
+    }
+    m.updateMatrixWorld(true);
+    r.updateMatrixWorld(true);
+    let over = prints.get(r);
+    if (!over) {
+      over = footprint(r);
+      prints.set(r, over);
+    }
+    // oblique local → rectus local
+    inv.copy(r.matrixWorld).invert().multiply(m.matrixWorld);
+    const pos = m.geometry.getAttribute("position");
+    const out = new Float32Array(pos.count);
+    const front = new Uint8Array(pos.count);
+    let n = 0;
+    for (let i = 0; i < pos.count; i++) {
+      p.fromBufferAttribute(pos, i);
+      w.copy(p).applyMatrix4(m.matrixWorld);
+      p.applyMatrix4(inv);
+      const res = bvh.closestPointToPoint(p, hit, 0, FAR * 1.5);
+      const d = res ? res.distance : Infinity;
+      const f = over.over(w);
+      const s = Math.max(d <= NEAR ? 1 : d >= FAR ? 0 : 1 - (d - NEAR) / (FAR - NEAR), f);
+      if (k.layered && s > 0 && !over.anterior(w)) {
+        out[i] = s; // posterior lamina of the sheath: cream aponeurosis, kept
+      } else {
+        out[i] = k.sign * (s + f); // |value| > 1: in front of the rectus (opened layer)
+        front[i] = f >= 0.999 ? 1 : 0;
+      }
+      if (s > 0.5) n++;
+    }
+    m.geometry.setAttribute("_sheath", new BufferAttribute(out, 1));
+    stats.opened += openSheath(m, front);
+    stats.meshes++;
+    stats.sheathVertices += n;
+  }
+  return stats;
+}
+
+/**
+ * Anatomical layer used for depth-test priority where layers nearly coincide.
+ * Z-Anatomy's exposure-based depth puts the internal oblique on the surface
+ * (it is visible at the flank); anatomically it lies deep to the external oblique.
+ */
+export function renderDepth(name: string, depth: number | undefined): number {
+  if (/^Internal abdominal oblique/i.test(name)) return Math.max(2, depth ?? 1);
+  if (/^Transversus abdominis/i.test(name)) return Math.max(3, depth ?? 1);
+  return depth ?? 1;
+}

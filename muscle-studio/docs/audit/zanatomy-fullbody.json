@@ -1,0 +1,1446 @@
+{
+ "Head & neck": {
+  "muscleMeshes": 153,
+  "uniqueMuscles": 77,
+  "checklist": [
+   {
+    "muscle": "Occipitofrontalis (frontal belly)",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Frontalis muscle"
+    ]
+   },
+   {
+    "muscle": "Occipitofrontalis (occipital belly)",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Occipitalis muscle"
+    ]
+   },
+   {
+    "muscle": "Temporalis",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Temporalis muscle"
+    ]
+   },
+   {
+    "muscle": "Masseter",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Deep part of masseter",
+     "Superficial part of masseter"
+    ]
+   },
+   {
+    "muscle": "Orbicularis oculi",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Orbital part of orbicularis oculi",
+     "Palpebral part of orbicularis oculi"
+    ]
+   },
+   {
+    "muscle": "Orbicularis oris",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Orbicularis oris muscle"
+    ]
+   },
+   {
+    "muscle": "Zygomaticus major",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Zygomaticus major muscle"
+    ]
+   },
+   {
+    "muscle": "Buccinator",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Bucinator"
+    ]
+   },
+   {
+    "muscle": "Platysma",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Platysma"
+    ]
+   },
+   {
+    "muscle": "Sternocleidomastoid",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Sternocleidomastoid muscle"
+    ]
+   },
+   {
+    "muscle": "Medial / lateral pterygoid",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Inferior head of lateral pterygoid muscle",
+     "Medial pterygoid muscle",
+     "Superior head of lateral pterygoid muscle"
+    ]
+   },
+   {
+    "muscle": "Scalenes",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Scalenus anterior muscle",
+     "Scalenus medius muscle",
+     "Scalenus posterior muscle"
+    ]
+   },
+   {
+    "muscle": "Suprahyoid (digastric, mylohyoid\u2026)",
+    "layer": "intermediate",
+    "present": true,
+    "meshes": [
+     "Anterior belly of digastric muscle",
+     "Geniohyoid muscle",
+     "Intermediate tendon of digastric muscle",
+     "Mylohyoid muscle",
+     "Posterior belly of digastric muscle",
+     "Stylohyoid muscle"
+    ]
+   },
+   {
+    "muscle": "Infrahyoid (sternohyoid, omohyoid\u2026)",
+    "layer": "intermediate",
+    "present": true,
+    "meshes": [
+     "Omohyoid muscle",
+     "Sternohyoid muscle",
+     "Sternothyroid muscle",
+     "Thyrohyoid muscle"
+    ]
+   },
+   {
+    "muscle": "Longus colli / capitis",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Longus capitis muscle",
+     "Longus colli muscle"
+    ]
+   },
+   {
+    "muscle": "Splenius capitis / colli",
+    "layer": "intermediate",
+    "present": true,
+    "meshes": [
+     "Splenius capitis muscle",
+     "Splenius colli muscle"
+    ]
+   },
+   {
+    "muscle": "Semispinalis capitis",
+    "layer": "deep",
+    "present": false,
+    "meshes": []
+   },
+   {
+    "muscle": "Suboccipital muscles",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Obliquus inferior capitis muscle",
+     "Obliquus superior capitis muscle",
+     "Rectus posterior major capitis muscle",
+     "Rectus posterior minor capitis muscle"
+    ]
+   }
+  ],
+  "superficialFound": "10/10",
+  "deepFound": "7/8",
+  "missing": [
+   "Semispinalis capitis"
+  ],
+  "triangles": 322902,
+  "tendonFacePct": 10.0,
+  "musclesWithTendonFaces": 19,
+  "connectiveObjects": 8,
+  "connectiveExamples": [
+   "Epicranial aponeurosis",
+   "Masseteric fascia",
+   "Superficial investing cervical fascia",
+   "Superficial layer of temporal fascia"
+  ],
+  "bones": [
+   "Anterior cells of ethmoid bone",
+   "Atlas (C1)",
+   "Axis (C2)",
+   "Ethmoid bone",
+   "Frontal bone",
+   "Hyoid bone",
+   "Mandible",
+   "Maxilla",
+   "Middle cells of ethmoid bone",
+   "Nasal bone",
+   "Occipital bone",
+   "Parietal bone",
+   "Posterior cells of ethmoid bone",
+   "Sinus of frontal bone",
+   "Sinus of sphenoid bone",
+   "Sphenoid bone",
+   "Temporal bone",
+   "Vertebra C3",
+   "Vertebra C4",
+   "Vertebra C5",
+   "Vertebra C6",
+   "Vertebra C7",
+   "Zygomatic bone"
+  ],
+  "ligaments": 7,
+  "withOrigin": 33,
+  "withInsertion": 17,
+  "withBoth": 14,
+  "ta2Named": 77,
+  "withDefinition": 75
+ },
+ "Chest": {
+  "muscleMeshes": 25,
+  "uniqueMuscles": 13,
+  "checklist": [
+   {
+    "muscle": "Pectoralis major (clavicular head)",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Clavicular head of pectoralis major muscle"
+    ]
+   },
+   {
+    "muscle": "Pectoralis major (sternocostal head)",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Sternocostal head of pectoralis major muscle"
+    ]
+   },
+   {
+    "muscle": "Pectoralis major (abdominal part)",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "(Abdominal part of pectoralis major muscle)"
+    ]
+   },
+   {
+    "muscle": "Serratus anterior",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Serratus anterior muscle"
+    ]
+   },
+   {
+    "muscle": "Pectoralis minor",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Pectoralis minor muscle"
+    ]
+   },
+   {
+    "muscle": "Subclavius",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Subclavius muscle"
+    ]
+   },
+   {
+    "muscle": "External intercostals",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "External intercostal muscles"
+    ]
+   },
+   {
+    "muscle": "Internal intercostals",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Internal intercostal muscles"
+    ]
+   },
+   {
+    "muscle": "Innermost intercostals",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Innermost intercostal muscles"
+    ]
+   },
+   {
+    "muscle": "Transversus thoracis",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Transversus thoracis muscle"
+    ]
+   },
+   {
+    "muscle": "Diaphragm",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Diaphragm"
+    ]
+   }
+  ],
+  "superficialFound": "4/4",
+  "deepFound": "7/7",
+  "missing": [],
+  "triangles": 336593,
+  "tendonFacePct": 0.9,
+  "musclesWithTendonFaces": 4,
+  "connectiveObjects": 4,
+  "connectiveExamples": [
+   "Clavipectoral fascia",
+   "Pectoral fascia"
+  ],
+  "bones": [
+   "Body of sternum",
+   "Costal cartilage of eighth rib",
+   "Costal cartilage of fifth rib",
+   "Costal cartilage of first rib",
+   "Costal cartilage of fourth rib",
+   "Costal cartilage of ninth rib",
+   "Costal cartilage of second rib",
+   "Costal cartilage of seventh rib",
+   "Costal cartilage of sixth rib",
+   "Costal cartilage of tenth rib",
+   "Costal cartilage of third rib",
+   "Eighth rib",
+   "Eleventh rib",
+   "Fifth rib",
+   "First rib",
+   "Fourth rib",
+   "Manubrium of sternum",
+   "Ninth rib",
+   "Second rib",
+   "Seventh rib",
+   "Sixth rib",
+   "Tenth rib",
+   "Third rib",
+   "Twelfth rib",
+   "Xiphoid process"
+  ],
+  "ligaments": 4,
+  "withOrigin": 6,
+  "withInsertion": 4,
+  "withBoth": 2,
+  "ta2Named": 13,
+  "withDefinition": 13
+ },
+ "Back": {
+  "muscleMeshes": 58,
+  "uniqueMuscles": 29,
+  "checklist": [
+   {
+    "muscle": "Trapezius (3 parts)",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Ascending part of trapezius muscle",
+     "Descending part of trapezius muscle",
+     "Transverse part of trapezius muscle"
+    ]
+   },
+   {
+    "muscle": "Latissimus dorsi",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Latissimus dorsi muscle"
+    ]
+   },
+   {
+    "muscle": "Rhomboid major",
+    "layer": "intermediate",
+    "present": true,
+    "meshes": [
+     "Rhomboid major muscle"
+    ]
+   },
+   {
+    "muscle": "Rhomboid minor",
+    "layer": "intermediate",
+    "present": true,
+    "meshes": [
+     "Rhomboid minor muscle"
+    ]
+   },
+   {
+    "muscle": "Levator scapulae",
+    "layer": "intermediate",
+    "present": true,
+    "meshes": [
+     "Levator scapulae"
+    ]
+   },
+   {
+    "muscle": "Serratus posterior superior / inferior",
+    "layer": "intermediate",
+    "present": true,
+    "meshes": [
+     "Serratus posterior inferior muscle",
+     "Serratus posterior superior muscle"
+    ]
+   },
+   {
+    "muscle": "Iliocostalis",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Iliocostalis colli muscle",
+     "Iliocostalis lumborum muscle",
+     "Iliocostalis thoracis muscle"
+    ]
+   },
+   {
+    "muscle": "Longissimus",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Longissimus capitis muscle",
+     "Longissimus colli muscle",
+     "Longissimus thoracis muscle"
+    ]
+   },
+   {
+    "muscle": "Spinalis",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Spinalis capitis muscle",
+     "Spinalis colli muscle",
+     "Spinalis thoracis muscle"
+    ]
+   },
+   {
+    "muscle": "Semispinalis",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Semispinalis colli muscle",
+     "Semispinalis thoracis muscle"
+    ]
+   },
+   {
+    "muscle": "Multifidus",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Multifidus colli muscle",
+     "Multifidus lumborum muscle",
+     "Multifidus thoracis muscle"
+    ]
+   },
+   {
+    "muscle": "Rotatores",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Rotatores"
+    ]
+   },
+   {
+    "muscle": "Interspinales",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Interspinales colli muscles",
+     "Interspinales lumborum muscles",
+     "Interspinales thoracis muscles"
+    ]
+   },
+   {
+    "muscle": "Levatores costarum",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Levatores breves costarum",
+     "Levatores longi costarum"
+    ]
+   }
+  ],
+  "superficialFound": "2/2",
+  "deepFound": "12/12",
+  "missing": [],
+  "triangles": 248972,
+  "tendonFacePct": 19.0,
+  "musclesWithTendonFaces": 10,
+  "connectiveObjects": 6,
+  "connectiveExamples": [
+   "Anterior layer of thoracolumbar fascia",
+   "Middle layer of thoracolumbar fascia",
+   "Posterior layer of thoracolumbar fascia"
+  ],
+  "bones": [
+   "Vertebra L1",
+   "Vertebra L2",
+   "Vertebra L3",
+   "Vertebra L4",
+   "Vertebra L5",
+   "Vertebra T1",
+   "Vertebra T10",
+   "Vertebra T11",
+   "Vertebra T12",
+   "Vertebra T2",
+   "Vertebra T3",
+   "Vertebra T4",
+   "Vertebra T5",
+   "Vertebra T6",
+   "Vertebra T7",
+   "Vertebra T8",
+   "Vertebra T9"
+  ],
+  "ligaments": 3,
+  "withOrigin": 5,
+  "withInsertion": 10,
+  "withBoth": 3,
+  "ta2Named": 29,
+  "withDefinition": 28
+ },
+ "Shoulders": {
+  "muscleMeshes": 16,
+  "uniqueMuscles": 8,
+  "checklist": [
+   {
+    "muscle": "Deltoid (clavicular / acromial / spinal)",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Acromial part of deltoid muscle",
+     "Clavicular part of deltoid muscle",
+     "Scapular spinal part of deltoid muscle"
+    ]
+   },
+   {
+    "muscle": "Supraspinatus",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Supraspinatus muscle"
+    ]
+   },
+   {
+    "muscle": "Infraspinatus",
+    "layer": "intermediate",
+    "present": true,
+    "meshes": [
+     "Infraspinatus muscle"
+    ]
+   },
+   {
+    "muscle": "Teres minor",
+    "layer": "intermediate",
+    "present": true,
+    "meshes": [
+     "Teres minor muscle"
+    ]
+   },
+   {
+    "muscle": "Subscapularis",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Subscapularis muscle"
+    ]
+   },
+   {
+    "muscle": "Teres major",
+    "layer": "intermediate",
+    "present": true,
+    "meshes": [
+     "Teres major muscle"
+    ]
+   }
+  ],
+  "superficialFound": "1/1",
+  "deepFound": "5/5",
+  "missing": [],
+  "triangles": 40940,
+  "tendonFacePct": 9.1,
+  "musclesWithTendonFaces": 4,
+  "connectiveObjects": 2,
+  "connectiveExamples": [
+   "Deltoid fascia"
+  ],
+  "bones": [
+   "Clavicle",
+   "Humerus",
+   "Scapula"
+  ],
+  "ligaments": 4,
+  "withOrigin": 8,
+  "withInsertion": 4,
+  "withBoth": 4,
+  "ta2Named": 8,
+  "withDefinition": 8
+ },
+ "Arms & forearms": {
+  "muscleMeshes": 86,
+  "uniqueMuscles": 43,
+  "checklist": [
+   {
+    "muscle": "Biceps brachii (long / short head)",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Long head of biceps brachii",
+     "Short head of biceps brachii"
+    ]
+   },
+   {
+    "muscle": "Brachialis",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Brachialis muscle"
+    ]
+   },
+   {
+    "muscle": "Coracobrachialis",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Coracobrachialis muscle"
+    ]
+   },
+   {
+    "muscle": "Triceps brachii (3 heads)",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Lateral head of triceps brachii",
+     "Long head of triceps brachii",
+     "Medial head of triceps brachii"
+    ]
+   },
+   {
+    "muscle": "Anconeus",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Anconeus muscle"
+    ]
+   },
+   {
+    "muscle": "Brachioradialis",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Brachioradialis muscle"
+    ]
+   },
+   {
+    "muscle": "Pronator teres",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Deep head of pronator teres",
+     "Superficial head of pronator teres"
+    ]
+   },
+   {
+    "muscle": "Flexor carpi radialis",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Flexor carpi radialis"
+    ]
+   },
+   {
+    "muscle": "Palmaris longus",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Palmaris longus muscle"
+    ]
+   },
+   {
+    "muscle": "Flexor carpi ulnaris",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Humeral head of flexor carpi ulnaris",
+     "Ulnar head of flexor carpi ulnaris"
+    ]
+   },
+   {
+    "muscle": "Flexor digitorum superficialis",
+    "layer": "intermediate",
+    "present": true,
+    "meshes": [
+     "Humero-ulnar head of flexor digitorum superficialis",
+     "Radial head of flexor digitorum superficialis"
+    ]
+   },
+   {
+    "muscle": "Extensor carpi radialis longus / brevis",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Extensor carpi radialis brevis",
+     "Extensor carpi radialis longus"
+    ]
+   },
+   {
+    "muscle": "Extensor digitorum",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Extensor digitorum"
+    ]
+   },
+   {
+    "muscle": "Extensor carpi ulnaris",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Humeral head of extensor carpi ulnaris",
+     "Ulnar head of extensor carpi ulnaris"
+    ]
+   },
+   {
+    "muscle": "Flexor digitorum profundus",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Flexor digitorum profundus"
+    ]
+   },
+   {
+    "muscle": "Flexor pollicis longus",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Flexor pollicis longus"
+    ]
+   },
+   {
+    "muscle": "Pronator quadratus",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Pronator quadratus"
+    ]
+   },
+   {
+    "muscle": "Supinator",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Supinator"
+    ]
+   },
+   {
+    "muscle": "Abductor pollicis longus",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Abductor pollicis longus"
+    ]
+   },
+   {
+    "muscle": "Extensor pollicis longus / brevis",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Extensor pollicis brevis",
+     "Extensor pollicis longus"
+    ]
+   },
+   {
+    "muscle": "Extensor indicis",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Extensor indicis"
+    ]
+   },
+   {
+    "muscle": "Hand intrinsics (thenar, hypothenar, interossei, lumbricals)",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Abductor digiti minimi of hand",
+     "Abductor pollicis brevis",
+     "Deep head of flexor pollicis brevis",
+     "Dorsal interossei muscles of hand",
+     "Extensor digiti minimi",
+     "Extensor pollicis brevis"
+    ]
+   }
+  ],
+  "superficialFound": "11/11",
+  "deepFound": "11/11",
+  "missing": [],
+  "triangles": 204542,
+  "tendonFacePct": 38.7,
+  "musclesWithTendonFaces": 41,
+  "connectiveObjects": 48,
+  "connectiveExamples": [
+   "Antebrachial fascia",
+   "Bicipitoradial bursa",
+   "Brachial fascia",
+   "Common flexor tendon sheath",
+   "Coracobrachial bursa",
+   "Cruciform part of fibrous sheath of digit of hand",
+   "Dorsal fascia of hand",
+   "Extensor retinaculum of wrist"
+  ],
+  "bones": [
+   "Capitate bone",
+   "Distal phalanx of fifth finger of hand",
+   "Distal phalanx of first finger of hand",
+   "Distal phalanx of fourth finger of hand",
+   "Distal phalanx of second finger of hand",
+   "Distal phalanx of third finger of hand",
+   "Fifth metacarpal bone",
+   "First metacarpal bone",
+   "Fourth metacarpal bone",
+   "Hamate bone",
+   "Humerus",
+   "Lunate bone",
+   "Middle phalanx of fifth finger of hand",
+   "Middle phalanx of fourth finger of hand",
+   "Middle phalanx of second finger of hand",
+   "Middle phalanx of third finger of hand",
+   "Pisiform bone",
+   "Proximal phalanx of fifth finger of hand",
+   "Proximal phalanx of first finger of hand",
+   "Proximal phalanx of fourth finger of hand",
+   "Proximal phalanx of second finger of hand",
+   "Proximal phalanx of third finger of hand",
+   "Radius",
+   "Scaphoid bone",
+   "Second metacarpal bone",
+   "Third metacarpal bone",
+   "Trapezium bone",
+   "Trapezoid bone",
+   "Triquetrum bone",
+   "Ulna"
+  ],
+  "ligaments": 12,
+  "withOrigin": 23,
+  "withInsertion": 16,
+  "withBoth": 13,
+  "ta2Named": 43,
+  "withDefinition": 41
+ },
+ "Abdomen & core": {
+  "muscleMeshes": 12,
+  "uniqueMuscles": 6,
+  "checklist": [
+   {
+    "muscle": "Rectus abdominis",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Rectus abdominis muscle"
+    ]
+   },
+   {
+    "muscle": "External oblique",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "External abdominal oblique muscle"
+    ]
+   },
+   {
+    "muscle": "Pyramidalis",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Pyramidalis muscle"
+    ]
+   },
+   {
+    "muscle": "Internal oblique",
+    "layer": "intermediate",
+    "present": true,
+    "meshes": [
+     "Internal abdominal oblique muscle"
+    ]
+   },
+   {
+    "muscle": "Transversus abdominis",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Transversus abdominis muscle"
+    ]
+   },
+   {
+    "muscle": "Quadratus lumborum",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Quadratus lumborum muscle"
+    ]
+   }
+  ],
+  "superficialFound": "3/3",
+  "deepFound": "3/3",
+  "missing": [],
+  "triangles": 234734,
+  "tendonFacePct": 5.6,
+  "musclesWithTendonFaces": 1,
+  "connectiveObjects": 9,
+  "connectiveExamples": [
+   "Diaphragmatic fascia",
+   "Iliopsoas fascia",
+   "Inguinal ligament",
+   "Investing abdominal fascia",
+   "Linea alba",
+   "Transversalis fascia"
+  ],
+  "bones": [
+   "Vertebra L1",
+   "Vertebra L2",
+   "Vertebra L3",
+   "Vertebra L4",
+   "Vertebra L5"
+  ],
+  "ligaments": 0,
+  "withOrigin": 4,
+  "withInsertion": 1,
+  "withBoth": 1,
+  "ta2Named": 6,
+  "withDefinition": 6
+ },
+ "Pelvis & glutes": {
+  "muscleMeshes": 34,
+  "uniqueMuscles": 17,
+  "checklist": [
+   {
+    "muscle": "Gluteus maximus",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Gluteus maximus muscle"
+    ]
+   },
+   {
+    "muscle": "Gluteus medius",
+    "layer": "intermediate",
+    "present": true,
+    "meshes": [
+     "Gluteus medius muscle"
+    ]
+   },
+   {
+    "muscle": "Gluteus minimus",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Gluteus minimus muscle"
+    ]
+   },
+   {
+    "muscle": "Tensor fasciae latae",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Tensor fasciae latae"
+    ]
+   },
+   {
+    "muscle": "Piriformis",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Piriformis muscle"
+    ]
+   },
+   {
+    "muscle": "Obturator internus / externus",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Obturator internus"
+    ]
+   },
+   {
+    "muscle": "Gemelli",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Inferior gemellus muscle",
+     "Superior gemellus muscle"
+    ]
+   },
+   {
+    "muscle": "Quadratus femoris",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Quadratus femoris muscle"
+    ]
+   },
+   {
+    "muscle": "Iliopsoas (psoas major, iliacus)",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Iliacus muscle",
+     "Psoas major"
+    ]
+   },
+   {
+    "muscle": "Pelvic floor (levator ani, coccygeus)",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Coccygeus muscle",
+     "Iliococcygeus muscle",
+     "Pubococcygeus muscle",
+     "Tendinous arch of levator ani"
+    ]
+   }
+  ],
+  "superficialFound": "2/2",
+  "deepFound": "8/8",
+  "missing": [],
+  "triangles": 178756,
+  "tendonFacePct": 59.5,
+  "musclesWithTendonFaces": 8,
+  "connectiveObjects": 4,
+  "connectiveExamples": [
+   "Intermuscular gluteal bursae",
+   "Tensor fasciae latae"
+  ],
+  "bones": [
+   "Coccyx",
+   "Femur",
+   "Hip bone",
+   "Sacrum"
+  ],
+  "ligaments": 5,
+  "withOrigin": 9,
+  "withInsertion": 4,
+  "withBoth": 4,
+  "ta2Named": 17,
+  "withDefinition": 17
+ },
+ "Quadriceps & hamstrings": {
+  "muscleMeshes": 20,
+  "uniqueMuscles": 10,
+  "checklist": [
+   {
+    "muscle": "Rectus femoris",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Rectus femoris muscle"
+    ]
+   },
+   {
+    "muscle": "Vastus lateralis",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Vastus lateralis muscle"
+    ]
+   },
+   {
+    "muscle": "Vastus medialis",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Vastus medialis muscle"
+    ]
+   },
+   {
+    "muscle": "Vastus intermedius",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Vastus intermedius muscle"
+    ]
+   },
+   {
+    "muscle": "Sartorius",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Sartorius muscle"
+    ]
+   },
+   {
+    "muscle": "Biceps femoris (long / short head)",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Long head of biceps femoris",
+     "Short head of biceps femoris"
+    ]
+   },
+   {
+    "muscle": "Semitendinosus",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Semitendinosus muscle"
+    ]
+   },
+   {
+    "muscle": "Semimembranosus",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Semimembranosus muscle"
+    ]
+   }
+  ],
+  "superficialFound": "6/6",
+  "deepFound": "2/2",
+  "missing": [],
+  "triangles": 113454,
+  "tendonFacePct": 27.0,
+  "musclesWithTendonFaces": 9,
+  "connectiveObjects": 80,
+  "connectiveExamples": [
+   "(Iliopectineal bursa)",
+   "Anserine bursa",
+   "Bursa of piriformis muscle",
+   "Crural fascia",
+   "Deep infrapatellar bursa",
+   "Fascia lata",
+   "Flexor retinaculum of ankle",
+   "Inferior extensor retinaculum of ankle"
+  ],
+  "bones": [
+   "Femur",
+   "Patella",
+   "Tibia"
+  ],
+  "ligaments": 6,
+  "withOrigin": 8,
+  "withInsertion": 4,
+  "withBoth": 3,
+  "ta2Named": 10,
+  "withDefinition": 9
+ },
+ "Adductors & abductors": {
+  "muscleMeshes": 14,
+  "uniqueMuscles": 7,
+  "checklist": [
+   {
+    "muscle": "Adductor longus",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Adductor longus"
+    ]
+   },
+   {
+    "muscle": "Adductor brevis",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Adductor brevis"
+    ]
+   },
+   {
+    "muscle": "Adductor magnus",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Adductor magnus"
+    ]
+   },
+   {
+    "muscle": "Adductor minimus",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "(Adductor minimus)"
+    ]
+   },
+   {
+    "muscle": "Gracilis",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Gracilis muscle"
+    ]
+   },
+   {
+    "muscle": "Pectineus",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Pectineus muscle"
+    ]
+   },
+   {
+    "muscle": "Abductors: gluteus medius / minimus, TFL (see Pelvis & glutes)",
+    "layer": "intermediate",
+    "present": true,
+    "meshes": [
+     "Gluteus medius muscle",
+     "Gluteus minimus muscle",
+     "Tensor fasciae latae",
+     "Trochanteric bursa of gluteus medius muscle",
+     "Trochanteric bursa of gluteus minimus muscle"
+    ]
+   }
+  ],
+  "superficialFound": "3/3",
+  "deepFound": "4/4",
+  "missing": [],
+  "triangles": 45812,
+  "tendonFacePct": 33.3,
+  "musclesWithTendonFaces": 4,
+  "connectiveObjects": 0,
+  "connectiveExamples": [],
+  "bones": [
+   "Femur",
+   "Hip bone"
+  ],
+  "ligaments": 2,
+  "withOrigin": 5,
+  "withInsertion": 4,
+  "withBoth": 4,
+  "ta2Named": 7,
+  "withDefinition": 7
+ },
+ "Calves & lower legs": {
+  "muscleMeshes": 60,
+  "uniqueMuscles": 30,
+  "checklist": [
+   {
+    "muscle": "Gastrocnemius (medial / lateral head)",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Lateral head of gastrocnemius",
+     "Medial head of gastrocnemius"
+    ]
+   },
+   {
+    "muscle": "Soleus",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Soleus muscle"
+    ]
+   },
+   {
+    "muscle": "Plantaris",
+    "layer": "intermediate",
+    "present": true,
+    "meshes": [
+     "Plantaris muscle"
+    ]
+   },
+   {
+    "muscle": "Popliteus",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Popliteus muscle"
+    ]
+   },
+   {
+    "muscle": "Tibialis posterior",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Tibialis posterior muscle"
+    ]
+   },
+   {
+    "muscle": "Flexor digitorum longus",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Flexor digitorum longus"
+    ]
+   },
+   {
+    "muscle": "Flexor hallucis longus",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Flexor hallucis longus"
+    ]
+   },
+   {
+    "muscle": "Tibialis anterior",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Tibialis anterior muscle"
+    ]
+   },
+   {
+    "muscle": "Extensor digitorum longus",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Extensor digitorum longus",
+     "Tendon of extensor digitorum longus"
+    ]
+   },
+   {
+    "muscle": "Extensor hallucis longus",
+    "layer": "intermediate",
+    "present": true,
+    "meshes": [
+     "Extensor hallucis longus"
+    ]
+   },
+   {
+    "muscle": "Fibularis longus / brevis / tertius",
+    "layer": "superficial",
+    "present": true,
+    "meshes": [
+     "Fibularis brevis muscle",
+     "Fibularis longus muscle",
+     "Fibularis tertius muscle"
+    ]
+   },
+   {
+    "muscle": "Foot intrinsics",
+    "layer": "deep",
+    "present": true,
+    "meshes": [
+     "Abductor digiti minimi of foot",
+     "Abductor hallucis",
+     "Dorsal interossei muscles of foot",
+     "Extensor digitorum brevis",
+     "Extensor hallucis brevis",
+     "Flexor digitorum brevis"
+    ]
+   }
+  ],
+  "superficialFound": "5/5",
+  "deepFound": "7/7",
+  "missing": [],
+  "triangles": 169484,
+  "tendonFacePct": 35.8,
+  "musclesWithTendonFaces": 19,
+  "connectiveObjects": 30,
+  "connectiveExamples": [
+   "Anterior intermuscular septum of leg",
+   "Calcaneal tendon",
+   "Common tendon sheath of fibularis muscles",
+   "Plantar aponeurosis",
+   "Plantar tendon sheath of fibularis longus muscle",
+   "Posterior intermuscular septum of leg",
+   "Subcutaneous calcaneal bursa",
+   "Subtendinous calcaneal bursa"
+  ],
+  "bones": [
+   "Calcaneus",
+   "Cuboid bone",
+   "Distal phalanx of fifth finger of foot",
+   "Distal phalanx of first finger of foot",
+   "Distal phalanx of fourth finger of foot",
+   "Distal phalanx of second finger of foot",
+   "Distal phalanx of third finger of foot",
+   "Fibula",
+   "Fifth metatarsal bone",
+   "First metatarsal bone",
+   "Fourth metatarsal bone",
+   "Intermediate cuneiform bone",
+   "Lateral cuneiform bone",
+   "Medial cuneiform bone",
+   "Middle phalanx of fifth finger of foot",
+   "Middle phalanx of fourth finger of foot",
+   "Middle phalanx of second finger of foot",
+   "Middle phalanx of third finger of foot",
+   "Navicular bone",
+   "Proximal phalanx of fifth finger of foot",
+   "Proximal phalanx of first finger of foot",
+   "Proximal phalanx of fourth finger of foot",
+   "Proximal phalanx of second finger of foot",
+   "Proximal phalanx of third finger of foot",
+   "Second metatarsal bone",
+   "Talus",
+   "Third metatarsal bone",
+   "Tibia"
+  ],
+  "ligaments": 12,
+  "withOrigin": 22,
+  "withInsertion": 18,
+  "withBoth": 14,
+  "ta2Named": 30,
+  "withDefinition": 29
+ },
+ "_probe": {
+  "Semispinalis capitis": [],
+  "Tensor fasciae": [
+   "Tensor fasciae latae.l",
+   "Tensor fasciae latae.ol",
+   "Tensor fasciae latae.or",
+   "Tensor fasciae latae.r"
+  ],
+  "Levatores": [
+   "Levatores breves costarum.l",
+   "Levatores breves costarum.r",
+   "Levatores costarum.j",
+   "Levatores longi costarum.e10l",
+   "Levatores longi costarum.e10r",
+   "Levatores longi costarum.e1l"
+  ],
+  "Bucinator": [
+   "Bucinator node.l",
+   "Bucinator node.r",
+   "Bucinator.l",
+   "Bucinator.o1r",
+   "Bucinator.o1l",
+   "Bucinator.ol"
+  ],
+  "Rotatores": [
+   "Rotatores.j",
+   "Rotatores.l",
+   "Rotatores.r"
+  ],
+  "Innermost intercostal": [
+   "Innermost intercostal muscles.l",
+   "Innermost intercostal muscles.r"
+  ],
+  "Popliteus": [
+   "Groove for popliteus muscle.i",
+   "Popliteus muscle.el",
+   "Popliteus muscle.er",
+   "Popliteus muscle.l",
+   "Popliteus muscle.ol",
+   "Popliteus muscle.or"
+  ],
+  "Plantaris": [
+   "Plantaris muscle.l",
+   "Plantaris muscle.ol",
+   "Plantaris muscle.or",
+   "Plantaris muscle.r"
+  ]
+ },
+ "_texts_only": [
+  "Semispinalis capitis muscle",
+  "Tensor fasciae latae"
+ ]
+}

@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #050505;
+  --color-panel: #111214;
+  --color-panel-2: #16171a;
+  --color-panel-3: #1c1e21;
+  --color-line: #27292d;
+  --color-line-strong: #3a3d42;
+  --color-fg: #ffffff;
+  --color-muted: #92969d;
+  --color-accent: #e8602c;
+  --color-accent-2: #eea585;
+  --color-muscle: #f2f2f0;
+  --color-muscle-shadow: #c9cbcd;
+  --color-danger: #e5484d;
+  --color-warn: #f5a524;
+  --color-ok: #46a758;
+
+  --font-sans: "IBM Plex Sans Arabic", "Segoe UI", "Noto Sans Arabic", "Geeza Pro", Tahoma, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Thin, unobtrusive scrollbars inside panels */
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-strong) transparent;
+}
+
+/* Checkerboard behind a transparent viewport background */
+.checkerboard {
+  background-color: #1a1b1e;
+  background-image:
+    linear-gradient(45deg, #24262a 25%, transparent 25%),
+    linear-gradient(-45deg, #24262a 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #24262a 75%),
+    linear-gradient(-45deg, transparent 75%, #24262a 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+}
+
+input[type="range"] {
+  accent-color: var(--color-accent);
+}
+
+input[type="color"] {
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+  border: 1px solid var(--color-line-strong);
+  border-radius: 6px;
+}
+input[type="color"]::-moz-color-swatch {
+  border: 1px solid var(--color-line-strong);
+  border-radius: 6px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

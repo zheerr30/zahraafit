@@ -179,6 +179,14 @@ h1,h2,h3,h4{font-family:'Cairo',sans-serif;font-weight:800;line-height:1.25}
 .btn-atlas-back{flex:none;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.18);padding:7px 14px;border-radius:10px;font-family:'Tajawal';font-weight:700;font-size:13.5px;cursor:pointer}
 .atlas-frame{flex:1;min-height:0;width:100%;border:0;display:block;background:#0b0c0e}
 @media print{.atlas-btn{display:none!important}}
+/* شاشة ضيقة: أزرار الشريط العلوي تتحرك أفقيا داخل الشريط بدل أن تتجاوز عرض الصفحة */
+@media(max-width:860px){
+  .topbar-in{gap:10px}
+  .topbar .brand{flex:none}
+  .topbar .right{flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .topbar .right::-webkit-scrollbar{display:none}
+  .topbar .right>*{flex:none;white-space:nowrap}
+}
 .ex-row .vid a{display:grid;place-items:center;width:42px;height:42px;border-radius:11px;background:#ff0000;color:#fff;font-size:20px;text-decoration:none;box-shadow:0 6px 16px rgba(255,0,0,.3);transition:.16s}
 .ex-row .vid a:hover{transform:scale(1.07)}
 .ex-row .vid .off{display:grid;place-items:center;width:42px;height:42px;border-radius:11px;background:#eef0f4;color:var(--muted);font-size:18px}

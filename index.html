@@ -168,7 +168,25 @@ h1,h2,h3,h4{font-family:'Cairo',sans-serif;font-weight:800;line-height:1.25}
 .ex-row .sets{display:flex;gap:18px;flex:none;text-align:center}
 .ex-row .sets div b{font-family:'Cairo';font-size:19px;display:block;color:var(--navy)}
 .ex-row .sets div small{font-size:11px;color:var(--muted);font-weight:700}
-.ex-row .vid{flex:none}
+.ex-row .vid{flex:none;display:flex;flex-direction:column;align-items:center;gap:6px}
+.atlas-btn{width:42px;height:26px;border-radius:9px;border:1.5px solid var(--line);background:#fff;color:var(--navy);font-family:'Cairo';font-weight:800;font-size:12px;cursor:pointer;transition:.16s}
+.atlas-btn:hover{border-color:var(--orange);color:var(--orange)}
+.atlas-screen{display:flex;flex-direction:column;height:calc(100vh - 70px);height:calc(100dvh - 70px);min-height:480px;background:#0b0c0e}
+.atlas-bar{flex:none;display:flex;align-items:center;gap:12px;padding:8px 14px;background:var(--navy-2);color:#fff;font-size:13.5px}
+.atlas-bar b{flex:1;min-width:0;font-family:'Cairo';font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.atlas-bar a{flex:none;color:#fff;opacity:.8;font-weight:700;text-decoration:none;font-size:12.5px}
+.atlas-bar a:hover{opacity:1}
+.btn-atlas-back{flex:none;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.18);padding:7px 14px;border-radius:10px;font-family:'Tajawal';font-weight:700;font-size:13.5px;cursor:pointer}
+.atlas-frame{flex:1;min-height:0;width:100%;border:0;display:block;background:#0b0c0e}
+@media print{.atlas-btn{display:none!important}}
+/* شاشة ضيقة: أزرار الشريط العلوي تتحرك أفقيا داخل الشريط بدل أن تتجاوز عرض الصفحة */
+@media(max-width:860px){
+  .topbar-in{gap:10px}
+  .topbar .brand{flex:none}
+  .topbar .right{flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .topbar .right::-webkit-scrollbar{display:none}
+  .topbar .right>*{flex:none;white-space:nowrap}
+}
 .ex-row .vid a{display:grid;place-items:center;width:42px;height:42px;border-radius:11px;background:#ff0000;color:#fff;font-size:20px;text-decoration:none;box-shadow:0 6px 16px rgba(255,0,0,.3);transition:.16s}
 .ex-row .vid a:hover{transform:scale(1.07)}
 .ex-row .vid .off{display:grid;place-items:center;width:42px;height:42px;border-radius:11px;background:#eef0f4;color:var(--muted);font-size:18px}
@@ -1036,6 +1054,46 @@ const STEP_LABELS = ["البيانات","الإعداد","التمارين","ا�
 function go(n){ S.step=n; render(); window.scrollTo({top:0,behavior:"smooth"}); }
 
 /* ============================================================
+   الأطلس التشريحي ثلاثي الأبعاد (Muscle Studio 3D) داخل البرنامج
+   ============================================================ */
+/* عنوان الأطلس: يغير من هنا فقط عند نقله إلى عنوان دائم */
+const ATLAS_URL = "https://muscle-studio-3d-preview.netlify.app";
+/* عضلة التمرين في البرنامج ← العضلة المقابلة لها على المجسم */
+const ATLAS_MUSCLE = {
+  chest:"sternocostal-head-of-pectoralis-major-muscle",
+  upperback:"latissimus-dorsi", lats:"latissimus-dorsi", midback:"trapezius-middle",
+  frontdelt:"deltoid-anterior", sidedelt:"deltoid-lateral", reardelt:"deltoid-posterior",
+  biceps:"long-head-of-biceps-brachii", triceps:"long-head-of-triceps-brachii",
+  absfront:"rectus-abdominis-muscle", absside:"external-abdominal-oblique-muscle",
+  quads:"rectus-femoris-muscle", adductors:"adductor-longus", hamstrings:"long-head-of-biceps-femoris",
+  glutes:"gluteus-maximus-muscle", calves:"medial-head-of-gastrocnemius"
+};
+function atlasSrc(){
+  const u = ATLAS_MUSCLE[S.atlasMuscle];
+  /* theme=zahraafit: الأطلس بألوان الهوية. نسخة المجسم الخفيفة تحمل تلقائيا على الجوال. */
+  return ATLAS_URL + "/atlas?theme=zahraafit" + (u ? "&muscle=" + u + "&panel=details" : "");
+}
+/* الأطلس يملأ ما تحت شريط البرنامج بالضبط، مهما كان ارتفاع الشريط */
+function fitAtlas(){
+  const el = document.querySelector(".atlas-screen");
+  if(!el) return;
+  const top = el.getBoundingClientRect().top + window.scrollY;
+  el.style.height = Math.max(420, window.innerHeight - top) + "px";
+}
+window.addEventListener("resize", fitAtlas);
+function screenAtlas(){
+  const name = S.atlasMuscle && MUSCLES[S.atlasMuscle];
+  return `<div class="atlas-screen">
+    <div class="atlas-bar">
+      <button class="btn-atlas-back" data-act="closeatlas">→ رجوع</button>
+      <b>الأطلس التشريحي ثلاثي الأبعاد${name ? " · " + name : ""}</b>
+      <a href="${atlasSrc()}" target="_blank" rel="noopener">فتح في صفحة مستقلة ↗</a>
+    </div>
+    <iframe class="atlas-frame" src="${atlasSrc()}" title="الأطلس التشريحي ثلاثي الأبعاد" allow="fullscreen" loading="eager"></iframe>
+  </div>`;
+}
+
+/* ============================================================
    العرض الرئيسي
    ============================================================ */
 function render(){
@@ -1051,7 +1109,8 @@ function render(){
     S.step===11 ? screenWarmup() :
     S.step===12 ? screenFlex()   :
     S.step===13 ? screenSubs()   :
-    S.step===14 ? screenManual() : ""
+    S.step===14 ? screenManual() :
+    S.step===15 ? screenAtlas()  : ""
   );
   bind();
 }
@@ -1065,6 +1124,7 @@ function topbar(){
     <div class="right">
       <button class="ghost-btn" data-act="images">🖼️ مكتبة الصور</button>
       <button class="ghost-btn" data-act="videos">🎬 مكتبة الفيديوهات</button>
+      <button class="ghost-btn" data-act="atlas">🧍 الأطلس 3D</button>
       <span style="font-size:11px;font-weight:800;color:var(--orange);background:rgba(232,98,44,.12);padding:4px 10px;border-radius:20px;margin-left:6px">v5.2</span>
       <button class="ghost-btn" data-act="manual">✍️ اكتبي الجدول</button>
       <button class="ghost-btn" data-act="subs">📥 المشتركون</button>
@@ -1478,7 +1538,7 @@ function screenPlan(){
               <div><b>${e.reps ?? L.reps}</b><small>عدة</small></div>
               <div><b>${e.rest ?? L.rest}</b><small>راحة</small></div>
             </div>
-            <div class="vid">${(videoLinks[e.id]||e.video)?`<a href="${videoLinks[e.id]||e.video}" target="_blank" rel="noopener">▶</a>`:`<span class="off" title="أضيفي رابط يوتيوب">▶</span>`}</div>
+            <div class="vid">${(videoLinks[e.id]||e.video)?`<a href="${videoLinks[e.id]||e.video}" target="_blank" rel="noopener">▶</a>`:`<span class="off" title="أضيفي رابط يوتيوب">▶</span>`}${ATLAS_MUSCLE[e.muscle]?`<button class="atlas-btn" data-atlas="${e.muscle}" title="عرض العضلة على المجسم ثلاثي الأبعاد">3D</button>`:""}</div>
           </div>`).join("")}
       </div>`).join("")}
 
@@ -3732,6 +3792,8 @@ function bind(){
   $$("[data-mind]").forEach(el=>el.onclick=()=>{ S.minDaily=+el.dataset.mind; render(); });
   $$("[data-maxd]").forEach(el=>el.onclick=()=>{ S.maxDaily=+el.dataset.maxd; render(); });
   $$("[data-glute]").forEach(el=>el.onclick=()=>{ S.gluteEmphasis=el.dataset.glute==="1"; render(); });
+  fitAtlas();
+  $$("[data-atlas]").forEach(el=>el.onclick=()=>{ S._back=S.step; S.atlasMuscle=el.dataset.atlas; go(15); });
   $$("[data-act]").forEach(b=>b.onclick=()=>{
     const a=b.dataset.act;
     if(a==="start") go(0);
@@ -3838,6 +3900,8 @@ function bind(){
     else if(a==="videos"){ S._back=S.step; videoFilter=""; go(10); }
     else if(a==="closevideos") go(S._back??-1);
     else if(a==="closeimg") go(S._back??-1);
+    else if(a==="atlas"){ if(S.step!==15) S._back=S.step; S.atlasMuscle=""; go(15); }
+    else if(a==="closeatlas") go(S._back??-1);
     else if(a==="editvideos") editVideos();
     else if(a==="backplan") go(3);
     else if(a==="savevideos"){ $$("[data-vid]").forEach(i=>{ const v=i.value.trim(); if(v) videoLinks[i.dataset.vid]=v; else delete videoLinks[i.dataset.vid]; }); saveVideos(); generate(); }

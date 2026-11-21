@@ -83,3 +83,26 @@ View buttons animate between front, back and the sides; 360° turns the body.
 `e2e/atlas-ui.cjs` drives the redesigned controls with real clicks / taps on
 desktop and on a phone-sized touch screen; `e2e/exercise-flow.cjs` the muscle →
 exercises flow; `e2e/back-select-each.cjs` clicks every muscle of a region.
+
+## ZahraaFit theme and the body for phones
+
+Both are for opening the atlas inside the ZahraaFit app, and both are read from the
+address:
+
+| Address | Effect |
+| --- | --- |
+| `?theme=zahraafit` | The brand's light colours: cream page `#F6F2EA`, white cards and menus, navy text `#050F2C`, separators `rgba(5,15,44,.1)`, orange `#E8602C` for buttons, chosen items and the selected muscle, a light cream backdrop behind the model. Kept for the browser tab; `?theme=dark` goes back. |
+| `?lite=1` | The lightweight body (`core-lite.glb`, about 6.4 MB instead of 27). Loaded by itself on phones and tablets. |
+| `?lite=0` | The full body, also on a phone. |
+
+- **Theme**: the colours are CSS variables (`app/globals.css`); the theme overrides
+  them under `:root[data-theme="zahraafit"]`, set before the first paint
+  (`lib/theme.ts`, root layout). The atlas components use the tokens (`bg-surface`,
+  `border-ink/10`, `bg-select`, …) instead of fixed dark colours, so the default
+  theme looks as before.
+- **Body for phones** (`pipeline/lite/body.mjs`): the same nodes, names and ids as
+  the full body — selection, names and explanations are unchanged — with about a
+  fifth of the triangles. No muscle surface moves more than 5 mm; the abdominal wall
+  keeps more detail (the opening of the rectus sheath depends on it).
+  `node pipeline/lite/body.mjs public/models/zanatomy male` (and `female`).
+- Checks: `tests/lite.test.ts`, `e2e/theme-lite.cjs`.

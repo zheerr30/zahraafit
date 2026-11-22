@@ -2,15 +2,12 @@
  * Themes of the app.
  *  - "dark": the default look.
  *  - "zahraafit": the ZahraaFit brand's light colours (cream page, white cards, navy
- *    text, orange buttons and selection), turned on with `?theme=zahraafit` — for
+ *    text, orange buttons and chosen items), turned on with `?theme=zahraafit` — for
  *    opening the atlas inside the ZahraaFit app. The colours are in app/globals.css.
  * The choice is kept for the browser tab, so it survives moving between pages;
  * `?theme=dark` goes back.
  */
 export type ThemeId = "dark" | "zahraafit";
-
-/** Selection colour of the ZahraaFit theme (buttons, chosen items, the selected muscle). */
-export const BRAND_SELECT = "#E8602C";
 
 export function currentTheme(): ThemeId {
   return typeof document !== "undefined" && document.documentElement.dataset.theme === "zahraafit" ? "zahraafit" : "dark";

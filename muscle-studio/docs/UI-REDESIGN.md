@@ -91,7 +91,7 @@ address:
 
 | Address | Effect |
 | --- | --- |
-| `?theme=zahraafit` | The brand's light colours: cream page `#F6F2EA`, white cards and menus, navy text `#050F2C`, separators `rgba(5,15,44,.1)`, orange `#E8602C` for buttons, chosen items and the selected muscle, a light cream backdrop behind the model. Kept for the browser tab; `?theme=dark` goes back. |
+| `?theme=zahraafit` | The brand's light colours: cream page `#F6F2EA`, white cards and menus, navy text `#050F2C`, separators `rgba(5,15,44,.1)`, orange `#E8602C` for buttons and chosen items, a light cream backdrop behind the model. The selected muscle keeps its deep red `#A5111F` on the model, as in the default theme. Kept for the browser tab; `?theme=dark` goes back. |
 | `?lite=1` | The lightweight body (`core-lite.glb`, about 6.4 MB instead of 27). Loaded by itself on phones and tablets. |
 | `?lite=0` | The full body, also on a phone. |
 

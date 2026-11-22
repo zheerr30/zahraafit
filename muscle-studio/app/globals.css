@@ -26,8 +26,6 @@
   --color-select-hover: #ba1626;
   --color-select-soft: #d2626c;
   --color-select-tint: #f4b4bb;
-  --color-select-chip: #f6d5dc;
-  --color-select-chip-fg: #8a1730;
   --color-pick: #ffffff; /* the chosen option of a segmented control */
   --color-pick-fg: #111214;
 
@@ -65,8 +63,6 @@
   --color-select-hover: #d4541f;
   --color-select-soft: #e8602c;
   --color-select-tint: #b8431a;
-  --color-select-chip: #fbe3d8;
-  --color-select-chip-fg: #a63e12;
   --color-pick: #e8602c;
   --color-pick-fg: #ffffff;
   --st-shadow: rgba(5, 15, 44, 0.14);

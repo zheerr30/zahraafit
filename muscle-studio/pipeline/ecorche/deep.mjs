@@ -3,64 +3,71 @@
 // The Écorché model is an artist's écorché: it has the superficial muscles only. The deep
 // ones are taken from the open Z-Anatomy body (CC BY-SA 4.0) the atlas used before, and
 // fitted into the Écorché body:
-//   1. anchors — structures both bodies have (trunk bones, the superficial abdominal
-//      muscles): each pair gives landmarks (a 3 × 3 × 3 grid of its bounding box);
-//   2. a smooth warp (thin-plate spline) through all landmarks carries any point of the
+//   1. bones — every bone of the Z-Anatomy skeleton is fitted onto the same bone of the
+//      Écorché skeleton (each rib and each vertebra on its own), and points on its surface
+//      become landmarks: where a point of that bone is in one body and in the other;
+//   2. the abdominal wall has no bone under it: there the landmarks are taken on the outer
+//      face of the wall muscles both bodies have (rectus, external oblique);
+//   3. a smooth warp (thin-plate spline) through all landmarks carries any point of the
 //      Z-Anatomy body to its place in the Écorché body;
-//   3. the warped deep muscles are tucked under the Écorché muscles that cover them: no
-//      vertex is left on or outside the surface of a covering muscle;
-//   4. normals are rebuilt, fibre directions follow the warp, the baked attributes of the
+//   4. the warped deep muscles are tucked under the Écorché muscles: no vertex is left on
+//      or outside the surface of the body, and none is pushed through a bone for it;
+//   5. normals are rebuilt, fibre directions follow the warp, the baked attributes of the
 //      Z-Anatomy meshes (tendon mask, occlusion) are kept — the atlas draws them with its
 //      own muscle material.
 //
-// Output: public/models/ecorche/<sex>/deep.glb — the same node metadata as in the Z-Anatomy
-// file (ids, Arabic names, regions, depth), plus `from: "zanatomy"`.
+// Output: public/models/ecorche/<sex>/deep.glb and deep-lite.glb — the node metadata of the
+// Z-Anatomy file (ids, Arabic names, regions), the depth given here, and `from: "zanatomy"`.
 //
-//   ECORCHE_WORK=/path/to/work node pipeline/ecorche/deep.mjs male
+//   ECORCHE_WORK=/path/to/work node pipeline/ecorche/deep.mjs male|female
 import { readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import { Document, NodeIO } from "@gltf-transform/core";
 import { ALL_EXTENSIONS, EXTMeshoptCompression, KHRMeshQuantization } from "@gltf-transform/extensions";
-import { meshopt, prune, quantize } from "@gltf-transform/functions";
-import { MeshoptDecoder, MeshoptEncoder } from "meshoptimizer";
+import { cloneDocument, meshopt, prune, quantize, simplify, weld } from "@gltf-transform/functions";
+import { MeshoptDecoder, MeshoptEncoder, MeshoptSimplifier } from "meshoptimizer";
 import { BufferAttribute, BufferGeometry, DoubleSide, Ray, Vector3 } from "three";
 import { MeshBVH } from "three-mesh-bvh";
+import { REMOVED, nameOf } from "./names.mjs";
+import { DEEP } from "./deep-list.mjs";
 
 const sex = process.argv[2] ?? "male";
 const WORK = process.env.ECORCHE_WORK;
 if (!WORK) throw new Error("set ECORCHE_WORK");
-await Promise.all([MeshoptDecoder.ready, MeshoptEncoder.ready]);
+await Promise.all([MeshoptDecoder.ready, MeshoptEncoder.ready, MeshoptSimplifier.ready]);
 
-// ── the muscles to bring over, and what covers them in the Écorché body ──
-// `under`: where the muscle must lie relative to each cover —
-//   "outer": at least `gap` below the cover's outer face. The Écorché muscles are sculpted as
-//            thick solids (much thicker than the real sheets of the abdominal wall), so a deep
-//            sheet is placed at its anatomical depth under the body surface, inside that solid:
-//            hidden while the cover is shown, in its natural place when the cover is peeled;
-//   "inner": at least `gap` below the cover's inner face (really underneath it).
-const WALL = ["External Oblique", "Rectus_Abdominis", "Latissimus_Dorsi", "Serratus_Anterior", "Pars_Abdominalis"];
-const DEEP = [
-  { id: "internal-abdominal-oblique-muscle", depth: 2, cover: WALL, under: "outer", gap: 0.006 },
-  { id: "transversus-abdominis-muscle", depth: 3, cover: WALL, under: "outer", gap: 0.011 },
-  { id: "quadratus-lumborum-muscle", depth: 3, cover: ["Longissimus_Lumborum", "Longissimus_Thoracis", "Latissimus_Dorsi"], under: "inner", gap: 0.002 },
-];
-// ── anchors: [Z-Anatomy ids (kind), Écorché object names] per side ──
+// ── bones both bodies have: Z-Anatomy ids → Écorché objects ─────────
+// each: the Écorché object is made of separate pieces, one per Z-Anatomy bone, top to bottom.
+// refine: one Écorché object for many bones whose pieces can't be told apart by height —
+//         the group is fitted as a whole, then each bone settles on the nearest surface.
+const TOES = ["first", "second", "third", "fourth", "fifth"];
 const NUM = ["First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"];
-const ANCHORS = [
-  { z: ["Hip_bone"], e: ["Pelvis"], sides: ["l", "r"] },
-  { z: ["Sacrum"], e: ["Sacrum"], sides: ["m"] },
-  { z: [1, 2, 3, 4, 5].map((n) => `Vertebra_L${n}`), e: ["Lumbar"], sides: ["m"] },
-  { z: Array.from({ length: 12 }, (_, i) => `Vertebra_T${i + 1}`), e: ["Thoracic"], sides: ["m"] },
-  { z: NUM.map((n) => `${n}_rib`), e: ["Rib_Cage"], sides: ["l", "r"] },
-  { z: ["Body_of_sternum"], e: ["Body_Sternum"], sides: ["m"] },
-  { z: ["Manubrium_of_sternum"], e: ["Manubrium_Sterni"], sides: ["m"] },
-  { z: ["rectus-abdominis-muscle"], e: ["Rectus_Abdominis"], sides: ["l", "r"], split: true },
-  { z: ["external-abdominal-oblique-muscle"], e: ["External Oblique"], sides: ["l", "r"] },
+const B = (z, e, sides, k, mode = "one") => ({ z, e, sides, k, mode });
+const FOOT = ["Calcaneus", "Talus", "Navicular_bone", "Cuboid_bone", "Medial_cuneiform_bone", "Intermediate_cuneiform_bone", "Lateral_cuneiform_bone",
+  ...NUM.slice(0, 5).map((n) => `${n}_metatarsal_bone`), ...TOES.map((n) => `Proximal_phalanx_of_${n}_finger_of_foot`)];
+const LR = ["l", "r"], M = ["m"];
+const BONES = [
+  B(["Hip_bone"], "Pelvis", LR, 56), B(["Sacrum"], "Sacrum", M, 28), B(["Coccyx"], "Coccyx", M, 6),
+  B([1, 2, 3, 4, 5].map((n) => `Vertebra_L${n}`), "Lumbar", M, 12, "each"),
+  B(Array.from({ length: 12 }, (_, i) => `Vertebra_T${i + 1}`), "Thoracic", M, 9, "each"),
+  B(["Atlas_(C1)", "Axis_(C2)", "Vertebra_C3", "Vertebra_C4", "Vertebra_C5", "Vertebra_C6", "Vertebra_C7"], "Cervical", M, 8, "each"),
+  B(NUM.map((n) => `${n}_rib`), "Rib_Cage", LR, 14, "each"),
+  B(["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth"].map((n) => `Costal_cartilage_of_${n}_rib`), "Costal_Cartilage", LR, 28),
+  B(["Body_of_sternum"], "Body_Sternum", M, 14), B(["Manubrium_of_sternum"], "Manubrium_Sterni", M, 10), B(["Xiphoid_process"], "Xiphoid_Process", M, 4),
+  B(["Clavicle"], "Clavicle", LR, 12), B(["Scapula"], "Scapula", LR, 44),
+  B(["Humerus"], "Humerus", LR, 28), B(["Radius"], "Radius", LR, 20), B(["Ulna"], "Ulna", LR, 20),
+  B(["Femur"], "Femur", LR, 40), B(["Tibia"], "Tibia", LR, 30), B(["Fibula"], "Fibula", LR, 20), B(["Patella"], "Patella", LR, 6),
+  { ...B([...FOOT, ...TOES.slice(1).map((n) => `Middle_phalanx_of_${n}_finger_of_foot`), ...TOES.map((n) => `Distal_phalanx_of_${n}_finger_of_foot`)], "Foot", LR, 5, "refine"), marks: FOOT },
+  B(["Frontal_bone", "Parietal_bone", "Occipital_bone", "Temporal_bone", "Zygomatic_bone", "Maxilla", "Sphenoid_bone", "Nasal_bone", "Palatine_bone", "Vomer", "Ethmoid_bone"], "Cranium", M, 70),
+  B(["Mandible"], "Mandible", M, 26), B(["Hyoid_bone"], "Hyoid", M, 8), B(["Thyroid_cartilage"], "Thyroid_Cartilage", M, 8),
 ];
+// the abdominal wall: muscles both bodies have, whose outer face gives landmarks
+const WALL_Z = ["rectus-abdominis-muscle", "external-abdominal-oblique-muscle"], WALL_E = ["Rectus_Abdominis", "External Oblique"];
 
 // ── inputs ──────────────────────────────────────────────────────────
 const io = new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({ "meshopt.decoder": MeshoptDecoder, "meshopt.encoder": MeshoptEncoder });
-const zdoc = await io.read(`public/models/zanatomy/${sex}/core-smooth.glb`);
+// the Z-Anatomy male body is the source for both sexes: its female variant is itself a warp
+const zdoc = await io.read("public/models/zanatomy/male/core-smooth.glb");
 const manifest = JSON.parse(readFileSync(path.join(WORK, sex, "manifest.json"), "utf8"));
 const bin = readFileSync(path.join(WORK, sex, "geometry.bin"));
 const f32 = (off, n) => new Float32Array(bin.buffer.slice(bin.byteOffset + off, bin.byteOffset + off + n * 4));
@@ -79,137 +86,333 @@ function zWorld(node) {
   return out;
 }
 const zNodes = zdoc.getRoot().listNodes().filter((n) => n.getMesh());
-const box = () => ({ min: [Infinity, Infinity, Infinity], max: [-Infinity, -Infinity, -Infinity] });
-const grow = (b, p, keep = () => true) => { for (let i = 0; i < p.length; i += 3) { if (!keep(p[i])) continue; for (let c = 0; c < 3; c++) { if (p[i + c] < b.min[c]) b.min[c] = p[i + c]; if (p[i + c] > b.max[c]) b.max[c] = p[i + c]; } } };
-const halfOf = (side) => (side === "l" ? (x) => x >= 0 : side === "r" ? (x) => x <= 0 : () => true);
+const sideOk = (have, want) => want === "m" || have === want;
+
+/** Several meshes as one: { pos, idx }. */
+function merge(parts) {
+  const nv = parts.reduce((s, p) => s + p.pos.length / 3, 0), nt = parts.reduce((s, p) => s + p.idx.length, 0);
+  const pos = new Float32Array(nv * 3), idx = new Uint32Array(nt);
+  let vo = 0, to = 0;
+  for (const p of parts) { pos.set(p.pos, vo * 3); for (let i = 0; i < p.idx.length; i++) idx[to + i] = p.idx[i] + vo; vo += p.pos.length / 3; to += p.idx.length; }
+  return { pos, idx };
+}
+const zMesh = (ids, side) => merge(zNodes.filter((n) => ids.includes(n.getExtras().id) && sideOk(n.getExtras().side, side))
+  .map((n) => ({ pos: zWorld(n), idx: Uint32Array.from(n.getMesh().listPrimitives()[0].getIndices().getArray()) })));
+const eMesh = (names, side, keep = () => true) => merge(manifest.records.filter((r) => names.includes(r.name) && sideOk(r.side, side) && keep(r))
+  .map((r) => ({ pos: f32(r.position, r.vertices * 3), idx: u32(r.index, r.triangles * 3) })));
+function bvhOf(g) {
+  const geo = new BufferGeometry();
+  geo.setAttribute("position", new BufferAttribute(g.pos, 3));
+  geo.setIndex(new BufferAttribute(g.idx, 1));
+  return new MeshBVH(geo);
+}
+/** The separate pieces of a mesh (corners at the same place joined), highest first. */
+function pieces(g) {
+  const n = g.pos.length / 3, first = new Map(), rep = new Int32Array(n), par = Int32Array.from({ length: n }, (_, i) => i);
+  for (let i = 0; i < n; i++) { const k = `${Math.round(g.pos[i * 3] * 1e4)},${Math.round(g.pos[i * 3 + 1] * 1e4)},${Math.round(g.pos[i * 3 + 2] * 1e4)}`; let v = first.get(k); if (v === undefined) first.set(k, (v = i)); rep[i] = v; }
+  const find = (a) => { while (par[a] !== a) a = par[a] = par[par[a]]; return a; };
+  for (let t = 0; t < g.idx.length; t += 3) { const a = find(rep[g.idx[t]]); par[find(rep[g.idx[t + 1]])] = a; par[find(rep[g.idx[t + 2]])] = a; }
+  const groups = new Map();
+  for (let t = 0; t < g.idx.length; t += 3) { const c = find(rep[g.idx[t]]); (groups.get(c) ?? groups.set(c, []).get(c)).push(t); }
+  const out = [];
+  for (const tris of groups.values()) {
+    if (tris.length < 12) continue;
+    const map = new Map(), pos = [], idx = new Uint32Array(tris.length * 3);
+    let top = -Infinity;
+    tris.forEach((t, j) => { for (let c = 0; c < 3; c++) { const v = g.idx[t + c]; let m = map.get(v); if (m === undefined) { map.set(v, (m = pos.length / 3)); pos.push(g.pos[v * 3], g.pos[v * 3 + 1], g.pos[v * 3 + 2]); top = Math.max(top, g.pos[v * 3 + 1]); } idx[j * 3 + c] = m; } });
+    out.push({ pos: Float32Array.from(pos), idx, top });
+  }
+  return out.sort((a, b) => b.top - a.top);
+}
+
+// ── fitting one bone onto another ───────────────────────────────────
+const dist3 = (a, b) => Math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2);
+const boxOf = (p) => { const b = { min: [Infinity, Infinity, Infinity], max: [-Infinity, -Infinity, -Infinity] }; for (let i = 0; i < p.length; i += 3) for (let c = 0; c < 3; c++) { if (p[i + c] < b.min[c]) b.min[c] = p[i + c]; if (p[i + c] > b.max[c]) b.max[c] = p[i + c]; } return b; };
+const sample = (p, most) => { const n = p.length / 3, step = Math.max(1, Math.floor(n / most)), out = []; for (let i = 0; i < n; i += step) out.push([p[i * 3], p[i * 3 + 1], p[i * 3 + 2]]); return out; };
+const apply = (m, p) => [m[0] * p[0] + m[1] * p[1] + m[2] * p[2] + m[3], m[4] * p[0] + m[5] * p[1] + m[6] * p[2] + m[7], m[8] * p[0] + m[9] * p[1] + m[10] * p[2] + m[11]];
+const mean = (pts) => { const c = [0, 0, 0]; for (const p of pts) { c[0] += p[0]; c[1] += p[1]; c[2] += p[2]; } return c.map((v) => v / pts.length); };
+/** Centre, longest direction and how much longer it is than the rest. */
+function longAxis(pts) {
+  const c = mean(pts), C = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+  for (const p of pts) { const d = [p[0] - c[0], p[1] - c[1], p[2] - c[2]]; for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) C[i * 3 + j] += d[i] * d[j]; }
+  let v = [0.3, 1, 0.2], l = 0;
+  for (let k = 0; k < 60; k++) { const w = [C[0] * v[0] + C[1] * v[1] + C[2] * v[2], C[3] * v[0] + C[4] * v[1] + C[5] * v[2], C[6] * v[0] + C[7] * v[1] + C[8] * v[2]]; l = Math.hypot(...w); v = w.map((x) => x / l); }
+  return { c, dir: v, long: l / Math.max(1e-12, C[0] + C[4] + C[8] - l), len: Math.sqrt(l / pts.length) };
+}
+const inv3T = (m) => { // inverse transpose of a 3 × 3
+  const [a, b, c, d, e, f, g, h, i] = m, det = a * (e * i - f * h) - b * (d * i - f * g) + c * (d * h - e * g);
+  return [(e * i - f * h) / det, (f * g - d * i) / det, (d * h - e * g) / det, (c * h - b * i) / det, (a * i - c * g) / det, (b * g - a * h) / det, (b * f - c * e) / det, (c * d - a * f) / det, (a * e - b * d) / det];
+};
+/** The turn, even scaling and shift that best carries the points `a` onto the points `b`. */
+function similarity(a, b, fixed) {
+  const ca = mean(a), cb = mean(b), H = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+  let va = 0;
+  for (let k = 0; k < a.length; k++) { const p = [a[k][0] - ca[0], a[k][1] - ca[1], a[k][2] - ca[2]], q = [b[k][0] - cb[0], b[k][1] - cb[1], b[k][2] - cb[2]]; va += p[0] * p[0] + p[1] * p[1] + p[2] * p[2]; for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) H[i * 3 + j] += q[i] * p[j]; }
+  let R = H.map((x) => x / Math.max(1e-12, va));
+  for (let k = 0; k < 40; k++) { const t = inv3T(R); R = R.map((x, i) => 0.5 * (x + t[i])); }
+  let tr = 0;
+  for (let i = 0; i < 9; i++) tr += R[i] * H[i];
+  const s = fixed ?? tr / va;
+  return [s * R[0], s * R[1], s * R[2], cb[0] - s * (R[0] * ca[0] + R[1] * ca[1] + R[2] * ca[2]), s * R[3], s * R[4], s * R[5], cb[1] - s * (R[3] * ca[0] + R[4] * ca[1] + R[5] * ca[2]), s * R[6], s * R[7], s * R[8], cb[2] - s * (R[6] * ca[0] + R[7] * ca[1] + R[8] * ca[2])];
+}
+function solveSmall(Mx, rhs) { // Gauss–Jordan, n × n, several right-hand sides
+  const n = Mx.length, a = Mx.map((r, i) => [...r, ...rhs[i]]);
+  for (let c = 0; c < n; c++) {
+    let p = c;
+    for (let r = c + 1; r < n; r++) if (Math.abs(a[r][c]) > Math.abs(a[p][c])) p = r;
+    [a[c], a[p]] = [a[p], a[c]];
+    for (let r = 0; r < n; r++) if (r !== c) { const f = a[r][c] / a[c][c]; for (let k = c; k < a[r].length; k++) a[r][k] -= f * a[c][k]; }
+  }
+  return a.map((r, i) => r.slice(n).map((v) => v / r[i]));
+}
+/** The best linear map (stretch and shear allowed) carrying `a` onto `b`. */
+function affine(a, b) {
+  const ca = mean(a), N = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]], R = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
+  for (let k = 0; k < a.length; k++) { const p = [a[k][0] - ca[0], a[k][1] - ca[1], a[k][2] - ca[2], 1]; for (let i = 0; i < 4; i++) { for (let j = 0; j < 4; j++) N[i][j] += p[i] * p[j]; for (let c = 0; c < 3; c++) R[i][c] += p[i] * b[k][c]; } }
+  const X = solveSmall(N, R); // 4 rows (x, y, z, 1) × 3 outputs
+  const m = [];
+  for (let c = 0; c < 3; c++) m.push(X[0][c], X[1][c], X[2][c], X[3][c] - (X[0][c] * ca[0] + X[1][c] * ca[1] + X[2][c] * ca[2]));
+  return m;
+}
+const tmpV = new Vector3(), tmpHit = { point: new Vector3(), distance: 0, faceIndex: 0 };
+function nearest(bvh, p) { bvh.closestPointToPoint(tmpV.set(p[0], p[1], p[2]), tmpHit); return { q: [tmpHit.point.x, tmpHit.point.y, tmpHit.point.z], d: tmpHit.distance }; }
+const inv34 = (m) => { // inverse of a 3 × 4 map
+  const t = inv3T([m[0], m[1], m[2], m[4], m[5], m[6], m[8], m[9], m[10]]), r = [t[0], t[3], t[6], t[1], t[4], t[7], t[2], t[5], t[8]];
+  return [r[0], r[1], r[2], -(r[0] * m[3] + r[1] * m[7] + r[2] * m[11]), r[3], r[4], r[5], -(r[3] * m[3] + r[4] * m[7] + r[5] * m[11]), r[6], r[7], r[8], -(r[6] * m[3] + r[7] * m[7] + r[8] * m[11])];
+};
+/**
+ * Fits the mesh `src` (a Z-Anatomy bone) onto the mesh `dst` (the same Écorché bone): pairs
+ * of closest points, best map, again. The pairs go both ways — every part of each bone
+ * looks for its place on the other — so a bone can't slide along its shaft or shrink into
+ * the other. First the bone keeps its proportions; `stretch` then lets it stretch a little.
+ * `from`: the map to start
+ * from (default: box onto box, or, for a long bone, shaft onto shaft); with `rigid` the
+ * bone only settles (turn and shift) on the nearest surface, one way.
+ */
+function fit(src, dst, { from, stretch = true, rigid = false, rounds = 30 } = {}) {
+  const S = sample(src.pos, 1400), T = sample(dst.pos, 1400), bvh = bvhOf(dst), back = bvhOf(src);
+  const a = longAxis(S), b = longAxis(T), isLong = a.long > 6 && b.long > 6;
+  let m = from;
+  if (!m) {
+    if (isLong) { // a long bone: shaft onto shaft, turned as little as possible
+      if (a.dir[0] * b.dir[0] + a.dir[1] * b.dir[1] + a.dir[2] * b.dir[2] < 0) b.dir = b.dir.map((x) => -x);
+      const ends = (ax) => [-1.6, -0.8, 0, 0.8, 1.6].map((t) => ax.c.map((c, i) => c + ax.dir[i] * ax.len * t));
+      // two extra points off the shaft keep the turn about it as it was
+      const side = [a.dir[1], -a.dir[0], 0], off = (ax, k) => ax.c.map((c, i) => c + side[i] * 0.02 * k);
+      m = similarity([...ends(a), off(a, 1), off(a, -1)], [...ends(b), off(b, b.len / a.len), off(b, -b.len / a.len)]);
+    } else {
+      const x = boxOf(src.pos), y = boxOf(dst.pos), k = [0, 1, 2].map((c) => (y.max[c] - y.min[c]) / Math.max(1e-6, x.max[c] - x.min[c]));
+      m = [k[0], 0, 0, y.min[0] - k[0] * x.min[0], 0, k[1], 0, y.min[1] - k[1] * x.min[1], 0, 0, k[2], y.min[2] - k[2] * x.min[2]];
+    }
+  }
+  const scale = Math.cbrt(Math.abs(m[0] * (m[5] * m[10] - m[6] * m[9]) - m[1] * (m[4] * m[10] - m[6] * m[8]) + m[2] * (m[4] * m[9] - m[5] * m[8])));
+  let rms = 0;
+  for (let it = 0; it < rounds; it++) {
+    const A = [], Bq = [], all = [];
+    const keep = (pairs, share) => { const cut = Math.max(0.002, pairs.map((x) => x[2]).sort((x, y) => x - y)[Math.floor(pairs.length * share)]); for (const [a, b, d] of pairs) { all.push(d); if (d <= cut) { A.push(a); Bq.push(b); } } };
+    keep(S.map((p) => { const h = nearest(bvh, apply(m, p)); return [p, h.q, h.d]; }), 0.9);
+    if (!rigid) { const inv = inv34(m); keep(T.map((q) => { const h = nearest(back, apply(inv, q)); return [h.q, q, dist3(apply(m, h.q), q)]; }), 0.85); }
+    m = rigid ? similarity(A, Bq, scale) : stretch && it >= rounds * (from ? 0.3 : 0.7) ? affine(A, Bq) : similarity(A, Bq);
+    all.sort((x, y) => x - y);
+    const used = all.slice(0, Math.floor(all.length * 0.85));
+    rms = Math.sqrt(used.reduce((t, d) => t + d * d, 0) / used.length);
+  }
+  return { m, bvh, rms };
+}
+/** `k` points of a bone, spread evenly over it. */
+function spread(src, k) {
+  const S = sample(src.pos, 900), out = [0], far = new Float64Array(S.length).fill(Infinity);
+  while (out.length < Math.min(k, S.length)) {
+    const last = S[out[out.length - 1]];
+    let best = 0;
+    for (let i = 0; i < S.length; i++) { far[i] = Math.min(far[i], (S[i][0] - last[0]) ** 2 + (S[i][1] - last[1]) ** 2 + (S[i][2] - last[2]) ** 2); if (far[i] > far[best]) best = i; }
+    out.push(best);
+  }
+  return out.map((i) => S[i]);
+}
 
 // ── landmarks ───────────────────────────────────────────────────────
-const P = [], Q = []; // Z-Anatomy points → Écorché points
-for (const a of ANCHORS) {
-  for (const side of a.sides) {
-    const bz = box(), be = box();
-    for (const n of zNodes) { const x = n.getExtras(); if (a.z.includes(x.id) && (side === "m" || x.side === side)) grow(bz, zWorld(n)); }
-    for (const r of manifest.records) { if (a.e.includes(r.name) && (a.split || side === "m" || r.side === side)) grow(be, f32(r.position, r.vertices * 3), a.split ? halfOf(side) : undefined); }
-    if (!isFinite(bz.min[0]) || !isFinite(be.min[0])) throw new Error(`anchor not found: ${a.z[0]} / ${a.e[0]} (${side})`);
-    for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) for (let k = 0; k < 3; k++) {
-      const t = [i / 2, j / 2, k / 2];
-      P.push(t.map((u, c) => bz.min[c] + u * (bz.max[c] - bz.min[c])));
-      Q.push(t.map((u, c) => be.min[c] + u * (be.max[c] - be.min[c])));
+const dist = (a, b) => Math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2);
+const P = [], Q = [], SOFT = [], TAG = []; // Z-Anatomy points → Écorché points, and how loosely each is held
+const SNAP = 0.008, fits = [];
+function landmarks(src, f, k, tag, soft = 2e-5) {
+  for (const p of spread(src, k)) {
+    const q = apply(f.m, p), h = nearest(f.bvh, q);
+    P.push(p); Q.push(h.d < SNAP ? h.q : q); SOFT.push(soft); TAG.push(tag);
+  }
+}
+// The Écorché body is the same on both sides: the right side starts from the mirrored fit
+// of the left one and only settles, so both sides come out alike.
+const mirror = (m) => [m[0], -m[1], -m[2], -m[3], -m[4], m[5], m[6], m[7], -m[8], m[9], m[10], m[11]];
+const leftFit = new Map();
+const fitSide = (key, side, src, dst) => {
+  const f = side === "r" && leftFit.has(key) ? fit(src, dst, { from: mirror(leftFit.get(key)), rounds: 10 }) : fit(src, dst);
+  if (side === "l") leftFit.set(key, f.m);
+  return f;
+};
+for (const b of BONES) {
+  for (const side of b.sides) {
+    const zOf = (ids) => zMesh(ids, side), whole = eMesh([b.e], side);
+    if (!whole.pos.length) throw new Error(`Écorché bone not found: ${b.e} (${side})`);
+    if (b.mode === "each") {
+      const parts = pieces(whole);
+      if (parts.length !== b.z.length) throw new Error(`${b.e} (${side}): ${parts.length} pieces for ${b.z.length} bones`);
+      let prev = null; // the bone above: where a fit goes wrong, its map is a better start
+      b.z.forEach((id, i) => {
+        const src = zOf([id]);
+        if (!src.pos.length) throw new Error(`Z-Anatomy bone not found: ${id}`);
+        let f = fitSide(id, side, src, parts[i]);
+        if (f.rms > 0.004 && prev) { const again = fit(src, parts[i], { from: prev.m }); if (again.rms < f.rms) { f = again; if (side === "l") leftFit.set(id, f.m); } }
+        prev = f;
+        fits.push([`${id} ${side}`, f.rms]); landmarks(src, f, b.k, `${id} ${side}`);
+      });
+    } else {
+      const src = zOf(b.z);
+      if (!src.pos.length) throw new Error(`Z-Anatomy bone not found: ${b.z[0]} (${side})`);
+      const f = fitSide(b.e, side, src, whole);
+      fits.push([`${b.e} ${side}`, f.rms]);
+      if (b.mode === "refine") for (const id of b.marks) { const one = zOf([id]); if (!one.pos.length) continue; const g = fit(one, whole, { from: f.m, rigid: true, rounds: 6 }); landmarks(one, g, b.k, `${id} ${side}`); }
+      else landmarks(src, f, b.k, `${b.e} ${side}`);
     }
   }
 }
+const boneLandmarks = P.length;
 
-// ── thin-plate spline in 3D (kernel r), slightly smoothed: the landmarks are approximate ──
-const N = P.length, SMOOTH = 0.003;
-const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
-const A = Array.from({ length: N + 4 }, () => new Float64Array(N + 4));
-for (let i = 0; i < N; i++) {
-  for (let j = 0; j < N; j++) A[i][j] = dist(P[i], P[j]) + (i === j ? SMOOTH : 0);
-  A[i][N] = A[N][i] = 1;
-  for (let c = 0; c < 3; c++) A[i][N + 1 + c] = A[N + 1 + c][i] = P[i][c];
+// the trunk's axis in each body: straight up through the middle of the rib cage and pelvis
+const midZ = (p) => { const b = boxOf(p); return (b.min[2] + b.max[2]) / 2; };
+const Z_AXIS = midZ(zMesh([...NUM.map((n) => `${n}_rib`), "Hip_bone"], "m").pos), E_AXIS = midZ(eMesh(["Rib_Cage", "Pelvis"], "m").pos);
+{ // the abdominal wall: its outer face at the same height (between pubis and sternum) and the same angle around the trunk
+  const zb = bvhOf(zMesh(WALL_Z, "m")), eb = bvhOf(eMesh(WALL_E, "m"));
+  const span = (lo, hi) => [boxOf(lo).max[1], boxOf(hi).min[1]];
+  const [zy0, zy1] = span(zMesh(["Pubic_symphysis"], "m").pos, zMesh(["Body_of_sternum"], "m").pos), [ey0, ey1] = span(eMesh(["Pubic_symphysis"], "m").pos, eMesh(["Body_Sternum"], "m").pos);
+  const nearBone = (list, p) => { for (let i = 0; i < boneLandmarks; i++) if (dist(list[i], p) < 0.03) return true; return false; };
+  const ray = new Ray(), outer = (bvh, y, ang, axisZ) => { const dx = Math.sin(ang), dz = Math.cos(ang); ray.origin.set(dx * 0.5, y, axisZ + dz * 0.5); ray.direction.set(-dx, 0, -dz); const h = bvh.raycastFirst(ray, DoubleSide); return h && h.distance < 0.49 ? [h.point.x, h.point.y, h.point.z] : null; };
+  for (const f of [0.06, 0.2, 0.34, 0.48, 0.62, 0.76, 0.9]) for (let deg = -120; deg <= 120; deg += 15) {
+    const a = (deg * Math.PI) / 180, p = outer(zb, zy0 + f * (zy1 - zy0), a, Z_AXIS), q = outer(eb, ey0 + f * (ey1 - ey0), a, E_AXIS);
+    // only where the wall is free: next to a bone, the bone's own landmarks say where things go
+    if (p && q && !nearBone(P, p) && !nearBone(Q, q)) { P.push(p); Q.push(q); SOFT.push(3e-4); TAG.push(`wall ${f} ${deg}`); }
+  }
 }
-function solve(M, rhs) { // Gaussian elimination with partial pivoting; rhs: three columns
-  const n = M.length, a = M.map((r) => Float64Array.from(r)), b = rhs.map((r) => Float64Array.from(r));
+
+// ── thin-plate spline in 3D (kernel −r); `SOFT` lets a landmark be missed a little ──
+const N = P.length;
+function solve(a, b) { // Gaussian elimination with partial pivoting, in place; b: three columns
+  const n = a.length;
   for (let col = 0; col < n; col++) {
     let piv = col;
     for (let r = col + 1; r < n; r++) if (Math.abs(a[r][col]) > Math.abs(a[piv][col])) piv = r;
     [a[col], a[piv]] = [a[piv], a[col]]; [b[col], b[piv]] = [b[piv], b[col]];
-    const d = a[col][col];
+    const d = a[col][col], ac = a[col], bc = b[col];
     for (let r = col + 1; r < n; r++) {
-      const f = a[r][col] / d;
+      const ar = a[r], f = ar[col] / d;
       if (!f) continue;
-      for (let c = col; c < n; c++) a[r][c] -= f * a[col][c];
-      for (let c = 0; c < 3; c++) b[r][c] -= f * b[col][c];
+      for (let c = col; c < n; c++) ar[c] -= f * ac[c];
+      b[r][0] -= f * bc[0]; b[r][1] -= f * bc[1]; b[r][2] -= f * bc[2];
     }
   }
-  for (let r = n - 1; r >= 0; r--) {
-    for (let c = 0; c < 3; c++) { let s = b[r][c]; for (let k = r + 1; k < n; k++) s -= a[r][k] * b[k][c]; b[r][c] = s / a[r][r]; }
-  }
+  for (let r = n - 1; r >= 0; r--) for (let c = 0; c < 3; c++) { let s = b[r][c]; for (let k = r + 1; k < n; k++) s -= a[r][k] * b[k][c]; b[r][c] = s / a[r][r]; }
   return b;
 }
-const W = solve(A, [...Q.map((q) => [q[0], q[1], q[2]]), [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]);
+const A = Array.from({ length: N + 4 }, () => new Float64Array(N + 4));
+for (let i = 0; i < N; i++) {
+  for (let j = 0; j < N; j++) A[i][j] = -dist(P[i], P[j]);
+  A[i][i] = SOFT[i];
+  A[i][N] = A[N][i] = 1;
+  for (let c = 0; c < 3; c++) A[i][N + 1 + c] = A[N + 1 + c][i] = P[i][c];
+}
+const W = solve(A, [...Q.map((q) => Float64Array.from(q)), ...[0, 0, 0, 0].map(() => new Float64Array(3))]);
+const PX = Float64Array.from(P.map((p) => p[0])), PY = Float64Array.from(P.map((p) => p[1])), PZ = Float64Array.from(P.map((p) => p[2]));
+const WX = Float64Array.from(W.slice(0, N).map((w) => w[0])), WY = Float64Array.from(W.slice(0, N).map((w) => w[1])), WZ = Float64Array.from(W.slice(0, N).map((w) => w[2]));
 function warp(p, out = [0, 0, 0]) {
   let x = W[N][0] + W[N + 1][0] * p[0] + W[N + 2][0] * p[1] + W[N + 3][0] * p[2];
   let y = W[N][1] + W[N + 1][1] * p[0] + W[N + 2][1] * p[1] + W[N + 3][1] * p[2];
   let z = W[N][2] + W[N + 1][2] * p[0] + W[N + 2][2] * p[1] + W[N + 3][2] * p[2];
-  for (let i = 0; i < N; i++) { const r = dist(p, P[i]); x += W[i][0] * r; y += W[i][1] * r; z += W[i][2] * r; }
+  for (let i = 0; i < N; i++) { const a = p[0] - PX[i], b = p[1] - PY[i], c = p[2] - PZ[i], r = -Math.sqrt(a * a + b * b + c * c); x += WX[i] * r; y += WY[i] * r; z += WZ[i] * r; }
   out[0] = x; out[1] = y; out[2] = z;
   return out;
 }
-let fitErr = 0;
-for (let i = 0; i < N; i++) fitErr = Math.max(fitErr, dist(warp(P[i]), Q[i]));
+const misses = P.map((p, i) => [dist(warp(p), Q[i]), TAG[i]]).sort((a, b) => b[0] - a[0]);
+const fitErr = misses[0][0];
+if (process.env.DEEP_VERBOSE) console.log("landmarks missed the most (mm):", misses.slice(0, 25).map(([d, t]) => `${t} ${(d * 1000).toFixed(1)}`).join(", "));
 
-// ── covers of the Écorché body ──────────────────────────────────────
-const bvhOf = new Map();
-function coverBVH(name) {
-  if (bvhOf.has(name)) return bvhOf.get(name);
-  const list = [];
-  for (const r of manifest.records) {
-    if (r.name !== name) continue;
-    const g = new BufferGeometry();
-    g.setAttribute("position", new BufferAttribute(f32(r.position, r.vertices * 3), 3));
-    g.setIndex(new BufferAttribute(u32(r.index, r.triangles * 3), 1));
-    list.push(new MeshBVH(g));
-  }
-  bvhOf.set(name, list);
-  return list;
+// ── the Écorché body the muscles are fitted into ────────────────────
+const isMuscle = (r) => r.collection === "Muscles" && !REMOVED.has(r.name) && nameOf(r.collection, r.name)?.kind === "unit";
+const surface = bvhOf(eMesh(manifest.records.filter(isMuscle).map((r) => r.name), "m", isMuscle));
+const skeleton = bvhOf(eMesh(manifest.records.filter((r) => ["Bones", "Skull"].includes(r.collection)).map((r) => r.name), "m", (r) => ["Bones", "Skull"].includes(r.collection)));
+/** The line a muscle is wrapped around: a point on it and its direction. */
+function axisOf(name, side) {
+  if (name === "trunk") return { o: [0, 0, E_AXIS], d: [0, 1, 0] };
+  const bones = { neck: ["Cervical"], thigh: ["Femur"], leg: ["Tibia", "Fibula"], arm: ["Humerus"], forearm: ["Radius", "Ulna"], foot: ["Foot"] }[name];
+  const a = longAxis(sample(eMesh(bones, name === "neck" ? "m" : side).pos, 4000));
+  return { o: a.c, d: a.dir };
 }
-// the trunk's axis: straight up through the middle of the rib cage and pelvis
-const trunk = box();
-for (const r of manifest.records) if (["Rib_Cage", "Pelvis"].includes(r.name)) grow(trunk, f32(r.position, r.vertices * 3));
-const AXIS_Z = (trunk.min[2] + trunk.max[2]) / 2;
+const axes = new Map();
+const axisFor = (name, side) => { const k = `${name}/${side}`; if (!axes.has(k)) axes.set(k, axisOf(name, side)); return axes.get(k); };
 
 /**
- * How far (m) each vertex must move towards the trunk's axis to lie `margin` under every
- * covering muscle. A ray from outside the body towards the axis through the vertex meets a
- * cover on its outer face and leaves it on its inner face; the vertex must come after the exit.
+ * Moves the vertices that lie on or outside the body's surface under it, towards the axis:
+ * at least `MIN` under the outer face of the Écorché muscles, and `gap` under it where no
+ * bone is in the way; and under every mesh of `below`. The move is a smooth field around
+ * the axis (place along it × angle around it), the same for both faces of the muscle at a
+ * place: it keeps its thickness and its surface stays even.
  */
-function tuck(pos, covers, under, margin) {
-  const n = pos.length / 3, push = new Float32Array(n), dirs = new Float32Array(n * 2);
-  const ray = new Ray(), FAR = 0.3;
-  const bvhs = covers.flatMap(coverBVH);
+const MIN = 0.0015, REACH = 0.008;
+function tuck(pos, axis, gap, below) {
+  const n = pos.length / 3, push = new Float32Array(n), dirs = new Float32Array(n * 3), along = new Float32Array(n), around = new Float32Array(n);
+  const ray = new Ray(), { o, d } = axis;
+  const ref = Math.abs(d[1]) > 0.9 ? [1, 0, 0] : [0, 1, 0];
+  const u = new Vector3(...d).cross(new Vector3(...ref)).normalize(), v = new Vector3(...d).cross(u).normalize();
   for (let i = 0; i < n; i++) {
     const x = pos[i * 3], y = pos[i * 3 + 1], z = pos[i * 3 + 2];
-    let dx = x, dz = z - AXIS_Z; const l = Math.hypot(dx, dz) || 1; dx /= l; dz /= l;
-    dirs[i * 2] = dx; dirs[i * 2 + 1] = dz;
-    ray.origin.set(x + dx * FAR, y, z + dz * FAR); ray.direction.set(-dx, 0, -dz);
-    let need = 0;
-    for (const bvh of bvhs) {
-      const hits = bvh.raycast(ray, DoubleSide).map((h) => h.distance).sort((a, b) => a - b);
-      // pairs: in at hits[0], out at hits[1], … ; a cover the vertex is outside of, inside of,
-      // or closer than the margin under
-      for (let k = 0; k < hits.length; k += 2) {
-        const face = under === "inner" ? (hits[k + 1] ?? hits[k]) : hits[k];
-        if (hits[k] > FAR + 0.06) break; // far beyond the vertex: the other side of the body
-        if (face + margin > FAR) need = Math.max(need, face + margin - FAR);
-      }
+    const t = (x - o[0]) * d[0] + (y - o[1]) * d[1] + (z - o[2]) * d[2];
+    let rx = x - o[0] - d[0] * t, ry = y - o[1] - d[1] * t, rz = z - o[2] - d[2] * t;
+    const l = Math.hypot(rx, ry, rz) || 1; rx /= l; ry /= l; rz /= l;
+    dirs[i * 3] = rx; dirs[i * 3 + 1] = ry; dirs[i * 3 + 2] = rz;
+    along[i] = t; around[i] = Math.atan2(rx * v.x + ry * v.y + rz * v.z, rx * u.x + ry * u.y + rz * u.z);
+    let must = 0, wish = 0;
+    // outwards: what lies over the vertex
+    ray.origin.set(x, y, z); ray.direction.set(rx, ry, rz);
+    const up = surface.raycastFirst(ray, DoubleSide);
+    if (!up || up.distance > 0.2) { // nothing: on or outside the body — the first muscle inwards takes it in
+      ray.direction.set(-rx, -ry, -rz);
+      const inHit = surface.raycast(ray, DoubleSide).filter((h) => h.face.normal.x * rx + h.face.normal.y * ry + h.face.normal.z * rz > 0).sort((a, b) => a.distance - b.distance)[0];
+      if (inHit && inHit.distance < REACH) { must = inHit.distance + MIN; wish = inHit.distance + gap; }
+    } else if (up.face.normal.x * rx + up.face.normal.y * ry + up.face.normal.z * rz > 0 && up.distance < gap) { // inside a muscle, close under its outer face
+      must = Math.max(0, MIN - up.distance); wish = gap - up.distance;
     }
-    push[i] = Math.min(need, 0.05);
+    if (wish > 0) { // not through a bone
+      ray.origin.set(x, y, z); ray.direction.set(-rx, -ry, -rz);
+      const bone = skeleton.raycastFirst(ray, DoubleSide);
+      if (bone) wish = Math.min(wish, Math.max(0, bone.distance - 0.001));
+    }
+    let need = Math.max(must, wish);
+    // under the listed meshes: under every face of theirs that is over the vertex or just under it
+    const FAR = 0.12;
+    ray.origin.set(x + rx * FAR, y + ry * FAR, z + rz * FAR); ray.direction.set(-rx, -ry, -rz);
+    for (const b of below) for (const h of b.raycast(ray, DoubleSide)) if (h.distance < FAR + 0.012 && h.distance + MIN > FAR) need = Math.max(need, h.distance + MIN - FAR);
+    push[i] = Math.min(need, 0.04);
   }
-  // The push is a smooth field over the trunk (height × angle around the axis), the same for
-  // both faces of the muscle at a place: it keeps its thickness and its surface stays even.
-  const CELL_Y = 0.006, CELL_A = (3 * Math.PI) / 180;
-  const cy = (i) => pos[i * 3 + 1] / CELL_Y, ca = (i) => Math.atan2(dirs[i * 2 + 1], dirs[i * 2]) / CELL_A;
+  const CELL_T = 0.006, TURN = 120, CELL_A = (2 * Math.PI) / TURN; // 6 mm × 3°
+  const wrap = (b) => ((b % TURN) + TURN) % TURN, K = (a, b) => a * 1000 + wrap(b);
   let grid = new Map();
-  const K = (a, b) => `${a},${b}`;
-  for (let i = 0; i < n; i++) { const k = K(Math.round(cy(i)), Math.round(ca(i))); grid.set(k, Math.max(grid.get(k) ?? 0, push[i])); }
+  for (let i = 0; i < n; i++) { const k = K(Math.round(along[i] / CELL_T), Math.round(around[i] / CELL_A)); grid.set(k, Math.max(grid.get(k) ?? 0, push[i])); }
   for (let pass = 0; pass < 3; pass++) { // widen and soften: never less than what a cell needs
     const next = new Map();
-    for (const [k, v] of grid) {
-      const [a, b] = k.split(",").map(Number);
+    for (const [k, val] of grid) {
+      const a = Math.floor(k / 1000), b = k - a * 1000;
       let sum = 0, cnt = 0;
-      for (let u = -1; u <= 1; u++) for (let w = -1; w <= 1; w++) { const g = grid.get(K(a + u, b + w)); if (g !== undefined) { sum += g; cnt++; } }
-      next.set(k, Math.max(v, sum / cnt));
-      for (let u = -1; u <= 1; u++) for (let w = -1; w <= 1; w++) if (!grid.has(K(a + u, b + w)) && !next.has(K(a + u, b + w))) next.set(K(a + u, b + w), v * 0.6);
+      for (let p = -1; p <= 1; p++) for (let q = -1; q <= 1; q++) { const g = grid.get(K(a + p, b + q)); if (g !== undefined) { sum += g; cnt++; } }
+      next.set(k, Math.max(val, sum / cnt));
+      for (let p = -1; p <= 1; p++) for (let q = -1; q <= 1; q++) { const kk = K(a + p, b + q); if (!grid.has(kk) && !next.has(kk)) next.set(kk, val * 0.6); }
     }
     grid = next;
   }
   const at = (a, b) => grid.get(K(a, b)) ?? 0;
   let moved = 0, most = 0;
   for (let i = 0; i < n; i++) {
-    const y = cy(i), a = ca(i), y0 = Math.floor(y), a0 = Math.floor(a), fy = y - y0, fa = a - a0;
-    const d = (at(y0, a0) * (1 - fa) + at(y0, a0 + 1) * fa) * (1 - fy) + (at(y0 + 1, a0) * (1 - fa) + at(y0 + 1, a0 + 1) * fa) * fy;
-    if (d > 1e-5) { pos[i * 3] -= dirs[i * 2] * d; pos[i * 3 + 2] -= dirs[i * 2 + 1] * d; moved++; most = Math.max(most, d); }
+    const t = along[i] / CELL_T, a = around[i] / CELL_A, t0 = Math.floor(t), a0 = Math.floor(a), ft = t - t0, fa = a - a0;
+    const m = (at(t0, a0) * (1 - fa) + at(t0, a0 + 1) * fa) * (1 - ft) + (at(t0 + 1, a0) * (1 - fa) + at(t0 + 1, a0 + 1) * fa) * ft;
+    if (m > 1e-5) { pos[i * 3] -= dirs[i * 3] * m; pos[i * 3 + 1] -= dirs[i * 3 + 1] * m; pos[i * 3 + 2] -= dirs[i * 3 + 2] * m; moved++; most = Math.max(most, m); }
   }
   return { moved, most };
 }
@@ -222,7 +425,7 @@ function normals(pos, idx) {
   for (let t = 0; t < idx.length; t += 3) {
     a.fromArray(pos, idx[t] * 3); b.fromArray(pos, idx[t + 1] * 3); c.fromArray(pos, idx[t + 2] * 3);
     b.sub(a); c.sub(a); b.cross(c);
-    for (const v of [idx[t], idx[t + 1], idx[t + 2]]) { const r = rep[v]; acc[r * 3] += b.x; acc[r * 3 + 1] += b.y; acc[r * 3 + 2] += b.z; }
+    for (const vi of [idx[t], idx[t + 1], idx[t + 2]]) { const r = rep[vi]; acc[r * 3] += b.x; acc[r * 3 + 1] += b.y; acc[r * 3 + 2] += b.z; }
   }
   const out = new Float32Array(n * 3);
   for (let i = 0; i < n; i++) { const r = rep[i], l = Math.hypot(acc[r * 3], acc[r * 3 + 1], acc[r * 3 + 2]) || 1; out[i * 3] = acc[r * 3] / l; out[i * 3 + 1] = acc[r * 3 + 1] / l; out[i * 3 + 2] = acc[r * 3 + 2] / l; }
@@ -233,10 +436,14 @@ function normals(pos, idx) {
 const doc = new Document();
 const buffer = doc.createBuffer(), scene = doc.createScene("deep");
 const material = doc.createMaterial("muscle").setBaseColorFactor([0.5, 0.2, 0.17, 1]).setRoughnessFactor(0.6).setMetallicFactor(0);
-const report = [];
+const report = [], placed = new Map(); // id → placed meshes (for `below`)
+const missing = [], odd = []; // muscles not found; muscles whose size changed too much
 for (const spec of DEEP) {
-  for (const node of zNodes.filter((n) => n.getExtras().id === spec.id && n.getExtras().kind === "unit")) {
-    const prim = node.getMesh().listPrimitives()[0], src = zWorld(node), n = src.length / 3;
+  const kind = spec.kind ?? "unit", nodes = zNodes.filter((n) => n.getExtras().id === spec.id && n.getExtras().kind === kind);
+  if (!nodes.length) { missing.push(spec.id); continue; }
+  const below = (spec.below ?? []).map((id) => bvhOf(merge(placed.get(id) ?? [])));
+  for (const node of nodes) {
+    const prim = node.getMesh().listPrimitives()[0], src = zWorld(node), n = src.length / 3, x = node.getExtras();
     const pos = new Float32Array(n * 3), p = [0, 0, 0], q = [0, 0, 0];
     for (let i = 0; i < n; i++) { p[0] = src[i * 3]; p[1] = src[i * 3 + 1]; p[2] = src[i * 3 + 2]; warp(p, q); pos.set(q, i * 3); }
     // fibre directions follow the warp (a small step along the fibre, warped)
@@ -249,8 +456,11 @@ for (const spec of DEEP) {
       const e = [q2[0] - pos[i * 3], q2[1] - pos[i * 3 + 1], q2[2] - pos[i * 3 + 2]], le = Math.hypot(e[0], e[1], e[2]) || 1;
       fibOut.set([e[0] / le, e[1] / le, e[2] / le], i * 3);
     }
-    const tucked = tuck(pos, spec.cover, spec.under, spec.gap);
+    // a muscle of the middle (the diaphragm) is wrapped around the middle line whatever its axis
+    const side = x.side === "m" ? (mean(sample(pos, 400))[0] >= 0 ? "l" : "r") : x.side;
+    const tucked = tuck(pos, axisFor(x.side === "m" && spec.axis !== "neck" ? "trunk" : spec.axis, side), spec.gap, below);
     const idx = Uint32Array.from(prim.getIndices().getArray());
+    (placed.get(spec.id) ?? placed.set(spec.id, []).get(spec.id)).push({ pos, idx });
     const out = doc.createPrimitive().setMaterial(material)
       .setAttribute("POSITION", doc.createAccessor().setType("VEC3").setArray(pos).setBuffer(buffer))
       .setAttribute("NORMAL", doc.createAccessor().setType("VEC3").setArray(normals(pos, idx)).setBuffer(buffer))
@@ -264,16 +474,29 @@ for (const spec of DEEP) {
       for (let i = 0; i < n; i++) { a.getElement(i, el); arr.set(el, i * m); }
       out.setAttribute(s, doc.createAccessor().setType(a.getType()).setArray(arr).setBuffer(buffer));
     }
-    const x = node.getExtras();
     scene.addChild(doc.createNode(node.getName()).setMesh(doc.createMesh(node.getName()).addPrimitive(out)).setExtras({ ...x, depth: spec.depth, from: "zanatomy" }));
-    report.push(`${x.id} ${x.side}: ${n} vertices, ${tucked.moved} tucked under the surface muscles (up to ${(tucked.most * 1000).toFixed(1)} mm)`);
+    const diag = (b) => Math.hypot(b.max[0] - b.min[0], b.max[1] - b.min[1], b.max[2] - b.min[2]), grew = diag(boxOf(pos)) / diag(boxOf(src));
+    if (grew > 1.4 || grew < 0.7) odd.push(`${x.id} ${x.side} ×${grew.toFixed(2)}`);
+    report.push(`${x.id} ${x.side}: ${n} vertices, ${tucked.moved} moved under the surface (up to ${(tucked.most * 1000).toFixed(1)} mm)`);
   }
 }
+if (missing.length) throw new Error(`not in the Z-Anatomy body: ${missing.join(", ")}`);
+if (odd.length) console.log(`size changed a lot: ${odd.join(", ")}`);
+
+console.log(`${sex}: ${N} landmarks (${boneLandmarks} on bones), largest landmark miss ${(fitErr * 1000).toFixed(1)} mm`);
+const worst = [...fits].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([k, r]) => `${k} ${(r * 1000).toFixed(1)}`).join(", ");
+console.log(`bone fits, the loosest (mm): ${worst}`);
+if (process.env.DEEP_FITS) console.log(fits.map(([k, r]) => `${k} ${(r * 1000).toFixed(1)}`).join(", "));
+if (process.env.DEEP_VERBOSE) console.log(report.join("\n"));
+else console.log(`${report.length} meshes; moved the most: ${[...report].sort((a, b) => parseFloat(b.split("up to ")[1]) - parseFloat(a.split("up to ")[1])).slice(0, 6).join(" | ")}`);
+
 doc.createExtension(KHRMeshQuantization).setRequired(true);
 doc.createExtension(EXTMeshoptCompression).setRequired(true);
-await doc.transform(prune(), quantize({ quantizePosition: 14, quantizeNormal: 10, quantizeColor: 8, quantizeGeneric: 12 }), meshopt({ encoder: MeshoptEncoder, level: "high" }));
-const file = path.join("public/models/ecorche", sex, "deep.glb");
-await io.write(file, doc);
-console.log(`${sex}: ${N} landmarks, largest landmark miss ${(fitErr * 1000).toFixed(1)} mm`);
-console.log(report.join("\n"));
-console.log(`wrote ${file} (${(statSync(file).size / 1e6).toFixed(2)} MB)`);
+const pack = [prune(), quantize({ quantizePosition: 14, quantizeNormal: 10, quantizeColor: 8, quantizeGeneric: 12 }), meshopt({ encoder: MeshoptEncoder, level: "high" })];
+const write = async (d, name) => { const file = path.join("public/models/ecorche", sex, name); await io.write(file, d); console.log(`wrote ${file} (${(statSync(file).size / 1e6).toFixed(2)} MB)`); };
+// phones: the same muscles with fewer triangles
+const lite = cloneDocument(doc);
+await lite.transform(weld(), simplify({ simplifier: MeshoptSimplifier, ratio: 0.4, error: 0.002, lockBorder: false }), ...pack);
+await doc.transform(...pack);
+await write(doc, "deep.glb");
+await write(lite, "deep-lite.glb");

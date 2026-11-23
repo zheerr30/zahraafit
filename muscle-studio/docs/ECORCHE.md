@@ -60,10 +60,39 @@ trapezius ← upper / middle / lower; biceps brachii ← long / short head; tric
 masseter, digastric, orbicularis oculi, pronator teres, flexor / extensor carpi ulnaris, flexor
 digitorum superficialis, flexor pollicis brevis, adductor pollicis, rhomboid ← minor.
 
-This is an artist's écorché: it shows the superficial muscles. Deep muscles of the previous
-body (transversus abdominis, internal oblique, vastus intermedius, subscapularis, the deep hip
-rotators, the pelvic floor, multifidus, the diaphragm …) have no mesh here; exercises that name
-them still list them, the model lights the muscles it has.
+## Deep muscles (`pipeline/ecorche/deep.mjs`, `deep-list.mjs`)
+
+This is an artist's écorché: it has the superficial muscles only. The deep ones — 63 muscles:
+internal oblique, transversus abdominis, quadratus lumborum, the intercostals and the
+diaphragm, multifidus / rotatores / semispinalis and the small muscles of the spine, serratus
+posterior, the deep neck muscles, subscapularis, supinator, the deep hip rotators, the pelvic
+floor, adductor brevis, vastus intermedius, popliteus, tibialis posterior, plantaris and the
+deep muscles of the sole — are taken from the Z-Anatomy body (CC BY-SA 4.0: the credit line
+under the model names it) and fitted into this one, for each sex:
+
+1. **Bones.** Every Z-Anatomy bone is fitted onto the same bone of the Écorché skeleton —
+   each rib and each vertebra on its own (the Écorché rib cage and spine are separate pieces,
+   matched top to bottom). The fit is two-way closest points, so a bone cannot slide along its
+   shaft or shrink; the right side starts from the mirrored fit of the left. Fits are within
+   1–5 mm. About 1500 points on the bones become landmarks.
+2. **Abdominal wall.** No bone under it: landmarks are taken on the outer face of the rectus
+   and the external oblique of both bodies, at the same height and angle around the trunk.
+3. **Warp.** A thin-plate spline through all landmarks carries the deep muscles over.
+4. **Tuck.** A vertex left on or outside the surface of the body is moved under the Écorché
+   muscles (5–11 mm under their outer face, by depth), towards the axis of its region (trunk,
+   neck, thigh, leg, forearm, foot), never through a bone; the move is a smooth field, the
+   same for both faces of a muscle. Transversus is kept under the internal oblique.
+5. Normals are rebuilt, fibre directions follow the warp; the muscles are drawn with the
+   atlas's own muscle material in the colour of this body (`muscleBase` of the profile).
+
+`deep.glb` (6.1 MB) and `deep-lite.glb` (2.8 MB, phones) load right after the body. In the
+app the deep muscles have depth 2 or 3: the depth control peels the layers over them, and a
+selected deep muscle is seen through the muscles over it (they turn into a faint ghost).
+
+Not brought over: the muscles of the eye, larynx, pharynx and tongue, the palmar interossei
+(the hands are posed differently) and the anal sphincter.
+
+  ECORCHE_WORK=/path/to/work node pipeline/ecorche/deep.mjs male     (then: female)
 
 ## In the app
 

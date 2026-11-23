@@ -163,7 +163,8 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
         modelRef.current = model;
         // further parts of the body (deep muscles): added as soon as they arrive
         for (const extra of currentProfile().also) {
-          loadGltf(modelUrl(sex, extra), { renderer: gl, signal: ctrl.signal })
+          const file = currentProfile().lazyLite && wantsLite() ? `${extra}-lite` : extra;
+          loadGltf(modelUrl(sex, file), { renderer: gl, signal: ctrl.signal })
             .then((g) => {
               if (modelRef.current !== model) return;
               const more = prepareMeshes(g.scene, prep);

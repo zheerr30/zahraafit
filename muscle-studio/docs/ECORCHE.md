@@ -79,9 +79,11 @@ under the model names it) and fitted into this one, for each sex:
 2. **Abdominal wall.** No bone under it: landmarks are taken on the outer face of the rectus
    and the external oblique of both bodies, at the same height and angle around the trunk.
 3. **Warp.** A thin-plate spline through all landmarks carries the deep muscles over.
-4. **Out of the bones.** The Écorché skeleton is heavier (thicker shafts, larger joints): a
-   muscle lying on a bone can come out partly inside it. It is moved out through the nearest
-   bone surface by a smooth field, so it keeps its thickness.
+4. **Off the bones.** The Écorché skeleton is heavier (thicker shafts, larger joints): a
+   muscle lying on a bone can come out a little inside it. What is just under a bone's
+   surface (5 mm) is lifted out by a smooth field, so the muscle keeps its thickness; what is
+   deeper stays whole inside the bone, which covers that part when bones are shown (moving
+   it out tears the muscle's shape).
 5. **Tuck.** A vertex left on or outside the surface of the body is moved under the Écorché
    muscles (5–11 mm under the body's outer face, by depth — the faces between two muscles do
    not count), towards the axis of its region (trunk, neck, thigh, leg, forearm, foot), never

@@ -448,12 +448,15 @@ function tuck(pos, axis, gap, below) {
 }
 
 /**
- * Brings a muscle out of the bones. The Écorché skeleton is heavier than the Z-Anatomy one
- * (thicker shafts, larger joints): a muscle that lies on a bone there can come out partly
- * inside the bone here. Each vertex inside moves out through the nearest bone surface; the
- * move is a smooth field in space (the largest need around a place), so the muscle's other
- * face moves out with it and the muscle keeps its thickness.
+ * Lifts a muscle off the bones. The Écorché skeleton is heavier than the Z-Anatomy one
+ * (thicker shafts, larger joints): a muscle that lies on a bone there can come out a little
+ * inside the bone here. What is just under a bone's surface (`SHALLOW`) moves out through
+ * it; the move is a smooth field in space (the largest need around a place), so the muscle's
+ * other face moves with it and the muscle keeps its thickness. What is deeper inside a bone
+ * stays there, whole: where the model's bones are that much larger, the bone covers that
+ * part of the muscle when bones are shown — moving it out would tear the muscle's shape.
  */
+const SHALLOW = 0.005;
 const insideBone = (x, y, z) => { ray.origin.set(x, y, z); ray.direction.set(0.3, 0.9, 0.2).normalize(); return skeleton.raycast(ray, DoubleSide).length % 2 === 1; };
 function unbone(pos) {
   const n = pos.length / 3, need = new Float32Array(n), dir = new Float32Array(n * 3);
@@ -461,7 +464,9 @@ function unbone(pos) {
   for (let i = 0; i < n; i++) {
     const p = [pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]], h = nearest(skeleton, p), inB = insideBone(p[0], p[1], p[2]), s = h.d > 1e-7 ? (inB ? 1 : -1) / h.d : 0;
     for (let c = 0; c < 3; c++) dir[i * 3 + c] = (h.q[c] - p[c]) * s; // out of the bone
-    if (inB) { need[i] = h.d + 0.0015; inside++; deepest = Math.max(deepest, h.d); }
+    if (!inB) continue;
+    inside++; deepest = Math.max(deepest, h.d);
+    if (h.d <= SHALLOW) need[i] = h.d + 0.0015;
   }
   if (!inside) return { inside: 0, deepest: 0 };
   const CELL = 0.007, K = (a, b, c) => `${a},${b},${c}`, cell = (v) => Math.round(v / CELL);
@@ -488,18 +493,6 @@ function unbone(pos) {
   }
   return { inside, deepest };
 }
-/** What is still inside a bone after everything is laid on its surface. */
-function settle(pos) {
-  let left = 0;
-  for (let i = 0; i < pos.length / 3; i++) {
-    if (!insideBone(pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2])) continue;
-    const h = nearest(skeleton, [pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]]), out = h.d > 1e-6 ? 1 + 0.0012 / h.d : 1;
-    for (let c = 0; c < 3; c++) pos[i * 3 + c] += (h.q[c] - pos[i * 3 + c]) * out;
-    left++;
-  }
-  return left;
-}
-
 /** Smooth vertex normals (corners at the same place share one). */
 function normals(pos, idx) {
   const n = pos.length / 3, acc = new Float32Array(n * 3), rep = new Uint32Array(n), first = new Map();
@@ -562,7 +555,6 @@ for (const spec of DEEP) {
     // a muscle of the middle (the diaphragm) is wrapped around the middle line whatever its axis
     const side = x.side === "m" ? (mean(sample(pos, 400))[0] >= 0 ? "l" : "r") : x.side;
     const boneFix = unbone(pos);
-    unbone(pos); // what the first move left inside
     const tucked = tuck(pos, axisFor(x.side === "m" && spec.axis !== "neck" ? "trunk" : spec.axis, side), spec.gap, below);
     const idx = Uint32Array.from(prim.getIndices().getArray());
     (placed.get(spec.id) ?? placed.set(spec.id, []).get(spec.id)).push({ pos, idx });
@@ -580,9 +572,9 @@ for (const spec of DEEP) {
       out.setAttribute(s, doc.createAccessor().setType(a.getType()).setArray(arr).setBuffer(buffer));
     }
     scene.addChild(doc.createNode(node.getName()).setMesh(doc.createMesh(node.getName()).addPrimitive(out)).setExtras({ ...x, depth: spec.depth, from: "zanatomy" }));
-    unbone(pos); // the tuck may have pressed a little of it into a bone again
-    const left = settle(pos);
-    if (boneFix.inside / n > 0.15 && boneFix.deepest > 0.006) boned.push(`${x.id} ${x.side} ${Math.round((boneFix.inside / n) * 100)}% up to ${(boneFix.deepest * 1000).toFixed(1)} mm (${Math.round((left / n) * 100)}% flattened)`);
+    let left = 0;
+    for (let i = 0; i < n; i++) if (insideBone(pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2])) left++;
+    if (left / n > 0.15) boned.push(`${x.id} ${x.side} ${Math.round((left / n) * 100)}%`);
     const diag = (b) => Math.hypot(b.max[0] - b.min[0], b.max[1] - b.min[1], b.max[2] - b.min[2]), grew = diag(boxOf(pos)) / diag(boxOf(src));
     if (grew > 1.4 || grew < 0.7) odd.push(`${x.id} ${x.side} ×${grew.toFixed(2)}`);
     report.push(`${x.id} ${x.side}: ${n} vertices, ${tucked.moved} moved under the surface (up to ${(tucked.most * 1000).toFixed(1)} mm)`);
@@ -590,7 +582,7 @@ for (const spec of DEEP) {
 }
 if (missing.length) throw new Error(`not in the Z-Anatomy body: ${missing.join(", ")}`);
 if (odd.length) console.log(`size changed a lot: ${odd.join(", ")}`);
-if (boned.length) console.log(`were partly inside a bone, brought out: ${boned.join(", ")}`);
+if (boned.length) console.log(`partly inside the model's heavier bones (covered by them when bones are shown): ${boned.join(", ")}`);
 
 console.log(`${sex}: ${N} landmarks (${boneLandmarks} on bones), largest landmark miss ${(fitErr * 1000).toFixed(1)} mm`);
 const worst = [...fits].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([k, r]) => `${k} ${(r * 1000).toFixed(1)}`).join(", ");
@@ -605,7 +597,7 @@ const pack = [prune(), quantize({ quantizePosition: 14, quantizeNormal: 10, quan
 const write = async (d, name) => { const file = path.join("public/models/ecorche", sex, name); await io.write(file, d); console.log(`wrote ${file} (${(statSync(file).size / 1e6).toFixed(2)} MB)`); };
 // phones: the same muscles with fewer triangles
 const lite = cloneDocument(doc);
-await lite.transform(weld(), simplify({ simplifier: MeshoptSimplifier, ratio: 0.4, error: 0.002, lockBorder: false }), ...pack);
+await lite.transform(weld(), simplify({ simplifier: MeshoptSimplifier, ratio: 0.3, error: 0.002, lockBorder: false }), ...pack);
 await doc.transform(...pack);
 await write(doc, "deep.glb");
 await write(lite, "deep-lite.glb");

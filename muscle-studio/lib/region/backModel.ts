@@ -319,8 +319,9 @@ export function shouldShow(m: RegionMesh, s: VisibilityState): boolean {
     case "nerve":
       return s.layers.nerves;
     case "fat":
-      // (the breast is part of the female figure: it is shown with the muscles)
-      return m.layer === "muscles" ? s.layers.muscles : s.layers.fat;
+      // (the breast is part of the female figure: it is shown with the muscles — on the
+      // surface: it goes with the superficial muscles when they are peeled)
+      return m.layer === "muscles" ? s.layers.muscles && s.depthMode === "all" : s.layers.fat;
     case "vessel":
       return s.layers.vessels;
     case "skin":
@@ -442,7 +443,9 @@ export function pickHit(model: RegionModel, ray: Raycaster["ray"]): { m: RegionM
 
 /** Bounds of a unit (one side, or both when side is null). */
 export function unitBounds(model: RegionModel, unitId: string, side: "l" | "r" | "m" | null): Box3 | null {
-  const list = (model.byUnit.get(unitId) ?? []).filter((m) => m.kind === "unit" && (!side || side === "m" || m.side === side));
+  const all = (model.byUnit.get(unitId) ?? []).filter((m) => m.kind === "unit");
+  let list = all.filter((m) => !side || side === "m" || m.side === side);
+  if (!list.length) list = all; // a muscle of the middle asked for by a side
   if (!list.length) return null;
   const b = new Box3();
   for (const m of list) b.expandByObject(m.mesh);

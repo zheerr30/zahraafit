@@ -235,7 +235,8 @@ export const FAT = {
   Abdominal_Fat_Pad: F("Abdominal_fat", "دهون البطن", "Abdominal fat pad", "abdomen"),
   Flank: F("Flank_fat", "دهون الخاصرة", "Flank fat pad", "abdomen"),
   Chest_Fat_Pad: F("Chest_fat", "دهون الصدر", "Chest fat pad", "chest"),
-  Breasts: F("Breast", "الثدي", "Breast", "chest"),
+  // the breast belongs to the female figure itself: shown with the muscles, not only with the fat layer
+  Breasts: { ...F("Breast", "الثدي", "Breast", "chest"), show: "muscles" },
   Pubic_Fat_Pad: F("Pubic_fat", "دهون العانة", "Pubic fat pad", "pelvis"),
   Posterior_Gluteal: F("Gluteal_fat", "دهون الألية", "Gluteal fat pad", "pelvis"),
   Posterior_Gluteal1: F("Gluteal_fat", "دهون الألية", "Gluteal fat pad", "pelvis"),

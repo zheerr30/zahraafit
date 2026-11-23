@@ -150,8 +150,9 @@ async function buildPart(part, lite, sets) {
   };
   const report = { meshes: 0, triangles: 0, removed: [] };
   for (const r of manifest.records) {
-    if (PART_OF[r.collection] !== part) continue;
     const meta = nameOf(r.collection, r.name);
+    // a part shown with the muscles travels in the core file, whatever its collection
+    if ((meta?.show === "muscles" ? "core" : PART_OF[r.collection]) !== part) continue;
     if (!meta) { if (!report.removed.includes(r.name)) report.removed.push(r.name); continue; }
     let indices = u32(r.index, r.triangles * 3);
     if (part === "skin" && r.name === "Body") {
@@ -171,6 +172,7 @@ async function buildPart(part, lite, sets) {
     const node = doc.createNode(name).setMesh(doc.createMesh(name).addPrimitive(prim)).setExtras({
       src: "ecorche", kind: meta.kind, id: meta.id, side: r.side, ar: meta.ar, en: meta.en, region: meta.region, depth: meta.depth,
       ...(meta.aliases.length ? { aliases: meta.aliases } : {}),
+      ...(meta.show ? { show: meta.show } : {}),
     });
     scene.addChild(node);
     report.meshes++;

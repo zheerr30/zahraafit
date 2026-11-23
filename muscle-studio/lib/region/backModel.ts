@@ -106,6 +106,8 @@ type Extras = {
   definition?: string; materials?: string[]; fibre?: string;
   /** "ecorche": a textured part of the Écorché model (its own material is used). */
   src?: string; en?: string;
+  /** Layer the part is shown with, when it is not its kind's own (the breast: with the muscles). */
+  show?: RegionLayer;
 };
 
 /**
@@ -206,7 +208,7 @@ export function prepareMeshes(scene: Object3D, opts: PrepareOptions = {}): Regio
       side: x.side ?? "m",
       ar: plainArabic(x.src === "ecorche" ? (x.ar ?? english(source)) : kind === "unit" ? (card?.ar ?? x.ar ?? english(source)) : (x.ar ?? english(source))),
       en: x.src === "ecorche" && x.en ? x.en : kind === "unit" && card ? card.en : english(source),
-      layer: LAYER_OF[kind],
+      layer: x.show ?? LAYER_OF[kind],
       depth: kind === "unit" ? (x.depth ?? 1) : 1,
       region: x.region ?? "other",
       role: x.role,
@@ -282,6 +284,9 @@ export function targetOpacity(m: RegionMesh, s: VisibilityState): number {
     // the surrounding anatomy stays visible as a faint ghost (not pickable)
     return m.kind === "unit" && shouldShow(m, { ...s, isolate: false }) ? GHOST : 0;
   }
+  // The breast lies over the chest muscles: while a muscle is selected it turns translucent
+  // (and lets clicks through), so the muscle under it can be seen.
+  if (m.kind === "fat" && m.layer === "muscles" && sel?.kind === "unit") return shouldShow(m, s) ? 0.28 : 0;
   return shouldShow(m, s) ? 1 : 0;
 }
 
@@ -304,7 +309,8 @@ export function shouldShow(m: RegionMesh, s: VisibilityState): boolean {
     case "nerve":
       return s.layers.nerves;
     case "fat":
-      return s.layers.fat;
+      // (the breast is part of the female figure: it is shown with the muscles)
+      return m.layer === "muscles" ? s.layers.muscles : s.layers.fat;
     case "vessel":
       return s.layers.vessels;
     case "skin":
@@ -346,7 +352,7 @@ export function applyStyle(m: RegionMesh, selected: PickedStructure | null, hove
   // While a muscle is selected (or an exercise lights its muscles), the other muscles
   // step back into their neutral tones, so the accent is the only strong colour.
   const textured = !!(m.mesh.material as Material).userData.textured;
-  const quiet = m.kind === "unit" && (!!m.neutralHex || textured) && (spot ? true : selected?.kind === "unit");
+  const quiet = (m.kind === "unit" || (textured && m.kind === "fat")) && (!!m.neutralHex || textured) && (spot ? true : selected?.kind === "unit");
   const key = `${isSel}|${isHover}|${isSel || role === 1 ? highlight : ""}|${role}|${quiet}`;
   if (key === m.styleKey) return false;
   m.styleKey = key;
@@ -355,7 +361,7 @@ export function applyStyle(m: RegionMesh, selected: PickedStructure | null, hove
     // Textured model: the accent and the neutral state are laid over the part's own texture.
     const lit = m.kind === "unit" ? isSel || role === 1 : isSel;
     const tint = lit ? (role === 1 ? secondaryHighlight(highlight) : highlight) : null;
-    const others = m.kind === "unit" && (spot ? true : selected?.kind === "unit");
+    const others = (m.kind === "unit" || m.kind === "fat") && (spot ? true : selected?.kind === "unit");
     setTexturedLook(mat, { tint, quiet: !lit && others, hover: isHover });
     return true;
   }

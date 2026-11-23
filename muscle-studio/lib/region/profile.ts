@@ -35,6 +35,8 @@ export interface ModelProfile {
   layerNames: Partial<Record<RegionLayer, string>>;
   /** The body has deep muscle layers to peel (the depth control). */
   depth: boolean;
+  /** A selected deep muscle is shown through the muscles over it (they turn into a ghost). */
+  ghostOver: boolean;
   /** The body has origin / insertion patches. */
   attachments: boolean;
   /** Textured model: its own materials are used. */
@@ -57,6 +59,7 @@ export const PROFILES: Record<ModelId, ModelProfile> = {
     defaults: { ...OFF, muscles: true, tendons: true, bones: true },
     layerNames: {},
     depth: true,
+    ghostOver: false,
     attachments: true,
     textured: false,
     credit: "المجسم: Z-Anatomy · CC BY-SA 4.0",
@@ -77,6 +80,8 @@ export const PROFILES: Record<ModelId, ModelProfile> = {
     defaults: { ...OFF, muscles: true, tendons: true, fasciae: true },
     layerNames: { tendons: "الأوتار والغضاريف", bones: "العظام" },
     depth: true,
+    // the superficial muscles of this body are thick solids: a deep muscle is inside them
+    ghostOver: true,
     attachments: false,
     textured: true,
     credit: "المجسم: Écorché Male & Female (نسخة مرخصة) · العضلات العميقة: Z-Anatomy، CC BY-SA 4.0",

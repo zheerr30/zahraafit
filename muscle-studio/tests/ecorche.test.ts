@@ -166,7 +166,7 @@ describe.skipIf(!existsSync(join(BUILD, "male/core.glb")))("Écorché model: the
       // every deep muscle lies inside the body: within the box of the superficial muscles
       const box = (doc: Awaited<ReturnType<typeof io.readBinary>>) => {
         const b = { min: [Infinity, Infinity, Infinity], max: [-Infinity, -Infinity, -Infinity] };
-        for (const n of doc.getRoot().listNodes()) { const mesh = n.getMesh(); if (!mesh) continue; const a = mesh.listPrimitives()[0].getAttribute("POSITION")!, lo = a.getMin([0, 0, 0]), hi = a.getMax([0, 0, 0]), w = n.getWorldMatrix(); for (const p of [lo, hi]) for (let c = 0; c < 3; c++) { const v = w[c] * p[0] + w[4 + c] * p[1] + w[8 + c] * p[2] + w[12 + c]; b.min[c] = Math.min(b.min[c], v); b.max[c] = Math.max(b.max[c], v); } }
+        for (const n of doc.getRoot().listNodes()) { const mesh = n.getMesh(); if (!mesh) continue; const a = mesh.listPrimitives()[0].getAttribute("POSITION")!, w = n.getWorldMatrix(), p = [0, 0, 0]; for (let i = 0; i < a.getCount(); i += 3) { a.getElement(i, p); for (let c = 0; c < 3; c++) { const v = w[c] * p[0] + w[4 + c] * p[1] + w[8 + c] * p[2] + w[12 + c]; b.min[c] = Math.min(b.min[c], v); b.max[c] = Math.max(b.max[c], v); } } }
         return b;
       };
       const body = box(await io.readBinary(new Uint8Array(readFileSync(join(BUILD, sex, "core.glb"))))), inner = box(await io.readBinary(new Uint8Array(readFileSync(join(BUILD, sex, "deep.glb")))));

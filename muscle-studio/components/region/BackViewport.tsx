@@ -75,7 +75,7 @@ const HD_OPTIONS = { hd: true } as const;
 
 /** The store's visibility state with what it implies for this model (the selected muscle's depth). */
 function visibility<S extends { selected: PickedStructure | null }>(model: RegionModel, st: S): S & { selectedDepth: number } {
-  return { ...st, selectedDepth: st.selected?.kind === "unit" ? (model.units.get(st.selected.id)?.depth ?? 1) : 1 };
+  return { ...st, selectedDepth: currentProfile().ghostOver && st.selected?.kind === "unit" ? (model.units.get(st.selected.id)?.depth ?? 1) : 1 };
 }
 
 /**
@@ -95,7 +95,7 @@ function facingOf(model: RegionModel, unitId: string, side: "l" | "r" | "m" | nu
   const ray = new Raycaster().ray;
   // A deep muscle is not seen from anywhere until the muscles over it turn into a ghost:
   // it is shown from the side where the least lies over it.
-  const deep = meshes.some((m) => m.depth > 1);
+  const deep = currentProfile().ghostOver && meshes.some((m) => m.depth > 1);
   let best = views[0][0], score = -Infinity;
   for (const [dir, weight] of views) {
     let seen = 0, over = 0;

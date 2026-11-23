@@ -290,9 +290,10 @@ export function targetOpacity(m: RegionMesh, s: VisibilityState): number {
     // the surrounding anatomy stays visible as a faint ghost (not pickable)
     return m.kind === "unit" && shouldShow(m, { ...s, isolate: false }) ? GHOST : 0;
   }
-  // A deep muscle is selected: the muscles lying over it turn into a faint ghost (and let
-  // clicks through), so it can be seen in its place.
-  if (m.kind === "unit" && sel?.kind === "unit" && !isSelected && (s.selectedDepth ?? 1) > m.depth) return shouldShow(m, s) ? DEEP_GHOST : 0;
+  // A deep muscle is selected: the muscles lying over it and beside it at its own depth turn
+  // into a faint ghost (and let clicks through), so it can be seen in its place; what lies
+  // deeper stays as its background.
+  if (m.kind === "unit" && sel?.kind === "unit" && !isSelected && (s.selectedDepth ?? 1) > 1 && (s.selectedDepth ?? 1) >= m.depth) return shouldShow(m, s) ? DEEP_GHOST : 0;
   // The breast lies over the chest muscles: while a muscle is selected it turns translucent
   // (and lets clicks through), so the muscle under it can be seen.
   if (m.kind === "fat" && m.layer === "muscles" && sel?.kind === "unit") return shouldShow(m, s) ? 0.28 : 0;

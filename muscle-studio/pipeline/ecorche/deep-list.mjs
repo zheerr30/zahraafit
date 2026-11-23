@@ -1,7 +1,8 @@
 // The deep muscles the Écorché body gets from the Z-Anatomy body (pipeline/ecorche/deep.mjs).
 //
-// Not brought over: the muscles of the eye, the larynx, the pharynx and the tongue, the
-// palmar interossei (the hands are posed differently) and the anal sphincter.
+// Not brought over: the muscles of the eye, the larynx, the pharynx and the tongue, the lateral
+// pterygoid (the skull of this model is solid where it lies), the palmar interossei (the hands
+// are posed differently) and the anal sphincter.
 // depth: 2 under the superficial muscles, 3 the deepest. `axis`: the line the muscle is
 // wrapped around (what "inwards" means for it). `gap`: how far under the body's surface it
 // must lie at least. `below`: muscles of this list it must lie under.
@@ -28,7 +29,6 @@ export const DEEP = [
   D("obliquus-inferior-capitis-muscle", 3, "neck"), D("obliquus-superior-capitis-muscle", 3, "neck"),
   D("rectus-posterior-major-capitis-muscle", 3, "neck"), D("rectus-posterior-minor-capitis-muscle", 3, "neck"),
   D("sternothyroid-muscle", 2, "neck"), D("geniohyoid-muscle", 2, "neck"),
-  D("inferior-head-of-lateral-pterygoid-muscle", 2, "neck"), D("superior-head-of-lateral-pterygoid-muscle", 2, "neck"),
   // shoulder and arm
   D("subscapularis", 2), D("supinator", 2, "forearm"),
   // pelvis

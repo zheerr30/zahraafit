@@ -47,7 +47,7 @@ const FOOT = ["Calcaneus", "Talus", "Navicular_bone", "Cuboid_bone", "Medial_cun
   ...NUM.slice(0, 5).map((n) => `${n}_metatarsal_bone`), ...TOES.map((n) => `Proximal_phalanx_of_${n}_finger_of_foot`)];
 const LR = ["l", "r"], M = ["m"];
 const BONES = [
-  B(["Hip_bone"], "Pelvis", LR, 56), B(["Sacrum"], "Sacrum", M, 28), B(["Coccyx"], "Coccyx", M, 6),
+  B(["Hip_bone"], "Pelvis", LR, 130), B(["Sacrum"], "Sacrum", M, 28), B(["Coccyx"], "Coccyx", M, 6),
   B([1, 2, 3, 4, 5].map((n) => `Vertebra_L${n}`), "Lumbar", M, 12, "each"),
   B(Array.from({ length: 12 }, (_, i) => `Vertebra_T${i + 1}`), "Thoracic", M, 9, "each"),
   B(["Atlas_(C1)", "Axis_(C2)", "Vertebra_C3", "Vertebra_C4", "Vertebra_C5", "Vertebra_C6", "Vertebra_C7"], "Cervical", M, 8, "each"),
@@ -55,9 +55,9 @@ const BONES = [
   B(["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth"].map((n) => `Costal_cartilage_of_${n}_rib`), "Costal_Cartilage", LR, 28),
   B(["Body_of_sternum"], "Body_Sternum", M, 14), B(["Manubrium_of_sternum"], "Manubrium_Sterni", M, 10), B(["Xiphoid_process"], "Xiphoid_Process", M, 4),
   B(["Clavicle"], "Clavicle", LR, 12), B(["Scapula"], "Scapula", LR, 44),
-  B(["Humerus"], "Humerus", LR, 28), B(["Radius"], "Radius", LR, 20), B(["Ulna"], "Ulna", LR, 20),
-  B(["Femur"], "Femur", LR, 40), B(["Tibia"], "Tibia", LR, 30), B(["Fibula"], "Fibula", LR, 20), B(["Patella"], "Patella", LR, 6),
-  { ...B([...FOOT, ...TOES.slice(1).map((n) => `Middle_phalanx_of_${n}_finger_of_foot`), ...TOES.map((n) => `Distal_phalanx_of_${n}_finger_of_foot`)], "Foot", LR, 5, "refine"), marks: FOOT },
+  B(["Humerus"], "Humerus", LR, 60), B(["Radius"], "Radius", LR, 40), B(["Ulna"], "Ulna", LR, 40),
+  B(["Femur"], "Femur", LR, 140), B(["Tibia"], "Tibia", LR, 140), B(["Fibula"], "Fibula", LR, 50), B(["Patella"], "Patella", LR, 6),
+  { ...B([...FOOT, ...TOES.slice(1).map((n) => `Middle_phalanx_of_${n}_finger_of_foot`), ...TOES.map((n) => `Distal_phalanx_of_${n}_finger_of_foot`)], "Foot", LR, 10, "refine"), marks: FOOT },
   B(["Frontal_bone", "Parietal_bone", "Occipital_bone", "Temporal_bone", "Zygomatic_bone", "Maxilla", "Sphenoid_bone", "Nasal_bone", "Palatine_bone", "Vomer", "Ethmoid_bone"], "Cranium", M, 70),
   B(["Mandible"], "Mandible", M, 26), B(["Hyoid_bone"], "Hyoid", M, 8), B(["Thyroid_cartilage"], "Thyroid_Cartilage", M, 8),
 ];
@@ -217,11 +217,11 @@ function fit(src, dst, { from, stretch = true, rigid = false, rounds = 30 } = {}
     const used = all.slice(0, Math.floor(all.length * 0.85));
     rms = Math.sqrt(used.reduce((t, d) => t + d * d, 0) / used.length);
   }
-  return { m, bvh, rms };
+  return { m, bvh, rms, shaft: a };
 }
 /** `k` points of a bone, spread evenly over it. */
 function spread(src, k) {
-  const S = sample(src.pos, 900), out = [0], far = new Float64Array(S.length).fill(Infinity);
+  const S = sample(src.pos, 2500), out = [0], far = new Float64Array(S.length).fill(Infinity);
   while (out.length < Math.min(k, S.length)) {
     const last = S[out[out.length - 1]];
     let best = 0;
@@ -234,11 +234,23 @@ function spread(src, k) {
 // ── landmarks ───────────────────────────────────────────────────────
 const dist = (a, b) => Math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2);
 const P = [], Q = [], SOFT = [], TAG = []; // Z-Anatomy points → Écorché points, and how loosely each is held
-const SNAP = 0.008, fits = [];
-function landmarks(src, f, k, tag, soft = 2e-5) {
+const halos = [];
+const SNAP = 0.025, fits = [], LIMB = new Set(["Humerus", "Radius", "Ulna", "Femur", "Tibia", "Fibula"]);
+function landmarks(src, f, k, tag, halo = false) {
+  let count = 0;
   for (const p of spread(src, k)) {
     const q = apply(f.m, p), h = nearest(f.bvh, q);
-    P.push(p); Q.push(h.d < SNAP ? h.q : q); SOFT.push(soft); TAG.push(tag);
+    const on = h.d < SNAP ? h.q : q; // on the Écorché bone's own surface
+    P.push(p); Q.push(on); SOFT.push(2e-5); TAG.push(tag);
+    if (!halo || count++ % 3) continue;
+
+    // A long bone of a limb: the flesh around it moves with it. Points 2.5 and 5 cm off the
+    // shaft go where the bone's own fit takes them — without them the warp is only held on
+    // the bone's surface, and squeezes or stretches what lies around it.
+    const { c, dir } = f.shaft, t = (p[0] - c[0]) * dir[0] + (p[1] - c[1]) * dir[1] + (p[2] - c[2]) * dir[2];
+    if (Math.abs(t) > 1.25 * f.shaft.len) continue; // not at the ends: there the next bone says where things go
+    const r = [0, 1, 2].map((i) => p[i] - c[i] - dir[i] * t), l = Math.hypot(...r) || 1;
+    for (const off of [0.025, 0.05]) { const ph = p.map((v, i) => v + (r[i] / l) * off); const qh = apply(f.m, ph); halos.push({ p: ph, q: qh.map((v, i) => v + on[i] - q[i]), tag }); }
   }
 }
 // The Écorché body is the same on both sides: the right side starts from the mirrored fit
@@ -272,9 +284,15 @@ for (const b of BONES) {
       const f = fitSide(b.e, side, src, whole);
       fits.push([`${b.e} ${side}`, f.rms]);
       if (b.mode === "refine") for (const id of b.marks) { const one = zOf([id]); if (!one.pos.length) continue; const g = fit(one, whole, { from: f.m, rigid: true, rounds: 6 }); landmarks(one, g, b.k, `${id} ${side}`); }
-      else landmarks(src, f, b.k, `${b.e} ${side}`);
+      else landmarks(src, f, b.k, `${b.e} ${side}`, LIMB.has(b.e));
     }
   }
+}
+// the points around the limb bones, except next to another bone (its landmarks say more)
+for (const h of halos) {
+  let free = true;
+  for (let i = 0; i < P.length && free; i++) if (TAG[i] !== h.tag && dist(P[i], h.p) < 0.03) free = false;
+  if (free) { P.push(h.p); Q.push(h.q); SOFT.push(1e-4); TAG.push(`${h.tag} around`); }
 }
 const boneLandmarks = P.length;
 
@@ -336,6 +354,7 @@ const fitErr = misses[0][0];
 if (process.env.DEEP_VERBOSE) console.log("landmarks missed the most (mm):", misses.slice(0, 25).map(([d, t]) => `${t} ${(d * 1000).toFixed(1)}`).join(", "));
 
 // ── the Écorché body the muscles are fitted into ────────────────────
+const ray = new Ray();
 const isMuscle = (r) => r.collection === "Muscles" && !REMOVED.has(r.name) && nameOf(r.collection, r.name)?.kind === "unit";
 const surface = bvhOf(eMesh(manifest.records.filter(isMuscle).map((r) => r.name), "m", isMuscle));
 const skeleton = bvhOf(eMesh(manifest.records.filter((r) => ["Bones", "Skull"].includes(r.collection)).map((r) => r.name), "m", (r) => ["Bones", "Skull"].includes(r.collection)));
@@ -356,7 +375,7 @@ const axisFor = (name, side) => { const k = `${name}/${side}`; if (!axes.has(k))
  * the axis (place along it × angle around it), the same for both faces of the muscle at a
  * place: it keeps its thickness and its surface stays even.
  */
-const MIN = 0.0015, REACH = 0.008;
+const MIN = 0.0015, REACH = 0.008, AIR = 0.006;
 function tuck(pos, axis, gap, below) {
   const n = pos.length / 3, push = new Float32Array(n), dirs = new Float32Array(n * 3), along = new Float32Array(n), around = new Float32Array(n);
   const ray = new Ray(), { o, d } = axis;
@@ -370,15 +389,26 @@ function tuck(pos, axis, gap, below) {
     dirs[i * 3] = rx; dirs[i * 3 + 1] = ry; dirs[i * 3 + 2] = rz;
     along[i] = t; around[i] = Math.atan2(rx * v.x + ry * v.y + rz * v.z, rx * u.x + ry * u.y + rz * u.z);
     let must = 0, wish = 0;
-    // outwards: what lies over the vertex
+    // outwards: how far under the body's surface the vertex is. The Écorché muscles are solids
+    // lying against each other: the surface is where the ray leaves one and meets no other
+    // within `AIR` — the faces between two muscles are not it.
     ray.origin.set(x, y, z); ray.direction.set(rx, ry, rz);
-    const up = surface.raycastFirst(ray, DoubleSide);
-    if (!up || up.distance > 0.2) { // nothing: on or outside the body — the first muscle inwards takes it in
+    const out = surface.raycast(ray, DoubleSide).filter((h) => h.distance < 0.2).sort((a, b) => a.distance - b.distance);
+    let depth = -1; // −1: nothing over the vertex
+    for (let k = 0; k < out.length; k++) {
+      const leaving = out[k].face.normal.x * rx + out[k].face.normal.y * ry + out[k].face.normal.z * rz > 0, next = out[k + 1];
+      if (!leaving) continue;
+      if (!next) { depth = out[k].distance; break; }
+      const entering = next.face.normal.x * rx + next.face.normal.y * ry + next.face.normal.z * rz < 0;
+      if (entering && next.distance - out[k].distance > AIR) { depth = out[k].distance; break; }
+    }
+    if (depth < 0 && out.length) depth = out[out.length - 1].distance; // under faces that only enter: an open mesh
+    if (depth < 0) { // on or outside the body — the first muscle inwards takes it in
       ray.direction.set(-rx, -ry, -rz);
       const inHit = surface.raycast(ray, DoubleSide).filter((h) => h.face.normal.x * rx + h.face.normal.y * ry + h.face.normal.z * rz > 0).sort((a, b) => a.distance - b.distance)[0];
       if (inHit && inHit.distance < REACH) { must = inHit.distance + MIN; wish = inHit.distance + gap; }
-    } else if (up.face.normal.x * rx + up.face.normal.y * ry + up.face.normal.z * rz > 0 && up.distance < gap) { // inside a muscle, close under its outer face
-      must = Math.max(0, MIN - up.distance); wish = gap - up.distance;
+    } else if (depth < gap) { // close under the surface
+      must = Math.max(0, MIN - depth); wish = gap - depth;
     }
     if (wish > 0) { // not through a bone
       ray.origin.set(x, y, z); ray.direction.set(-rx, -ry, -rz);
@@ -417,6 +447,59 @@ function tuck(pos, axis, gap, below) {
   return { moved, most };
 }
 
+/**
+ * Brings a muscle out of the bones. The Écorché skeleton is heavier than the Z-Anatomy one
+ * (thicker shafts, larger joints): a muscle that lies on a bone there can come out partly
+ * inside the bone here. Each vertex inside moves out through the nearest bone surface; the
+ * move is a smooth field in space (the largest need around a place), so the muscle's other
+ * face moves out with it and the muscle keeps its thickness.
+ */
+const insideBone = (x, y, z) => { ray.origin.set(x, y, z); ray.direction.set(0.3, 0.9, 0.2).normalize(); return skeleton.raycast(ray, DoubleSide).length % 2 === 1; };
+function unbone(pos) {
+  const n = pos.length / 3, need = new Float32Array(n), dir = new Float32Array(n * 3);
+  let inside = 0, deepest = 0;
+  for (let i = 0; i < n; i++) {
+    const p = [pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]], h = nearest(skeleton, p), inB = insideBone(p[0], p[1], p[2]), s = h.d > 1e-7 ? (inB ? 1 : -1) / h.d : 0;
+    for (let c = 0; c < 3; c++) dir[i * 3 + c] = (h.q[c] - p[c]) * s; // out of the bone
+    if (inB) { need[i] = h.d + 0.0008; inside++; deepest = Math.max(deepest, h.d); }
+  }
+  if (!inside) return { inside: 0, deepest: 0 };
+  const CELL = 0.007, K = (a, b, c) => `${a},${b},${c}`, cell = (v) => Math.round(v / CELL);
+  let grid = new Map();
+  for (let i = 0; i < n; i++) if (need[i] > 0) { const k = K(cell(pos[i * 3]), cell(pos[i * 3 + 1]), cell(pos[i * 3 + 2])); grid.set(k, Math.max(grid.get(k) ?? 0, need[i])); }
+  for (let pass = 0; pass < 2; pass++) {
+    const next = new Map();
+    for (const [k, val] of grid) {
+      const [a, b, c] = k.split(",").map(Number);
+      let sum = 0, cnt = 0;
+      for (let u = -1; u <= 1; u++) for (let v = -1; v <= 1; v++) for (let w = -1; w <= 1; w++) { const g = grid.get(K(a + u, b + v, c + w)); if (g !== undefined) { sum += g; cnt++; } }
+      next.set(k, Math.max(val, sum / cnt));
+      for (let u = -1; u <= 1; u++) for (let v = -1; v <= 1; v++) for (let w = -1; w <= 1; w++) { const kk = K(a + u, b + v, c + w); if (!grid.has(kk) && !next.has(kk)) next.set(kk, val * 0.6); }
+    }
+    grid = next;
+  }
+  const at = (a, b, c) => grid.get(K(a, b, c)) ?? 0;
+  for (let i = 0; i < n; i++) {
+    const x = pos[i * 3] / CELL, y = pos[i * 3 + 1] / CELL, z = pos[i * 3 + 2] / CELL, x0 = Math.floor(x), y0 = Math.floor(y), z0 = Math.floor(z), fx = x - x0, fy = y - y0, fz = z - z0;
+    let m = 0;
+    for (let u = 0; u < 2; u++) for (let v = 0; v < 2; v++) for (let w = 0; w < 2; w++) m += at(x0 + u, y0 + v, z0 + w) * (u ? fx : 1 - fx) * (v ? fy : 1 - fy) * (w ? fz : 1 - fz);
+    m = Math.max(m, need[i]);
+    if (m > 1e-5) for (let c = 0; c < 3; c++) pos[i * 3 + c] += dir[i * 3 + c] * m;
+  }
+  return { inside, deepest };
+}
+/** What is still inside a bone after everything is laid on its surface. */
+function settle(pos) {
+  let left = 0;
+  for (let i = 0; i < pos.length / 3; i++) {
+    if (!insideBone(pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2])) continue;
+    const h = nearest(skeleton, [pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]]), out = h.d > 1e-6 ? 1 + 0.0006 / h.d : 1;
+    for (let c = 0; c < 3; c++) pos[i * 3 + c] += (h.q[c] - pos[i * 3 + c]) * out;
+    left++;
+  }
+  return left;
+}
+
 /** Smooth vertex normals (corners at the same place share one). */
 function normals(pos, idx) {
   const n = pos.length / 3, acc = new Float32Array(n * 3), rep = new Uint32Array(n), first = new Map();
@@ -432,11 +515,31 @@ function normals(pos, idx) {
   return out;
 }
 
+if (process.env.DEEP_DEBUG) { // how well the warp lays the Z-Anatomy bones on the Écorché ones, and a muscle before tucking
+  for (const [zid, e] of [["Tibia", "Tibia"], ["Fibula", "Fibula"], ["Femur", "Femur"], ["Hip_bone", "Pelvis"], ["Radius", "Radius"]]) {
+    const src = zMesh([zid], "l").pos, bvh = bvhOf(eMesh([e], "l")), ds = [];
+    for (let i = 0; i < src.length; i += 3 * 7) ds.push(nearest(bvh, warp([src[i], src[i + 1], src[i + 2]])).d);
+    ds.sort((x, y) => x - y);
+    console.log(`warped ${zid} → ${e}: median ${(ds[ds.length >> 1] * 1000).toFixed(1)} mm, 90% ${(ds[Math.floor(ds.length * 0.9)] * 1000).toFixed(1)}, max ${(ds[ds.length - 1] * 1000).toFixed(1)}`);
+  }
+  const r2 = new Ray();
+  for (const id of ["popliteus-muscle", "tibialis-posterior-muscle", "adductor-brevis"]) {
+    const src = zMesh([id], "l").pos; let inside = 0, zin = 0; const zsk = bvhOf(zMesh(["Tibia", "Fibula", "Femur", "Hip_bone"], "l"));
+    for (let i = 0; i < src.length; i += 3) {
+      const q = warp([src[i], src[i + 1], src[i + 2]]);
+      r2.origin.set(q[0], q[1], q[2]); r2.direction.set(0.3, 0.9, 0.2).normalize(); if (skeleton.raycast(r2, DoubleSide).length % 2) inside++;
+      r2.origin.set(src[i], src[i + 1], src[i + 2]); if (zsk.raycast(r2, DoubleSide).length % 2) zin++;
+    }
+    console.log(`${id}: inside a bone before tucking ${Math.round(inside / (src.length / 3) * 100)}% (in the Z-Anatomy body itself: ${Math.round(zin / (src.length / 3) * 100)}%)`);
+  }
+}
+
 // ── build ───────────────────────────────────────────────────────────
 const doc = new Document();
 const buffer = doc.createBuffer(), scene = doc.createScene("deep");
 const material = doc.createMaterial("muscle").setBaseColorFactor([0.5, 0.2, 0.17, 1]).setRoughnessFactor(0.6).setMetallicFactor(0);
 const report = [], placed = new Map(); // id → placed meshes (for `below`)
+const boned = [];
 const missing = [], odd = []; // muscles not found; muscles whose size changed too much
 for (const spec of DEEP) {
   const kind = spec.kind ?? "unit", nodes = zNodes.filter((n) => n.getExtras().id === spec.id && n.getExtras().kind === kind);
@@ -458,6 +561,7 @@ for (const spec of DEEP) {
     }
     // a muscle of the middle (the diaphragm) is wrapped around the middle line whatever its axis
     const side = x.side === "m" ? (mean(sample(pos, 400))[0] >= 0 ? "l" : "r") : x.side;
+    const boneFix = unbone(pos);
     const tucked = tuck(pos, axisFor(x.side === "m" && spec.axis !== "neck" ? "trunk" : spec.axis, side), spec.gap, below);
     const idx = Uint32Array.from(prim.getIndices().getArray());
     (placed.get(spec.id) ?? placed.set(spec.id, []).get(spec.id)).push({ pos, idx });
@@ -475,6 +579,8 @@ for (const spec of DEEP) {
       out.setAttribute(s, doc.createAccessor().setType(a.getType()).setArray(arr).setBuffer(buffer));
     }
     scene.addChild(doc.createNode(node.getName()).setMesh(doc.createMesh(node.getName()).addPrimitive(out)).setExtras({ ...x, depth: spec.depth, from: "zanatomy" }));
+    const left = settle(pos);
+    if (boneFix.inside / n > 0.15 && boneFix.deepest > 0.006) boned.push(`${x.id} ${x.side} ${Math.round((boneFix.inside / n) * 100)}% up to ${(boneFix.deepest * 1000).toFixed(1)} mm (${Math.round((left / n) * 100)}% flattened)`);
     const diag = (b) => Math.hypot(b.max[0] - b.min[0], b.max[1] - b.min[1], b.max[2] - b.min[2]), grew = diag(boxOf(pos)) / diag(boxOf(src));
     if (grew > 1.4 || grew < 0.7) odd.push(`${x.id} ${x.side} ×${grew.toFixed(2)}`);
     report.push(`${x.id} ${x.side}: ${n} vertices, ${tucked.moved} moved under the surface (up to ${(tucked.most * 1000).toFixed(1)} mm)`);
@@ -482,6 +588,7 @@ for (const spec of DEEP) {
 }
 if (missing.length) throw new Error(`not in the Z-Anatomy body: ${missing.join(", ")}`);
 if (odd.length) console.log(`size changed a lot: ${odd.join(", ")}`);
+if (boned.length) console.log(`were partly inside a bone, brought out: ${boned.join(", ")}`);
 
 console.log(`${sex}: ${N} landmarks (${boneLandmarks} on bones), largest landmark miss ${(fitErr * 1000).toFixed(1)} mm`);
 const worst = [...fits].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([k, r]) => `${k} ${(r * 1000).toFixed(1)}`).join(", ");

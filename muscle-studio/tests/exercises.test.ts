@@ -13,8 +13,9 @@ import { applyStyle, prepareRegionModel, secondaryHighlight, type RegionModel } 
 import { backStore } from "@/stores/backStore";
 import { exerciseStore } from "@/stores/exerciseStore";
 import { Color, type MeshPhysicalMaterial } from "three";
-import { SELECTION_RED, SELECTION_RED_SOFT } from "@/lib/highlight";
+import { SELECTION_ACCENT, SELECTION_ACCENT_SOFT } from "@/lib/highlight";
 import { describeMuscle, explainMuscle } from "@/lib/exercises/describe";
+import { neutralTone } from "@/lib/three/palette";
 import { plainArabic } from "@/lib/anatomy/normalize";
 
 const PUBLIC = join(__dirname, "../public");
@@ -136,7 +137,7 @@ describe("exercise library", () => {
 });
 
 describe("an exercise lights its muscles on the model", () => {
-  it("spotlight: prime movers in the highlight colour, helpers lighter, the rest untouched; then restored", () => {
+  it("spotlight: prime movers in the highlight colour, helpers lighter, the rest neutral; then restored", () => {
     const squat = EXERCISES.find((e) => e.id === "goblet-squat")!;
     const spot = spotlightOf(squat);
     expect(viewOf(squat)).toBe("front");
@@ -146,25 +147,20 @@ describe("an exercise lights its muscles on the model", () => {
     const sets = { primary: new Set(spot.primary), secondary: new Set(spot.secondary) };
     const hex = (id: string) => `#${(model.byUnit.get(id)![0].mesh.material as MeshPhysicalMaterial).color.getHexString()}`;
     const before = { quad: hex("rectus-femoris-muscle"), add: hex("adductor-magnus"), bic: hex("long-head-of-biceps-brachii") };
-    for (const m of model.meshes) applyStyle(m, null, null, SELECTION_RED, sets);
-    expect(hex("rectus-femoris-muscle")).toBe(SELECTION_RED.toLowerCase());
-    expect(hex("adductor-magnus")).toBe(SELECTION_RED_SOFT.toLowerCase());
+    for (const m of model.meshes) applyStyle(m, null, null, SELECTION_ACCENT, sets);
+    expect(hex("rectus-femoris-muscle")).toBe(SELECTION_ACCENT.toLowerCase());
+    expect(hex("adductor-magnus")).toBe(SELECTION_ACCENT_SOFT.toLowerCase());
     expect(secondaryHighlight("#173F8A")).not.toBe("#173f8a"); // any other colour: a lighter tint of itself
+    expect(hex("long-head-of-biceps-brachii")).toBe(model.byUnit.get("long-head-of-biceps-brachii")![0].neutralHex);
+    for (const m of model.meshes) applyStyle(m, null, null, SELECTION_ACCENT, null);
     expect(hex("long-head-of-biceps-brachii")).toBe(before.bic);
-    for (const m of model.meshes) applyStyle(m, null, null, SELECTION_RED, null);
     expect(hex("rectus-femoris-muscle")).toBe(before.quad);
     expect(hex("adductor-magnus")).toBe(before.add);
   });
 
-  it("selection: a deep red, clearly apart from every muscle's own colour, and fully undone on deselect", () => {
-    expect(backStore.getState().highlightColor).toBe(SELECTION_RED);
-    const red = new Color(SELECTION_RED);
-    const hsl = { h: 0, s: 0, l: 0 };
-    red.getHSL(hsl);
-    // deep and rich, not orange and not neon: a red hue, strongly saturated, dark
-    expect(hsl.h > 0.93 || hsl.h < 0.02).toBe(true);
-    expect(hsl.s).toBeGreaterThan(0.75);
-    expect(hsl.l).toBeLessThan(0.42);
+  it("selection: the orange accent, clearly apart from what the other muscles show, and fully undone on deselect", () => {
+    expect(backStore.getState().highlightColor).toBe(SELECTION_ACCENT);
+    const red = new Color(SELECTION_ACCENT);
     const units = [...model.units.keys()];
     const state = (id: string) => {
       const mat = model.byUnit.get(id)![0].mesh.material as MeshPhysicalMaterial;
@@ -175,14 +171,15 @@ describe("an exercise lights its muscles on the model", () => {
       const before = state(id);
       const own = (model.byUnit.get(id)![0].mesh.material as MeshPhysicalMaterial).color.clone();
       const sel = { kind: "unit" as const, id, side: "l" as const, ar: id, en: id };
-      for (const m of model.byUnit.get(id)!) applyStyle(m, sel, null, SELECTION_RED);
+      for (const m of model.byUnit.get(id)!) applyStyle(m, sel, null, SELECTION_ACCENT);
       const mat = model.byUnit.get(id)![0].mesh.material as MeshPhysicalMaterial;
-      expect(mat.color.getHexString(), id).toBe(SELECTION_RED.slice(1).toLowerCase()); // the same colour for every muscle
+      expect(mat.color.getHexString(), id).toBe(SELECTION_ACCENT.slice(1).toLowerCase()); // the same colour for every muscle
       expect(mat.emissive.r, id).toBeGreaterThan(0); // readable in shadow, from every side
       // distance from the muscle's own colour, in sRGB (0…~1.7)
-      const a = own.clone().convertLinearToSRGB(), b = red.clone().convertLinearToSRGB();
+      // (while a muscle is selected the others are in their neutral tones)
+      const a = new Color(neutralTone(own)).convertLinearToSRGB(), b = red.clone().convertLinearToSRGB();
       nearest = Math.min(nearest, Math.hypot(a.r - b.r, a.g - b.g, a.b - b.b));
-      for (const m of model.byUnit.get(id)!) applyStyle(m, null, null, SELECTION_RED);
+      for (const m of model.byUnit.get(id)!) applyStyle(m, null, null, SELECTION_ACCENT);
       expect(state(id), `${id} restored`).toBe(before); // deselected: exactly its original appearance
     }
     expect(units.length).toBeGreaterThan(220);

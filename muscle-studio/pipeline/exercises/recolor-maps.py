@@ -6,7 +6,7 @@ render pass (e2e/render-maps*.cjs + maps.py) gives the exact result; this script
 the same picture at thumbnail size in seconds: every overlay pixel keeps its shading
 (its brightness relative to the lit colour) and takes the new colour's hue and saturation.
 
-  python3 pipeline/exercises/recolor-maps.py public/exercise-maps "#E8602C" "#A5111F"
+  python3 pipeline/exercises/recolor-maps.py public/exercise-maps "#A5111F" "#E8602C"
 """
 import sys, glob, os, colorsys
 from PIL import Image

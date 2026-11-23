@@ -42,7 +42,7 @@ async function tapMuscle(page, id, touch) {
     await settle(page);
 
     ok('tap selects the muscle', await tapMuscle(page, PEC) && (await state(page)).sel === PEC);
-    ok('selected muscle is highlighted', (await T(page, (u) => window.__backStudioTest.unitColor(u), PEC)) === '#a5111f');
+    ok('selected muscle is highlighted', (await T(page, (u) => window.__backStudioTest.unitColor(u), PEC)) === '#e8602c');
     const panel = page.locator('[role=dialog][data-panel]');
     ok('contextual panel: summary with name and actions', (await panel.getAttribute('data-panel')) === 'summary' && (await panel.locator('h3').innerText()).includes('الصدرية') && (await panel.locator('[data-action=learn-more]').count()) === 1 && (await panel.locator('[data-action=learn-more]').innerText()).includes('اعرف أكثر'));
     ok('address follows the selection', (await page.url()).includes(`muscle=${PEC}`));

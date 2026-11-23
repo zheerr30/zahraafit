@@ -4,11 +4,12 @@ import { REGION_MUSCLE_BY_ID, type RegionLayer } from "@/data/region/backShoulde
 import { dequantizeMesh } from "@/lib/three/anatomyModel";
 import { createMuscleMaterial, REALISTIC_LOOK, setMuscleLook, type MuscleLook } from "@/lib/three/muscleMaterial";
 import { plainArabic } from "@/lib/anatomy/normalize";
-import { SELECTION_RED, SELECTION_RED_SOFT } from "@/lib/highlight";
+import { SELECTION_ACCENT, SELECTION_ACCENT_SOFT } from "@/lib/highlight";
 import { axisTangents, createMuscleMaterialHD, createTissueMaterialHD, muscleDetail, principalAxis, setCoverageBlending, setMuscleLookHD } from "@/lib/three/hdMaterials";
 import { markRectusSheath, renderDepth } from "@/lib/three/abdomen";
 import { fibreTangents, orientFibres, refineMeshInPlace } from "@/lib/three/refine";
 import { createTissueMaterial, muscleTone, TISSUE, tissueOf } from "@/lib/three/tissue";
+import { muscleTones, neutralTone } from "@/lib/three/palette";
 import type { DepthMode, PickedStructure } from "@/stores/backStore";
 
 export type RegionKind = PickedStructure["kind"];
@@ -38,6 +39,8 @@ export interface RegionMesh {
     fibre?: string;
   };
   baseHex: string;
+  /** Muscles: the neutral tone shown while another muscle is selected (see lib/three/palette.ts). */
+  neutralHex?: string;
   /** Current / target opacity for fades. */
   opacity: number;
   target: number;
@@ -61,7 +64,7 @@ export interface RegionModel {
 }
 
 export const COLORS = {
-  highlight: SELECTION_RED,
+  highlight: SELECTION_ACCENT,
   origin: TISSUE.origin,
   insertion: TISSUE.insertion,
   nerve: TISSUE.nerve,
@@ -109,9 +112,14 @@ export interface PrepareOptions {
 }
 
 export { HD_MUSCLE_COLOR as HD_MUSCLE } from "@/lib/three/hdMaterials";
-import { HD_MUSCLE_COLOR as HD_MUSCLE } from "@/lib/three/hdMaterials";
 
 export { refineReport } from "@/lib/three/refine";
+
+/** Muscles of the head (facial, masticatory, epicranial, eye and tongue muscles): rendered quietly. */
+const isFace = (hierarchy?: string[]) => !!hierarchy?.includes("Muscles of head");
+/** Teeth and nose cartilages. */
+const isFaceDetail = (hierarchy?: string[]) => !!hierarchy?.some((h) => h === "Teeth" || h === "Nasal cartilages");
+const FACE_DETAIL_TONE = "#CDBBA4";
 
 /** Prepare the meshes of one loaded file (core, attachments or nerves). */
 export function prepareMeshes(scene: Object3D, opts: PrepareOptions = {}): RegionMesh[] {
@@ -129,13 +137,19 @@ export function prepareMeshes(scene: Object3D, opts: PrepareOptions = {}): Regio
     const card = kind === "unit" || kind === "attachment" ? REGION_MUSCLE_BY_ID.get(x.id) : undefined;
     const source = x.source ?? x.id;
     let baseHex: string;
+    let neutralHex: string | undefined;
     let material: Material;
+    const face = isFace(x.hierarchy);
     if (kind === "unit" && opts.hd) {
-      baseHex = muscleTone(x.id, HD_MUSCLE, 0.5);
+      const tones = muscleTones(x.id, { depth: x.depth, face });
+      baseHex = tones.base;
+      neutralHex = tones.neutral;
       orientFibres(mesh.geometry);
       fibreTangents(mesh.geometry);
       if (opts.refineRegions?.has(x.region ?? "")) refineMeshInPlace(mesh);
       const detail = muscleDetail(x.id + (x.source ?? ""), mesh.geometry);
+      // the face is kept quiet: little fibre contrast and relief
+      if (face) detail.detail = 0.35;
       material = createMuscleMaterialHD(baseHex, REALISTIC_LOOK, false, detail);
       // Where layers nearly coincide, the more superficial muscle wins the depth test
       // (render order only — no geometry is moved).
@@ -147,13 +161,18 @@ export function prepareMeshes(scene: Object3D, opts: PrepareOptions = {}): Regio
       }
     } else if (kind === "unit") {
       baseHex = muscleTone(x.id);
+      neutralHex = neutralTone(baseHex);
       material = createMuscleMaterial(baseHex, REALISTIC_LOOK, false);
     } else if (opts.hd) {
       const t = tissueOf(kind, source, x.role)!;
       const fibrous = t === "tendon" || t === "ligament" || t === "fascia" || t === "nerve";
       const axis = fibrous ? principalAxis(mesh.geometry) : undefined;
       if (axis) axisTangents(mesh.geometry, axis);
-      material = createTissueMaterialHD(t, { vertexColors: kind === "bone" && !!mesh.geometry.getAttribute("color"), axis });
+      // Nose cartilages and teeth are the brightest things on the face: toned down, so the
+      // face does not pull the eye away from the body (the meshes themselves are untouched).
+      const quiet = kind === "bone" && isFaceDetail(x.hierarchy);
+      material = createTissueMaterialHD(t, { vertexColors: !quiet && kind === "bone" && !!mesh.geometry.getAttribute("color"), axis });
+      if (quiet) (material as MeshPhysicalMaterial).color.set(FACE_DETAIL_TONE);
       baseHex = `#${(material as MeshPhysicalMaterial).color.getHexString()}`;
     } else {
       const t = tissueOf(kind, source, x.role)!;
@@ -185,6 +204,7 @@ export function prepareMeshes(scene: Object3D, opts: PrepareOptions = {}): Regio
         fibre: x.fibre,
       },
       baseHex,
+      neutralHex,
       opacity: 1,
       target: 1,
       styleKey: "",
@@ -275,9 +295,9 @@ export interface SpotlightSets {
   secondary: Set<string>;
 }
 
-/** Colour of the helper (secondary) muscles of an exercise: the highlight, lightened (a soft rose for the default red). */
+/** Colour of the helper (secondary) muscles of an exercise: the highlight, lightened. */
 export function secondaryHighlight(highlight: string): string {
-  if (highlight.toLowerCase() === SELECTION_RED.toLowerCase()) return SELECTION_RED_SOFT;
+  if (highlight.toLowerCase() === SELECTION_ACCENT.toLowerCase()) return SELECTION_ACCENT_SOFT;
   return `#${new Color(highlight).lerp(new Color("#ffffff"), 0.42).getHexString()}`;
 }
 
@@ -300,13 +320,16 @@ export function applyStyle(m: RegionMesh, selected: PickedStructure | null, hove
   const role = spot && m.kind === "unit" ? (spot.primary.has(m.id) ? 2 : spot.secondary.has(m.id) ? 1 : 0) : -1;
   const isSel = spot ? role === 2 : same(selected);
   const isHover = same(hovered);
-  const key = `${isSel}|${isHover}|${isSel || role === 1 ? highlight : ""}|${role}`;
+  // While a muscle is selected (or an exercise lights its muscles), the other muscles
+  // step back into their neutral tones, so the accent is the only strong colour.
+  const quiet = m.kind === "unit" && !!m.neutralHex && (spot ? true : selected?.kind === "unit");
+  const key = `${isSel}|${isHover}|${isSel || role === 1 ? highlight : ""}|${role}|${quiet}`;
   if (key === m.styleKey) return false;
   m.styleKey = key;
   const mat = m.mesh.material as MeshPhysicalMaterial;
   if (m.kind === "unit") {
     const lit = isSel || role === 1;
-    const hex = isSel ? highlight : role === 1 ? secondaryHighlight(highlight) : m.baseHex;
+    const hex = isSel ? highlight : role === 1 ? secondaryHighlight(highlight) : quiet ? m.neutralHex! : m.baseHex;
     (mat.userData.hd ? setMuscleLookHD : setMuscleLook)(mat, hex, lit ? SELECT_LOOK : REALISTIC_LOOK, isHover);
     if (lit) mat.emissive.set(hex).multiplyScalar(SELECT_GLOW + (isHover ? 0.12 : 0));
   } else if (m.kind !== "attachment") {

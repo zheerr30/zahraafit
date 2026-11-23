@@ -1,11 +1,14 @@
 import { AddEquation, BufferAttribute, Color, CustomBlending, DoubleSide, FrontSide, MeshPhysicalMaterial, OneFactor, Vector3, ZeroFactor, type BufferGeometry } from "three";
 import type { MuscleLook } from "@/lib/three/muscleMaterial";
 
+import { MUSCLE_BASE } from "@/lib/three/palette";
+
 /**
- * Base colour of skeletal muscle in the HD standard: warm brick red, matte —
- * the look of a sculpted écorché / printed atlas plate (user references), not wet tissue.
+ * Base colour of skeletal muscle in the HD standard: a muted terracotta, matte —
+ * the calm tissue tones of a modern anatomy atlas, not a saturated red and not wet tissue.
+ * Each muscle varies around it (lib/three/palette.ts).
  */
-export const HD_MUSCLE_COLOR = "#B24E41";
+export const HD_MUSCLE_COLOR = MUSCLE_BASE;
 
 /** Tendon / aponeurosis colour of the HD standard: matte cream (same references). */
 const HD_TENDON = "#DDCDA9";
@@ -141,8 +144,11 @@ export function muscleDetail(id: string, geometry: BufferGeometry): MuscleDetail
   return { seed: new Vector3(r(0), r(1), r(2)), scale };
 }
 
+/** Brightness of a muscle at its silhouette relative to where it faces the viewer (form shading). */
+const EDGE_SHADE = 0.7;
+
 /** Surface finish of muscle in the HD standard (matte satin). */
-const MATTE = { roughness: 0.62, clearcoat: 0.05, sheen: 0.6 };
+const MATTE = { roughness: 0.62, clearcoat: 0.05, sheen: 0.45 };
 
 export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boolean, detail: MuscleDetail): MeshPhysicalMaterial {
   const color = new Color(hex);
@@ -262,7 +268,11 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
         } else if (vSheath < 0.0) {
           diffuseColor.a *= 1.0 - smoothstep(0.42, 0.58, min(abs(vSheath), 1.0));
         }
-        hzTendon = max(hzTendon, hzSheath);`,
+        hzTendon = max(hzTendon, hzSheath);
+        // Form shading: a belly darkens towards its own silhouette, as in a drawn atlas
+        // plate — every muscle reads as a rounded volume and neighbours separate.
+        float hzNv = clamp(abs(dot(normalize(vNormal), normalize(vViewPosition))), 0.0, 1.0);
+        diffuseColor.rgb *= mix(${EDGE_SHADE.toFixed(2)}, 1.0, smoothstep(0.0, 0.62, hzNv));`,
       )
       .replace(
         "#include <roughnessmap_fragment>",
@@ -302,7 +312,7 @@ export function createMuscleMaterialHD(hex: string, look: MuscleLook, hover: boo
   mat.alphaToCoverage = true;
   setCoverageBlending(mat);
   mat.userData.coverageBlend = true;
-  mat.customProgramCacheKey = () => "muscle-hd6";
+  mat.customProgramCacheKey = () => "muscle-hd7";
   mat.name = `muscle-hd:${hex}`;
   return mat;
 }

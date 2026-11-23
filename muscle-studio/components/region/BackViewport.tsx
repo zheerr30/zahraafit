@@ -63,6 +63,23 @@ export const regionBridge: {
 /** HD rendering: surfaces are refined on demand (ProgressiveRefine), not at load. */
 const HD_OPTIONS = { hd: true } as const;
 
+/**
+ * Framing. The subject is centred in the part of the view that is really free: under
+ * the hint at the top, above the view controls (or the sheet / panel that covers the
+ * bottom). Of that free height the whole body takes FILL.body — about 80 % of the
+ * view — with head and feet inside; a region or a single structure is framed closer.
+ */
+const FILL = { body: 0.96, region: 0.9, closeup: 0.94 };
+const TOP_RESERVE = 52; // px: the hint / the chip of the open region
+const CONTROLS_RESERVE = 62; // px: the floating view controls
+export function freeArea(ins: { bottom: number }, height: number): { top: number; bottom: number; height: number } {
+  // short views (a phone in landscape, a small embed) keep proportionally smaller margins
+  const k = Math.min(1, height / 640);
+  const top = TOP_RESERVE * k;
+  const bottom = Math.max(ins.bottom, CONTROLS_RESERVE * k);
+  return { top, bottom, height: Math.max(1, height - top - bottom) };
+}
+
 export type LoadState = { status: "loading"; progress: number } | { status: "ready" } | { status: "error"; message: string };
 
 const asPicked = (m: RegionMesh): PickedStructure => ({ kind: m.kind, id: m.id, side: m.side, ar: m.ar, en: m.en });
@@ -234,15 +251,19 @@ function Rig() {
     const aspect = size.width / Math.max(1, size.height);
     // the part of the view not covered by panels: the subject is framed in it
     const ins = insets;
-    const freeH = Math.max(0.35, 1 - ins.bottom / Math.max(1, size.height));
+    const free = freeArea(ins, size.height);
+    const freeH = Math.max(0.35, free.height / Math.max(1, size.height));
     const freeW = Math.max(0.35, 1 - (ins.left + ins.right) / Math.max(1, size.width));
-    const fit = (box: Box3, dir: Vector3, margin: number) => {
+    // `fill`: the share of the free height (or width) the subject takes. The distance is
+    // measured to the subject's nearest face, so nothing is cut off by perspective.
+    const fit = (box: Box3, dir: Vector3, fill: number) => {
       const center = box.getCenter(new Vector3());
       const s = box.getSize(new Vector3());
       const vfov = (camera.fov * Math.PI) / 180;
       const hfov = 2 * Math.atan(Math.tan(vfov / 2) * aspect);
-      const across = Math.abs(dir.x) > 0.5 ? s.z : s.x;
-      const dist = Math.max(s.y / 2 / (Math.tan(vfov / 2) * freeH), across / 2 / (Math.tan(hfov / 2) * freeW)) * margin + Math.max(s.x, s.z) / 2;
+      const side = Math.abs(dir.x) > 0.5;
+      const across = side ? s.z : s.x, depth = side ? s.x : s.z;
+      const dist = Math.max(s.y / 2 / (Math.tan(vfov / 2) * freeH * fill), across / 2 / (Math.tan(hfov / 2) * freeW * Math.min(0.96, fill + 0.04))) + depth / 2;
       const pos = center.clone().addScaledVector(dir, dist);
       void c.setLookAt(pos.x, pos.y, pos.z, center.x, center.y, center.z, true);
     };
@@ -250,7 +271,7 @@ function Rig() {
       const box = regionBounds(model, command.region);
       if (!box) return;
       const back = ["back", "pelvis", "legs"].includes(command.region);
-      fit(box, new Vector3(0, 0.1, back ? -1 : 1).normalize(), 1.15);
+      fit(box, new Vector3(0, 0.1, back ? -1 : 1).normalize(), FILL.region);
       invalidate();
       return;
     }
@@ -264,7 +285,7 @@ function Rig() {
           if (m.kind === "unit" && m.side === "l" && /^(deltoid|supraspinatus|infraspinatus|teres)/.test(m.id)) box.expandByObject(m.mesh);
         }
       }
-      fit(box, new Vector3(0.55, 0.18, -0.82).normalize(), 1.05);
+      fit(box, new Vector3(0.55, 0.18, -0.82).normalize(), FILL.closeup);
     } else if (command.type === "view") {
       const dirs: Record<Exclude<RegionView, "closeup">, Vector3> = {
         back: new Vector3(0, 0.08, -1).normalize(),
@@ -275,7 +296,7 @@ function Rig() {
       // Frame the current study region, or the whole body.
       const region = backStore.getState().region;
       const box = (region && regionBounds(model, region)) || model.bounds.clone();
-      fit(box, dirs[command.view as Exclude<RegionView, "closeup">], 1.22);
+      fit(box, dirs[command.view as Exclude<RegionView, "closeup">], region ? FILL.region : FILL.body);
     } else {
       const box = command.type === "focus" ? unitBounds(model, command.unitId, command.side) : null;
       const sel = backStore.getState().selected;
@@ -296,7 +317,8 @@ function Rig() {
     const c = ref.current;
     if (!c) return;
     const ins = backStore.getState().insets;
-    const tx = (ins.right - ins.left) / 2, ty = ins.bottom / 2;
+    const free = freeArea(ins, size.height);
+    const tx = (ins.right - ins.left) / 2, ty = (free.bottom - free.top) / 2;
     const s = shift.current;
     if (Math.abs(tx - s.x) > 0.5 || Math.abs(ty - s.y) > 0.5) {
       const k = 1 - Math.exp(-Math.min(dt, 0.5) * 14); // time-based: a slow device arrives in a frame or two
@@ -412,7 +434,7 @@ function Lighting() {
   const hd = useBack((s) => s.hd);
   return hd === true ? (
     <>
-      <AtlasLighting keyLight={false} warmFill intensity={1.3} />
+      <AtlasLighting keyLight={false} warmFill studio intensity={1.3} />
       <HDPipeline getTarget={atlasTarget} getMeshes={atlasMeshes} />
       {!refineOff() && <ProgressiveRefine getTarget={atlasTarget} getCandidates={atlasMuscles} />}
     </>

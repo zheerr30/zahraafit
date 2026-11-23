@@ -62,12 +62,11 @@ digitorum superficialis, flexor pollicis brevis, adductor pollicis, rhomboid ←
 
 ## Deep muscles (`pipeline/ecorche/deep.mjs`, `deep-list.mjs`)
 
-This is an artist's écorché: it has the superficial muscles only. The deep ones — 61 muscles:
+This is an artist's écorché: it has the superficial muscles only. The deep ones — 50 muscles:
 internal oblique, transversus abdominis, quadratus lumborum, the intercostals and the
 diaphragm, multifidus / rotatores / semispinalis and the small muscles of the spine, serratus
 posterior, the deep neck muscles, subscapularis, supinator, the deep hip rotators, the pelvic
-floor, adductor brevis, vastus intermedius, popliteus, tibialis posterior, plantaris and the
-deep muscles of the sole — are taken from the Z-Anatomy body (CC BY-SA 4.0: the credit line
+floor, adductor brevis, vastus intermedius and tibialis posterior — are taken from the Z-Anatomy body (CC BY-SA 4.0: the credit line
 under the model names it) and fitted into this one, for each sex:
 
 1. **Bones.** Every Z-Anatomy bone is fitted onto the same bone of the Écorché skeleton —
@@ -96,9 +95,10 @@ app the deep muscles have depth 2 or 3: the depth control peels the layers over 
 selected deep muscle is seen through the muscles over it and beside it (they turn into a
 faint ghost; what lies deeper stays as its background).
 
-Not brought over: the muscles of the eye, larynx, pharynx and tongue, the lateral pterygoid
-(the skull of this model is solid where it lies), the palmar interossei (the hands are posed
-differently) and the anal sphincter.
+Not brought over: the muscles of the eye, larynx, pharynx and tongue; the anal sphincter; the
+palmar interossei (the hands are posed differently); and the small muscles lying where this
+model's skeleton is built too differently for them to keep their shape — the lateral pterygoid
+(the skull is solid there), popliteus and plantaris (the knee), the deep muscles of the sole.
 
   ECORCHE_WORK=/path/to/work node pipeline/ecorche/deep.mjs male     (then: female)
 

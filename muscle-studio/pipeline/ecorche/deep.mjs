@@ -461,7 +461,7 @@ function unbone(pos) {
   for (let i = 0; i < n; i++) {
     const p = [pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]], h = nearest(skeleton, p), inB = insideBone(p[0], p[1], p[2]), s = h.d > 1e-7 ? (inB ? 1 : -1) / h.d : 0;
     for (let c = 0; c < 3; c++) dir[i * 3 + c] = (h.q[c] - p[c]) * s; // out of the bone
-    if (inB) { need[i] = h.d + 0.0008; inside++; deepest = Math.max(deepest, h.d); }
+    if (inB) { need[i] = h.d + 0.0015; inside++; deepest = Math.max(deepest, h.d); }
   }
   if (!inside) return { inside: 0, deepest: 0 };
   const CELL = 0.007, K = (a, b, c) => `${a},${b},${c}`, cell = (v) => Math.round(v / CELL);
@@ -493,7 +493,7 @@ function settle(pos) {
   let left = 0;
   for (let i = 0; i < pos.length / 3; i++) {
     if (!insideBone(pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2])) continue;
-    const h = nearest(skeleton, [pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]]), out = h.d > 1e-6 ? 1 + 0.0006 / h.d : 1;
+    const h = nearest(skeleton, [pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]]), out = h.d > 1e-6 ? 1 + 0.0012 / h.d : 1;
     for (let c = 0; c < 3; c++) pos[i * 3 + c] += (h.q[c] - pos[i * 3 + c]) * out;
     left++;
   }
@@ -562,6 +562,7 @@ for (const spec of DEEP) {
     // a muscle of the middle (the diaphragm) is wrapped around the middle line whatever its axis
     const side = x.side === "m" ? (mean(sample(pos, 400))[0] >= 0 ? "l" : "r") : x.side;
     const boneFix = unbone(pos);
+    unbone(pos); // what the first move left inside
     const tucked = tuck(pos, axisFor(x.side === "m" && spec.axis !== "neck" ? "trunk" : spec.axis, side), spec.gap, below);
     const idx = Uint32Array.from(prim.getIndices().getArray());
     (placed.get(spec.id) ?? placed.set(spec.id, []).get(spec.id)).push({ pos, idx });
@@ -579,6 +580,7 @@ for (const spec of DEEP) {
       out.setAttribute(s, doc.createAccessor().setType(a.getType()).setArray(arr).setBuffer(buffer));
     }
     scene.addChild(doc.createNode(node.getName()).setMesh(doc.createMesh(node.getName()).addPrimitive(out)).setExtras({ ...x, depth: spec.depth, from: "zanatomy" }));
+    unbone(pos); // the tuck may have pressed a little of it into a bone again
     const left = settle(pos);
     if (boneFix.inside / n > 0.15 && boneFix.deepest > 0.006) boned.push(`${x.id} ${x.side} ${Math.round((boneFix.inside / n) * 100)}% up to ${(boneFix.deepest * 1000).toFixed(1)} mm (${Math.round((left / n) * 100)}% flattened)`);
     const diag = (b) => Math.hypot(b.max[0] - b.min[0], b.max[1] - b.min[1], b.max[2] - b.min[2]), grew = diag(boxOf(pos)) / diag(boxOf(src));

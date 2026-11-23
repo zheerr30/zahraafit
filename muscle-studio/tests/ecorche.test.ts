@@ -100,7 +100,7 @@ describe("Écorché model: deep muscles brought over from Z-Anatomy", () => {
       expect(UNIT_ALIAS[d.id], `${d.id}: already a part of a muscle of the model`).toBeUndefined();
       expect([2, 3], d.id).toContain(d.depth);
     }
-    expect(deepUnits.length).toBeGreaterThan(55);
+    expect(deepUnits.length).toBeGreaterThan(45);
     // a muscle placed under another comes after it in the list
     deep.forEach((d, i) => { for (const b of d.below ?? []) expect(deep.findIndex((x) => x.id === b), `${d.id} under ${b}`).toBeLessThan(i); });
   });

@@ -11,6 +11,7 @@ import {
   addMeshes,
   createRegionModel,
   pick,
+  pickHit,
   prepareMeshes,
   regionBounds,
   targetOpacity,
@@ -92,16 +93,21 @@ function facingOf(model: RegionModel, unitId: string, side: "l" | "r" | "m" | nu
   }
   const views: [Vector3, number][] = [[new Vector3(0, 0, 1), 1], [new Vector3(0, 0, -1), 1], [new Vector3(1, 0, 0), 0.8], [new Vector3(-1, 0, 0), 0.8]];
   const ray = new Raycaster().ray;
-  let best = views[0][0], score = -1;
+  // A deep muscle is not seen from anywhere until the muscles over it turn into a ghost:
+  // it is shown from the side where the least lies over it.
+  const deep = meshes.some((m) => m.depth > 1);
+  let best = views[0][0], score = -Infinity;
   for (const [dir, weight] of views) {
-    let seen = 0;
+    let seen = 0, over = 0;
     for (const p of points) {
       ray.origin.copy(p).addScaledVector(dir, 2.5);
       ray.direction.copy(dir).negate();
-      const hit = pick(model, ray);
-      if (hit && hit.kind === "unit" && hit.id === unitId) seen++;
+      const hit = pickHit(model, ray);
+      if (hit && hit.m.kind === "unit" && hit.m.id === unitId) seen++;
+      else over += hit ? Math.max(0, 2.5 - hit.d) : 0;
     }
-    if (seen * weight > score) { score = seen * weight; best = dir; }
+    const s = deep ? -(over / Math.max(1, points.length)) / weight : seen * weight;
+    if (s > score) { score = s; best = dir; }
   }
   return best.clone();
 }

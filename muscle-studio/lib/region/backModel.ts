@@ -426,6 +426,10 @@ raycaster.firstHitOnly = true;
 
 /** First visible structure under the pointer (fading-out and ghosted meshes are not pickable). */
 export function pick(model: RegionModel, ray: Raycaster["ray"]): RegionMesh | null {
+  return pickHit(model, ray)?.m ?? null;
+}
+/** The first shown structure a ray meets, and how far along the ray. */
+export function pickHit(model: RegionModel, ray: Raycaster["ray"]): { m: RegionMesh; d: number } | null {
   raycaster.ray.copy(ray);
   let best: { m: RegionMesh; d: number } | null = null;
   for (const m of model.meshes) {
@@ -433,7 +437,7 @@ export function pick(model: RegionModel, ray: Raycaster["ray"]): RegionMesh | nu
     const hits = raycaster.intersectObject(m.mesh, false);
     if (hits.length && (!best || hits[0].distance < best.d)) best = { m, d: hits[0].distance };
   }
-  return best?.m ?? null;
+  return best;
 }
 
 /** Bounds of a unit (one side, or both when side is null). */

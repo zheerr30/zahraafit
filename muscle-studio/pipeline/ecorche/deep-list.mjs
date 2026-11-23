@@ -1,8 +1,10 @@
 // The deep muscles the Écorché body gets from the Z-Anatomy body (pipeline/ecorche/deep.mjs).
 //
-// Not brought over: the muscles of the eye, the larynx, the pharynx and the tongue, the lateral
-// pterygoid (the skull of this model is solid where it lies), the palmar interossei (the hands
-// are posed differently) and the anal sphincter.
+// Not brought over: the muscles of the eye, the larynx, the pharynx and the tongue; the anal
+// sphincter; the palmar interossei (the hands are posed differently); and the small muscles
+// that lie where this model's skeleton is built too differently for them to keep their shape
+// — the lateral pterygoid (the skull is solid there), popliteus and plantaris (the knee), and
+// the deep muscles of the sole.
 // depth: 2 under the superficial muscles, 3 the deepest. `axis`: the line the muscle is
 // wrapped around (what "inwards" means for it). `gap`: how far under the body's surface it
 // must lie at least. `below`: muscles of this list it must lie under.
@@ -37,11 +39,6 @@ export const DEEP = [
   D("coccygeus-muscle", 3), D("iliococcygeus-muscle", 3), D("pubococcygeus-muscle", 3), D("pubo-analis-muscle", 3),
   // thigh
   D("adductor-brevis", 2, "thigh"), D("adductor-minimus", 2, "thigh"), D("vastus-intermedius-muscle", 2, "thigh"),
-  // leg and foot
-  D("popliteus-muscle", 2, "leg"), D("plantaris-muscle", 2, "leg"), D("tibialis-posterior-muscle", 3, "leg"),
-  D("quadratus-plantae-muscle", 2, "foot"), D("lumbrical-muscles-of-foot", 2, "foot"),
-  D("oblique-head-of-adductor-hallucis", 2, "foot"), D("transverse-head-of-adductor-hallucis", 2, "foot"),
-  D("lateral-head-of-flexor-hallucis-brevis", 2, "foot"), D("medial-head-of-flexor-hallucis-brevis", 2, "foot"),
-  D("flexor-digiti-minimi-of-foot", 2, "foot"), D("opponens-digiti-minimi-muscle-of-foot", 2, "foot"),
-  D("plantar-interossei-muscles", 3, "foot"),
+  // leg
+  D("tibialis-posterior-muscle", 3, "leg"),
 ];

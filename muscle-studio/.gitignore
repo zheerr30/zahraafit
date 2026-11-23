@@ -48,3 +48,6 @@ next-env.d.ts
 # BodyParts3D source download for pipeline/bodyparts3d (not committed)
 /bp3d
 .netlify
+
+# Écorché model builds: kept out of the repository until the owner approves the result
+/public/models/ecorche/

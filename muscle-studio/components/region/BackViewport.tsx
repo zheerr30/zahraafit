@@ -25,10 +25,11 @@ import { ProgressiveRefine } from "@/components/anatomy/ProgressiveRefine";
 import { loadGltf } from "@/lib/three/loadGltf";
 import { configureRenderer } from "@/lib/three/rendererSetup";
 import { backStore, unitNames, useBack, type PickedStructure, type RegionView } from "@/stores/backStore";
+import type { RegionLayer } from "@/data/region/backShoulders";
+import { currentProfile } from "@/lib/region/profile";
 
-/** Original Z-Anatomy geometry exported from Blender (pipeline/blender/export_body.py + postprocess-body.mjs). */
-export const MODEL_BASE = "/models/zanatomy";
-export const modelUrl = (sex: "male" | "female", part: string) => `${MODEL_BASE}/${sex}/${part}.glb`;
+/** Files of the body in use (lib/region/profile.ts): <base>/<sex>/<part>.glb. */
+export const modelUrl = (sex: "male" | "female", part: string) => `${currentProfile().base}/${sex}/${part}.glb`;
 /** The body shown by default: core.glb with refined muscle surfaces. */
 export const BODY_PART = "core-smooth";
 /**
@@ -37,18 +38,26 @@ export const BODY_PART = "core-smooth";
  * it anywhere, `?lite=0` for the full body.
  */
 export const LITE_PART = "core-lite";
-export function bodyPart(): string {
-  const q = new URLSearchParams(window.location.search);
-  // Muscle surfaces refined from the original Z-Anatomy meshes (pipeline/sculpt/body.mjs:
-  // same nodes and vertices, bellies smoothed by ≤ 2 mm); `?sculpt=0` shows the original.
-  if (q.get("sculpt") === "0") return "core";
-  const lite = q.get("lite");
-  if (lite === "1") return LITE_PART;
-  if (lite === "0") return BODY_PART;
-  return window.matchMedia("(hover: none) and (pointer: coarse)").matches ? LITE_PART : BODY_PART;
+/** Whether this visit gets the lighter build: phones and tablets, or `?lite=1` (`?lite=0`: never). */
+export function wantsLite(): boolean {
+  const lite = new URLSearchParams(window.location.search).get("lite");
+  if (lite === "1") return true;
+  if (lite === "0") return false;
+  return window.matchMedia("(hover: none) and (pointer: coarse)").matches;
 }
-/** Optional layers loaded on first use. */
-const LAZY_PARTS = { attachments: "attachments", nerves: "nerves" } as const;
+export function bodyPart(): string {
+  const p = currentProfile();
+  // Z-Anatomy: muscle surfaces refined from the original meshes (pipeline/sculpt/body.mjs:
+  // same nodes and vertices, bellies smoothed by ≤ 2 mm); `?sculpt=0` shows the original.
+  if (p.id === "zanatomy" && new URLSearchParams(window.location.search).get("sculpt") === "0") return "core";
+  return wantsLite() ? p.core.lite : p.core.full;
+}
+/** File of a layer that is loaded on first use. */
+const lazyPart = (layer: RegionLayer): string | null => {
+  const p = currentProfile();
+  const part = p.lazy[layer];
+  return part ? (p.lazyLite && wantsLite() ? `${part}-lite` : part) : null;
+};
 export const BACKGROUNDS = { black: "#0d0e10", navy: "#06142f", cream: "#F6F2EA" } as const;
 
 /** Shared handles for overlays, tests and exports (one viewer per page). */
@@ -62,6 +71,29 @@ export const regionBridge: {
 
 /** HD rendering: surfaces are refined on demand (ProgressiveRefine), not at load. */
 const HD_OPTIONS = { hd: true } as const;
+
+/** Mean outward direction of a muscle's surface (area-weighted): the side of the body it is seen from. */
+function facingOf(model: RegionModel, unitId: string, side: "l" | "r" | "m" | null): Vector3 {
+  const out = new Vector3(), a = new Vector3(), b = new Vector3(), c = new Vector3();
+  for (const m of model.byUnit.get(unitId) ?? []) {
+    if (m.kind !== "unit" || (side && side !== "m" && m.side !== side && m.side !== "m")) continue;
+    const g = m.mesh.geometry, pos = g.getAttribute("position"), idx = g.index;
+    const n = idx ? idx.count : pos.count, step = Math.max(1, Math.floor(n / 3 / 1500)) * 3;
+    for (let i = 0; i + 2 < n; i += step) {
+      a.fromBufferAttribute(pos, idx ? idx.getX(i) : i);
+      b.fromBufferAttribute(pos, idx ? idx.getX(i + 1) : i + 1);
+      c.fromBufferAttribute(pos, idx ? idx.getX(i + 2) : i + 2);
+      out.add(b.sub(a).cross(c.sub(a))); // twice the triangle's area, along its normal
+    }
+  }
+  // a closed surface sums to nothing: fall back to where the muscle sits in the body
+  if (out.lengthSq() < 1e-10) {
+    const box = unitBounds(model, unitId, side);
+    const centre = box ? box.getCenter(new Vector3()).sub(model.bounds.getCenter(new Vector3())) : new Vector3(0, 0, 1);
+    out.set(centre.x * 0.5, 0, centre.z);
+  }
+  return out.normalize();
+}
 
 /**
  * Framing. The subject is centred in the part of the view that is really free: under
@@ -114,7 +146,7 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
     const part = bodyPart();
     loadGltf(modelUrl(sex, part), { renderer: gl, signal: ctrl.signal, onProgress: (p) => onState({ status: "loading", progress: p }) })
       .then((gltf) => {
-        const meshes = prepareMeshes(gltf.scene, hd ? HD_OPTIONS : {});
+        const meshes = prepareMeshes(gltf.scene, { ...(hd ? HD_OPTIONS : {}), anisotropy: Math.min(8, gl.capabilities.getMaxAnisotropy()) });
         addMeshes(model, meshes);
         modelRef.current = model;
         regionBridge.model = model;
@@ -141,19 +173,19 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
 
   // Optional layers (attachment patches, nerves) are loaded the first time they are needed.
   useEffect(() => {
-    const need = (st: ReturnType<typeof backStore.getState>) => [
-      ...(st.layers.attachments || st.selected?.kind === "unit" ? ["attachments"] : []),
-      ...(st.layers.nerves ? ["nerves"] : []),
-    ];
-    const load = (part: keyof typeof LAZY_PARTS) => {
+    const profile = currentProfile();
+    const need = (st: ReturnType<typeof backStore.getState>): RegionLayer[] =>
+      (Object.keys(profile.lazy) as RegionLayer[]).filter((l) => st.layers[l] || (l === "attachments" && st.selected?.kind === "unit"));
+    const load = (layer: RegionLayer) => {
       const model = modelRef.current;
-      if (!model || loaded.current.has(part)) return;
+      const part = lazyPart(layer);
+      if (!model || !part || loaded.current.has(part)) return;
       loaded.current.add(part);
       const forSex = backStore.getState().sex;
-      loadGltf(modelUrl(forSex, LAZY_PARTS[part]), { renderer: gl })
+      loadGltf(modelUrl(forSex, part), { renderer: gl })
         .then((gltf) => {
           if (modelRef.current !== model) return;
-          const meshes = prepareMeshes(gltf.scene, backStore.getState().hd ? HD_OPTIONS : {});
+          const meshes = prepareMeshes(gltf.scene, { ...(backStore.getState().hd ? HD_OPTIONS : {}), anisotropy: Math.min(8, gl.capabilities.getMaxAnisotropy()) });
           addMeshes(model, meshes);
           syncNew(model, meshes);
           setRoots((r) => [...r, gltf.scene]);
@@ -164,7 +196,7 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
           console.error("[atlas] optional layer failed", part, err);
         });
     };
-    const check = () => { for (const p of need(backStore.getState())) load(p as keyof typeof LAZY_PARTS); };
+    const check = () => { for (const l of need(backStore.getState())) load(l); };
     check();
     return backStore.subscribe((st, prev) => {
       if (st.layers !== prev.layers || st.selected !== prev.selected) check();
@@ -297,6 +329,16 @@ function Rig() {
       const region = backStore.getState().region;
       const box = (region && regionBounds(model, region)) || model.bounds.clone();
       fit(box, dirs[command.view as Exclude<RegionView, "closeup">], region ? FILL.region : FILL.body);
+    } else if (command.type === "face") {
+      // A link opened on a muscle: turn to the side of the body it is on, and frame it with
+      // its surroundings (the direction its surface looks, snapped to front / back / a side).
+      const box = unitBounds(model, command.unitId, command.side);
+      if (!box) return;
+      const n = facingOf(model, command.unitId, command.side);
+      const ax = Math.abs(n.x), az = Math.abs(n.z);
+      const dir = az >= ax * 0.9 ? new Vector3(0, 0.08, n.z >= 0 ? 1 : -1) : new Vector3(n.x >= 0 ? 1 : -1, 0.05, 0);
+      const s = box.getSize(new Vector3());
+      fit(box.clone().expandByScalar(Math.max(s.x, s.y, s.z) * 0.55), dir.normalize(), FILL.closeup);
     } else {
       const box = command.type === "focus" ? unitBounds(model, command.unitId, command.side) : null;
       const sel = backStore.getState().selected;
@@ -426,7 +468,8 @@ const atlasMeshes = () => (regionBridge.model?.meshes ?? []).map((m) => m.mesh);
 const atlasMuscles = () => {
   const mode = backStore.getState().depthMode;
   const top = mode === "deep" ? 3 : mode === "no-superficial" ? 2 : 1;
-  return (regionBridge.model?.meshes ?? []).filter((m) => m.kind === "unit" && m.target > 0.5 && m.depth <= top).map((m) => m.mesh);
+  // (a textured model carries its surface detail in normal maps: nothing to refine)
+  return (regionBridge.model?.meshes ?? []).filter((m) => m.kind === "unit" && m.target > 0.5 && m.depth <= top && !(m.mesh.material as { userData: { textured?: boolean } }).userData.textured).map((m) => m.mesh);
 };
 const refineOff = () => typeof window !== "undefined" && new URLSearchParams(window.location.search).get("refine") === "0";
 

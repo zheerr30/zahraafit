@@ -1,4 +1,5 @@
-import { Box3, Color, Mesh, MeshPhysicalMaterial, NormalBlending, Raycaster, Vector3, type Material, type Object3D } from "three";
+import { Box3, Color, Mesh, MeshPhysicalMaterial, NormalBlending, Raycaster, Vector3, type Material, type MeshStandardMaterial, type Object3D } from "three";
+import { createTexturedMaterial, setTexturedLook } from "@/lib/three/texturedLook";
 import { acceleratedRaycast, computeBoundsTree, disposeBoundsTree } from "three-mesh-bvh";
 import { REGION_MUSCLE_BY_ID, type RegionLayer } from "@/data/region/backShoulders";
 import { dequantizeMesh } from "@/lib/three/anatomyModel";
@@ -91,6 +92,9 @@ const LAYER_OF: Record<RegionKind, RegionLayer> = {
   bone: "bones",
   attachment: "attachments",
   nerve: "nerves",
+  fat: "fat",
+  vessel: "vessels",
+  skin: "skin",
 };
 
 /** Readable English from a Z-Anatomy name: "Long_head_of_triceps_brachii" → "Long head of triceps brachii". */
@@ -100,6 +104,8 @@ type Extras = {
   kind?: string; id?: string; side?: "l" | "r" | "m"; source?: string; ar?: string; depth?: 1 | 2 | 3; region?: string;
   role?: "origin" | "insertion"; bone?: string; za_name?: string; hierarchy?: string[]; ta2?: number; latin?: string;
   definition?: string; materials?: string[]; fibre?: string;
+  /** "ecorche": a textured part of the Écorché model (its own material is used). */
+  src?: string; en?: string;
 };
 
 /**
@@ -109,6 +115,8 @@ type Extras = {
 export interface PrepareOptions {
   hd?: boolean;
   refineRegions?: ReadonlySet<string>;
+  /** Anisotropic filtering of a textured model's maps (the renderer's maximum, capped). */
+  anisotropy?: number;
 }
 
 export { HD_MUSCLE_COLOR as HD_MUSCLE } from "@/lib/three/hdMaterials";
@@ -140,7 +148,16 @@ export function prepareMeshes(scene: Object3D, opts: PrepareOptions = {}): Regio
     let neutralHex: string | undefined;
     let material: Material;
     const face = isFace(x.hierarchy);
-    if (kind === "unit" && opts.hd) {
+    if (x.src === "ecorche") {
+      // Textured model: its own material (base colour, normal, occlusion-roughness maps).
+      dequantizeMesh(mesh);
+      material = createTexturedMaterial(mesh.material as MeshStandardMaterial, opts.anisotropy ?? 1);
+      baseHex = "#ffffff";
+      if (kind === "skin") {
+        // the skin hides everything under it: clicks go through to nothing else, by design
+        (material as MeshStandardMaterial).userData.baseOpacity = 1;
+      }
+    } else if (kind === "unit" && opts.hd) {
       const tones = muscleTones(x.id, { depth: x.depth, face });
       baseHex = tones.base;
       neutralHex = tones.neutral;
@@ -187,8 +204,8 @@ export function prepareMeshes(scene: Object3D, opts: PrepareOptions = {}): Regio
       kind,
       id: x.id,
       side: x.side ?? "m",
-      ar: plainArabic(kind === "unit" ? (card?.ar ?? x.ar ?? english(source)) : (x.ar ?? english(source))),
-      en: kind === "unit" && card ? card.en : english(source),
+      ar: plainArabic(x.src === "ecorche" ? (x.ar ?? english(source)) : kind === "unit" ? (card?.ar ?? x.ar ?? english(source)) : (x.ar ?? english(source))),
+      en: x.src === "ecorche" && x.en ? x.en : kind === "unit" && card ? card.en : english(source),
       layer: LAYER_OF[kind],
       depth: kind === "unit" ? (x.depth ?? 1) : 1,
       region: x.region ?? "other",
@@ -210,7 +227,7 @@ export function prepareMeshes(scene: Object3D, opts: PrepareOptions = {}): Regio
       styleKey: "",
     });
   }
-  if (opts.hd) markRectusSheath(out.filter((m) => m.kind === "unit").map((m) => m.mesh));
+  if (opts.hd) markRectusSheath(out.filter((m) => m.kind === "unit" && !(m.mesh.material as Material).userData.textured).map((m) => m.mesh));
   return out;
 }
 
@@ -286,6 +303,12 @@ export function shouldShow(m: RegionMesh, s: VisibilityState): boolean {
       return s.layers.fasciae;
     case "nerve":
       return s.layers.nerves;
+    case "fat":
+      return s.layers.fat;
+    case "vessel":
+      return s.layers.vessels;
+    case "skin":
+      return s.layers.skin;
   }
 }
 
@@ -322,11 +345,20 @@ export function applyStyle(m: RegionMesh, selected: PickedStructure | null, hove
   const isHover = same(hovered);
   // While a muscle is selected (or an exercise lights its muscles), the other muscles
   // step back into their neutral tones, so the accent is the only strong colour.
-  const quiet = m.kind === "unit" && !!m.neutralHex && (spot ? true : selected?.kind === "unit");
+  const textured = !!(m.mesh.material as Material).userData.textured;
+  const quiet = m.kind === "unit" && (!!m.neutralHex || textured) && (spot ? true : selected?.kind === "unit");
   const key = `${isSel}|${isHover}|${isSel || role === 1 ? highlight : ""}|${role}|${quiet}`;
   if (key === m.styleKey) return false;
   m.styleKey = key;
   const mat = m.mesh.material as MeshPhysicalMaterial;
+  if (mat.userData.textured) {
+    // Textured model: the accent and the neutral state are laid over the part's own texture.
+    const lit = m.kind === "unit" ? isSel || role === 1 : isSel;
+    const tint = lit ? (role === 1 ? secondaryHighlight(highlight) : highlight) : null;
+    const others = m.kind === "unit" && (spot ? true : selected?.kind === "unit");
+    setTexturedLook(mat, { tint, quiet: !lit && others, hover: isHover });
+    return true;
+  }
   if (m.kind === "unit") {
     const lit = isSel || role === 1;
     const hex = isSel ? highlight : role === 1 ? secondaryHighlight(highlight) : quiet ? m.neutralHex! : m.baseHex;
@@ -358,6 +390,7 @@ export function stepFades(model: RegionModel, dt: number): boolean {
     const base = (mat.userData.baseOpacity as number | undefined) ?? 1;
     mat.opacity = base * m.opacity;
     const transparent = m.opacity < 1 || base < 1;
+    if (mat.userData.textured && transparent) mat.alphaTest = 0;
     if (mat.transparent !== transparent) {
       mat.transparent = transparent;
       if (mat.userData.coverageBlend) {

@@ -2,10 +2,11 @@ import { useStore } from "zustand";
 import { createStore } from "zustand/vanilla";
 import { REGION_MUSCLES, type RegionLayer } from "@/data/region/backShoulders";
 import { SELECTION_ACCENT } from "@/lib/highlight";
+import { DEFAULT_MODEL, type ModelId } from "@/lib/region/profile";
 
 /** What the user picked on the model: a muscle unit (full card) or any other structure (name only). */
 export interface PickedStructure {
-  kind: "unit" | "bone" | "tendon" | "ligament" | "fascia" | "nerve" | "attachment";
+  kind: "unit" | "bone" | "tendon" | "ligament" | "fascia" | "nerve" | "attachment" | "fat" | "vessel" | "skin";
   id: string;
   side: "l" | "r" | "m";
   ar: string;
@@ -19,6 +20,8 @@ export type CameraCommand =
   | { type: "view"; view: RegionView; nonce: number }
   | { type: "focus"; unitId: string; side: "l" | "r" | "m" | null; nonce: number }
   | { type: "focus-structure"; key: string; nonce: number }
+  /** Turn to the side of the body a muscle is on and frame it (links that open on a muscle). */
+  | { type: "face"; unitId: string; side: "l" | "r" | "m" | null; nonce: number }
   | { type: "region"; region: string; nonce: number }
   | { type: "zoom"; dir: 1 | -1; nonce: number };
 
@@ -39,6 +42,9 @@ export const DEFAULT_LAYERS: Record<RegionLayer, boolean> = {
   fasciae: false,
   attachments: false,
   nerves: false,
+  fat: false,
+  vessels: false,
+  skin: false,
 };
 
 export type Sex = "male" | "female";
@@ -58,6 +64,10 @@ interface BackState {
   /** Units hidden individually from the list. */
   hiddenUnits: Record<string, true>;
   layers: Record<RegionLayer, boolean>;
+  /** The body in use (lib/region/profile.ts); set from the address when the atlas mounts. */
+  model: ModelId;
+  /** The layers shown when the atlas opens and after "reset" (they depend on the body in use). */
+  defaultLayers: Record<RegionLayer, boolean>;
   depthMode: DepthMode;
   /** Show only the selected structure (with the skeleton for reference). */
   isolate: boolean;
@@ -93,6 +103,7 @@ interface BackState {
   showFullBody: () => void;
   select: (p: PickedStructure | null) => void;
   selectUnit: (id: string, side?: "l" | "r" | "m") => void;
+  face: (unitId: string, side?: "l" | "r" | "m" | null) => void;
   setHovered: (p: PickedStructure | null) => void;
   toggleUnit: (id: string) => void;
   setLayer: (l: RegionLayer, v: boolean) => void;
@@ -127,6 +138,8 @@ export const backStore = createStore<BackState>()((set, get) => ({
   hovered: null,
   hiddenUnits: {},
   layers: { ...DEFAULT_LAYERS },
+  model: DEFAULT_MODEL,
+  defaultLayers: { ...DEFAULT_LAYERS },
   depthMode: "all",
   isolate: false,
   showEnglish: false,
@@ -170,7 +183,8 @@ export const backStore = createStore<BackState>()((set, get) => ({
       panel: same ? get().panel : "summary",
       spotlight: same ? get().spotlight : null,
       linkedExercise: same ? get().linkedExercise : null,
-      cameraCommand: { type: "focus", unitId: id, side, nonce: ++nonce },
+      // chosen by name (the list, a link, a related muscle): the camera turns to the side it is on
+      cameraCommand: { type: "face", unitId: id, side, nonce: ++nonce },
     });
   },
   setHovered: (p) => {
@@ -189,7 +203,7 @@ export const backStore = createStore<BackState>()((set, get) => ({
   setIsolate: (v) => set({ isolate: v && get().selected !== null }),
   skeletonOnly: () =>
     set({
-      layers: { muscles: false, tendons: false, bones: true, fasciae: false, attachments: false, nerves: false },
+      layers: { muscles: false, tendons: false, bones: true, fasciae: false, attachments: false, nerves: false, fat: false, vessels: false, skin: false },
       isolate: false,
       selected: null,
     }),
@@ -212,12 +226,13 @@ export const backStore = createStore<BackState>()((set, get) => ({
     set({ region, autoRotate: false, cameraCommand: region ? { type: "region", region, nonce: ++nonce } : { type: "view", view: "front", nonce: ++nonce } }),
   view: (v) => set({ cameraCommand: { type: "view", view: v, nonce: ++nonce }, autoRotate: false }),
   focus: (unitId, side = null) => set({ cameraCommand: { type: "focus", unitId, side, nonce: ++nonce } }),
+  face: (unitId, side = null) => set({ autoRotate: false, cameraCommand: { type: "face", unitId, side, nonce: ++nonce } }),
   resetAll: () =>
     set({
       selected: null,
       hovered: null,
       hiddenUnits: {},
-      layers: { ...DEFAULT_LAYERS },
+      layers: { ...get().defaultLayers },
       depthMode: "all",
       isolate: false,
       autoRotate: false,

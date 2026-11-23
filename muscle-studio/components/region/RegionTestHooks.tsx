@@ -78,7 +78,9 @@ export function RegionTestHooks() {
       /** Colour currently shown by a unit's material (hex). */
       unitColor(id: string, side: "l" | "r" = "l") {
         const m = regionBridge.model?.meshes.find((x) => x.kind === "unit" && x.id === id && x.side === side);
-        const mat = m?.mesh.material as { color?: { getHexString(): string } } | undefined;
+        const mat = m?.mesh.material as { color?: { getHexString(): string }; userData?: { lookHex?: string } } | undefined;
+        // (a textured part keeps a white material colour: the look laid over its texture is reported)
+        if (mat?.userData?.lookHex) return mat.userData.lookHex;
         return mat?.color ? `#${mat.color.getHexString()}` : null;
       },
       /**

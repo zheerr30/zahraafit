@@ -4,7 +4,7 @@ import { CameraControls } from "@react-three/drei";
 import { AtlasLighting } from "@/components/anatomy/AtlasLighting";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Box3, CanvasTexture, Color, LinearSRGBColorSpace, Object3D, Sphere, SRGBColorSpace, Vector2, Vector3, type PerspectiveCamera, type Raycaster } from "three";
+import { Box3, CanvasTexture, Color, LinearSRGBColorSpace, Object3D, Raycaster, Sphere, SRGBColorSpace, Vector2, Vector3, type PerspectiveCamera } from "three";
 import {
   applyStyle,
   disposeRegionModel,
@@ -72,27 +72,33 @@ export const regionBridge: {
 /** HD rendering: surfaces are refined on demand (ProgressiveRefine), not at load. */
 const HD_OPTIONS = { hd: true } as const;
 
-/** Mean outward direction of a muscle's surface (area-weighted): the side of the body it is seen from. */
+/**
+ * The side of the body a muscle is seen from: front, back, left or right — whichever view
+ * shows most of it (sample points of the muscle are looked at from each side; a point counts
+ * when nothing else is in front of it). Front and back win a near tie.
+ */
 function facingOf(model: RegionModel, unitId: string, side: "l" | "r" | "m" | null): Vector3 {
-  const out = new Vector3(), a = new Vector3(), b = new Vector3(), c = new Vector3();
-  for (const m of model.byUnit.get(unitId) ?? []) {
-    if (m.kind !== "unit" || (side && side !== "m" && m.side !== side && m.side !== "m")) continue;
-    const g = m.mesh.geometry, pos = g.getAttribute("position"), idx = g.index;
-    const n = idx ? idx.count : pos.count, step = Math.max(1, Math.floor(n / 3 / 1500)) * 3;
-    for (let i = 0; i + 2 < n; i += step) {
-      a.fromBufferAttribute(pos, idx ? idx.getX(i) : i);
-      b.fromBufferAttribute(pos, idx ? idx.getX(i + 1) : i + 1);
-      c.fromBufferAttribute(pos, idx ? idx.getX(i + 2) : i + 2);
-      out.add(b.sub(a).cross(c.sub(a))); // twice the triangle's area, along its normal
+  const meshes = (model.byUnit.get(unitId) ?? []).filter((m) => m.kind === "unit" && (!side || side === "m" || m.side === side || m.side === "m"));
+  const points: Vector3[] = [];
+  for (const m of meshes) {
+    const pos = m.mesh.geometry.getAttribute("position");
+    const step = Math.max(1, Math.floor(pos.count / Math.ceil(70 / meshes.length)));
+    for (let i = 0; i < pos.count; i += step) points.push(new Vector3().fromBufferAttribute(pos, i).applyMatrix4(m.mesh.matrixWorld));
+  }
+  const views: [Vector3, number][] = [[new Vector3(0, 0, 1), 1], [new Vector3(0, 0, -1), 1], [new Vector3(1, 0, 0), 0.8], [new Vector3(-1, 0, 0), 0.8]];
+  const ray = new Raycaster().ray;
+  let best = views[0][0], score = -1;
+  for (const [dir, weight] of views) {
+    let seen = 0;
+    for (const p of points) {
+      ray.origin.copy(p).addScaledVector(dir, 2.5);
+      ray.direction.copy(dir).negate();
+      const hit = pick(model, ray);
+      if (hit && hit.kind === "unit" && hit.id === unitId) seen++;
     }
+    if (seen * weight > score) { score = seen * weight; best = dir; }
   }
-  // a closed surface sums to nothing: fall back to where the muscle sits in the body
-  if (out.lengthSq() < 1e-10) {
-    const box = unitBounds(model, unitId, side);
-    const centre = box ? box.getCenter(new Vector3()).sub(model.bounds.getCenter(new Vector3())) : new Vector3(0, 0, 1);
-    out.set(centre.x * 0.5, 0, centre.z);
-  }
-  return out.normalize();
+  return best.clone();
 }
 
 /**

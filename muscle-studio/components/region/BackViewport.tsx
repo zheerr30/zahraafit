@@ -72,6 +72,11 @@ export const regionBridge: {
 /** HD rendering: surfaces are refined on demand (ProgressiveRefine), not at load. */
 const HD_OPTIONS = { hd: true } as const;
 
+/** The store's visibility state with what it implies for this model (the selected muscle's depth). */
+function visibility<S extends { selected: PickedStructure | null }>(model: RegionModel, st: S): S & { selectedDepth: number } {
+  return { ...st, selectedDepth: st.selected?.kind === "unit" ? (model.units.get(st.selected.id)?.depth ?? 1) : 1 };
+}
+
 /**
  * The side of the body a muscle is seen from: front, back, left or right — whichever view
  * shows most of it (sample points of the muscle are looked at from each side; a point counts
@@ -132,7 +137,7 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
   const loaded = useRef(new Set<string>());
 
   const syncNew = (model: RegionModel, meshes: RegionMesh[]) => {
-    const st = backStore.getState();
+    const st = visibility(model, backStore.getState());
     for (const m of meshes) {
       m.target = targetOpacity(m, st);
       m.opacity = m.target;
@@ -152,9 +157,25 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
     const part = bodyPart();
     loadGltf(modelUrl(sex, part), { renderer: gl, signal: ctrl.signal, onProgress: (p) => onState({ status: "loading", progress: p }) })
       .then((gltf) => {
-        const meshes = prepareMeshes(gltf.scene, { ...(hd ? HD_OPTIONS : {}), anisotropy: Math.min(8, gl.capabilities.getMaxAnisotropy()) });
+        const prep = { ...(hd ? HD_OPTIONS : {}), anisotropy: Math.min(8, gl.capabilities.getMaxAnisotropy()), muscleBase: currentProfile().muscleBase };
+        const meshes = prepareMeshes(gltf.scene, prep);
         addMeshes(model, meshes);
         modelRef.current = model;
+        // further parts of the body (deep muscles): added as soon as they arrive
+        for (const extra of currentProfile().also) {
+          loadGltf(modelUrl(sex, extra), { renderer: gl, signal: ctrl.signal })
+            .then((g) => {
+              if (modelRef.current !== model) return;
+              const more = prepareMeshes(g.scene, prep);
+              addMeshes(model, more);
+              syncNew(model, more);
+              setRoots((r) => [...r, g.scene]);
+              for (const u of model.units.values()) unitNames.set(u.id, { ar: u.ar, en: u.en });
+              backStore.setState({ unitsVersion: Date.now() });
+              invalidate();
+            })
+            .catch((err: unknown) => { if (!ctrl.signal.aborted) console.error("[atlas] part failed", extra, err); });
+        }
         regionBridge.model = model;
         syncNew(model, meshes);
         setRoots([gltf.scene]); // replaces the previous body's roots
@@ -216,8 +237,9 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
       if (!model) return;
       let changed = false;
       if (st.layers !== prev.layers || st.hiddenUnits !== prev.hiddenUnits || st.depthMode !== prev.depthMode || st.isolate !== prev.isolate || st.selected !== prev.selected) {
+        const vis = visibility(model, st);
         for (const m of model.meshes) {
-          const t = targetOpacity(m, st);
+          const t = targetOpacity(m, vis);
           if (t !== m.target) { m.target = t; changed = true; }
         }
       }

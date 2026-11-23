@@ -119,6 +119,8 @@ export interface PrepareOptions {
   refineRegions?: ReadonlySet<string>;
   /** Anisotropic filtering of a textured model's maps (the renderer's maximum, capped). */
   anisotropy?: number;
+  /** Base colour of the muscles drawn with the atlas's own material (default: the palette's). */
+  muscleBase?: string;
 }
 
 export { HD_MUSCLE_COLOR as HD_MUSCLE } from "@/lib/three/hdMaterials";
@@ -160,7 +162,7 @@ export function prepareMeshes(scene: Object3D, opts: PrepareOptions = {}): Regio
         (material as MeshStandardMaterial).userData.baseOpacity = 1;
       }
     } else if (kind === "unit" && opts.hd) {
-      const tones = muscleTones(x.id, { depth: x.depth, face });
+      const tones = muscleTones(x.id, { depth: x.depth, face, base: opts.muscleBase });
       baseHex = tones.base;
       neutralHex = tones.neutral;
       orientFibres(mesh.geometry);
@@ -267,8 +269,12 @@ export interface VisibilityState {
   depthMode: DepthMode;
   isolate: boolean;
   selected: PickedStructure | null;
+  /** Depth of the selected muscle (1 superficial … 3 deep), when a muscle is selected. */
+  selectedDepth?: number;
 }
 
+/** Opacity of the muscles lying over a selected deep muscle. */
+const DEEP_GHOST = 0.14;
 /** Opacity of the surrounding anatomy while one structure is isolated. */
 export const GHOST = 0.13;
 
@@ -284,6 +290,9 @@ export function targetOpacity(m: RegionMesh, s: VisibilityState): number {
     // the surrounding anatomy stays visible as a faint ghost (not pickable)
     return m.kind === "unit" && shouldShow(m, { ...s, isolate: false }) ? GHOST : 0;
   }
+  // A deep muscle is selected: the muscles lying over it turn into a faint ghost (and let
+  // clicks through), so it can be seen in its place.
+  if (m.kind === "unit" && sel?.kind === "unit" && !isSelected && (s.selectedDepth ?? 1) > m.depth) return shouldShow(m, s) ? DEEP_GHOST : 0;
   // The breast lies over the chest muscles: while a muscle is selected it turns translucent
   // (and lets clicks through), so the muscle under it can be seen.
   if (m.kind === "fat" && m.layer === "muscles" && sel?.kind === "unit") return shouldShow(m, s) ? 0.28 : 0;

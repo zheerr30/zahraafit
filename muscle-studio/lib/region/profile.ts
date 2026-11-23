@@ -20,6 +20,10 @@ export interface ModelProfile {
   base: string;
   /** The part loaded first, on large screens and on phones. */
   core: { full: string; lite: string };
+  /** Further parts of the body itself, loaded right after the core (deep muscles). */
+  also: string[];
+  /** Base colour of muscles drawn with the atlas's own muscle material (no texture). */
+  muscleBase?: string;
   /** Layers kept in files of their own, loaded the first time they are shown. */
   lazy: Partial<Record<RegionLayer, string>>;
   /** Whether the lazy parts have a lighter phone build too (`<part>-lite`). */
@@ -46,6 +50,7 @@ export const PROFILES: Record<ModelId, ModelProfile> = {
     id: "zanatomy",
     base: "/models/zanatomy",
     core: { full: "core-smooth", lite: "core-lite" },
+    also: [],
     lazy: { attachments: "attachments", nerves: "nerves" },
     lazyLite: false,
     layers: ["muscles", "tendons", "bones", "fasciae", "attachments", "nerves"],
@@ -60,6 +65,10 @@ export const PROFILES: Record<ModelId, ModelProfile> = {
     id: "ecorche",
     base: "/models/ecorche",
     core: { full: "core", lite: "core-lite" },
+    // deep muscles: the Écorché model has none; they come from Z-Anatomy, fitted into this
+    // body (pipeline/ecorche/deep.mjs), and are drawn in the colour of its muscles
+    also: ["deep"],
+    muscleBase: "#8E3B2C",
     lazy: { bones: "bones", fat: "fat", vessels: "vessels", skin: "skin" },
     lazyLite: true,
     // muscles (with their tendons, the cartilages and the eyes) are what opens;
@@ -67,10 +76,10 @@ export const PROFILES: Record<ModelId, ModelProfile> = {
     layers: ["muscles", "tendons", "bones", "fat", "vessels", "skin"],
     defaults: { ...OFF, muscles: true, tendons: true, fasciae: true },
     layerNames: { tendons: "الأوتار والغضاريف", bones: "العظام" },
-    depth: false,
+    depth: true,
     attachments: false,
     textured: true,
-    credit: "المجسم: Écorché Male & Female · نسخة مرخصة",
+    credit: "المجسم: Écorché Male & Female (نسخة مرخصة) · العضلات العميقة: Z-Anatomy، CC BY-SA 4.0",
   },
 };
 

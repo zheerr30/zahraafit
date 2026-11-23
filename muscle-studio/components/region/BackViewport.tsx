@@ -434,7 +434,7 @@ function Lighting() {
   const hd = useBack((s) => s.hd);
   return hd === true ? (
     <>
-      <AtlasLighting keyLight={false} warmFill studio intensity={1.3} />
+      <AtlasLighting keyLight={false} warmFill studio intensity={1.2} />
       <HDPipeline getTarget={atlasTarget} getMeshes={atlasMeshes} />
       {!refineOff() && <ProgressiveRefine getTarget={atlasTarget} getCandidates={atlasMuscles} />}
     </>

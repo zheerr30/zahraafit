@@ -128,7 +128,7 @@ const WARN = /تقريب|لا يوجد مصدر|approximat|النموذج الذ
     await menu.getByLabel('لون #173F8A').click();
     ok('selection colour choice', (await st(page)).color === '#173F8A');
     await menu.locator('button[aria-label^="لون"]').first().click();
-    ok('no orange among the colours', !(await menu.locator('button[aria-label^="لون"]').evaluateAll((els) => els.map((e) => e.getAttribute('aria-label')))).some((c) => /E8602C|EEA585/i.test(c)));
+    ok('the first colour is the brand accent, and choosing it restores the default', /E8602C/i.test(await menu.locator('button[aria-label^="لون"]').first().getAttribute('aria-label')) && (await st(page)).color === '#E8602C');
     await page.mouse.click(700, 500); await page.waitForTimeout(300);
     ok('settings menu closes on outside click', !(await menu.isVisible().catch(() => false)));
     await T(page, () => window.__backStudioTest.store.getState().select(null));

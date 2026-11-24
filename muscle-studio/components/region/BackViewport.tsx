@@ -149,7 +149,7 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
       m.opacity = m.target;
       m.mesh.visible = m.target > 0;
       (m.mesh.material as { opacity: number }).opacity = ((m.mesh.material as { userData: { baseOpacity?: number } }).userData.baseOpacity ?? 1) * m.opacity;
-      applyStyle(m, st.selected, st.hovered, st.highlightColor, st.spotlight ? { primary: new Set(st.spotlight.primary), secondary: new Set(st.spotlight.secondary) } : null);
+      applyStyle(m, st.selected, st.hovered, st.highlightColor, st.spotlight ? { primary: new Set(st.spotlight.primary), secondary: new Set(st.spotlight.secondary) } : null, currentProfile().keepColours);
     }
     void model;
   };
@@ -252,7 +252,7 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
       }
       if (st.selected !== prev.selected || st.hovered !== prev.hovered || st.highlightColor !== prev.highlightColor || st.spotlight !== prev.spotlight) {
         const spot = st.spotlight ? { primary: new Set(st.spotlight.primary), secondary: new Set(st.spotlight.secondary) } : null;
-        for (const m of model.meshes) changed = applyStyle(m, st.selected, st.hovered, st.highlightColor, spot) || changed;
+        for (const m of model.meshes) changed = applyStyle(m, st.selected, st.hovered, st.highlightColor, spot, currentProfile().keepColours) || changed;
       }
       if (changed || st.background !== prev.background || st.autoRotate !== prev.autoRotate || st.insets !== prev.insets) invalidate();
     });

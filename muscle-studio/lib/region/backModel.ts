@@ -355,7 +355,7 @@ const SELECT_GLOW = 0.12;
  * With a spotlight (an exercise is being looked at) the prime movers take the
  * highlight colour and the helpers a lighter tint of it, instead of the selection.
  */
-export function applyStyle(m: RegionMesh, selected: PickedStructure | null, hovered: PickedStructure | null, highlight: string = COLORS.highlight, spot: SpotlightSets | null = null): boolean {
+export function applyStyle(m: RegionMesh, selected: PickedStructure | null, hovered: PickedStructure | null, highlight: string = COLORS.highlight, spot: SpotlightSets | null = null, keepColours = false): boolean {
   const same = (p: PickedStructure | null) => !!p && p.kind === m.kind && p.id === m.id && (m.kind === "unit" || p.side === m.side);
   const role = spot && m.kind === "unit" ? (spot.primary.has(m.id) ? 2 : spot.secondary.has(m.id) ? 1 : 0) : -1;
   const isSel = spot ? role === 2 : same(selected);
@@ -363,7 +363,8 @@ export function applyStyle(m: RegionMesh, selected: PickedStructure | null, hove
   // While a muscle is selected (or an exercise lights its muscles), the other muscles
   // step back into their neutral tones, so the accent is the only strong colour.
   const textured = !!(m.mesh.material as Material).userData.textured;
-  const quiet = (m.kind === "unit" || (textured && m.kind === "fat")) && (!!m.neutralHex || textured) && (spot ? true : selected?.kind === "unit");
+  // (`keepColours`: the body keeps its own colours and only the selected muscle changes.)
+  const quiet = !keepColours && (m.kind === "unit" || (textured && m.kind === "fat")) && (!!m.neutralHex || textured) && (spot ? true : selected?.kind === "unit");
   const key = `${isSel}|${isHover}|${isSel || role === 1 ? highlight : ""}|${role}|${quiet}`;
   if (key === m.styleKey) return false;
   m.styleKey = key;
@@ -372,7 +373,7 @@ export function applyStyle(m: RegionMesh, selected: PickedStructure | null, hove
     // Textured model: the accent and the neutral state are laid over the part's own texture.
     const lit = m.kind === "unit" ? isSel || role === 1 : isSel;
     const tint = lit ? (role === 1 ? secondaryHighlight(highlight) : highlight) : null;
-    const others = (m.kind === "unit" || m.kind === "fat") && (spot ? true : selected?.kind === "unit");
+    const others = !keepColours && (m.kind === "unit" || m.kind === "fat") && (spot ? true : selected?.kind === "unit");
     setTexturedLook(mat, { tint, quiet: !lit && others, hover: isHover });
     return true;
   }

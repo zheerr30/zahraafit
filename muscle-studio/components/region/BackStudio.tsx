@@ -465,15 +465,16 @@ export function BackStudio({ initialRegion = null, hd = false }: { initialRegion
   // `?hd=0` / `?hd=1` override the page default (before/after comparison).
   useEffect(() => {
     const q = new URLSearchParams(window.location.search).get("hd");
-    // ZahraaFit theme (?theme=zahraafit): a cream backdrop behind the model. The selected muscle
-    // keeps its deep red in every theme (the orange of the brand is for buttons and chosen items).
+    // ZahraaFit theme (?theme=zahraafit): a cream backdrop behind the model.
     const themed = currentTheme() === "zahraafit" ? ({ background: "cream" } as const) : {};
+    // the colour a selected muscle takes in the body in use (the settings can change it)
+    const accent = currentProfile().accent ? { highlightColor: currentProfile().accent } : {};
     // `?sex=female` / `?sex=male`: the body a link asks for (links from the ZahraaFit app)
     const sx = new URLSearchParams(window.location.search).get("sex");
     const sexed = sx === "female" || sx === "male" ? ({ sex: sx } as const) : {};
     // the layers the body in use opens with
     const defaults = currentProfile().defaults;
-    backStore.setState({ region: initialRegion, hd: q === null ? hd : q === "1", model: currentModel(), layers: { ...defaults }, defaultLayers: { ...defaults }, ...themed, ...sexed });
+    backStore.setState({ region: initialRegion, hd: q === null ? hd : q === "1", model: currentModel(), layers: { ...defaults }, defaultLayers: { ...defaults }, ...themed, ...sexed, ...accent });
     return () => backStore.setState({ hd: null });
   }, [initialRegion, hd]);
   const [load, setLoad] = useState<LoadState>({ status: "loading", progress: 0 });

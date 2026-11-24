@@ -37,6 +37,13 @@ export interface ModelProfile {
   depth: boolean;
   /** A selected deep muscle is shown through the muscles over it (they turn into a ghost). */
   ghostOver: boolean;
+  /**
+   * While a muscle is selected the other muscles keep their own colours (true), or step
+   * back into neutral tones so the accent is the only strong colour (false).
+   */
+  keepColours: boolean;
+  /** Colour a selected muscle takes when the visit has chosen none (default: the brand accent). */
+  accent?: string;
   /** The body has origin / insertion patches. */
   attachments: boolean;
   /** Textured model: its own materials are used. */
@@ -60,6 +67,7 @@ export const PROFILES: Record<ModelId, ModelProfile> = {
     layerNames: {},
     depth: true,
     ghostOver: false,
+    keepColours: false,
     attachments: true,
     textured: false,
     credit: "المجسم: Z-Anatomy · CC BY-SA 4.0",
@@ -82,6 +90,9 @@ export const PROFILES: Record<ModelId, ModelProfile> = {
     depth: true,
     // the superficial muscles of this body are thick solids: a deep muscle is inside them
     ghostOver: true,
+    // the body stays as it is; the selected muscle turns deep red
+    keepColours: true,
+    accent: "#A5111F",
     attachments: false,
     textured: true,
     credit: "المجسم: Écorché Male & Female (نسخة مرخصة) · العضلات العميقة: Z-Anatomy، CC BY-SA 4.0",

@@ -12,6 +12,7 @@ import { backStore, useBack, type PanelMode } from "@/stores/backStore";
 import { cn } from "@/components/ui/cn";
 import { IconBack, IconBody, IconDumbbell, IconFocus, IconInfo, IconIsolate, IconX } from "@/components/ui/icons";
 import { ExerciseLibrary } from "@/components/exercise/ExerciseLibrary";
+import { PROFILES } from "@/lib/region/profile";
 import { regionBridge } from "./BackViewport";
 import { REGION_SHORT, useCover, useIsDesktop } from "./studioUi";
 
@@ -23,6 +24,9 @@ const KIND_AR: Record<string, string> = {
   fascia: "لفافة / جراب",
   nerve: "عصب",
   attachment: "موضع ارتكاز",
+  fat: "نسيج دهني",
+  vessel: "أوعية دموية",
+  skin: "جلد",
 };
 const SIDE_AR = { l: "الأيسر", r: "الأيمن", m: "" } as const;
 
@@ -84,6 +88,7 @@ export function MusclePanel() {
   const showEnglish = useBack((s) => s.showEnglish);
   const highlight = useBack((s) => s.highlightColor);
   const mode = useBack((s) => s.panel);
+  const attachments = PROFILES[useBack((s) => s.model)].attachments;
   const linked = useBack((s) => s.linkedExercise);
   const dock = useBack((s) => s.dock);
   const desktop = useIsDesktop();
@@ -244,10 +249,12 @@ export function MusclePanel() {
                 <Chips title="عضلات تعاكسها" list={unit.antagonists} />
               </dl>
             )}
-            <div className="grid grid-cols-2 gap-2">
-              <button type="button" onClick={() => st.showAttachmentsOf(selected.id)} className={cn(soft, "h-auto min-h-10 py-2 text-xs")}>
-                إظهار ارتباطها بالعظم
-              </button>
+            <div className={cn("grid gap-2", attachments ? "grid-cols-2" : "grid-cols-1")}>
+              {attachments && (
+                <button type="button" onClick={() => st.showAttachmentsOf(selected.id)} className={cn(soft, "h-auto min-h-10 py-2 text-xs")}>
+                  إظهار ارتباطها بالعظم
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => {

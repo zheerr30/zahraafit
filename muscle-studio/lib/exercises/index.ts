@@ -1,4 +1,5 @@
 import { EXERCISES, type Equipment, type Exercise, type ExerciseType, type Level } from "@/data/exercises/exercises";
+import { UNIT_ALIAS } from "@/data/exercises/aliases";
 import { GROUP_BY_ID, groupsOfUnit, type MuscleView } from "@/data/exercises/groups";
 import { normalizeSearchText } from "@/lib/anatomy/normalize";
 
@@ -69,7 +70,8 @@ export function countForUnit(unitId: string): Record<ExerciseType, number> {
 
 /** Model unit ids lit for an exercise: prime movers and helpers (helpers never repeat a prime mover). */
 export function spotlightOf(e: Exercise): { primary: string[]; secondary: string[] } {
-  const units = (ids: string[]) => [...new Set(ids.flatMap((g) => GROUP_BY_ID.get(g)?.units ?? []))];
+  // (part ids and the id of the whole muscle: a model has one or the other)
+  const units = (ids: string[]) => [...new Set(ids.flatMap((g) => GROUP_BY_ID.get(g)?.units ?? []).flatMap((u) => (UNIT_ALIAS[u] ? [u, UNIT_ALIAS[u]] : [u])))];
   const primary = units(e.primary);
   const p = new Set(primary);
   return { primary, secondary: units(e.secondary).filter((u) => !p.has(u)) };

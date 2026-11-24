@@ -56,7 +56,7 @@ const BASE = process.env.BASE || 'http://localhost:3001';
           const card = await page.locator('[role="dialog"]').getAttribute('aria-label').catch(() => null);
           if (sel && sel.kind === 'unit' && sel.id === id && card && card.includes(sel.ar)) {
             const color = await T(([id, side]) => window.__backStudioTest.unitColor(id, side), [id, side]);
-            if (color !== '#a5111f') result.failed.push(`${id}:${side} not highlighted (${color})`);
+            if (color !== '#e8602c') result.failed.push(`${id}:${side} not highlighted (${color})`);
             result.clicked[`${id}:${side}`] = `${view}/${depth}`;
             done = true;
             break;

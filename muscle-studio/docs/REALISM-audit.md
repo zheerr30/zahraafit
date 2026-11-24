@@ -189,3 +189,44 @@ Also (abdominal wall, after close-up review on a phone):
   looked past the rounded edge of the rectus into the deeper layers, and the slip
   of pectoralis major that arises from the sheath hung over a hole.
 - The edge where the aponeurosis fades in is crisp instead of dithered.
+
+## Rendering overhaul for a sports-science look (2026-11-23)
+
+Request: the interface is fine; the body itself looks dated — flat, coarse, too red, too small in the view.
+Asked for: inspect the asset first, do not cover an asset problem with lighting.
+
+### What the asset is (measured again on the files the app loads)
+
+| | Full body (`core-smooth.glb`) | Phone body (`core-lite.glb`) |
+|---|---:|---:|
+| Download | 27.3 MB | 6.4 MB |
+| Meshes (every structure separate and named) | 1,355 | 1,355 |
+| Triangles | 3,336,025 | 599,450 |
+| Vertices | 1,896,044 | 304,709 |
+| Image textures | **0** | **0** |
+| UV maps | none | none |
+| Per-vertex data | normal, tendon mask + baked occlusion, fibre direction, colour (bones) | the same |
+
+- **There are no textures to filter.** Texture filtering and anisotropic filtering have nothing to act on: all
+  surface detail (fibres, tendon junctions, bone pores) is computed per pixel in the shader, so it is sharp at
+  every zoom and cannot blur. Antialiasing is 4× MSAA on a half-float HDR target, tone mapped once.
+- **The geometry is the limit.** Z-Anatomy's muscles are schematic volumes with 3–6 mm edges and no sculpted
+  surface: no fascicle relief, no veins, no fat, smooth "inflated" bellies. No higher-resolution source exists
+  (section 1.1). This is why the body does not look like the hand-sculpted models of commercial anatomy
+  applications, and no renderer setting turns one into the other.
+- What rendering *can* do with this asset — and what was missing — is form: light that models the volumes, colour
+  that separates neighbours, a framing that shows the body large. That is what changed below. A commercial,
+  artist-sculpted model remains the only route to a different level of surface detail (see the options sent to the
+  owner: paid models, licence to be confirmed for web delivery).
+
+### What changed
+
+| | Before | Now |
+|---|---|---|
+| Muscle colour | one brick red `#B24E41`, ±1 % per muscle | calm terracotta base, each muscle its own tone (hue ±4°, saturation ±4.5 %, lightness ±4.5 %, computed in display space), deeper layers darker — `lib/three/palette.ts` |
+| Form | even wash: the key barely stronger than the base light | studio set-up: lower ambient / hemisphere, key with soft shadows, cool fill, two rim lights; a belly darkens towards its silhouette (form shading), stronger contact occlusion |
+| Selection | deep red on red muscles | the brand orange `#E8602C` on the selected muscle, **every other muscle in a neutral tone** (30 % of its colour); bones and tendons unchanged; deselect restores everything |
+| Framing | body ≈ 74–78 % of the view height on a wide screen, less on a phone; feet under the controls | body ≈ 80 % of the view height on every screen, centred in the area that is really free (under the hint, above the controls or an open sheet), head and feet inside — measured by `bodyBox()` in the E2E suite |
+| Face | as saturated and detailed as the body; white nose cartilage and teeth | head muscles close to a quiet clay tone with little fibre contrast; nose cartilages and teeth toned down. No mesh was removed or changed |
+
+Not changed: the model files, the muscle list, names, ids, layers, picking, exercises, the interface.

@@ -4,6 +4,8 @@
  * the same on both sides and in both bodies). A unit may belong to more than
  * one group (e.g. the clavicular head: "chest" and "chest-upper").
  */
+import { withParts } from "./aliases";
+
 export type MuscleView = "front" | "back";
 
 export interface MuscleGroup {
@@ -73,7 +75,12 @@ for (const g of MUSCLE_GROUPS) for (const u of g.units) BY_UNIT.set(u, [...(BY_U
 
 /** Groups a model unit belongs to (most specific last, e.g. chest, chest-upper). */
 export function groupsOfUnit(unitId: string): MuscleGroup[] {
-  return BY_UNIT.get(unitId) ?? [];
+  const own = BY_UNIT.get(unitId);
+  if (own) return own;
+  // a muscle that is one mesh in the model but several parts here (trapezius, biceps, …)
+  const seen = new Set<MuscleGroup>();
+  for (const part of withParts(unitId)) for (const g of BY_UNIT.get(part) ?? []) seen.add(g);
+  return MUSCLE_GROUPS.filter((g) => seen.has(g));
 }
 
 /** Body areas for the group filter of the exercise library. */

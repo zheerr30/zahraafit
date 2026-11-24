@@ -273,5 +273,8 @@ export const LAYER_NAMES = {
   fasciae: "اللفافات والجرابات",
   attachments: "مواضع المنشأ والمرتكز",
   nerves: "الأعصاب الطرفية",
+  fat: "الدهون",
+  vessels: "الأوعية الدموية",
+  skin: "الجلد",
 } as const;
 export type RegionLayer = keyof typeof LAYER_NAMES;

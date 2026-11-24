@@ -1071,7 +1071,9 @@ const ATLAS_MUSCLE = {
 function atlasSrc(){
   const u = ATLAS_MUSCLE[S.atlasMuscle];
   /* theme=zahraafit: الأطلس بألوان الهوية. نسخة المجسم الخفيفة تحمل تلقائيا على الجوال. */
-  return ATLAS_URL + "/atlas?theme=zahraafit" + (u ? "&muscle=" + u + "&panel=details" : "");
+  /* sex: جسم الأطلس يطابق جنس العميل في البطاقة */
+  const sex = S.client && S.client.gender === "male" ? "male" : "female";
+  return ATLAS_URL + "/atlas?theme=zahraafit&sex=" + sex + (u ? "&muscle=" + u + "&panel=details" : "");
 }
 /* الأطلس يملأ ما تحت شريط البرنامج بالضبط، مهما كان ارتفاع الشريط */
 function fitAtlas(){

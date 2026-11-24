@@ -1,13 +1,14 @@
 /**
- * Colour of the selected muscle on the 3D model: a deep, rich red. It is clearly
- * darker and purer than the brick / salmon of the muscles themselves, and neither
- * orange nor neon. One value for the model, the exercise muscle maps and the UI
- * marks that stand for "this muscle".
+ * Colour of the selected muscle on the 3D model: the orange of the ZahraaFit identity.
+ * While a muscle is selected the others are shown in neutral tones (see
+ * `neutralTone` in lib/region/backModel.ts), so the accent reads clearly against
+ * them. One value for the model, the exercise muscle maps and the UI marks that
+ * stand for "this muscle".
  */
-export const SELECTION_RED = "#A5111F";
+export const SELECTION_ACCENT = "#E8602C";
 
-/** Helper (secondary) muscles of an exercise: the same red, lighter — a rose that still reads as "red, but less". */
-export const SELECTION_RED_SOFT = "#D2626C";
+/** Helper (secondary) muscles of an exercise: the same accent, lighter. */
+export const SELECTION_ACCENT_SOFT = "#F2A680";
 
-/** Colours the user can pick for the selection instead (none of them orange). */
-export const SELECTION_SWATCHES = [SELECTION_RED, "#173F8A", "#2E9E6A", "#D4A017", "#6D3FB5"];
+/** Colours the user can pick for the selection instead. */
+export const SELECTION_SWATCHES = [SELECTION_ACCENT, "#A5111F", "#173F8A", "#2E9E6A", "#6D3FB5"];

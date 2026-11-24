@@ -20,6 +20,8 @@ const T = (page, fn, a) => page.evaluate(fn, a);
 const state = (page) => T(page, () => { const s = window.__backStudioTest.store.getState(); return { sel: s.selected?.id ?? null, panel: s.panel, isolate: s.isolate, region: s.region, spot: s.spotlight }; });
 const settle = async (page) => { await page.waitForTimeout(1500); let last = null, same = 0; for (let k = 0; k < 40 && same < 2; k++) { await page.waitForTimeout(600); const c = JSON.stringify(await T(page, () => window.__backStudioTest.cameraPos())); same = c === last ? same + 1 : 0; last = c; } };
 const shot = async (page, name) => { if (!SHOTS) return; await page.waitForTimeout(2500); await page.screenshot({ path: `${SHOTS}/${name}.png`, timeout: 900000 }); console.log('shot', name); };
+// the colour a selected muscle takes in the default body (lib/region/profile.ts: accent)
+const ACCENT = '#a5111f';
 async function tapMuscle(page, id, touch) {
   const p = await T(page, (u) => window.__backStudioTest.pointFor(u, 'l'), id);
   if (!p) return false;
@@ -42,7 +44,7 @@ async function tapMuscle(page, id, touch) {
     await settle(page);
 
     ok('tap selects the muscle', await tapMuscle(page, PEC) && (await state(page)).sel === PEC);
-    ok('selected muscle is highlighted', (await T(page, (u) => window.__backStudioTest.unitColor(u), PEC)) === '#a5111f');
+    ok('selected muscle is highlighted', (await T(page, (u) => window.__backStudioTest.unitColor(u), PEC)) === ACCENT);
     const panel = page.locator('[role=dialog][data-panel]');
     ok('contextual panel: summary with name and actions', (await panel.getAttribute('data-panel')) === 'summary' && (await panel.locator('h3').innerText()).includes('الصدرية') && (await panel.locator('[data-action=learn-more]').count()) === 1 && (await panel.locator('[data-action=learn-more]').innerText()).includes('اعرف أكثر'));
     ok('address follows the selection', (await page.url()).includes(`muscle=${PEC}`));
@@ -104,14 +106,15 @@ async function tapMuscle(page, id, touch) {
     await cards.first().locator('dl button', { hasText: 'ثلاثية الرؤوس' }).first().click().catch(() => {});
     await page.waitForTimeout(1200);
     s = await state(page);
-    ok('tapping a target muscle selects it on the model', s.sel === 'long-head-of-triceps-brachii' && s.panel === 'exercises', s.sel);
+    // (the body has the triceps as one muscle: its heads resolve to it)
+    ok('tapping a target muscle selects it on the model', s.sel === 'triceps-brachii' && s.panel === 'exercises', s.sel);
 
     await panel.getByLabel('رجوع إلى ملخص العضلة').click();
     await panel.locator('[data-action=isolate]').click();
     await page.waitForTimeout(1500);
     s = await state(page);
     const solid = await T(page, () => window.__backStudioTest.solidUnits());
-    ok('isolate shows only the muscle', s.isolate && solid.length === 1 && solid[0] === 'long-head-of-triceps-brachii', solid.join(','));
+    ok('isolate shows only the muscle', s.isolate && solid.length === 1 && solid[0] === 'triceps-brachii', solid.join(','));
     await shot(page, '4-isolated');
     await panel.locator('[data-action=full-body]').click();
     await page.waitForTimeout(1500);

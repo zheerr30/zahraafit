@@ -39,13 +39,15 @@ const backdrop = (page) => T(page, () => {
   return [...g.getImageData(4, 4, 1, 1).data].slice(0, 3);
 });
 
+// the body's files: full on large screens, the lighter build on phones (lib/region/profile.ts)
+const FULL = 'core.glb';
 (async () => {
   const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
 
   // ── desktop, default: dark theme, full body ──
   {
     const { ctx, page, glb, errors } = await open(browser, '/atlas?e2e=1&refine=0');
-    ok('desktop: the full body is loaded', glb.includes('core-smooth.glb') && !glb.includes('core-lite.glb'), glb.join(' '));
+    ok('desktop: the full body is loaded', glb.includes(FULL) && !glb.includes('core-lite.glb'), glb.join(' '));
     ok('default theme is the dark one', (await T(page, () => document.documentElement.dataset.theme)) === undefined && near(rgb(await T(page, () => getComputedStyle(document.body).backgroundColor)), [5, 5, 5]));
     const b = await backdrop(page);
     ok('default backdrop is dark', b.every((v) => v < 70), b.join(','));
@@ -56,7 +58,7 @@ const backdrop = (page) => T(page, () => {
   // ── desktop, ZahraaFit theme with the light body asked for ──
   {
     const { ctx, page, glb, errors } = await open(browser, '/atlas?e2e=1&refine=0&theme=zahraafit&lite=1');
-    ok('?lite=1 loads the lightweight body', glb.includes('core-lite.glb') && !glb.includes('core-smooth.glb'), glb.join(' '));
+    ok('?lite=1 loads the lightweight body', glb.includes('core-lite.glb') && !glb.includes(FULL), glb.join(' '));
     const css = await T(page, () => {
       const cs = (sel) => getComputedStyle(document.querySelector(sel));
       return { theme: document.documentElement.dataset.theme, page: getComputedStyle(document.body).backgroundColor, text: getComputedStyle(document.body).color, header: cs('header').backgroundColor, dock: cs('aside').backgroundColor, line: cs('header').borderBottomColor, region: cs('[data-region]').color };
@@ -76,7 +78,8 @@ const backdrop = (page) => T(page, () => {
     ok('theme: the chosen item is orange #E8602C', near(rgb(on), [232, 96, 44]), on);
     await T(page, (u) => window.__backStudioTest.store.getState().selectUnit(u, 'l'), PEC);
     await page.waitForTimeout(9000);
-    ok('theme: the selected muscle keeps its deep red on the model', (await T(page, (u) => window.__backStudioTest.unitColor(u), PEC)) === '#a5111f');
+    // (the body's own selection colour: deep red — orange is for the interface)
+    ok('the selected muscle takes the selection colour on the model', (await T(page, (u) => window.__backStudioTest.unitColor(u), PEC)) === '#a5111f');
     const panel = page.locator('[role=dialog][data-panel]');
     const pc = await T(page, () => { const p = document.querySelector('[role=dialog][data-panel]'); const b = p.querySelector('[data-action=learn-more]'); return { card: getComputedStyle(p).backgroundColor, btn: getComputedStyle(b).backgroundColor, name: getComputedStyle(p.querySelector('h3')).color }; });
     ok('theme: white muscle card, navy name, orange button', near(await rgba(page, pc.card), [255, 255, 255]) && near(rgb(pc.btn), [232, 96, 44]) && near(rgb(pc.name), [5, 15, 44]), JSON.stringify(pc));
@@ -94,7 +97,7 @@ const backdrop = (page) => T(page, () => {
   // ── phone: the light body by itself, theme from the address ──
   {
     const { ctx, page, glb, errors } = await open(browser, '/atlas?e2e=1&refine=0&theme=zahraafit', { phone: true });
-    ok('phone: the lightweight body is loaded by itself', glb.includes('core-lite.glb') && !glb.includes('core-smooth.glb'), glb.join(' '));
+    ok('phone: the lightweight body is loaded by itself', glb.includes('core-lite.glb') && !glb.includes(FULL), glb.join(' '));
     ok('phone: every muscle is there under the same name', (await T(page, (u) => { const s = window.__backStudioTest.store.getState(); s.selectUnit(u, 'l'); return window.__backStudioTest.store.getState().selected?.ar; }, PEC)) === 'الصدرية الكبرى — الرأس القصي الضلعي');
     await page.waitForTimeout(9000);
     await shot(page, 't4-phone-muscle');
@@ -105,7 +108,7 @@ const backdrop = (page) => T(page, () => {
   }
   {
     const { ctx, glb } = await open(browser, '/atlas?e2e=1&refine=0&lite=0', { phone: true });
-    ok('phone: ?lite=0 asks for the full body', glb.includes('core-smooth.glb') && !glb.includes('core-lite.glb'), glb.join(' '));
+    ok('phone: ?lite=0 asks for the full body', glb.includes(FULL) && !glb.includes('core-lite.glb'), glb.join(' '));
     await ctx.close();
   }
 

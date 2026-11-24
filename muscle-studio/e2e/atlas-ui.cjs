@@ -14,6 +14,9 @@ const ready = async (page) => { await page.waitForFunction(() => window.__backSt
 // (software rendering draws a frame in seconds: wait before sampling, then for three equal readings)
 const rest = async (page) => { await page.waitForTimeout(2500); let last = null, same = 0; for (let k = 0; k < 60 && same < 3; k++) { await page.waitForTimeout(700); const c = JSON.stringify(await T(page, () => window.__backStudioTest.cameraPos())); same = c === last ? same + 1 : 0; last = c; } };
 const dist = (page) => T(page, () => { const p = window.__backStudioTest.cameraPos(); return Math.hypot(p[0], p[1] - 1, p[2]); });
+// Framing: the share of the 3D view's height the body fills, and whether head and feet are inside it.
+const framing = async (page) => { const b = await T(page, () => window.__backStudioTest.bodyBox()); return { ...b, fill: (b.bottom - b.top) / b.height, inside: b.top > 4 && b.bottom < b.height - 4, centre: Math.abs((b.left + b.right) / 2 - b.width / 2) / b.width }; };
+const framed = (f) => f.fill >= 0.75 && f.fill <= 0.85 && f.inside;
 const kinds = (page) => T(page, () => window.__backStudioTest.visibleKinds());
 const WARN = /تقريب|لا يوجد مصدر|approximat|النموذج الذكري|تحذير/i;
 
@@ -26,6 +29,10 @@ const WARN = /تقريب|لا يوجد مصدر|approximat|النموذج الذ
     const errors = []; page.on('pageerror', (e) => errors.push(e.message));
     await page.goto(BASE + '/atlas?e2e=1&refine=0', { timeout: 300000 });
     await ready(page); await rest(page);
+
+    // framing: the whole body is large, centred, and not cut
+    let f = await framing(page);
+    ok('full body fills 75–85 % of the view height, head and feet inside, centred', framed(f) && f.centre < 0.04, `${(f.fill * 100).toFixed(0)}% top ${f.top} bottom ${f.bottom}/${f.height}`);
 
     // regions
     ok('regions: equal-size buttons in a grid', await T(page, () => { const b = [...document.querySelectorAll('[data-region]')].map((e) => e.getBoundingClientRect()); return b.length === 10 && b.every((r) => Math.abs(r.width - b[0].width) < 1 && Math.abs(r.height - b[0].height) < 1); }));
@@ -42,10 +49,14 @@ const WARN = /تقريب|لا يوجد مصدر|approximat|النموذج الذ
     await rest(page);
     const z1 = await T(page, () => window.__backStudioTest.cameraPos()[2]);
     ok('view buttons turn the body (front → back)', Math.sign(z0) === -Math.sign(z1) && Math.abs(z1) > 1, `${z0} → ${z1}`);
+    f = await framing(page);
+    ok('back view: the same framing', framed(f), `${(f.fill * 100).toFixed(0)}%`);
     await page.locator('[data-view=left]').click();
     await page.waitForFunction(() => Math.abs(window.__backStudioTest.cameraPos()[0]) > 1, null, { timeout: 120000 }).catch(() => {});
     await rest(page);
     ok('side view', Math.abs(await T(page, () => window.__backStudioTest.cameraPos()[0])) > 1);
+    f = await framing(page);
+    ok('side view: the same framing', framed(f), `${(f.fill * 100).toFixed(0)}%`);
     await page.locator('[data-view=front]').click(); await rest(page);
     const d0 = await dist(page);
     // (software rendering draws slowly: wait for the camera to actually move, then to rest)
@@ -69,11 +80,13 @@ const WARN = /تقريب|لا يوجد مصدر|approximat|النموذج الذ
     const sw = (name) => page.getByRole('switch', { name, exact: true });
     ok('six layer switches with labels', (await page.locator('[data-dock-sheet] [role=switch]').count()) === 6);
     await sw('العضلات').click(); await page.waitForTimeout(1200);
-    ok('muscles layer off', !(await kinds(page)).unit && (await kinds(page)).bone > 0);
+    ok('muscles layer off', !(await kinds(page)).unit && Object.keys(await kinds(page)).length > 0);
     await sw('العضلات').click(); await page.waitForTimeout(1200);
-    await sw('اللفافات والجرابات').click(); await page.waitForTimeout(1200);
-    ok('fascia layer on', (await kinds(page)).unit > 0 && (await kinds(page)).fascia > 0);
-    await sw('اللفافات والجرابات').click();
+    // a layer kept in a file of its own: downloaded when it is switched on
+    await sw('العظام').click();
+    await page.waitForFunction(() => window.__backStudioTest.visibleKinds().bone > 0, null, { timeout: 120000 });
+    ok('bones layer on', (await kinds(page)).unit > 0 && (await kinds(page)).bone > 0);
+    await sw('العظام').click();
     await page.getByRole('radio', { name: 'العميقة فقط' }).click(); await page.waitForTimeout(1200);
     ok('depth: deep only', (await st(page)).depth === 'deep');
     await page.getByRole('button', { name: 'الهيكل العظمي فقط' }).click(); await page.waitForTimeout(1200);
@@ -117,7 +130,7 @@ const WARN = /تقريب|لا يوجد مصدر|approximat|النموذج الذ
     await menu.getByLabel('لون #173F8A').click();
     ok('selection colour choice', (await st(page)).color === '#173F8A');
     await menu.locator('button[aria-label^="لون"]').first().click();
-    ok('no orange among the colours', !(await menu.locator('button[aria-label^="لون"]').evaluateAll((els) => els.map((e) => e.getAttribute('aria-label')))).some((c) => /E8602C|EEA585/i.test(c)));
+    ok('the first colour is the brand accent, and choosing it restores the default', /E8602C/i.test(await menu.locator('button[aria-label^="لون"]').first().getAttribute('aria-label')) && (await st(page)).color === '#E8602C');
     await page.mouse.click(700, 500); await page.waitForTimeout(300);
     ok('settings menu closes on outside click', !(await menu.isVisible().catch(() => false)));
     await T(page, () => window.__backStudioTest.store.getState().select(null));
@@ -152,6 +165,8 @@ const WARN = /تقريب|لا يوجد مصدر|approximat|النموذج الذ
     const vp = page.viewportSize();
     const canvas = await page.locator('main[data-viewport-wrap]').boundingBox();
     ok('phone: the model takes most of the screen', canvas.height > vp.height * 0.8, `${Math.round(canvas.height)} of ${vp.height}`);
+    const pf = await framing(page);
+    ok('phone: full body fills 75–85 % of the view height, head and feet inside, not cut at the sides', framed(pf) && pf.left > 0 && pf.right < pf.width, `${(pf.fill * 100).toFixed(0)}% top ${pf.top} bottom ${pf.bottom}/${pf.height} x ${pf.left}..${pf.right}/${pf.width}`);
     ok('phone: control sheets start closed', (await st(page)).dock === null && !(await page.locator('[data-dock-sheet]').isVisible()));
     ok('phone: no horizontal scrolling', await T(page, () => document.documentElement.scrollWidth <= window.innerWidth));
     const small = await T(page, () => [...document.querySelectorAll('header button, header a, [role=tablist] button, [data-view], [data-action=zoom-in], [data-action=zoom-out]')].filter((e) => { const r = e.getBoundingClientRect(); return r.width > 0 && (r.height < 32 || r.width < 32); }).map((e) => (e.getAttribute('aria-label') || e.textContent || '').trim().slice(0, 16)));
@@ -165,10 +180,10 @@ const WARN = /تقريب|لا يوجد مصدر|approximat|النموذج الذ
     s = await st(page);
     ok('phone: choosing a region closes the sheet', s.region === 'abdomen' && s.dock === null && s.insets.bottom === 0);
     await page.locator('[data-dock-tab=layers]').tap(); await page.waitForTimeout(500);
-    await page.getByRole('switch', { name: 'الأعصاب الطرفية', exact: true }).tap();
-    await page.waitForFunction(() => window.__backStudioTest.visibleKinds().nerve > 0, null, { timeout: 240000 }).catch(() => {});
-    ok('phone: layer switch works (nerves)', (await kinds(page)).nerve > 0);
-    await page.getByRole('switch', { name: 'الأعصاب الطرفية', exact: true }).tap();
+    await page.getByRole('switch', { name: 'الجلد', exact: true }).tap();
+    await page.waitForFunction(() => window.__backStudioTest.visibleKinds().skin > 0, null, { timeout: 240000 }).catch(() => {});
+    ok('phone: layer switch works (skin: downloaded when switched on)', (await kinds(page)).skin > 0);
+    await page.getByRole('switch', { name: 'الجلد', exact: true }).tap();
     await page.locator('[data-dock-tab=layers]').tap(); await rest(page);
     ok('phone: tapping the tab again closes the sheet', (await st(page)).dock === null);
 

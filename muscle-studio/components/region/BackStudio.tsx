@@ -2,12 +2,14 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { DEPTH_NAMES, LAYER_NAMES, type RegionLayer } from "@/data/region/backShoulders";
 import { EXERCISE_BY_ID } from "@/data/exercises/exercises";
 import { spotlightOf, viewOf } from "@/lib/exercises";
 import { SELECTION_SWATCHES } from "@/lib/highlight";
 import { currentTheme } from "@/lib/theme";
+import { PROFILES, currentModel, currentProfile } from "@/lib/region/profile";
+import { resolveUnit } from "@/data/exercises/aliases";
 import { COLORS, REGIONS, type RegionUnit } from "@/lib/region/backModel";
 import { normalizeSearchText } from "@/lib/anatomy/normalize";
 import { backStore, useBack, type DepthMode, type DockTab, type PanelMode, type RegionView } from "@/stores/backStore";
@@ -86,6 +88,9 @@ const LAYER_DOT: Record<RegionLayer, string> = {
   fasciae: "#9FA6AE",
   attachments: COLORS.origin,
   nerves: COLORS.nerve,
+  fat: "#E3C36A",
+  vessels: "#2B4C9B",
+  skin: "#D9A98C",
 };
 
 function LayersPanel() {
@@ -93,21 +98,24 @@ function LayersPanel() {
   const depthMode = useBack((s) => s.depthMode);
   const st = backStore.getState();
   const quick = "h-10 rounded-xl border border-ink/10 px-2 text-xs text-fg transition-colors hover:bg-ink/8";
+  // the layers of the body in use (the Écorché model: muscles, tendons and cartilages, bones, fat, vessels, skin)
+  const profile = PROFILES[useBack((s) => s.model)];
+  const name = (l: RegionLayer) => profile.layerNames[l] ?? LAYER_NAMES[l];
   return (
     <div className="space-y-4 p-3">
       <ul className="overflow-hidden rounded-xl border border-ink/10">
-        {(Object.keys(LAYER_NAMES) as RegionLayer[]).map((l, i) => (
+        {profile.layers.map((l, i) => (
           <li key={l} className={cn("flex min-h-12 items-center gap-3 px-3", i > 0 && "border-t border-ink/10")}>
             <span className="flex w-5 shrink-0 justify-center gap-0.5">
               <span className="size-2.5 rounded-full" style={{ background: LAYER_DOT[l] }} />
               {l === "attachments" && <span className="size-2.5 rounded-full" style={{ background: COLORS.insertion }} />}
             </span>
-            <span className="min-w-0 flex-1 text-sm">{LAYER_NAMES[l]}</span>
-            <Switch checked={layers[l]} onChange={(v) => st.setLayer(l, v)} label={LAYER_NAMES[l]} />
+            <span className="min-w-0 flex-1 text-sm">{name(l)}</span>
+            <Switch checked={layers[l]} onChange={(v) => st.setLayer(l, v)} label={name(l)} />
           </li>
         ))}
       </ul>
-      <div>
+      <div hidden={!profile.depth}>
         <h3 className="mb-1.5 px-1 text-xs font-medium text-muted">عمق العضلات</h3>
         <Segmented<DepthMode>
           label="العمق"
@@ -124,9 +132,15 @@ function LayersPanel() {
         <button type="button" aria-label="الهيكل العظمي فقط" onClick={st.skeletonOnly} className={quick}>
           الهيكل العظمي
         </button>
-        <button type="button" aria-label="إظهار الأعصاب والأوتار" onClick={st.showNervesAndTendons} className={quick}>
-          الأعصاب والأوتار
-        </button>
+        {profile.lazy.nerves ? (
+          <button type="button" aria-label="إظهار الأعصاب والأوتار" onClick={st.showNervesAndTendons} className={quick}>
+            الأعصاب والأوتار
+          </button>
+        ) : (
+          <button type="button" aria-label="إظهار الجلد" onClick={() => st.setLayer("skin", !layers.skin)} className={quick}>
+            {layers.skin ? "إخفاء الجلد" : "إظهار الجلد"}
+          </button>
+        )}
         <button type="button" aria-label="إعادة جميع الطبقات إلى وضعها الأصلي" onClick={st.resetAll} className={cn(quick, "col-span-2 flex items-center justify-center gap-1.5 bg-ink/6")}>
           <IconReset size={14} /> إعادة الضبط
         </button>
@@ -232,6 +246,7 @@ const TABS: { id: DockTab; label: string; icon: ReactNode }[] = [
  */
 function Dock() {
   const dock = useBack((s) => s.dock);
+  const credit = PROFILES[useBack((s) => s.model)].credit;
   const desktop = useIsDesktop();
   const active: DockTab | null = desktop ? (dock ?? "regions") : dock;
   const sheet = useRef<HTMLDivElement>(null);
@@ -285,7 +300,7 @@ function Dock() {
         </div>
       </div>
       <p className="hidden shrink-0 border-t border-ink/10 px-4 py-2.5 text-[11px] text-muted lg:block">
-        المجسم: Z-Anatomy · CC BY-SA 4.0 ·{" "}
+        {credit} ·{" "}
         <Link href="/credits" className="underline hover:text-fg">
           المصادر
         </Link>
@@ -355,14 +370,23 @@ function SettingsMenu() {
   );
 }
 
+const noSubscription = () => () => {};
 function TopBar() {
   const sex = useBack((s) => s.sex);
+  // Inside the ZahraaFit app (?theme=zahraafit) the atlas carries the app's name for it.
+  const inApp = useSyncExternalStore(noSubscription, () => currentTheme() === "zahraafit", () => false);
   return (
     <header className="relative z-40 flex h-12 shrink-0 items-center gap-2 border-b border-ink/10 bg-chrome px-3 sm:gap-3 sm:px-4">
-      <Link href="/" dir="ltr" className="flex h-9 shrink-0 items-center gap-1 text-[13px] font-bold tracking-wide">
-        MUSCLE STUDIO <span className="text-accent">3D</span>
-      </Link>
-      <h1 className="hidden truncate text-sm text-muted md:block">الأطلس التشريحي</h1>
+      {inApp ? (
+        <Link href="/" aria-label="أطلس الجسم" data-title="app" className="flex h-9 shrink-0 items-center text-[15px] font-bold">
+          أطلس الجسم
+        </Link>
+      ) : (
+        <Link href="/" dir="ltr" aria-label="MUSCLE STUDIO 3D" data-title="studio" className="flex h-9 shrink-0 items-center gap-1 text-[13px] font-bold tracking-wide">
+          MUSCLE STUDIO <span className="text-accent">3D</span>
+        </Link>
+      )}
+      <h1 className={cn("hidden truncate text-sm text-muted", !inApp && "md:block")}>الأطلس التشريحي</h1>
       <div role="radiogroup" aria-label="الجنس" className="ms-auto grid grid-cols-2 gap-0.5 rounded-xl bg-ink/6 p-0.5">
         {(["male", "female"] as const).map((v) => (
           <button key={v} type="button" role="radio" aria-checked={sex === v} data-sex={v} onClick={() => sex !== v && backStore.getState().setSex(v)} className={cn("h-8 rounded-[10px] px-3.5 text-xs transition-colors", sex === v ? "bg-pick font-semibold text-pick-fg" : "text-muted hover:text-fg")}>
@@ -450,10 +474,16 @@ export function BackStudio({ initialRegion = null, hd = false }: { initialRegion
   // `?hd=0` / `?hd=1` override the page default (before/after comparison).
   useEffect(() => {
     const q = new URLSearchParams(window.location.search).get("hd");
-    // ZahraaFit theme (?theme=zahraafit): a cream backdrop behind the model. The selected muscle
-    // keeps its deep red in every theme (the orange of the brand is for buttons and chosen items).
+    // ZahraaFit theme (?theme=zahraafit): a cream backdrop behind the model.
     const themed = currentTheme() === "zahraafit" ? ({ background: "cream" } as const) : {};
-    backStore.setState({ region: initialRegion, hd: q === null ? hd : q === "1", ...themed });
+    // the colour a selected muscle takes in the body in use (the settings can change it)
+    const accent = currentProfile().accent ? { highlightColor: currentProfile().accent } : {};
+    // `?sex=female` / `?sex=male`: the body a link asks for (links from the ZahraaFit app)
+    const sx = new URLSearchParams(window.location.search).get("sex");
+    const sexed = sx === "female" || sx === "male" ? ({ sex: sx } as const) : {};
+    // the layers the body in use opens with
+    const defaults = currentProfile().defaults;
+    backStore.setState({ region: initialRegion, hd: q === null ? hd : q === "1", model: currentModel(), layers: { ...defaults }, defaultLayers: { ...defaults }, ...themed, ...sexed, ...accent });
     return () => backStore.setState({ hd: null });
   }, [initialRegion, hd]);
   const [load, setLoad] = useState<LoadState>({ status: "loading", progress: 0 });
@@ -507,10 +537,16 @@ export function BackStudio({ initialRegion = null, hd = false }: { initialRegion
   useEffect(() => {
     if (!ready) return;
     const q = new URLSearchParams(window.location.search);
-    const muscle = q.get("muscle");
-    if (!muscle || !regionBridge.model?.units.has(muscle)) return;
+    // (a part id of a muscle that is one mesh in this body opens the whole muscle)
+    const asked = q.get("muscle");
+    const units = regionBridge.model?.units;
+    const muscle = asked && units ? resolveUnit(asked, (id) => units.has(id)) : null;
+    if (!muscle) return;
     const st = backStore.getState();
-    st.selectUnit(muscle, q.get("side") === "r" ? "r" : "l");
+    const side = q.get("side") === "r" ? "r" : "l";
+    st.selectUnit(muscle, side);
+    // the camera turns to the side of the body the muscle is on
+    st.face(muscle, side);
     const panel = q.get("panel");
     if (panel === "exercises" || panel === "details") st.setPanel(panel as PanelMode);
     const ex = EXERCISE_BY_ID.get(q.get("ex") ?? "");

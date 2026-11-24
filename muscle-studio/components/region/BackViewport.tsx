@@ -4,13 +4,14 @@ import { CameraControls } from "@react-three/drei";
 import { AtlasLighting } from "@/components/anatomy/AtlasLighting";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Box3, CanvasTexture, Color, LinearSRGBColorSpace, Object3D, Sphere, SRGBColorSpace, Vector2, Vector3, type PerspectiveCamera, type Raycaster } from "three";
+import { Box3, CanvasTexture, Color, LinearSRGBColorSpace, Object3D, Raycaster, Sphere, SRGBColorSpace, Vector2, Vector3, type PerspectiveCamera } from "three";
 import {
   applyStyle,
   disposeRegionModel,
   addMeshes,
   createRegionModel,
   pick,
+  pickHit,
   prepareMeshes,
   regionBounds,
   targetOpacity,
@@ -25,10 +26,11 @@ import { ProgressiveRefine } from "@/components/anatomy/ProgressiveRefine";
 import { loadGltf } from "@/lib/three/loadGltf";
 import { configureRenderer } from "@/lib/three/rendererSetup";
 import { backStore, unitNames, useBack, type PickedStructure, type RegionView } from "@/stores/backStore";
+import type { RegionLayer } from "@/data/region/backShoulders";
+import { currentProfile } from "@/lib/region/profile";
 
-/** Original Z-Anatomy geometry exported from Blender (pipeline/blender/export_body.py + postprocess-body.mjs). */
-export const MODEL_BASE = "/models/zanatomy";
-export const modelUrl = (sex: "male" | "female", part: string) => `${MODEL_BASE}/${sex}/${part}.glb`;
+/** Files of the body in use (lib/region/profile.ts): <base>/<sex>/<part>.glb. */
+export const modelUrl = (sex: "male" | "female", part: string) => `${currentProfile().base}/${sex}/${part}.glb`;
 /** The body shown by default: core.glb with refined muscle surfaces. */
 export const BODY_PART = "core-smooth";
 /**
@@ -37,18 +39,26 @@ export const BODY_PART = "core-smooth";
  * it anywhere, `?lite=0` for the full body.
  */
 export const LITE_PART = "core-lite";
-export function bodyPart(): string {
-  const q = new URLSearchParams(window.location.search);
-  // Muscle surfaces refined from the original Z-Anatomy meshes (pipeline/sculpt/body.mjs:
-  // same nodes and vertices, bellies smoothed by ≤ 2 mm); `?sculpt=0` shows the original.
-  if (q.get("sculpt") === "0") return "core";
-  const lite = q.get("lite");
-  if (lite === "1") return LITE_PART;
-  if (lite === "0") return BODY_PART;
-  return window.matchMedia("(hover: none) and (pointer: coarse)").matches ? LITE_PART : BODY_PART;
+/** Whether this visit gets the lighter build: phones and tablets, or `?lite=1` (`?lite=0`: never). */
+export function wantsLite(): boolean {
+  const lite = new URLSearchParams(window.location.search).get("lite");
+  if (lite === "1") return true;
+  if (lite === "0") return false;
+  return window.matchMedia("(hover: none) and (pointer: coarse)").matches;
 }
-/** Optional layers loaded on first use. */
-const LAZY_PARTS = { attachments: "attachments", nerves: "nerves" } as const;
+export function bodyPart(): string {
+  const p = currentProfile();
+  // Z-Anatomy: muscle surfaces refined from the original meshes (pipeline/sculpt/body.mjs:
+  // same nodes and vertices, bellies smoothed by ≤ 2 mm); `?sculpt=0` shows the original.
+  if (p.id === "zanatomy" && new URLSearchParams(window.location.search).get("sculpt") === "0") return "core";
+  return wantsLite() ? p.core.lite : p.core.full;
+}
+/** File of a layer that is loaded on first use. */
+const lazyPart = (layer: RegionLayer): string | null => {
+  const p = currentProfile();
+  const part = p.lazy[layer];
+  return part ? (p.lazyLite && wantsLite() ? `${part}-lite` : part) : null;
+};
 export const BACKGROUNDS = { black: "#0d0e10", navy: "#06142f", cream: "#F6F2EA" } as const;
 
 /** Shared handles for overlays, tests and exports (one viewer per page). */
@@ -62,6 +72,62 @@ export const regionBridge: {
 
 /** HD rendering: surfaces are refined on demand (ProgressiveRefine), not at load. */
 const HD_OPTIONS = { hd: true } as const;
+
+/** The store's visibility state with what it implies for this model (the selected muscle's depth). */
+function visibility<S extends { selected: PickedStructure | null }>(model: RegionModel, st: S): S & { selectedDepth: number } {
+  return { ...st, selectedDepth: currentProfile().ghostOver && st.selected?.kind === "unit" ? (model.units.get(st.selected.id)?.depth ?? 1) : 1 };
+}
+
+/**
+ * The side of the body a muscle is seen from: front, back, left or right — whichever view
+ * shows most of it (sample points of the muscle are looked at from each side; a point counts
+ * when nothing else is in front of it). Front and back win a near tie.
+ */
+function facingOf(model: RegionModel, unitId: string, side: "l" | "r" | "m" | null): Vector3 {
+  const meshes = (model.byUnit.get(unitId) ?? []).filter((m) => m.kind === "unit" && (!side || side === "m" || m.side === side || m.side === "m"));
+  const points: Vector3[] = [];
+  for (const m of meshes) {
+    const pos = m.mesh.geometry.getAttribute("position");
+    const step = Math.max(1, Math.floor(pos.count / Math.ceil(70 / meshes.length)));
+    for (let i = 0; i < pos.count; i += step) points.push(new Vector3().fromBufferAttribute(pos, i).applyMatrix4(m.mesh.matrixWorld));
+  }
+  const views: [Vector3, number][] = [[new Vector3(0, 0, 1), 1], [new Vector3(0, 0, -1), 1], [new Vector3(1, 0, 0), 0.8], [new Vector3(-1, 0, 0), 0.8]];
+  const ray = new Raycaster().ray;
+  // A deep muscle is not seen from anywhere until the muscles over it turn into a ghost:
+  // it is shown from the side where the least lies over it.
+  const deep = currentProfile().ghostOver && meshes.some((m) => m.depth > 1);
+  let best = views[0][0], score = -Infinity;
+  for (const [dir, weight] of views) {
+    let seen = 0, over = 0;
+    for (const p of points) {
+      ray.origin.copy(p).addScaledVector(dir, 2.5);
+      ray.direction.copy(dir).negate();
+      const hit = pickHit(model, ray);
+      if (hit && hit.m.kind === "unit" && hit.m.id === unitId) seen++;
+      else over += hit ? Math.max(0, 2.5 - hit.d) : 0;
+    }
+    const s = deep ? -(over / Math.max(1, points.length)) / weight : seen * weight;
+    if (s > score) { score = s; best = dir; }
+  }
+  return best.clone();
+}
+
+/**
+ * Framing. The subject is centred in the part of the view that is really free: under
+ * the hint at the top, above the view controls (or the sheet / panel that covers the
+ * bottom). Of that free height the whole body takes FILL.body — about 80 % of the
+ * view — with head and feet inside; a region or a single structure is framed closer.
+ */
+const FILL = { body: 0.96, region: 0.9, closeup: 0.94 };
+const TOP_RESERVE = 52; // px: the hint / the chip of the open region
+const CONTROLS_RESERVE = 62; // px: the floating view controls
+export function freeArea(ins: { bottom: number }, height: number): { top: number; bottom: number; height: number } {
+  // short views (a phone in landscape, a small embed) keep proportionally smaller margins
+  const k = Math.min(1, height / 640);
+  const top = TOP_RESERVE * k;
+  const bottom = Math.max(ins.bottom, CONTROLS_RESERVE * k);
+  return { top, bottom, height: Math.max(1, height - top - bottom) };
+}
 
 export type LoadState = { status: "loading"; progress: number } | { status: "ready" } | { status: "error"; message: string };
 
@@ -77,13 +143,13 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
   const loaded = useRef(new Set<string>());
 
   const syncNew = (model: RegionModel, meshes: RegionMesh[]) => {
-    const st = backStore.getState();
+    const st = visibility(model, backStore.getState());
     for (const m of meshes) {
       m.target = targetOpacity(m, st);
       m.opacity = m.target;
       m.mesh.visible = m.target > 0;
       (m.mesh.material as { opacity: number }).opacity = ((m.mesh.material as { userData: { baseOpacity?: number } }).userData.baseOpacity ?? 1) * m.opacity;
-      applyStyle(m, st.selected, st.hovered, st.highlightColor, st.spotlight ? { primary: new Set(st.spotlight.primary), secondary: new Set(st.spotlight.secondary) } : null);
+      applyStyle(m, st.selected, st.hovered, st.highlightColor, st.spotlight ? { primary: new Set(st.spotlight.primary), secondary: new Set(st.spotlight.secondary) } : null, currentProfile().keepColours);
     }
     void model;
   };
@@ -97,9 +163,26 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
     const part = bodyPart();
     loadGltf(modelUrl(sex, part), { renderer: gl, signal: ctrl.signal, onProgress: (p) => onState({ status: "loading", progress: p }) })
       .then((gltf) => {
-        const meshes = prepareMeshes(gltf.scene, hd ? HD_OPTIONS : {});
+        const prep = { ...(hd ? HD_OPTIONS : {}), anisotropy: Math.min(8, gl.capabilities.getMaxAnisotropy()), muscleBase: currentProfile().muscleBase };
+        const meshes = prepareMeshes(gltf.scene, prep);
         addMeshes(model, meshes);
         modelRef.current = model;
+        // further parts of the body (deep muscles): added as soon as they arrive
+        for (const extra of currentProfile().also) {
+          const file = currentProfile().lazyLite && wantsLite() ? `${extra}-lite` : extra;
+          loadGltf(modelUrl(sex, file), { renderer: gl, signal: ctrl.signal })
+            .then((g) => {
+              if (modelRef.current !== model) return;
+              const more = prepareMeshes(g.scene, prep);
+              addMeshes(model, more);
+              syncNew(model, more);
+              setRoots((r) => [...r, g.scene]);
+              for (const u of model.units.values()) unitNames.set(u.id, { ar: u.ar, en: u.en });
+              backStore.setState({ unitsVersion: Date.now() });
+              invalidate();
+            })
+            .catch((err: unknown) => { if (!ctrl.signal.aborted) console.error("[atlas] part failed", extra, err); });
+        }
         regionBridge.model = model;
         syncNew(model, meshes);
         setRoots([gltf.scene]); // replaces the previous body's roots
@@ -124,19 +207,19 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
 
   // Optional layers (attachment patches, nerves) are loaded the first time they are needed.
   useEffect(() => {
-    const need = (st: ReturnType<typeof backStore.getState>) => [
-      ...(st.layers.attachments || st.selected?.kind === "unit" ? ["attachments"] : []),
-      ...(st.layers.nerves ? ["nerves"] : []),
-    ];
-    const load = (part: keyof typeof LAZY_PARTS) => {
+    const profile = currentProfile();
+    const need = (st: ReturnType<typeof backStore.getState>): RegionLayer[] =>
+      (Object.keys(profile.lazy) as RegionLayer[]).filter((l) => st.layers[l] || (l === "attachments" && st.selected?.kind === "unit"));
+    const load = (layer: RegionLayer) => {
       const model = modelRef.current;
-      if (!model || loaded.current.has(part)) return;
+      const part = lazyPart(layer);
+      if (!model || !part || loaded.current.has(part)) return;
       loaded.current.add(part);
       const forSex = backStore.getState().sex;
-      loadGltf(modelUrl(forSex, LAZY_PARTS[part]), { renderer: gl })
+      loadGltf(modelUrl(forSex, part), { renderer: gl })
         .then((gltf) => {
           if (modelRef.current !== model) return;
-          const meshes = prepareMeshes(gltf.scene, backStore.getState().hd ? HD_OPTIONS : {});
+          const meshes = prepareMeshes(gltf.scene, { ...(backStore.getState().hd ? HD_OPTIONS : {}), anisotropy: Math.min(8, gl.capabilities.getMaxAnisotropy()) });
           addMeshes(model, meshes);
           syncNew(model, meshes);
           setRoots((r) => [...r, gltf.scene]);
@@ -147,7 +230,7 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
           console.error("[atlas] optional layer failed", part, err);
         });
     };
-    const check = () => { for (const p of need(backStore.getState())) load(p as keyof typeof LAZY_PARTS); };
+    const check = () => { for (const l of need(backStore.getState())) load(l); };
     check();
     return backStore.subscribe((st, prev) => {
       if (st.layers !== prev.layers || st.selected !== prev.selected) check();
@@ -161,14 +244,15 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
       if (!model) return;
       let changed = false;
       if (st.layers !== prev.layers || st.hiddenUnits !== prev.hiddenUnits || st.depthMode !== prev.depthMode || st.isolate !== prev.isolate || st.selected !== prev.selected) {
+        const vis = visibility(model, st);
         for (const m of model.meshes) {
-          const t = targetOpacity(m, st);
+          const t = targetOpacity(m, vis);
           if (t !== m.target) { m.target = t; changed = true; }
         }
       }
       if (st.selected !== prev.selected || st.hovered !== prev.hovered || st.highlightColor !== prev.highlightColor || st.spotlight !== prev.spotlight) {
         const spot = st.spotlight ? { primary: new Set(st.spotlight.primary), secondary: new Set(st.spotlight.secondary) } : null;
-        for (const m of model.meshes) changed = applyStyle(m, st.selected, st.hovered, st.highlightColor, spot) || changed;
+        for (const m of model.meshes) changed = applyStyle(m, st.selected, st.hovered, st.highlightColor, spot, currentProfile().keepColours) || changed;
       }
       if (changed || st.background !== prev.background || st.autoRotate !== prev.autoRotate || st.insets !== prev.insets) invalidate();
     });
@@ -179,12 +263,67 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
     if (model && stepFades(model, Math.min(dt, 0.25))) invalidate();
   });
 
+  const cream = useBack((s) => s.background) === "cream";
   return (
     <>
       {roots.map((r) => (
         <primitive key={r.uuid} object={r} />
       ))}
+      {cream && roots.length > 0 && <FloorShadow body={roots[0]} />}
     </>
+  );
+}
+
+/** A soft round shadow: dark in the middle, fading to nothing at the rim. */
+let blob: CanvasTexture | null = null;
+function shadowBlob(): CanvasTexture {
+  if (blob) return blob;
+  const c = document.createElement("canvas");
+  c.width = c.height = 128;
+  const g = c.getContext("2d")!, grad = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  grad.addColorStop(0, "rgba(255,255,255,1)");
+  grad.addColorStop(0.45, "rgba(255,255,255,0.55)");
+  grad.addColorStop(0.8, "rgba(255,255,255,0.12)");
+  grad.addColorStop(1, "rgba(255,255,255,0)");
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 128, 128);
+  blob = new CanvasTexture(c);
+  return blob;
+}
+/**
+ * The floor under the feet (light backdrop): a soft contact shadow under each foot and a
+ * fainter one between them, so the body stands on something instead of floating. Placed from
+ * what of the body touches the floor (the lowest 6 cm), once per body.
+ */
+function FloorShadow({ body }: { body: Object3D }) {
+  const spots = useMemo(() => {
+    body.updateWorldMatrix(true, true);
+    const floor = new Box3().setFromObject(body).min.y, v = new Vector3(), box = new Box3();
+    const side = [new Box3(), new Box3()]; // the body's left (+x) and right foot
+    body.traverse((o) => {
+      const mesh = o as Object3D & { isMesh?: boolean; geometry?: { boundingBox: Box3 | null; computeBoundingBox(): void; getAttribute(n: string): { count: number } } };
+      if (!mesh.isMesh || !mesh.geometry) return;
+      if (!mesh.geometry.boundingBox) mesh.geometry.computeBoundingBox();
+      if (box.copy(mesh.geometry.boundingBox!).applyMatrix4(o.matrixWorld).min.y > floor + 0.06) return;
+      const pos = mesh.geometry.getAttribute("position") as unknown as Parameters<Vector3["fromBufferAttribute"]>[0];
+      for (let i = 0; i < pos.count; i += 4) {
+        v.fromBufferAttribute(pos, i).applyMatrix4(o.matrixWorld);
+        if (v.y < floor + 0.06) side[v.x >= 0 ? 0 : 1].expandByPoint(v);
+      }
+    });
+    const feet = side.filter((b) => !b.isEmpty()).map((b) => ({ x: (b.min.x + b.max.x) / 2, z: (b.min.z + b.max.z) / 2, w: (b.max.x - b.min.x) * 1.9, d: (b.max.z - b.min.z) * 1.55, a: 0.62 }));
+    if (feet.length === 2) feet.push({ x: 0, z: (feet[0].z + feet[1].z) / 2, w: Math.abs(feet[0].x - feet[1].x) + feet[0].w * 1.6, d: feet[0].d * 1.5, a: 0.26 });
+    return { y: floor + 0.0015, feet };
+  }, [body]);
+  return (
+    <group position={[0, spots.y, 0]}>
+      {spots.feet.map((f, i) => (
+        <mesh key={i} position={[f.x, i * 0.0004, f.z]} rotation-x={-Math.PI / 2} scale={[f.w, f.d, 1]} renderOrder={-1}>
+          <planeGeometry args={[1, 1]} />
+          <meshBasicMaterial map={shadowBlob()} color="#2b1d14" transparent opacity={f.a} depthWrite={false} toneMapped={false} />
+        </mesh>
+      ))}
+    </group>
   );
 }
 
@@ -234,15 +373,19 @@ function Rig() {
     const aspect = size.width / Math.max(1, size.height);
     // the part of the view not covered by panels: the subject is framed in it
     const ins = insets;
-    const freeH = Math.max(0.35, 1 - ins.bottom / Math.max(1, size.height));
+    const free = freeArea(ins, size.height);
+    const freeH = Math.max(0.35, free.height / Math.max(1, size.height));
     const freeW = Math.max(0.35, 1 - (ins.left + ins.right) / Math.max(1, size.width));
-    const fit = (box: Box3, dir: Vector3, margin: number) => {
+    // `fill`: the share of the free height (or width) the subject takes. The distance is
+    // measured to the subject's nearest face, so nothing is cut off by perspective.
+    const fit = (box: Box3, dir: Vector3, fill: number) => {
       const center = box.getCenter(new Vector3());
       const s = box.getSize(new Vector3());
       const vfov = (camera.fov * Math.PI) / 180;
       const hfov = 2 * Math.atan(Math.tan(vfov / 2) * aspect);
-      const across = Math.abs(dir.x) > 0.5 ? s.z : s.x;
-      const dist = Math.max(s.y / 2 / (Math.tan(vfov / 2) * freeH), across / 2 / (Math.tan(hfov / 2) * freeW)) * margin + Math.max(s.x, s.z) / 2;
+      const side = Math.abs(dir.x) > 0.5;
+      const across = side ? s.z : s.x, depth = side ? s.x : s.z;
+      const dist = Math.max(s.y / 2 / (Math.tan(vfov / 2) * freeH * fill), across / 2 / (Math.tan(hfov / 2) * freeW * Math.min(0.96, fill + 0.04))) + depth / 2;
       const pos = center.clone().addScaledVector(dir, dist);
       void c.setLookAt(pos.x, pos.y, pos.z, center.x, center.y, center.z, true);
     };
@@ -250,7 +393,7 @@ function Rig() {
       const box = regionBounds(model, command.region);
       if (!box) return;
       const back = ["back", "pelvis", "legs"].includes(command.region);
-      fit(box, new Vector3(0, 0.1, back ? -1 : 1).normalize(), 1.15);
+      fit(box, new Vector3(0, 0.1, back ? -1 : 1).normalize(), FILL.region);
       invalidate();
       return;
     }
@@ -264,7 +407,7 @@ function Rig() {
           if (m.kind === "unit" && m.side === "l" && /^(deltoid|supraspinatus|infraspinatus|teres)/.test(m.id)) box.expandByObject(m.mesh);
         }
       }
-      fit(box, new Vector3(0.55, 0.18, -0.82).normalize(), 1.05);
+      fit(box, new Vector3(0.55, 0.18, -0.82).normalize(), FILL.closeup);
     } else if (command.type === "view") {
       const dirs: Record<Exclude<RegionView, "closeup">, Vector3> = {
         back: new Vector3(0, 0.08, -1).normalize(),
@@ -275,7 +418,17 @@ function Rig() {
       // Frame the current study region, or the whole body.
       const region = backStore.getState().region;
       const box = (region && regionBounds(model, region)) || model.bounds.clone();
-      fit(box, dirs[command.view as Exclude<RegionView, "closeup">], 1.22);
+      fit(box, dirs[command.view as Exclude<RegionView, "closeup">], region ? FILL.region : FILL.body);
+    } else if (command.type === "face") {
+      // A link opened on a muscle: turn to the side of the body it is on, and frame it with
+      // its surroundings (the direction its surface looks, snapped to front / back / a side).
+      const box = unitBounds(model, command.unitId, command.side);
+      if (!box) return;
+      const n = facingOf(model, command.unitId, command.side);
+      const ax = Math.abs(n.x), az = Math.abs(n.z);
+      const dir = az >= ax * 0.9 ? new Vector3(0, 0.08, n.z >= 0 ? 1 : -1) : new Vector3(n.x >= 0 ? 1 : -1, 0.05, 0);
+      const s = box.getSize(new Vector3());
+      fit(box.clone().expandByScalar(Math.max(s.x, s.y, s.z) * 0.55), dir.normalize(), FILL.closeup);
     } else {
       const box = command.type === "focus" ? unitBounds(model, command.unitId, command.side) : null;
       const sel = backStore.getState().selected;
@@ -296,7 +449,8 @@ function Rig() {
     const c = ref.current;
     if (!c) return;
     const ins = backStore.getState().insets;
-    const tx = (ins.right - ins.left) / 2, ty = ins.bottom / 2;
+    const free = freeArea(ins, size.height);
+    const tx = (ins.right - ins.left) / 2, ty = (free.bottom - free.top) / 2;
     const s = shift.current;
     if (Math.abs(tx - s.x) > 0.5 || Math.abs(ty - s.y) > 0.5) {
       const k = 1 - Math.exp(-Math.min(dt, 0.5) * 14); // time-based: a slow device arrives in a frame or two
@@ -404,7 +558,8 @@ const atlasMeshes = () => (regionBridge.model?.meshes ?? []).map((m) => m.mesh);
 const atlasMuscles = () => {
   const mode = backStore.getState().depthMode;
   const top = mode === "deep" ? 3 : mode === "no-superficial" ? 2 : 1;
-  return (regionBridge.model?.meshes ?? []).filter((m) => m.kind === "unit" && m.target > 0.5 && m.depth <= top).map((m) => m.mesh);
+  // (a textured model carries its surface detail in normal maps: nothing to refine)
+  return (regionBridge.model?.meshes ?? []).filter((m) => m.kind === "unit" && m.target > 0.5 && m.depth <= top && !(m.mesh.material as { userData: { textured?: boolean } }).userData.textured).map((m) => m.mesh);
 };
 const refineOff = () => typeof window !== "undefined" && new URLSearchParams(window.location.search).get("refine") === "0";
 
@@ -412,7 +567,7 @@ function Lighting() {
   const hd = useBack((s) => s.hd);
   return hd === true ? (
     <>
-      <AtlasLighting keyLight={false} warmFill intensity={1.3} />
+      <AtlasLighting keyLight={false} warmFill studio intensity={1.2} />
       <HDPipeline getTarget={atlasTarget} getMeshes={atlasMeshes} />
       {!refineOff() && <ProgressiveRefine getTarget={atlasTarget} getCandidates={atlasMuscles} />}
     </>

@@ -22,10 +22,12 @@
   --color-surface: #111214; /* floating cards and sheets */
   --color-chrome: #0e0f11; /* top bar and side panel */
   --color-stage: #0b0c0e; /* behind the 3D view */
-  --color-select: #a5111f; /* main buttons and the selected item */
-  --color-select-hover: #ba1626;
-  --color-select-soft: #d2626c;
-  --color-select-tint: #f4b4bb;
+  --color-select: #e8602c; /* main buttons and the selected item: the accent of the selected muscle */
+  --color-select-hover: #f06d3a;
+  --color-select-soft: #f2a680;
+  --color-select-tint: #f7c4ad;
+  --color-select-chip: #f9dccd; /* "helper muscle" mark of an exercise */
+  --color-select-chip-fg: #9a3a12;
   --color-pick: #ffffff; /* the chosen option of a segmented control */
   --color-pick-fg: #111214;
 
@@ -63,6 +65,8 @@
   --color-select-hover: #d4541f;
   --color-select-soft: #e8602c;
   --color-select-tint: #b8431a;
+  --color-select-chip: #fbe3d8;
+  --color-select-chip-fg: #a63e12;
   --color-pick: #e8602c;
   --color-pick-fg: #ffffff;
   --st-shadow: rgba(5, 15, 44, 0.14);

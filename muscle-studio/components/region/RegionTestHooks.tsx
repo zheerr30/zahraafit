@@ -33,7 +33,9 @@ export function RegionTestHooks() {
         const { model, camera, canvas } = regionBridge;
         if (!model || !camera || !canvas) return found;
         const r = canvas.getBoundingClientRect();
-        const meshes = model.meshes.filter((m) => m.kind === kind && m.id === id && (side === "m" || m.side === side) && m.target > 0.3);
+        const shown = model.meshes.filter((m) => m.kind === kind && m.id === id && m.target > 0.3);
+        // (a muscle of the middle has no left or right mesh: any of its meshes will do)
+        const sided = shown.filter((m) => side === "m" || m.side === side), meshes = sided.length ? sided : shown;
         for (const m of meshes) {
           const pos = m.mesh.geometry.getAttribute("position");
           const step = Math.max(1, Math.floor(pos.count / 400));
@@ -78,8 +80,35 @@ export function RegionTestHooks() {
       /** Colour currently shown by a unit's material (hex). */
       unitColor(id: string, side: "l" | "r" = "l") {
         const m = regionBridge.model?.meshes.find((x) => x.kind === "unit" && x.id === id && x.side === side);
-        const mat = m?.mesh.material as { color?: { getHexString(): string } } | undefined;
+        const mat = m?.mesh.material as { color?: { getHexString(): string }; userData?: { lookHex?: string } } | undefined;
+        // (a textured part keeps a white material colour: the look laid over its texture is reported)
+        if (mat?.userData?.lookHex) return mat.userData.lookHex;
         return mat?.color ? `#${mat.color.getHexString()}` : null;
+      },
+      /**
+       * Where the shown body is on screen: its top, bottom, left and right in px of the 3D
+       * view, with the view's size — to check the framing (how much of the height it fills,
+       * that head and feet are inside).
+       */
+      bodyBox() {
+        const { model, camera, canvas } = regionBridge;
+        if (!model || !camera || !canvas) return null;
+        const r = canvas.getBoundingClientRect();
+        let top = Infinity, bottom = -Infinity, left = Infinity, right = -Infinity;
+        for (const m of model.meshes) {
+          if (m.target < 0.5 || !(m.kind === "unit" || m.kind === "bone" || m.kind === "tendon")) continue;
+          const pos = m.mesh.geometry.getAttribute("position");
+          const step = Math.max(1, Math.floor(pos.count / 60));
+          for (let i = 0; i < pos.count; i += step) {
+            v.fromBufferAttribute(pos, i).applyMatrix4(m.mesh.matrixWorld).project(camera);
+            const x = ((v.x + 1) / 2) * r.width, y = ((1 - v.y) / 2) * r.height;
+            if (y < top) top = y;
+            if (y > bottom) bottom = y;
+            if (x < left) left = x;
+            if (x > right) right = x;
+          }
+        }
+        return { top: Math.round(top), bottom: Math.round(bottom), left: Math.round(left), right: Math.round(right), width: Math.round(r.width), height: Math.round(r.height) };
       },
       ready: () => !!regionBridge.model,
       /** Totals of the HD surface refinement (triangles, offsets in mm). */

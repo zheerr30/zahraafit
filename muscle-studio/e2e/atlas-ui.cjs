@@ -80,11 +80,13 @@ const WARN = /تقريب|لا يوجد مصدر|approximat|النموذج الذ
     const sw = (name) => page.getByRole('switch', { name, exact: true });
     ok('six layer switches with labels', (await page.locator('[data-dock-sheet] [role=switch]').count()) === 6);
     await sw('العضلات').click(); await page.waitForTimeout(1200);
-    ok('muscles layer off', !(await kinds(page)).unit && (await kinds(page)).bone > 0);
+    ok('muscles layer off', !(await kinds(page)).unit && Object.keys(await kinds(page)).length > 0);
     await sw('العضلات').click(); await page.waitForTimeout(1200);
-    await sw('اللفافات والجرابات').click(); await page.waitForTimeout(1200);
-    ok('fascia layer on', (await kinds(page)).unit > 0 && (await kinds(page)).fascia > 0);
-    await sw('اللفافات والجرابات').click();
+    // a layer kept in a file of its own: downloaded when it is switched on
+    await sw('العظام').click();
+    await page.waitForFunction(() => window.__backStudioTest.visibleKinds().bone > 0, null, { timeout: 120000 });
+    ok('bones layer on', (await kinds(page)).unit > 0 && (await kinds(page)).bone > 0);
+    await sw('العظام').click();
     await page.getByRole('radio', { name: 'العميقة فقط' }).click(); await page.waitForTimeout(1200);
     ok('depth: deep only', (await st(page)).depth === 'deep');
     await page.getByRole('button', { name: 'الهيكل العظمي فقط' }).click(); await page.waitForTimeout(1200);

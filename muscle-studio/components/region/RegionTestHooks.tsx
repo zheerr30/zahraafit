@@ -33,7 +33,9 @@ export function RegionTestHooks() {
         const { model, camera, canvas } = regionBridge;
         if (!model || !camera || !canvas) return found;
         const r = canvas.getBoundingClientRect();
-        const meshes = model.meshes.filter((m) => m.kind === kind && m.id === id && (side === "m" || m.side === side) && m.target > 0.3);
+        const shown = model.meshes.filter((m) => m.kind === kind && m.id === id && m.target > 0.3);
+        // (a muscle of the middle has no left or right mesh: any of its meshes will do)
+        const sided = shown.filter((m) => side === "m" || m.side === side), meshes = sided.length ? sided : shown;
         for (const m of meshes) {
           const pos = m.mesh.geometry.getAttribute("position");
           const step = Math.max(1, Math.floor(pos.count / 400));

@@ -2,6 +2,7 @@ import { useStore } from "zustand";
 import { createStore } from "zustand/vanilla";
 import { REGION_MUSCLES, type RegionLayer } from "@/data/region/backShoulders";
 import { SELECTION_ACCENT } from "@/lib/highlight";
+import { resolveUnit } from "@/data/exercises/aliases";
 import { DEFAULT_MODEL, type ModelId } from "@/lib/region/profile";
 
 /** What the user picked on the model: a muscle unit (full card) or any other structure (name only). */
@@ -173,7 +174,10 @@ export const backStore = createStore<BackState>()((set, get) => ({
     // a new structure opens its summary; re-picking the same one keeps the open panel
     set({ selected: p, isolate: p ? get().isolate : false, panel: same ? get().panel : "summary", spotlight: same ? get().spotlight : null, linkedExercise: same ? get().linkedExercise : null });
   },
-  selectUnit: (id, side = "l") => {
+  selectUnit: (named, side = "l") => {
+    // A muscle named by one of its parts (an exercise's target, a link) in a body that has
+    // it as one muscle: the muscle is what gets selected.
+    const id = unitNames.size ? (resolveUnit(named, (x) => unitNames.has(x)) ?? named) : named;
     const hidden = { ...get().hiddenUnits };
     delete hidden[id];
     const same = get().selected?.kind === "unit" && get().selected?.id === id;

@@ -18,7 +18,7 @@
 // occlusion-roughness maps (its UDIM tiles packed into one atlas image per set).
 //
 //   ECORCHE_WORK=/path/to/work ECORCHE_TEX="/path/to/2K Textures" node pipeline/ecorche/build.mjs male
-import { readFileSync, mkdirSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, mkdirSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { Document, NodeIO } from "@gltf-transform/core";
 import { EXTMeshoptCompression, EXTTextureWebP, KHRMeshQuantization } from "@gltf-transform/extensions";
@@ -90,6 +90,7 @@ const ROUGH = { fat: 0.35, fatF: 0.35, skin: 0.55, sclera: 0.12, iris: 0.4 };
 // lie under a garment (a ray along the skin's normal meets the cloth within 4 cm), and so
 // does any piece left unattached.
 const GARMENTS = new Set(["Underwear", "Female-Clothes"]);
+const BODY_PIECE = 1500; // triangles: the trunk and the legs are far larger, loose bits far smaller
 function uncoveredIndices(body, garments) {
   const pos = f32(body.position, body.vertices * 3), nrm = f32(body.normal, body.vertices * 3), idx = u32(body.index, body.triangles * 3);
   const covered = new Uint8Array(body.vertices);
@@ -109,7 +110,9 @@ function uncoveredIndices(body, garments) {
   }
   let kept = [];
   for (let t = 0; t < idx.length; t += 3) if (!(covered[idx[t]] && covered[idx[t + 1]] && covered[idx[t + 2]])) kept.push(t);
-  // connected pieces (by position): only the body itself stays
+  // connected pieces (by position): cutting the band under the briefs leaves the trunk and
+  // each leg as pieces of their own — they stay; small loose pieces (what the cloth test
+  // missed inside the covered zone) go
   const key = (i) => `${Math.round(pos[i * 3] * 1e5)},${Math.round(pos[i * 3 + 1] * 1e5)},${Math.round(pos[i * 3 + 2] * 1e5)}`;
   const id = new Map(), parent = [];
   const find = (a) => { while (parent[a] !== a) a = parent[a] = parent[parent[a]]; return a; };
@@ -117,9 +120,9 @@ function uncoveredIndices(body, garments) {
   for (const t of kept) { const a = find(node(idx[t])), b = find(node(idx[t + 1])), c = find(node(idx[t + 2])); parent[b] = a; parent[find(c)] = a; }
   const size = new Map();
   for (const t of kept) { const r = find(node(idx[t])); size.set(r, (size.get(r) ?? 0) + 1); }
-  const main = [...size.entries()].sort((a, b) => b[1] - a[1])[0][0];
   const before = kept.length;
-  kept = kept.filter((t) => find(node(idx[t])) === main);
+  if (process.env.ECORCHE_VERBOSE) console.log("skin pieces (triangles):", [...size.values()].sort((a, b) => b - a).join(" "));
+  kept = kept.filter((t) => size.get(find(node(idx[t]))) >= BODY_PIECE);
   const out = new Uint32Array(kept.length * 3);
   kept.forEach((t, k) => { out[k * 3] = idx[t]; out[k * 3 + 1] = idx[t + 1]; out[k * 3 + 2] = idx[t + 2]; });
   return { indices: out, removed: body.triangles - kept.length, islands: before - kept.length };
@@ -191,10 +194,14 @@ async function buildPart(part, lite, sets) {
   return report;
 }
 
-const summary = { sex, source: "Écorché Male & Female (purchased licence; original files not distributed)", files: {} };
+// ECORCHE_PARTS=skin rebuilds only the named parts (the others keep their files and their record)
+const ONLY = process.env.ECORCHE_PARTS?.split(",");
+const previous = ONLY && existsSync(path.join(OUT, "build.json")) ? JSON.parse(readFileSync(path.join(OUT, "build.json"), "utf8")).files : {};
+const summary = { sex, source: "Écorché Male & Female (purchased licence; original files not distributed)", files: { ...previous } };
 for (const lite of [false, true]) {
   const sets = await textureSets(lite);
   for (const part of ["core", "bones", "fat", "vessels", "skin"]) {
+    if (ONLY && !ONLY.includes(part)) continue;
     const r = await buildPart(part, lite, sets);
     if (!r) continue;
     summary.files[`${part}${lite ? "-lite" : ""}.glb`] = r;

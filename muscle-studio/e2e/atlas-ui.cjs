@@ -180,10 +180,10 @@ const WARN = /تقريب|لا يوجد مصدر|approximat|النموذج الذ
     s = await st(page);
     ok('phone: choosing a region closes the sheet', s.region === 'abdomen' && s.dock === null && s.insets.bottom === 0);
     await page.locator('[data-dock-tab=layers]').tap(); await page.waitForTimeout(500);
-    await page.getByRole('switch', { name: 'الأعصاب الطرفية', exact: true }).tap();
-    await page.waitForFunction(() => window.__backStudioTest.visibleKinds().nerve > 0, null, { timeout: 240000 }).catch(() => {});
-    ok('phone: layer switch works (nerves)', (await kinds(page)).nerve > 0);
-    await page.getByRole('switch', { name: 'الأعصاب الطرفية', exact: true }).tap();
+    await page.getByRole('switch', { name: 'الجلد', exact: true }).tap();
+    await page.waitForFunction(() => window.__backStudioTest.visibleKinds().skin > 0, null, { timeout: 240000 }).catch(() => {});
+    ok('phone: layer switch works (skin: downloaded when switched on)', (await kinds(page)).skin > 0);
+    await page.getByRole('switch', { name: 'الجلد', exact: true }).tap();
     await page.locator('[data-dock-tab=layers]').tap(); await rest(page);
     ok('phone: tapping the tab again closes the sheet', (await st(page)).dock === null);
 

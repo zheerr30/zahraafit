@@ -30,13 +30,13 @@
   },
   "skin.glb": {
    "meshes": 2,
-   "triangles": 116718,
+   "triangles": 128582,
    "removed": [],
    "underClothing": {
-    "trianglesRemoved": 13786,
-    "looseTrianglesRemoved": 12224
+    "trianglesRemoved": 1922,
+    "looseTrianglesRemoved": 360
    },
-   "bytes": 1288836
+   "bytes": 1357528
   },
   "core-lite.glb": {
    "meshes": 310,
@@ -66,13 +66,13 @@
   },
   "skin-lite.glb": {
    "meshes": 2,
-   "triangles": 64189,
+   "triangles": 70713,
    "removed": [],
    "underClothing": {
-    "trianglesRemoved": 13786,
-    "looseTrianglesRemoved": 12224
+    "trianglesRemoved": 1922,
+    "looseTrianglesRemoved": 360
    },
-   "bytes": 451976
+   "bytes": 491592
   }
  }
 }

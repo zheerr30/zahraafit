@@ -263,12 +263,67 @@ function Model({ onState }: { onState: (s: LoadState) => void }) {
     if (model && stepFades(model, Math.min(dt, 0.25))) invalidate();
   });
 
+  const cream = useBack((s) => s.background) === "cream";
   return (
     <>
       {roots.map((r) => (
         <primitive key={r.uuid} object={r} />
       ))}
+      {cream && roots.length > 0 && <FloorShadow body={roots[0]} />}
     </>
+  );
+}
+
+/** A soft round shadow: dark in the middle, fading to nothing at the rim. */
+let blob: CanvasTexture | null = null;
+function shadowBlob(): CanvasTexture {
+  if (blob) return blob;
+  const c = document.createElement("canvas");
+  c.width = c.height = 128;
+  const g = c.getContext("2d")!, grad = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  grad.addColorStop(0, "rgba(255,255,255,1)");
+  grad.addColorStop(0.45, "rgba(255,255,255,0.55)");
+  grad.addColorStop(0.8, "rgba(255,255,255,0.12)");
+  grad.addColorStop(1, "rgba(255,255,255,0)");
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 128, 128);
+  blob = new CanvasTexture(c);
+  return blob;
+}
+/**
+ * The floor under the feet (light backdrop): a soft contact shadow under each foot and a
+ * fainter one between them, so the body stands on something instead of floating. Placed from
+ * what of the body touches the floor (the lowest 6 cm), once per body.
+ */
+function FloorShadow({ body }: { body: Object3D }) {
+  const spots = useMemo(() => {
+    body.updateWorldMatrix(true, true);
+    const floor = new Box3().setFromObject(body).min.y, v = new Vector3(), box = new Box3();
+    const side = [new Box3(), new Box3()]; // the body's left (+x) and right foot
+    body.traverse((o) => {
+      const mesh = o as Object3D & { isMesh?: boolean; geometry?: { boundingBox: Box3 | null; computeBoundingBox(): void; getAttribute(n: string): { count: number } } };
+      if (!mesh.isMesh || !mesh.geometry) return;
+      if (!mesh.geometry.boundingBox) mesh.geometry.computeBoundingBox();
+      if (box.copy(mesh.geometry.boundingBox!).applyMatrix4(o.matrixWorld).min.y > floor + 0.06) return;
+      const pos = mesh.geometry.getAttribute("position") as unknown as Parameters<Vector3["fromBufferAttribute"]>[0];
+      for (let i = 0; i < pos.count; i += 4) {
+        v.fromBufferAttribute(pos, i).applyMatrix4(o.matrixWorld);
+        if (v.y < floor + 0.06) side[v.x >= 0 ? 0 : 1].expandByPoint(v);
+      }
+    });
+    const feet = side.filter((b) => !b.isEmpty()).map((b) => ({ x: (b.min.x + b.max.x) / 2, z: (b.min.z + b.max.z) / 2, w: (b.max.x - b.min.x) * 1.9, d: (b.max.z - b.min.z) * 1.55, a: 0.62 }));
+    if (feet.length === 2) feet.push({ x: 0, z: (feet[0].z + feet[1].z) / 2, w: Math.abs(feet[0].x - feet[1].x) + feet[0].w * 1.6, d: feet[0].d * 1.5, a: 0.26 });
+    return { y: floor + 0.0015, feet };
+  }, [body]);
+  return (
+    <group position={[0, spots.y, 0]}>
+      {spots.feet.map((f, i) => (
+        <mesh key={i} position={[f.x, i * 0.0004, f.z]} rotation-x={-Math.PI / 2} scale={[f.w, f.d, 1]} renderOrder={-1}>
+          <planeGeometry args={[1, 1]} />
+          <meshBasicMaterial map={shadowBlob()} color="#2b1d14" transparent opacity={f.a} depthWrite={false} toneMapped={false} />
+        </mesh>
+      ))}
+    </group>
   );
 }
 

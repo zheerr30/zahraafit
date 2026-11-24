@@ -1,0 +1,78 @@
+{
+ "sex": "male",
+ "source": "Écorché Male & Female (purchased licence; original files not distributed)",
+ "files": {
+  "core.glb": {
+   "meshes": 308,
+   "triangles": 516526,
+   "removed": [
+    "Butt"
+   ],
+   "bytes": 13122740
+  },
+  "bones.glb": {
+   "meshes": 42,
+   "triangles": 284433,
+   "removed": [],
+   "bytes": 5869928
+  },
+  "fat.glb": {
+   "meshes": 46,
+   "triangles": 93426,
+   "removed": [],
+   "bytes": 945188
+  },
+  "vessels.glb": {
+   "meshes": 2,
+   "triangles": 192800,
+   "removed": [],
+   "bytes": 762272
+  },
+  "skin.glb": {
+   "meshes": 2,
+   "triangles": 53418,
+   "removed": [],
+   "underClothing": {
+    "trianglesRemoved": 13166,
+    "looseTrianglesRemoved": 11342
+   },
+   "bytes": 1406932
+  },
+  "core-lite.glb": {
+   "meshes": 308,
+   "triangles": 223881,
+   "removed": [
+    "Butt"
+   ],
+   "bytes": 4985564
+  },
+  "bones-lite.glb": {
+   "meshes": 42,
+   "triangles": 74802,
+   "removed": [],
+   "bytes": 1632788
+  },
+  "fat-lite.glb": {
+   "meshes": 46,
+   "triangles": 52926,
+   "removed": [],
+   "bytes": 529988
+  },
+  "vessels-lite.glb": {
+   "meshes": 2,
+   "triangles": 57747,
+   "removed": [],
+   "bytes": 253312
+  },
+  "skin-lite.glb": {
+   "meshes": 2,
+   "triangles": 29379,
+   "removed": [],
+   "underClothing": {
+    "trianglesRemoved": 13166,
+    "looseTrianglesRemoved": 11342
+   },
+   "bytes": 420484
+  }
+ }
+}

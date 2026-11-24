@@ -1,17 +1,19 @@
 # Écorché Male & Female model in the atlas
 
-The atlas can show the **Écorché Male & Female** model (bought by the owner from Superhive,
-commercial licence) instead of the open Z-Anatomy body: sculpted muscles with their own
-painted textures and normal maps, and real male and female shapes.
+The atlas shows the **Écorché Male & Female** model (bought by the owner from Superhive,
+commercial licence): sculpted muscles with their own painted textures and normal maps, and
+real male and female shapes. It is the default body (approved by the owner); the open
+Z-Anatomy body the atlas used before stays available with `?model=zanatomy`.
 
 **The original model files are not in this repository and must never be published.** They
-stay in a working folder outside it. Only the compressed web build is used by the atlas, and
-that build is kept out of git as well (`public/models/ecorche/` is ignored) until the owner
-approves the result.
+stay in a working folder outside it. Only the compressed web build the atlas needs
+(`public/models/ecorche/<sex>/*.glb` and `build.json`) is committed.
 
 | | |
 |---|---|
-| Open it | `/atlas?model=ecorche` (the default body is set in `lib/region/profile.ts`) |
+| Open it | `/atlas` (the default body is set in `lib/region/profile.ts`); the previous body: `/atlas?model=zanatomy` |
+| On selection | the body keeps its colours, the selected muscle turns deep red (`keepColours`, `accent` of the profile) |
+| In the ZahraaFit app | `?theme=zahraafit`: cream backdrop with a soft shadow under the feet, the title «أطلس الجسم» |
 | Links from the ZahraaFit app | `?muscle=<id>&sex=female|male&theme=zahraafit` — unchanged ids |
 
 ## What the model is

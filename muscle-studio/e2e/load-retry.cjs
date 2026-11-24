@@ -11,7 +11,7 @@ const ok = (name, cond, extra = '') => { results.push(!!cond); console.log(cond 
     const page = await browser.newPage({ viewport: { width: 900, height: 700 } });
     page.setDefaultTimeout(300000);
     let hits = 0;
-    await page.route('**/models/zanatomy/male/core-smooth.glb', (route) => (++hits <= failures ? route.abort('connectionreset') : route.continue()));
+    await page.route('**/models/ecorche/male/core.glb', (route) => (++hits <= failures ? route.abort('connectionreset') : route.continue()));
     await page.goto(BASE + '/atlas?e2e=1&refine=0&hd=0', { timeout: 300000 });
     return { page, hits: () => hits };
   };

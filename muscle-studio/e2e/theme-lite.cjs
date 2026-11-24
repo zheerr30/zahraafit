@@ -39,13 +39,15 @@ const backdrop = (page) => T(page, () => {
   return [...g.getImageData(4, 4, 1, 1).data].slice(0, 3);
 });
 
+// the body's files: full on large screens, the lighter build on phones (lib/region/profile.ts)
+const FULL = 'core.glb';
 (async () => {
   const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
 
   // ── desktop, default: dark theme, full body ──
   {
     const { ctx, page, glb, errors } = await open(browser, '/atlas?e2e=1&refine=0');
-    ok('desktop: the full body is loaded', glb.includes('core-smooth.glb') && !glb.includes('core-lite.glb'), glb.join(' '));
+    ok('desktop: the full body is loaded', glb.includes(FULL) && !glb.includes('core-lite.glb'), glb.join(' '));
     ok('default theme is the dark one', (await T(page, () => document.documentElement.dataset.theme)) === undefined && near(rgb(await T(page, () => getComputedStyle(document.body).backgroundColor)), [5, 5, 5]));
     const b = await backdrop(page);
     ok('default backdrop is dark', b.every((v) => v < 70), b.join(','));
@@ -56,7 +58,7 @@ const backdrop = (page) => T(page, () => {
   // ── desktop, ZahraaFit theme with the light body asked for ──
   {
     const { ctx, page, glb, errors } = await open(browser, '/atlas?e2e=1&refine=0&theme=zahraafit&lite=1');
-    ok('?lite=1 loads the lightweight body', glb.includes('core-lite.glb') && !glb.includes('core-smooth.glb'), glb.join(' '));
+    ok('?lite=1 loads the lightweight body', glb.includes('core-lite.glb') && !glb.includes(FULL), glb.join(' '));
     const css = await T(page, () => {
       const cs = (sel) => getComputedStyle(document.querySelector(sel));
       return { theme: document.documentElement.dataset.theme, page: getComputedStyle(document.body).backgroundColor, text: getComputedStyle(document.body).color, header: cs('header').backgroundColor, dock: cs('aside').backgroundColor, line: cs('header').borderBottomColor, region: cs('[data-region]').color };
@@ -94,7 +96,7 @@ const backdrop = (page) => T(page, () => {
   // ── phone: the light body by itself, theme from the address ──
   {
     const { ctx, page, glb, errors } = await open(browser, '/atlas?e2e=1&refine=0&theme=zahraafit', { phone: true });
-    ok('phone: the lightweight body is loaded by itself', glb.includes('core-lite.glb') && !glb.includes('core-smooth.glb'), glb.join(' '));
+    ok('phone: the lightweight body is loaded by itself', glb.includes('core-lite.glb') && !glb.includes(FULL), glb.join(' '));
     ok('phone: every muscle is there under the same name', (await T(page, (u) => { const s = window.__backStudioTest.store.getState(); s.selectUnit(u, 'l'); return window.__backStudioTest.store.getState().selected?.ar; }, PEC)) === 'الصدرية الكبرى — الرأس القصي الضلعي');
     await page.waitForTimeout(9000);
     await shot(page, 't4-phone-muscle');
@@ -105,7 +107,7 @@ const backdrop = (page) => T(page, () => {
   }
   {
     const { ctx, glb } = await open(browser, '/atlas?e2e=1&refine=0&lite=0', { phone: true });
-    ok('phone: ?lite=0 asks for the full body', glb.includes('core-smooth.glb') && !glb.includes('core-lite.glb'), glb.join(' '));
+    ok('phone: ?lite=0 asks for the full body', glb.includes(FULL) && !glb.includes('core-lite.glb'), glb.join(' '));
     await ctx.close();
   }
 

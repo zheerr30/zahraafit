@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { DEPTH_NAMES, LAYER_NAMES, type RegionLayer } from "@/data/region/backShoulders";
 import { EXERCISE_BY_ID } from "@/data/exercises/exercises";
 import { spotlightOf, viewOf } from "@/lib/exercises";
@@ -370,14 +370,23 @@ function SettingsMenu() {
   );
 }
 
+const noSubscription = () => () => {};
 function TopBar() {
   const sex = useBack((s) => s.sex);
+  // Inside the ZahraaFit app (?theme=zahraafit) the atlas carries the app's name for it.
+  const inApp = useSyncExternalStore(noSubscription, () => currentTheme() === "zahraafit", () => false);
   return (
     <header className="relative z-40 flex h-12 shrink-0 items-center gap-2 border-b border-ink/10 bg-chrome px-3 sm:gap-3 sm:px-4">
-      <Link href="/" dir="ltr" className="flex h-9 shrink-0 items-center gap-1 text-[13px] font-bold tracking-wide">
-        MUSCLE STUDIO <span className="text-accent">3D</span>
-      </Link>
-      <h1 className="hidden truncate text-sm text-muted md:block">الأطلس التشريحي</h1>
+      {inApp ? (
+        <Link href="/" aria-label="أطلس الجسم" data-title="app" className="flex h-9 shrink-0 items-center text-[15px] font-bold">
+          أطلس الجسم
+        </Link>
+      ) : (
+        <Link href="/" dir="ltr" aria-label="MUSCLE STUDIO 3D" data-title="studio" className="flex h-9 shrink-0 items-center gap-1 text-[13px] font-bold tracking-wide">
+          MUSCLE STUDIO <span className="text-accent">3D</span>
+        </Link>
+      )}
+      <h1 className={cn("hidden truncate text-sm text-muted", !inApp && "md:block")}>الأطلس التشريحي</h1>
       <div role="radiogroup" aria-label="الجنس" className="ms-auto grid grid-cols-2 gap-0.5 rounded-xl bg-ink/6 p-0.5">
         {(["male", "female"] as const).map((v) => (
           <button key={v} type="button" role="radio" aria-checked={sex === v} data-sex={v} onClick={() => sex !== v && backStore.getState().setSex(v)} className={cn("h-8 rounded-[10px] px-3.5 text-xs transition-colors", sex === v ? "bg-pick font-semibold text-pick-fg" : "text-muted hover:text-fg")}>

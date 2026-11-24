@@ -12,7 +12,7 @@ import type { RegionLayer } from "@/data/region/backShoulders";
 export type ModelId = "zanatomy" | "ecorche";
 
 /** The body shown when the address names none. */
-export const DEFAULT_MODEL: ModelId = "zanatomy";
+export const DEFAULT_MODEL: ModelId = "ecorche";
 
 export interface ModelProfile {
   id: ModelId;

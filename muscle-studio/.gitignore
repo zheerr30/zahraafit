@@ -49,5 +49,7 @@ next-env.d.ts
 /bp3d
 .netlify
 
-# Écorché model builds: kept out of the repository until the owner approves the result
-/public/models/ecorche/
+# Écorché model: only the compressed web build (public/models/ecorche/<sex>/*.glb + build.json)
+# is in the repository. The original files (Blender scenes, textures) are never committed.
+*.blend
+*.blend1

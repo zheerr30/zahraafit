@@ -1,7 +1,7 @@
 // Web build of the Écorché Male & Female model (purchased; the original files are NOT in
 // this repository and must never be published — only the compressed files built here are).
 //
-// Input: the geometry evaluated from the model file for one sex (tools/dump.py of the
+// Input: the geometry evaluated from the model file for one sex (pipeline/ecorche/dump.py, run in the
 // working folder: geometry.bin + manifest.json) and the model's own textures.
 // Output, per sex, in public/models/ecorche/<sex>/:
 //   core.glb     muscles, tendons / aponeuroses, cartilages, eyes   (always loaded)

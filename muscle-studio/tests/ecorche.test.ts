@@ -174,6 +174,33 @@ describe.skipIf(!existsSync(join(BUILD, "male/core.glb")))("Écorché model: the
     }
   }, 240_000);
 
+  it("body shapes: the skin and its garments carry the thin and overweight shapes as morph targets", async () => {
+    await MeshoptDecoder.ready;
+    const io = new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({ "meshopt.decoder": MeshoptDecoder });
+    for (const sex of ["male", "female"]) for (const file of ["skin-morph.glb", "skin-morph-lite.glb"]) {
+      const doc = await io.readBinary(new Uint8Array(readFileSync(join(BUILD, sex, file))));
+      const nodes = doc.getRoot().listNodes().filter((n) => n.getMesh());
+      const shaped = nodes.filter((n) => n.getMesh()!.listPrimitives()[0].listTargets().length > 0);
+      // the skin and the garment of that body, in the atlas's names; the eyes come along without shapes
+      expect(shaped.map((n) => n.getName()).sort(), `${sex}/${file}`).toEqual(["Body_m", sex === "female" ? "Female_Clothes_m" : "Underwear_m"].sort());
+      expect(nodes.filter((n) => (n.getExtras() as { id?: string }).id === "Eyeball").length).toBe(4);
+      for (const n of shaped) {
+        const mesh = n.getMesh()!, prim = mesh.listPrimitives()[0];
+        expect((mesh.getExtras() as { targetNames?: string[] }).targetNames, n.getName()).toEqual(["thin", "overweight"]);
+        expect(mesh.getWeights()).toEqual([0, 0]);
+        expect(prim.listTargets().length).toBe(2);
+        for (const t of prim.listTargets()) {
+          expect(t.getAttribute("POSITION")!.getCount()).toBe(prim.getAttribute("POSITION")!.getCount());
+          expect(t.getAttribute("NORMAL")).not.toBeNull();
+        }
+        expect(prim.getMaterial()).not.toBeNull();
+      }
+    }
+    // light enough for a phone
+    const { statSync } = await import("node:fs");
+    for (const sex of ["male", "female"]) expect(statSync(join(BUILD, sex, "skin-morph-lite.glb")).size).toBeLessThan(1.3e6);
+  }, 120_000);
+
   it("the phone build is well under half the download", async () => {
     const { statSync } = await import("node:fs");
     for (const sex of ["male", "female"]) expect(statSync(join(BUILD, sex, "core-lite.glb")).size / statSync(join(BUILD, sex, "core.glb")).size, sex).toBeLessThan(0.45);

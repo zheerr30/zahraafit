@@ -25,7 +25,7 @@ colour, normal and occlusion-roughness maps in UDIM tiles.
 
 ## Build
 
-1. `tools/dump.py` (working folder, Blender 5.1 as the `bpy` Python module): opens the file,
+1. `pipeline/ecorche/dump.py` (run in the working folder, Blender 5.1 as the `bpy` Python module): opens the file,
    sets the sex, evaluates every object at full resolution (mirror applied, no half-body
    cut-away), splits mirrored objects into left and right, packs the UDIM tiles' UVs into one
    atlas, and writes the geometry — metres, Y up, +Z front, +X the body's left.
@@ -105,6 +105,33 @@ model's skeleton is built too differently for them to keep their shape — the l
 (the skull is solid there), popliteus and plantaris (the knee), the deep muscles of the sole.
 
   ECORCHE_WORK=/path/to/work node pipeline/ecorche/deep.mjs male     (then: female)
+
+## Body shapes (`pipeline/ecorche/shape_dump.py`, `shape.mjs`)
+
+The model's skin has a thin and an overweight shape for each sex (in the Blender file: one
+control, `Weight`, −1 … +1, on the object `Body`; keys `<Sex>-Thin` and `<Sex>-Overweight`),
+and its garments follow with fits of their own. Muscles, bones and fat pads have no such
+shapes: only skin, clothing and hair change with weight, and there is one axis only — no
+separate shapes for the waist, the hips or where fat gathers.
+
+`public/models/ecorche/<sex>/skin-morph.glb` and `skin-morph-lite.glb` hold the skin layer —
+`Body_m` and the garment (`Female_Clothes_m` / `Underwear_m`), same names and materials as
+`skin.glb`, plus the eyes — with two morph targets, in this order:
+
+| index | name | the model's shape | size of the change |
+|---|---|---|---|
+| 0 | `thin` | `<Sex>-Thin` (Weight −1) | up to 4 cm (female), 6 cm (male) |
+| 1 | `overweight` | `<Sex>-Overweight` (Weight +1) | up to 27 cm (female), 12 cm (male) |
+
+One of the two is used at a time. Targets carry positions and normals; the names are in the
+mesh's `extras.targetNames`. The skin under the cloth is cut away as in `skin.glb`; a band of
+the lower belly that the briefs uncover on the overweight shape is kept, so no shape shows a
+hole. Sizes: 2.2 / 1.9 MB (female / male), lite 1.0 / 0.7 MB.
+
+The atlas does not load these files; they are for the ZahraaFit app's body-shape view.
+
+  venv/bin/python -I pipeline/ecorche/shape_dump.py <file.blend> female <work>/shape-female
+  ECORCHE_SHAPE=<work> node pipeline/ecorche/shape.mjs female            (then: male)
 
 ## In the app
 
